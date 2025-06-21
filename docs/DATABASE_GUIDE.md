@@ -48,6 +48,7 @@ All tenant tables include `created_at` and `updated_at` columns with `NOW()` def
 * No triggers for enforcing entity existence (use app logic)
 * `CHECK(price > 0)` on `fuel_prices`
 * Sales volume auto-calculated via nozzle delta logic
+* Optional plan limit constraints defined in `database/plan_constraints.sql` (commented by default)
 
 ---
 

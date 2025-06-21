@@ -163,3 +163,17 @@ Each step includes:
 * Confirms 3 user roles exist
 * Checks station → pump → nozzle relations and counts
 
+
+### 🧱 Step 1.8 – Plan Limit Enforcement
+
+**Status:** ✅ Done
+**Files:** `database/plan_constraints.sql`, `src/config/planConfig.ts`, `src/middleware/planEnforcement.ts`
+
+**Overview:**
+* Introduced configuration-driven plan rules
+* Added middleware stubs to enforce station, pump, nozzle and user limits
+* Provided optional SQL file with commented CHECK constraints for future use
+
+**Validations Performed:**
+* Manual review of middleware logic
+* No runtime tests yet – enforcement will be hooked in during Phase 2

@@ -30,3 +30,19 @@ This file defines the pricing plans and their effect on feature availability and
 ---
 
 > After modifying `planConfig.ts` or DB plan settings, update this file and regenerate documentation.
+
+## 🚦 Enforcement Workflow
+
+Plan rules are loaded at runtime from `planConfig.ts`. Backend middleware
+functions (`planEnforcement.ts`) check current entity counts before allowing
+creation of stations, pumps, nozzles or users. When a limit is exceeded the
+middleware throws an error which is surfaced to the API client.
+
+Example usage:
+
+```ts
+await beforeCreateStation(db, tenantId); // throws if over limit
+```
+
+Optional SQL constraints in `database/plan_constraints.sql` can be enabled to
+enforce limits directly in Postgres once plan values stabilise.
