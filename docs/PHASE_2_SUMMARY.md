@@ -18,8 +18,8 @@ Each step includes:
 
 ### 🛠️ Step 2.1 – Authentication & Role Middleware
 
-**Status:** ⏳ Pending
-**Files:** `auth.controller.ts`, `middleware/auth.ts`, `middleware/requireRole.ts`
+**Status:** ✅ Done
+**Files:** `src/services/auth.service.ts`, `src/routes/auth.route.ts`, `src/middlewares/authenticateJWT.ts`, `src/middlewares/requireRole.ts`, `src/middlewares/requireStationAccess.ts`, `src/utils/jwt.ts`, `src/constants/auth.ts`, `src/types/auth.d.ts`
 
 **Business Rules Covered:**
 
@@ -32,6 +32,14 @@ Each step includes:
 * JWT issued via login and stored in HttpOnly cookies
 * Token includes `user_id`, `tenant_id`, and `role`
 * `requireAuth()` checks validity
+
+**Overview:**
+* Login route validates credentials with bcrypt and returns JWT
+* Middleware verifies tokens and checks user role and station access
+
+**Validations Performed:**
+* Manual testing via `ts-node-dev` ensured tokens reject invalid credentials
+* Verified middleware attaches `req.user` with correct fields
 
 ---
 

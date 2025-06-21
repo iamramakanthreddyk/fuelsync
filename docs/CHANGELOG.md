@@ -424,3 +424,25 @@ Each entry is tied to a step from the implementation index.
 
 * `database/tenant_schema_template.sql`
 * `scripts/seed-tenant-sample.ts`
+
+## [Phase 2 - Step 2.1] – Auth Service & Middleware
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added JWT authentication service with bcrypt password verification
+* Implemented Express middlewares: `authenticateJWT`, `requireRole`, `requireStationAccess`
+* Provided `/api/auth/login` route returning signed tokens
+
+### Files
+
+* `src/services/auth.service.ts`
+* `src/routes/auth.route.ts`
+* `src/middlewares/authenticateJWT.ts`
+* `src/middlewares/requireRole.ts`
+* `src/middlewares/requireStationAccess.ts`
+* `src/utils/jwt.ts`
+* `src/constants/auth.ts`
+* `src/types/auth.d.ts`
+* `package.json`
