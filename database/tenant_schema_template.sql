@@ -107,3 +107,20 @@ CREATE TABLE fuel_inventory (
 
 CREATE INDEX ON fuel_inventory(station_id);
 
+CREATE TABLE day_reconciliations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
+  date DATE NOT NULL,
+  total_sales NUMERIC(10,2) DEFAULT 0,
+  cash_total NUMERIC(10,2) DEFAULT 0,
+  card_total NUMERIC(10,2) DEFAULT 0,
+  upi_total NUMERIC(10,2) DEFAULT 0,
+  credit_total NUMERIC(10,2) DEFAULT 0,
+  finalized BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(station_id, date)
+);
+
+CREATE INDEX ON day_reconciliations(station_id);
+
