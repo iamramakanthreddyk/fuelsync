@@ -82,20 +82,21 @@ Each step includes:
 
 ---
 
-### 🛠️ Step 2.4 – Plan Enforcement Middleware
+### 🛠️ Step 2.4 – Nozzle Readings & Auto Sales
 
-**Status:** ⏳ Pending
-**Files:** `middleware/planLimit.ts`, `services/plan.service.ts`
+**Status:** ✅ Done
+**Files:** `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `src/services/nozzleReading.service.ts`, `src/validators/nozzleReading.validator.ts`, `src/utils/priceUtils.ts`
 
 **Business Rules Covered:**
 
-* Prevent creation of stations/pumps/users over plan
-* Feature flags (creditors, API access, reports)
+* Readings must be cumulative
+* Delta volume creates automatic sales row
+* Pricing uses station fuel price at `recorded_at`
 
-**Validation To Perform:**
+**Validation Performed:**
 
-* Plan config sourced at runtime from `planConfig.ts`
-* Blocking logic wrapped in Express middleware
+* Reject reading lower than previous
+* Sales amount rounded to 2 decimals
 
 ---
 

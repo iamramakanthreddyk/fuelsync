@@ -493,3 +493,21 @@ Each entry is tied to a step from the implementation index.
 * `src/validators/station.validator.ts`
 * `src/validators/pump.validator.ts`
 * `src/validators/nozzle.validator.ts`
+
+## [Phase 2 - Step 2.4] – Nozzle Readings & Auto Sales
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Endpoint `POST /api/nozzle-readings` records cumulative readings
+* Auto-generates sales rows using price at reading time
+* Endpoint `GET /api/nozzle-readings` with station/nozzle/date filters
+
+### Files
+
+* `src/controllers/nozzleReading.controller.ts`
+* `src/routes/nozzleReading.route.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/validators/nozzleReading.validator.ts`
+* `src/utils/priceUtils.ts`
