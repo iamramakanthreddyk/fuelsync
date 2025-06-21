@@ -511,3 +511,20 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzleReading.service.ts`
 * `src/validators/nozzleReading.validator.ts`
 * `src/utils/priceUtils.ts`
+
+## [Phase 2 - Step 2.5] – Fuel Pricing Management
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Endpoint `POST /api/fuel-prices` to record station fuel prices
+* Endpoint `GET /api/fuel-prices` to retrieve pricing history
+* Utility `getPriceAt` for historical price lookup
+
+### Files
+
+* `src/controllers/fuelPrice.controller.ts`
+* `src/routes/fuelPrice.route.ts`
+* `src/services/fuelPrice.service.ts`
+* `src/validators/fuelPrice.validator.ts`
