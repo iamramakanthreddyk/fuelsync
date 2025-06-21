@@ -40,7 +40,7 @@ All constraints are `ON DELETE CASCADE`.
 ---
 ## 📝 Audit Fields & Data Constraints
 
-All tenant tables include `created_at` and `updated_at` columns with `NOW()` defaults. Business rules are enforced with `NOT NULL` and `CHECK` constraints. Example checks include `reading > 0`, `price_per_litre > 0`, and `credit_limit >= 0`. Stations are unique per tenant and daily reconciliations enforce a unique `(station_id, reconciliation_date)` pair.
+All tenant tables include `created_at` and `updated_at` columns with `NOW()` defaults. Business rules are enforced with `NOT NULL` and `CHECK` constraints. Example checks include `reading >= 0`, `price_per_litre > 0`, and `credit_limit >= 0`. Stations are unique per tenant and daily reconciliations enforce a unique `(station_id, reconciliation_date)` pair.
 
 
 ## ⚠️ Constraint Notes
@@ -48,9 +48,18 @@ All tenant tables include `created_at` and `updated_at` columns with `NOW()` def
 * No triggers for enforcing entity existence (use app logic)
 * `fuel_prices` table stores `fuel_type`, price and effective date range
 * `CHECK(price > 0)` on `fuel_prices`
+* `CHECK(reading >= 0)` on `nozzle_readings`
 * Optional trigger snippet to close previous price period when inserting new row
 * Sales volume auto-calculated via nozzle delta logic
 * Fuel inventory updated by deliveries and sales entries
+* All foreign keys are declared `DEFERRABLE INITIALLY DEFERRED`
+* Indexes created for performance:
+  * `nozzle_readings(recorded_at)`
+  * `sales(recorded_at)`
+  * `fuel_prices(effective_from)`
+  * `credit_payments(received_at)`
+  * `day_reconciliations(reconciliation_date)`
+
 * Optional plan limit constraints defined in `database/plan_constraints.sql` (commented by default)
 
 ---

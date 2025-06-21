@@ -258,3 +258,17 @@ Each entry is tied to a step from the implementation index.
 
 * `migrations/001_create_public_schema.sql`
 
+## [Phase 1 - Step 1.15] – Finalize Tenant Schema
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Added DEFERRABLE foreign keys across all tenant tables
+* Added index coverage for time-based queries
+* Updated reading constraint to allow zero values
+
+### Files
+
+* `migrations/tenant_schema_template.sql`
+

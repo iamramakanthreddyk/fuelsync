@@ -255,3 +255,16 @@ Each step includes:
 
 **Validations Performed:**
 * Foreign key to `admin_users` with `ON DELETE CASCADE`
+
+### 🧱 Step 1.15 – Finalize Tenant Schema
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`
+
+**Overview:**
+* Added CHECK on `nozzle_readings.reading >= 0`
+* All foreign keys marked `DEFERRABLE INITIALLY DEFERRED`
+* Created indexes on frequently queried timestamp columns
+
+**Validations Performed:**
+* Schema validated via `scripts/validate-tenant-schema.ts`
