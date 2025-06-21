@@ -47,16 +47,18 @@ Each entry is tied to a step from the implementation index.
 
 ## \[Phase 1 - Step 1.2] – Tenant Schema Template
 
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 ### 🟩 Features
 
 * Create tenant-level tables: `users`, `stations`, `pumps`, `nozzles`, `sales`, `creditors`, etc.
 * Enforce FK constraints, UUIDs, and soft delete fields
+* Provide seed script to create a demo tenant schema
 
 ### Files
 
 * `tenant_schema_template.sql`
+* `scripts/seed-tenant-schema.ts`
 
 ---
 

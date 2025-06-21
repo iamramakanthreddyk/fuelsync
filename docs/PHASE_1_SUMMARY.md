@@ -58,8 +58,8 @@ Each step includes:
 
 ### 🧱 Step 1.2 – Tenant Schema Template
 
-**Status:** ⏳ Pending
-**Files:** `tenant_schema_template.sql`
+**Status:** ✅ Done
+**Files:** `tenant_schema_template.sql`, `scripts/seed-tenant-schema.ts`
 
 **Schema Tables Introduced:**
 
@@ -79,6 +79,10 @@ Each step includes:
 * All tables scoped to `tenant_id`
 * Audit fields included (`created_at`, `updated_at`)
 * Use soft deletes where relevant
+
+**Notes:**
+
+* Seed script initializes one owner user, station, pump and nozzle for the tenant
 
 ---
 

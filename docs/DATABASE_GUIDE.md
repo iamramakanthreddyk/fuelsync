@@ -9,7 +9,7 @@ This guide documents the database structure, key constraints, naming patterns, a
 | Schema  | Purpose                                      |
 | ------- | -------------------------------------------- |
 | public  | SuperAdmin config: tenants, plans, logs      |
-| tenantX | Per-tenant isolation: stations, sales, users |
+| tenantX | Per-tenant isolation: stations, pumps, nozzles, readings, sales |
 
 ---
 
@@ -31,6 +31,9 @@ This guide documents the database structure, key constraints, naming patterns, a
 | `sales`           | `nozzles(id)`, `users(id)`  |
 | `user_stations`   | `users(id)`, `stations(id)` |
 | `credit_payments` | `creditors(id)`             |
+| `fuel_deliveries` | `stations(id)`              |
+| `fuel_inventory`  | `stations(id)`              |
+| `day_reconciliations` | `stations(id)`          |
 
 All constraints are `ON DELETE CASCADE`.
 
@@ -47,7 +50,7 @@ All constraints are `ON DELETE CASCADE`.
 ## 🛠 Migration/Seed Tools
 
 * Migrations via `migrations/` directory per schema
-* Seeding via `scripts/seed.ts`
+* Seeding via `scripts/seed-public-schema.ts` and `scripts/seed-tenant-schema.ts`
 
 ---
 

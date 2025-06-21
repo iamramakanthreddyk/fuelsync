@@ -16,6 +16,7 @@ This file outlines the process for populating test/demo data in FuelSync Hub acr
 
 ```bash
 npm run db:seed        # Calls seed/index.ts
+ts-node scripts/seed-tenant-schema.ts <tenantId> <schemaName>  # create tenant schema
 ```
 
 ### Public Schema
