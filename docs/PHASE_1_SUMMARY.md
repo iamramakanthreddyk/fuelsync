@@ -120,24 +120,18 @@ Each step includes:
 
 ---
 
-### 🧱 Step 1.5 – Credit Limit Enforcement
+### 🧱 Step 1.5 – Audit Fields & Data Constraints
 
-**Status:** ⏳ Pending
-**Files:** `tenant_schema_template.sql`
+**Status:** ✅ Done
+**Files:** `tenant_schema_template.sql`, `scripts/check-constraints.ts`
 
-**Constraint Added:**
+**Overview:**
+* Added `created_at`, `updated_at` TIMESTAMPTZ columns across all tables
+* Enforced NOT NULL and CHECK constraints for key columns
+* Stations unique per tenant; pumps require station; nozzles store number and fuel type
 
-* `check_credit_limit()` BEFORE INSERT ON `sales`
+**Validations Performed:**
+* `scripts/check-constraints.ts` reports missing audit fields or constraints
 
-**Business Rules Covered:**
-
-* Block credit sale if balance exceeds limit
-
-**Validations To Perform:**
-
-* Trigger uses current `creditor_id` balance
-* DEFERRABLE INITIALLY DEFERRED is set
-
----
 
 > ✍️ Update each block once the step is implemented. Add test coverage, design notes, or assumptions as needed.
