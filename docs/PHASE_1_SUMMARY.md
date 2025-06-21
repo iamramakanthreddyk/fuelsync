@@ -360,3 +360,16 @@ Each step includes:
 
 **Validations Performed:**
 * Manual review of SQL for constraints and indexes
+
+### 🧱 Step 1.23 – Daily Reconciliation Table
+
+**Status:** ✅ Done
+**Files:** `database/tenant_schema_template.sql`
+
+**Overview:**
+* Added `day_reconciliations` table for per-station daily summaries
+* Tracks totals by payment method with a finalized flag
+* Enforces `UNIQUE(station_id, date)` and DEFERRABLE FK
+
+**Validations Performed:**
+* Manual review of SQL structure and unique constraint

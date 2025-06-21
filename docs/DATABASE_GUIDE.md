@@ -107,3 +107,18 @@ These tables were added in **Step 1.22** to support credit sales and fuel stock 
 | `credit_payments`| Records repayments from creditors                  |
 | `fuel_deliveries`| Logs fuel received per station and fuel type       |
 | `fuel_inventory` | Tracks current tank levels after deliveries/sales  |
+
+### 🆕 Day Reconciliation Table
+
+Introduced in **Step 1.23** to capture end-of-day totals per station.
+
+| Field          | Description                           |
+| -------------- | ------------------------------------- |
+| `station_id`   | FK to `stations.id`                   |
+| `date`         | Day being reconciled (unique per station) |
+| `total_sales`  | Aggregate sales amount for the day    |
+| `cash_total`   | Cash payments total                   |
+| `card_total`   | Card payments total                   |
+| `upi_total`    | UPI payments total                    |
+| `credit_total` | Credit sales total                    |
+| `finalized`    | Indicates reconciliation is locked    |

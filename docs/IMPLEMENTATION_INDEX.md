@@ -34,6 +34,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.20 | Basic DB Integrity Tests | ✅ Done | `tests/db.test.ts`, `jest.config.js`, `package.json` | `PHASE_1_SUMMARY.md#step-1.20` |
 | 1     | 1.21 | Tenant Schema SQL Template | ✅ Done | `sql/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.21` |
 | 1     | 1.22 | Extended Tenant Tables | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.22` |
+| 1     | 1.23 | Daily Reconciliation Table | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.23` |
 | 2     | 2.1  | Auth: JWT + Roles            | ⏳ Pending | `auth.controller.ts`, middleware files | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | Delta Sale Service           | ⏳ Pending | `sale.service.ts`, `sale.test.ts`      | `PHASE_2_SUMMARY.md#step-2.2` |
 | 2     | 2.3  | Sales + Creditors API Routes | ⏳ Pending | `routes/v1/`, OpenAPI spec             | `PHASE_2_SUMMARY.md#step-2.3` |

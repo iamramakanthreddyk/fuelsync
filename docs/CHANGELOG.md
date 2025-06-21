@@ -384,3 +384,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `database/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.23] – Daily Reconciliation Table
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `day_reconciliations` table to tenant schema
+
+### Files
+
+* `database/tenant_schema_template.sql`
