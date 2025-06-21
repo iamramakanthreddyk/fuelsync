@@ -160,3 +160,19 @@ Each entry is tied to a step from the implementation index.
 
 * `scripts/validate-demo-tenant.ts`
 * `scripts/reset-all-demo-tenants.ts`
+
+## [Phase 1 - Step 1.8] – Plan Limit Enforcement
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `planConfig.ts` to centralise plan rules
+* Implemented middleware stubs for enforcing plan limits
+* Provided optional `plan_constraints.sql` for DB-level checks
+
+### Files
+
+* `src/config/planConfig.ts`
+* `src/middleware/planEnforcement.ts`
+* `database/plan_constraints.sql`
