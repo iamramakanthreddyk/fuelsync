@@ -11,6 +11,7 @@ This file consolidates business logic, validation checks, and enforced behaviors
 | **Cumulative Entry**     | Each nozzle reading is cumulative.                                  |
 | **Auto Delta**           | `volume_sold = new_reading - previous_reading`                      |
 | **Price Application**    | Fuel price is fetched as of `reading_timestamp`                     |
+| **Sale Formula** | `sale_amount = volume_sold × price_at(recorded_at)` |
 | **Multiple Entries/Day** | Every delta becomes one sales row                                   |
 | **Validation**           | Reading must be ≥ last reading, and belong to same nozzle & station |
 
