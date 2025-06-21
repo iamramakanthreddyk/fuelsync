@@ -89,6 +89,7 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 | Daily Summary  | For each station: total sales, cash/card split, credit outstanding |
 | Auto Calculate | Totals calculated from `sales` table per date                      |
 | Finalize Flag  | Locked from edits if `finalized = true`                            |
+| One Per Day    | Unique `(station_id, reconciliation_date)` enforced |
 
 ---
 
