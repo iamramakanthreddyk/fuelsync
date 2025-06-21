@@ -101,3 +101,21 @@ Each step includes:
 ---
 
 > 🧠 After implementing each step, update the corresponding block with status, files created, and key validations.
+
+### 🛠️ Step 2.5 – Fuel Pricing Management
+
+**Status:** ✅ Done
+**Files:** `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `src/services/fuelPrice.service.ts`, `src/validators/fuelPrice.validator.ts`
+
+**Business Rules Covered:**
+
+* Price must be greater than zero
+* No overlapping time range per station and fuel type
+* Open range is closed when new price is added
+
+**Validation Performed:**
+
+* Input fields checked in validator
+* Overlap check enforced in service
+
+---
