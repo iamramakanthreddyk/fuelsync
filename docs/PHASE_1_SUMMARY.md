@@ -243,3 +243,15 @@ Each step includes:
 
 **Validations Performed:**
 * Unique constraint on `(station_id, reconciliation_date)`
+
+### 🧱 Step 1.14 – Admin Activity Logs Table
+
+**Status:** ✅ Done
+**Files:** `migrations/001_create_public_schema.sql`
+
+**Overview:**
+* Expanded `admin_activity_logs` table for auditing SuperAdmin actions
+* Stores target entity type, target id and JSONB details
+
+**Validations Performed:**
+* Foreign key to `admin_users` with `ON DELETE CASCADE`

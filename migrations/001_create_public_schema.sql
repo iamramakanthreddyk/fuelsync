@@ -1,5 +1,6 @@
 -- Migration: create public schema tables
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE IF NOT EXISTS public.plans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -24,8 +25,11 @@ CREATE TABLE IF NOT EXISTS public.admin_users (
 );
 
 CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    admin_user_id UUID REFERENCES public.admin_users(id),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    admin_user_id UUID REFERENCES public.admin_users(id) ON DELETE CASCADE,
     action TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    target_type TEXT,
+    target_id UUID,
+    details JSONB,
+    created_at TIMESTAMP DEFAULT NOW()
 );

@@ -108,9 +108,7 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `migrations/tenant_schema_template.sql`
-* `scripts/check-constraints.ts`
 
-> 🧠 Add a new block here after completing each step. Include test results if relevant.
 
 ## [Phase 1 - Step 1.6] – Dev/Test Tenant Seeder
 
@@ -246,3 +244,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `migrations/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.14] – Admin Activity Logs Table
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `admin_activity_logs` table for recording platform admin actions
+* Stores target type, target id and JSONB details for each action
+
+### Files
+
+* `migrations/001_create_public_schema.sql`
+
