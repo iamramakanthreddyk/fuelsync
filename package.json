@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "db:seed": "ts-node scripts/seed-public-schema.ts",
-    "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql"
+    "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
+    "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
+    "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

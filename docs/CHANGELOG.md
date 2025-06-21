@@ -112,6 +112,22 @@ Each entry is tied to a step from the implementation index.
 
 > 🧠 Add a new block here after completing each step. Include test results if relevant.
 
+## [Phase 1 - Step 1.6] – Dev/Test Tenant Seeder
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `seed-demo-tenant.ts` to generate a demo tenant with users, station, pump and nozzles
+* Added `reset-all-demo-tenants.ts` to drop and reseed all `demo_` schemas
+* New npm scripts `seed:demo` and `reset:demo`
+
+### Files
+
+* `scripts/seed-demo-tenant.ts`
+* `scripts/reset-all-demo-tenants.ts`
+* `package.json`
+
 ---
 
 ## [Fix - 2025-06-21] – TypeScript Dependency Declarations

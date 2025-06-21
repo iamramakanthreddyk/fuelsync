@@ -41,6 +41,18 @@ ts-node scripts/seed-tenant-schema.ts <tenantId> <schemaName>  # create tenant s
 npm run db:reset       # Drops & re-creates schemas
 ```
 
+## 🚀 Demo Tenant Population
+
+Use the development seeder to create a demo schema with minimal data for testing.
+
+```bash
+npm run seed:demo             # seeds demo_tenant_001
+npm run reset:demo            # drops all demo_ schemas and reseeds them
+```
+
+The script inserts an owner, manager and attendant user, a single station with
+one pump, and two nozzles. A sample fuel price record is also created.
+
 ---
 
 ## 🧪 Validation Seed
