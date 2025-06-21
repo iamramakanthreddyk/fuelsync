@@ -1,55 +1,63 @@
-# STEP\_2\_10\_COMMAND.md — Plan Enforcement and Limits Middleware
+# STEP\_2\_10\_COMMAND.md — Final Backend Cleanup + Tests
 
 ## ✅ Project Context Summary
 
-FuelSync Hub enforces tenant-specific limits via plan configurations: station count, pump/nozzle limits, employee caps, feature access, etc. This step implements runtime plan validation.
+FuelSync Hub is a multi-tenant ERP for fuel station networks, designed with a schema-per-tenant database model and role-based access control. It supports nozzle readings, auto-generated sales, creditor tracking, daily reconciliations, and plan enforcement. Backend Phase 2 is focused on implementing all API logic and service-layer rules.
 
-## 📌 Prior Steps Implemented
+## 📌 Prior Steps Completed
 
-* ✅ `STEP_2_9`: Auth, JWT, Role-based Access Middleware
-* ✅ All domain APIs and models for sales, credit, reconciliation, etc.
+* ✅ `STEP_2_1_COMMAND.md`: Auth Service + JWT Middleware + Role Checks
+* ✅ `STEP_2_2_COMMAND.md`: User Management APIs + Station Access
+* ✅ `STEP_2_3_COMMAND.md`: Station / Pump / Nozzle APIs + Plan Limits
+* ✅ `STEP_2_4_COMMAND.md`: Nozzle Readings API + Auto Delta → Sales
+* ✅ `STEP_2_5_COMMAND.md`: Sales API + Price Lookup (volume × price)
+* ✅ `STEP_2_6_COMMAND.md`: Creditors + Credit Payments + Credit Limits
+* ✅ `STEP_2_7_COMMAND.md`: Fuel Deliveries + Inventory + Reconciliation
+* ✅ `STEP_2_8_COMMAND.md`: Plan Enforcement Middleware + Route Guards
+* ✅ `STEP_2_9_COMMAND.md`: API Docs (Swagger) + Error Handling Standardization
 
-## 🚧 What to Build Now
+## 🚧 What to Build Now — Final Step of Backend Phase
 
-### 1. Plan Context Loader
+This step finalizes the backend by implementing:
 
-* Middleware `loadPlanConfig()`
+### 1. ✅ Unit Tests for Core Services
 
-  * Fetch current tenant's plan from `public.plans`
-  * Attach to `req.planConfig`
+* `auth.service.test.ts`
+* `sales.service.test.ts`
+* `readings.service.test.ts`
+* `creditors.service.test.ts`
+* `reconciliation.service.test.ts`
 
-### 2. Limit Guards
+Use an in-memory Postgres test DB or a seeded test tenant schema.
 
-* `checkStationLimit`
-* `checkPumpLimit`
-* `checkNozzleLimit`
-* `checkEmployeeLimit`
-* `checkFeatureEnabled('creditors' | 'reports' | 'apiAccess')`
+### 2. ✅ End-to-End Auth Flow Tests
 
-### 3. Apply Middleware
+* Login → Token → Protected Route Access
+* Role enforcement tests (e.g., manager vs attendant access)
 
-* Inject guards into corresponding `create*` routes
+### 3. ✅ Final Cleanup and Validation
 
-  ```ts
-  authenticateJWT → loadPlanConfig → checkStationLimit → handler
-  ```
+* Ensure all routes follow the error standard `{ status, code, message }`
+* Cross-check all `req.schemaName` usage for tenant separation
+* Verify audit fields `created_at`, `updated_at` are being set
 
-## 📁 File Paths
+## 📂 Files to Create or Update
 
-```
-src/
-├── middleware/plan.middleware.ts
-├── utils/plan.utils.ts
-```
+* `tests/auth.service.test.ts`
+* `tests/sales.service.test.ts`
+* `tests/readings.service.test.ts`
+* `tests/creditors.service.test.ts`
+* `tests/reconciliation.service.test.ts`
+* `tests/e2e/auth-flow.test.ts`
+* Any cleanup in `middlewares/errorHandler.ts`, `utils/db.ts`, `app.ts`
 
-## 🧠 Why This Step
+## 📘 Documentation To Update
 
-Enables metered feature access and prevents abuse beyond plan limits.
+* Add to `IMPLEMENTATION_INDEX.md`
+* Append to `CHANGELOG.md` under `✅ Features`
+* Add final block to `PHASE_2_SUMMARY.md`
+* Reference test coverage and patterns in `TESTING_GUIDE.md`
 
-## 🧾 Docs To Update
+---
 
-* `CHANGELOG.md`: Feature — Plan-based access guards
-* `PHASE_2_SUMMARY.md`: Add enforcement module
-* `IMPLEMENTATION_INDEX.md`: Add STEP\_2\_10
-* `PLANS.md`: Describe limits and flags
-* `BUSINESS_RULES.md`: Add enforcement rules
+> Once this step is complete, Backend Phase 2 is officially finished. You may then proceed to Phase 3 — Frontend.
