@@ -335,3 +335,16 @@ Each step includes:
 
 **Validations Performed:**
 * `npm test` executes `db.test.ts` and connects to Postgres
+
+### 🧱 Step 1.21 – Tenant Schema SQL Template
+
+**Status:** ✅ Done
+**Files:** `sql/tenant_schema_template.sql`
+
+**Overview:**
+* Added SQL template for runtime tenant schema provisioning
+* Defines base tables: `users`, `stations`, `pumps`, `nozzles`, `fuel_prices`, `nozzle_readings`, `sales`
+* All foreign keys are declared DEFERRABLE INITIALLY DEFERRED
+
+**Validations Performed:**
+* Reviewed SQL syntax and constraints
