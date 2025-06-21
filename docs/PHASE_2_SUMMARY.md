@@ -43,21 +43,23 @@ Each step includes:
 
 ---
 
-### 🛠️ Step 2.2 – Delta-Based Sale Service
+### 🛠️ Step 2.2 – User Management APIs
 
-**Status:** ⏳ Pending
-**Files:** `sale.service.ts`, `sale.test.ts`
+**Status:** ✅ Done
+**Files:** `src/controllers/adminUser.controller.ts`, `src/controllers/user.controller.ts`, `src/routes/adminUser.route.ts`, `src/routes/user.route.ts`, `src/services/adminUser.service.ts`, `src/services/user.service.ts`, `src/validators/user.validator.ts`
 
 **Business Rules Covered:**
 
-* New reading → delta → validate → fetch price → insert sale
-* Sale volume must be non-negative, price must exist
+* SuperAdmin can create and list platform admins
+* Tenant owners/managers can create staff users
+* Plan limits enforced on number of users
+* User station mapping recorded via `user_stations`
 
-**Validation To Perform:**
+**Validation Performed:**
 
-* Correct fuel price lookup based on timestamp
-* Prevent delta < 0
-* Ensure last reading is used as baseline
+* Emails unique per schema
+* Password length >= 6
+* Role must be one of allowed enums
 
 ---
 

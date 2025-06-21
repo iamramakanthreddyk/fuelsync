@@ -446,3 +446,23 @@ Each entry is tied to a step from the implementation index.
 * `src/constants/auth.ts`
 * `src/types/auth.d.ts`
 * `package.json`
+
+## [Phase 2 - Step 2.2] – User Management APIs
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added SuperAdmin user creation and listing endpoints
+* Added tenant user creation and listing with plan limit checks
+* Password hashing via bcrypt and basic request validation
+
+### Files
+
+* `src/controllers/adminUser.controller.ts`
+* `src/controllers/user.controller.ts`
+* `src/routes/adminUser.route.ts`
+* `src/routes/user.route.ts`
+* `src/services/adminUser.service.ts`
+* `src/services/user.service.ts`
+* `src/validators/user.validator.ts`

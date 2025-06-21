@@ -15,6 +15,15 @@ This file documents the roles available in FuelSync Hub and what each role can a
 
 ---
 
+### Role Descriptions
+
+* **SuperAdmin** – Manages all tenants, plans and global settings.
+* **Owner** – Full control over a single tenant including stations and staff.
+* **Manager** – Oversees daily operations and attendants for assigned stations.
+* **Attendant** – Restricted to entering readings and payments for their station.
+
+---
+
 ## 🧱 Backend Guards
 
 Use middleware:
