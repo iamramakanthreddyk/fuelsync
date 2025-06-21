@@ -62,18 +62,19 @@ Each entry is tied to a step from the implementation index.
 
 ---
 
-## \[Phase 1 - Step 1.3] – Credit Limit Enforcement
+## \[Phase 1 - Step 1.3] – Schema Validation Script
 
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 ### 🟩 Features
 
-* Add `check_credit_limit()` trigger to block sales over credit cap
-* Mark constraint as `DEFERRABLE INITIALLY DEFERRED`
+* CLI script validates each tenant schema against the template
+* Reports missing tables, columns and type mismatches
+* Exits with non-zero code when discrepancies exist
 
 ### Files
 
-* `tenant_schema_template.sql`
+* `scripts/validate-tenant-schema.ts`
 
 ---
 
@@ -92,18 +93,18 @@ Each entry is tied to a step from the implementation index.
 
 ---
 
-## \[Phase 1 - Step 1.5] – Schema Validation Script
+## \[Phase 1 - Step 1.5] – Credit Limit Enforcement
 
 **Status:** ⏳ Pending
 
 ### 🟩 Features
 
-* Add CLI to validate schema structure of any tenant
-* Reports missing tables, columns, and constraints
+* Add `check_credit_limit()` trigger to block sales over credit cap
+* Mark constraint as `DEFERRABLE INITIALLY DEFERRED`
 
 ### Files
 
-* `scripts/dbValidate.ts`
+* `tenant_schema_template.sql`
 
 ---
 
