@@ -1,8 +1,12 @@
 # AGENTS.md — Operational Brain of FuelSync Hub
 
+This file is the **permanent memory and execution protocol** for any AI agent (Codex, GitHub Copilot Workspace, Amazon Q Dev Agent, etc.) or human contributor working on the FuelSync Hub repository.  **Read it before every step.**
+
+---
+
 ## 🌍 Purpose of the System
 
-**FuelSync Hub** is a multi‑tenant SaaS ERP that digitises daily operations for fuel‑station networks.
+**FuelSync Hub** is a multi‑tenant SaaS ERP that digitises daily operations for fuel‑station networks.
 
 *Goals*
 
@@ -21,8 +25,8 @@
 | **Schema‑per‑Tenant**        | Each tenant has its own Postgres schema; platform tables live in `public`. |
 | **Modular Domains**          | Readings, Sales, Credit, Inventory, Plans, Reconciliation.                 |
 | **RBAC**                     | Four roles with strict scopes.                                             |
-| **Audit + Validation First** | DEFERRABLE constraints & service‑layer checks.                             |
-| **Codex‑First Workflow**     | All code is generated through AI prompts that update docs & changelogs.    |
+| **Audit + Validation First** | DEFERRABLE constraints & service‑layer checks.                             |
+| **Codex‑First Workflow**     | All code is generated through AI prompts that update docs & changelogs.    |
 
 ---
 
@@ -39,54 +43,96 @@
 
 ## 🔁 Implementation Phases & Order
 
-1. **Phase 1 — Database**
-   Full schema, constraints, seed scripts, validation scripts.
-2. **Phase 2 — Backend**
-   Services, APIs, business logic, auth, plan enforcement.
-3. **Phase 3 — Frontend**
-   Next.js UI, React Query hooks, dashboards, E2E tests.
+1. **Phase 1 — Database**  – schema, constraints, seed scripts, validation scripts.
+2. **Phase 2 — Backend**  – services, APIs, business logic, auth, plan enforcement.
+3. **Phase 3 — Frontend** – Next.js UI, React Query hooks, dashboards, E2E tests.
 
-*⚠️ Phases must be completed strictly in order.*
+> ⚠️ **Phases must be completed strictly in order.**
 
 ---
 
-## 🧑‍💻 Agent Execution Protocol
+## 🧑‍💻 Agent Execution Protocol  (High‑Level)
 
-For **every** new step you perform:
+For **every** new task:
 
 1. **Read context** in this file.
-2. **Consult** `docs/IMPLEMENTATION_INDEX.md` for completed & pending steps.
-3. **Execute** the next pending step only (no skipping).
-4. **Write code** only in the specified file paths.
-5. **Update docs**:
+2. **Consult** `IMPLEMENTATION_INDEX.md` for completed / pending steps.
+3. **Document the prompt** you are about to execute by creating a file named `STEP_<phase>_<step>_COMMAND.md` in the repo root (or under `docs/`).   This file **must include**:
 
-   * Append a CHANGELOG entry (Features/Fixes/Enhancements).
-   * Append a summary block in `docs/PHASE_X_SUMMARY.md`.
-   * Add the step to `docs/IMPLEMENTATION_INDEX.md`.
+   * Project Context Summary
+   * Steps already implemented (with filenames)
+   * What to build now, where, and why
+   * Required documentation updates
+4. **Execute the code changes** exactly as specified in the prompt.
+5. **Self‑document results**:
 
-> If any required documentation update is missing, the step is considered **incomplete**.
+   * ✔️ Mark step **Done** in `PHASE_X_SUMMARY.md`
+   * 📝 Append entry to `CHANGELOG.md` (Features / Fixes / Enhancements)
+   * 🔗 Add row to `IMPLEMENTATION_INDEX.md` with file links
+   * 🔗 If new files were created, update any relevant docs (e.g., `DATABASE_GUIDE.md`, `SEEDING.md`)
+
+> If any documentation update is missing, the step is considered **incomplete** and must be fixed before moving on.
+
+---
+
+## 🛠 Troubleshooting Flow
+
+When an issue is found in code or logic:
+
+1. **Locate the last executed `STEP_X_Y_COMMAND.md`** to see what was intended.
+2. Cross‑check the change in `CHANGELOG.md` & `PHASE_X_SUMMARY.md`.
+3. Consult specific domain docs:
+
+   * Auth issues → `AUTH.md`
+   * Seed errors → `SEEDING.md`
+   * Plan limit mis‑behaviour → `PLANS.md`
+   * FK / schema mismatch → `DATABASE_GUIDE.md`
+4. Review `TROUBLESHOOTING.md` for common fixes.
+5. Create a new **fix step** (`STEP_fix_<date>.md`) and follow the same execution protocol.
+
+---
+
+## 🧭 Environment Constraints
+
+* 🚫 **No external services** — everything must run in a local Docker + Postgres stack.
+* 🚫 **No hidden cloud calls** — seed scripts, migrations, and runtime config are entirely file‑based.
+* 🌐 Optional services (Redis, S3) must be stubbed locally.
+
+---
+
+## 🚨 Codex Prompting Standard
+
+Every prompt **must contain**:
+
+* ✅ Project Context Summary
+* ✅ Prior steps implemented and file list
+* ✅ Detailed task description (what, where, why)
+* ✅ Explicit file paths to create or modify
+* ✅ Reminder to update docs (Changelog, Phase summary, Index)
+
+Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so future agents can resume deterministically.
 
 ---
 
 ## 🗂️ Linked Documentation
 
-| File                      | Purpose                                             |
-| ------------------------- | --------------------------------------------------- |
-| `BUSINESS_RULES.md`       | Canonical business & validation rules.              |
-| `IMPLEMENTATION_INDEX.md` | Master list of all steps and links.                 |
-| `CHANGELOG.md`            | Chronological log of features, fixes, enhancements. |
-| `PHASE_1_SUMMARY.md`      | Database‑phase details & validations.               |
-| `PHASE_2_SUMMARY.md`      | Backend‑phase details & validations.                |
-| `PHASE_3_SUMMARY.md`      | Frontend‑phase details & validations.               |
+| File                      | Purpose                                              |
+| ------------------------- | ---------------------------------------------------- |
+| `BUSINESS_RULES.md`       | Canonical business & validation rules.               |
+| `IMPLEMENTATION_INDEX.md` | Master list of all steps & file links.               |
+| `CHANGELOG.md`            | Chronological log (Features / Fixes / Enhancements). |
+| `PHASE_1_SUMMARY.md`      | Database‑phase details & validations.                |
+| `PHASE_2_SUMMARY.md`      | Backend‑phase details & validations.                 |
+| `PHASE_3_SUMMARY.md`      | Frontend‑phase details & validations.                |
+| `ARCHITECTURE.md`         | System structure & module overview.                  |
 
 ---
 
 ## 🚦 Starting Point
 
-> **Current status:** Fresh repository — no code, no migrations.
+> **Repo status:** Fresh repository — only docs exist, no code, no migrations.
 >
-> **Next action for an AI agent:**
+> **First executable task:**
+> `Phase 1 – Step 1.1 : Create public schema migration & seed`
 >
-> `Phase 1 – Step 1.1 : Create public schema migration`
->
-> Follow Execution Protocol and update all docs accordingly.
+> Follow the Execution Protocol above, document the prompt as `STEP_1_1_COMMAND.md`, then implement the migration and seed, and update all logs accordingly.
