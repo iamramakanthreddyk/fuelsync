@@ -146,3 +146,17 @@ Each entry is tied to a step from the implementation index.
 * `tsconfig.json`
 * `scripts/check-constraints.ts`
 * `docs/STEP_fix_20250621.md`
+
+## [Phase 1 - Step 1.7] – Demo Tenant Validation
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `validate-demo-tenant.ts` to verify demo seed integrity
+* `reset-all-demo-tenants.ts` now runs the validation after seeding
+
+### Files
+
+* `scripts/validate-demo-tenant.ts`
+* `scripts/reset-all-demo-tenants.ts`

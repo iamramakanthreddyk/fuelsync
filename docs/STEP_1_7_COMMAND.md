@@ -50,10 +50,10 @@ This step lays the groundwork for CI environments and local dev resets.
 
 ## 📓 Documentation Updates
 
-* [ ] `PHASE_1_SUMMARY.md` → Add validation strategy
-* [ ] `CHANGELOG.md` → Feature: seed validation tool
-* [ ] `IMPLEMENTATION_INDEX.md` → Add step 1.7 row
-* [ ] `SEEDING.md` → Add validation procedure section
+* [x] `PHASE_1_SUMMARY.md` → Add validation strategy
+* [x] `CHANGELOG.md` → Feature: seed validation tool
+* [x] `IMPLEMENTATION_INDEX.md` → Add step 1.7 row
+* [x] `SEEDING.md` → Add validation procedure section
 
 ---
 

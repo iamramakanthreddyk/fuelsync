@@ -148,3 +148,18 @@ Each step includes:
 
 **Validations Performed:**
 * Basic FK relationships ensured during seeding
+
+### 🧱 Step 1.7 – Seed Validation Utility
+
+**Status:** ✅ Done
+**Files:** `scripts/validate-demo-tenant.ts`, `scripts/reset-all-demo-tenants.ts`
+
+**Overview:**
+* Adds a CLI script to verify seeded demo tenant data
+* Ensures users, stations, pumps and nozzles are present and correctly linked
+* `reset-all-demo-tenants.ts` now runs validation after reseeding
+
+**Validations Performed:**
+* Confirms 3 user roles exist
+* Checks station → pump → nozzle relations and counts
+
