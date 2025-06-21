@@ -348,3 +348,15 @@ Each step includes:
 
 **Validations Performed:**
 * Reviewed SQL syntax and constraints
+
+### 🧱 Step 1.22 – Extended Tenant Tables
+
+**Status:** ✅ Done
+**Files:** `database/tenant_schema_template.sql`
+
+**Overview:**
+* Added tables for `creditors`, `credit_payments`, `fuel_deliveries`, `fuel_inventory`
+* Each includes `created_at` and `updated_at` with DEFERRABLE foreign keys
+
+**Validations Performed:**
+* Manual review of SQL for constraints and indexes

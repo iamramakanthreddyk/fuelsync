@@ -69,7 +69,7 @@ All tenant tables include `created_at` and `updated_at` columns with `NOW()` def
 * Migrations via `migrations/` directory per schema
 * Seeding via `scripts/seed-public-schema.ts` and `scripts/seed-tenant-schema.ts`
 * Schema validation via `scripts/validate-tenant-schema.ts`
-* Lightweight template for runtime provisioning: `sql/tenant_schema_template.sql`
+* Lightweight template for runtime provisioning: `database/tenant_schema_template.sql`
 
 ---
 
@@ -96,3 +96,14 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | fuel_deliveries        | tenant    | Incoming fuel by station and type      |
 | fuel_inventory         | tenant    | Current stock level per station        |
 | day_reconciliations    | tenant    | Daily summary with payment breakdown and lock flag |
+
+### 🆕 Credit & Inventory Tables
+
+These tables were added in **Step 1.22** to support credit sales and fuel stock tracking.
+
+| Table            | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| `creditors`      | Stores credit-eligible customers with limits       |
+| `credit_payments`| Records repayments from creditors                  |
+| `fuel_deliveries`| Logs fuel received per station and fuel type       |
+| `fuel_inventory` | Tracks current tank levels after deliveries/sales  |
