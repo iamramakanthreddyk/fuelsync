@@ -9,6 +9,7 @@ This file defines the login flow, session management, and role-based access stra
 * Users log in with email + password via `/api/v1/auth/login`
 * Successful login issues a **JWT token**, stored in **HttpOnly cookie**
 * Token contains `user_id`, `tenant_id`, and `role`
+* Route handled in `src/routes/auth.route.ts` which invokes `login()` service
 
 ---
 
@@ -34,6 +35,8 @@ authenticateJWT()
   → checkStationAccess()
 ```
 
+Middlewares are implemented in `src/middlewares/*.ts` and attach `req.user` after token verification.
+
 ---
 
 ## 🚫 Login Failures
@@ -57,4 +60,4 @@ authenticateJWT()
 
 ---
 
-> After implementing backend auth, update this doc with route handlers and token renewal rules.
+Login and logout routes exist under `/api/auth`. Tokens expire after one hour and must be renewed via re-login.
