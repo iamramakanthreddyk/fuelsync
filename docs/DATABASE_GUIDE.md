@@ -28,7 +28,7 @@ This guide documents the database structure, key constraints, naming patterns, a
 | ----------------- | --------------------------- |
 | `pumps`           | `stations(id)`              |
 | `nozzles`         | `pumps(id)`                 |
-| `sales`           | `nozzles(id)`, `nozzle_readings(id)`, `users(id)` |
+| `sales`           | `nozzles(id)`, `nozzle_readings(id)`, `users(id)`, `creditors(id)` |
 | `user_stations`   | `users(id)`, `stations(id)` |
 | `credit_payments` | `creditors(id)`             |
 | `fuel_deliveries` | `stations(id)`              |

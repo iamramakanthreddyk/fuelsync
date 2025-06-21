@@ -205,3 +205,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `migrations/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.11] – Creditors & Payments Schema
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Expanded `creditors` table with balance and notes fields
+* Added `credit_payments` table with payment_method and received_by columns
+* Linked `sales` to `creditors` via `creditor_id`
+
+### Files
+
+* `migrations/tenant_schema_template.sql`

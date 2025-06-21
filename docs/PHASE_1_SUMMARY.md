@@ -205,3 +205,16 @@ Each step includes:
 
 **Validations Performed:**
 * CHECK constraints ensure non-negative volume and valid payment methods
+
+### 🧱 Step 1.11 – Creditors & Payments Schema
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`
+
+**Overview:**
+* Expanded `creditors` table with contact info, balance and notes
+* Added `credit_payments` table for recording creditor payments
+* Sales table now links to creditors via `creditor_id`
+
+**Validations Performed:**
+* CHECK constraints for `credit_limit >= 0` and `amount > 0`

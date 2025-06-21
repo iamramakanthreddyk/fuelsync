@@ -41,9 +41,10 @@ Additional Sale Rules:
 
 | Rule                 | Description                                    |
 | -------------------- | ---------------------------------------------- |
-| **Party Must Exist** | Credit sales require a valid `credit_party_id` |
+| **Party Must Exist** | Credit sales require a valid `creditor_id` |
 | **Max Limit**        | Block new sales if balance > credit\_limit     |
 | **Payment History**  | Recorded in `credit_payments` table            |
+| **Payment Required** | No new credit sales if balance >= credit_limit |
 
 **Suggestion:** Add a `check_credit_limit()` trigger before inserting into `sales`.
 
