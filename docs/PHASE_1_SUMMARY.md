@@ -293,3 +293,18 @@ Each step includes:
 
 **Validations Performed:**
 * Manual execution via seed scripts to confirm inserts and queries work
+
+### 🧱 Step 1.18 – Dev Database via Docker Compose
+
+**Status:** ✅ Done
+**Files:** `docker-compose.yml`, `.env.development`, `scripts/seed-public-schema.ts`, `scripts/seed-demo-tenant.ts`, `scripts/seed-tenant-schema.ts`, `scripts/validate-demo-tenant.ts`, `scripts/reset-all-demo-tenants.ts`
+
+**Overview:**
+* Added Docker Compose stack for local Postgres development
+* Introduced environment file `.env.development` with standard credentials
+* Updated all seed and validation scripts to load env vars based on `NODE_ENV`
+
+**Validations Performed:**
+* `docker-compose up -d` starts `fuelsync-db` container successfully
+* Seed scripts run against the container using credentials from `.env.development`
+

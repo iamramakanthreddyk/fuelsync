@@ -1,7 +1,8 @@
 import { Client } from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'development' ? '.env.development' : '.env';
+dotenv.config({ path: envFile });
 
 function fail(msg: string) {
   console.error(`\u274c FAILED: ${msg}`); // cross mark

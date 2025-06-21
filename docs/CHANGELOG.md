@@ -305,3 +305,24 @@ Each entry is tied to a step from the implementation index.
 * `src/utils/seedHelpers.ts`
 * `src/utils/schemaUtils.ts`
 * `docs/SEEDING.md`
+
+## [Phase 1 - Step 1.18] – Dev Database via Docker Compose
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Added `docker-compose.yml` for local Postgres
+* Created `.env.development` with standard credentials
+* Seed and validation scripts now load env vars per `NODE_ENV`
+
+### Files
+
+* `docker-compose.yml`
+* `.env.development`
+* `scripts/seed-public-schema.ts`
+* `scripts/seed-demo-tenant.ts`
+* `scripts/seed-tenant-schema.ts`
+* `scripts/validate-demo-tenant.ts`
+* `scripts/reset-all-demo-tenants.ts`
+

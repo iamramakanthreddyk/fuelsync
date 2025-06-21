@@ -55,4 +55,16 @@ npm run db:reset && npm run db:seed
 
 ---
 
+## 🐳 Docker Compose Issues
+
+**Symptom:** `docker-compose up` fails or database container won't start.
+
+**Fix:**
+
+* Ensure port `5432` is free or change `DB_PORT` in `.env.development`
+* Remove old volumes via `docker volume rm fuelsync_pgdata`
+
+---
+
 > Update this file frequently during QA or new phase onboarding.
+
