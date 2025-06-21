@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.sales (
     nozzle_id UUID REFERENCES {{schema_name}}.nozzles(id) ON DELETE CASCADE,
     user_id UUID REFERENCES {{schema_name}}.users(id) ON DELETE CASCADE,
     reading_id UUID REFERENCES {{schema_name}}.nozzle_readings(id) ON DELETE CASCADE,
+    creditor_id UUID REFERENCES {{schema_name}}.creditors(id),
     volume NUMERIC NOT NULL CHECK (volume >= 0),
     price NUMERIC NOT NULL CHECK (price > 0),
     amount NUMERIC GENERATED ALWAYS AS (volume * price) STORED,
@@ -108,10 +109,13 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_prices (
 CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    contact_person TEXT NOT NULL,
-    email TEXT NOT NULL,
-    credit_limit NUMERIC NOT NULL CHECK (credit_limit >= 0),
+    party_name TEXT NOT NULL,
+    contact_person TEXT,
+    contact_phone TEXT,
+    email TEXT,
+    credit_limit NUMERIC CHECK (credit_limit >= 0),
+    balance NUMERIC DEFAULT 0,
+    notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -121,9 +125,11 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.credit_payments (
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
     creditor_id UUID REFERENCES {{schema_name}}.creditors(id) ON DELETE CASCADE,
     amount NUMERIC NOT NULL CHECK (amount > 0),
+    payment_method TEXT CHECK (payment_method IN ('cash', 'bank_transfer', 'check')),
     reference_number TEXT,
-    paid_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    credited_by UUID REFERENCES {{schema_name}}.users(id),
+    notes TEXT,
+    received_by UUID REFERENCES {{schema_name}}.users(id),
+    received_at TIMESTAMP NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
