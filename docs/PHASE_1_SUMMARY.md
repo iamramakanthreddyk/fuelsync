@@ -373,3 +373,17 @@ Each step includes:
 
 **Validations Performed:**
 * Manual review of SQL structure and unique constraint
+
+### 🧱 Step 1.24 – Audit Logs Table
+
+**Status:** ✅ Done
+**Files:** `database/tenant_schema_template.sql`
+
+**Overview:**
+* Added `audit_logs` table to record user actions on tenant data
+* Stores `action`, `entity_type`, `entity_id` and optional JSON details
+* Foreign key to `users` is `DEFERRABLE INITIALLY DEFERRED`
+* Indexed by `(entity_type, entity_id)` for efficient lookups
+
+**Validations Performed:**
+* Manual review of SQL for constraints and index

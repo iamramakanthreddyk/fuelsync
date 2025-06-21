@@ -124,3 +124,15 @@ CREATE TABLE day_reconciliations (
 
 CREATE INDEX ON day_reconciliations(station_id);
 
+CREATE TABLE audit_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
+  action TEXT NOT NULL,
+  entity_type TEXT NOT NULL,
+  entity_id UUID NOT NULL,
+  details JSONB,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX ON audit_logs(entity_type, entity_id);
+

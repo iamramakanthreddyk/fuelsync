@@ -396,3 +396,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `database/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.24] – Audit Logs Table
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `audit_logs` table for per-tenant action tracking
+
+### Files
+
+* `database/tenant_schema_template.sql`

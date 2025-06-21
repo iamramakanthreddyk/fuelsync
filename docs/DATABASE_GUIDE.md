@@ -96,6 +96,7 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | fuel_deliveries        | tenant    | Incoming fuel by station and type      |
 | fuel_inventory         | tenant    | Current stock level per station        |
 | day_reconciliations    | tenant    | Daily summary with payment breakdown and lock flag |
+| audit_logs             | tenant    | User actions and metadata              |
 
 ### 🆕 Credit & Inventory Tables
 
@@ -122,3 +123,15 @@ Introduced in **Step 1.23** to capture end-of-day totals per station.
 | `upi_total`    | UPI payments total                    |
 | `credit_total` | Credit sales total                    |
 | `finalized`    | Indicates reconciliation is locked    |
+
+### 🆕 Audit Logs Table
+
+Introduced in **Step 1.24** to provide a tenant-level audit trail.
+
+| Field         | Description                                         |
+| ------------- | --------------------------------------------------- |
+| `user_id`     | FK to `users.id`                                    |
+| `action`      | Describes the operation performed                   |
+| `entity_type` | Type of record affected (e.g., `sale`)               |
+| `entity_id`   | UUID of the affected record                         |
+| `details`     | Optional JSONB metadata about the action            |
