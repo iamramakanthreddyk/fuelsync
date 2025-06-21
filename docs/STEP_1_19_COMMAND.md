@@ -66,18 +66,6 @@ NODE_ENV=development npx ts-node scripts/check-env.ts
 
 ---
 
-## ❓ Should We Add Tests Now?
-
-We defer full test infra (Jest config, integration tests) to Phase 2 once API routes and services exist. However, a `test/db.test.ts` can be created to:
-
-* Assert table presence
-* Check constraint behavior
-* Validate deferrable FKs
-
-If desired, add as **Step 1.20**.
-
----
-
 ## 📓 Docs to Update
 
 * [ ] `PHASE_1_SUMMARY.md`: Add script and env validation section
