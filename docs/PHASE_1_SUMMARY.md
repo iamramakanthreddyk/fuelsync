@@ -268,3 +268,15 @@ Each step includes:
 
 **Validations Performed:**
 * Schema validated via `scripts/validate-tenant-schema.ts`
+
+### 🧱 Step 1.16 – Schema Validation Tools
+
+**Status:** ✅ Done
+**Files:** `scripts/validate-tenant-schema.ts`, `scripts/validate-foreign-keys.sql`, `scripts/check-schema-integrity.sql`
+
+**Overview:**
+* Enhanced tenant schema validation script to check foreign keys and audit columns
+* Added SQL helpers to detect non-deferrable FKs and nullable audit fields
+
+**Validations Performed:**
+* Prints mismatches for tables, columns, FK properties and audit columns per tenant

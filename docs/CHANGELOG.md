@@ -272,3 +272,20 @@ Each entry is tied to a step from the implementation index.
 
 * `migrations/tenant_schema_template.sql`
 
+
+## [Phase 1 - Step 1.16] – Schema Validation Tools
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Extended `validate-tenant-schema.ts` to check foreign key settings and audit fields
+* Added SQL helpers `validate-foreign-keys.sql` and `check-schema-integrity.sql`
+* Script prints pass/fail summary for each tenant
+
+### Files
+
+* `scripts/validate-tenant-schema.ts`
+* `scripts/validate-foreign-keys.sql`
+* `scripts/check-schema-integrity.sql`
+
