@@ -66,4 +66,18 @@ one pump, and two nozzles. A sample fuel price record is also created.
 
 ---
 
+
+## ✅ Seed Validation
+
+Run the validation script to ensure the demo tenant data is consistent:
+
+```bash
+ts-node scripts/validate-demo-tenant.ts <schema_name>
+```
+
+`reset-all-demo-tenants.ts` automatically runs this check after reseeding. The script
+verifies that the three user roles exist and that stations, pumps and nozzles are correctly linked.
+
+---
+
 > After each new module (e.g., reconciliations), extend the seed script accordingly and log in `CHANGELOG.md`.

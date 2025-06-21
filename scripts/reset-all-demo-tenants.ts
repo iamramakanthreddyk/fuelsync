@@ -22,12 +22,17 @@ async function reset() {
 
   await client.end();
 
-  const script = path.join(__dirname, 'seed-demo-tenant.ts');
+  const seedScript = path.join(__dirname, 'seed-demo-tenant.ts');
+  const validateScript = path.join(__dirname, 'validate-demo-tenant.ts');
   const names = schemas.length ? schemas : ['demo_tenant_001'];
   for (const name of names) {
-    const res = spawnSync('ts-node', [script, name], { stdio: 'inherit' });
+    const res = spawnSync('ts-node', [seedScript, name], { stdio: 'inherit' });
     if (res.status !== 0) {
       process.exit(res.status || 1);
+    }
+    const val = spawnSync('ts-node', [validateScript, name], { stdio: 'inherit' });
+    if (val.status !== 0) {
+      process.exit(val.status || 1);
     }
   }
 }
