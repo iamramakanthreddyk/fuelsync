@@ -29,13 +29,13 @@ Each step includes:
 
 ### 🧱 Step 1.1 – Public Schema Migration
 
-**Status:** ⏳ Pending
-**Files:** `migrations/0001_public_schema.sql`
+**Status:** ✅ Done
+**Files:** `migrations/001_create_public_schema.sql`, `scripts/seed-public-schema.ts`
 
 **Schema Tables Introduced:**
 
+* `plans`
 * `tenants`
-* `plans`, `plan_limits`
 * `admin_users`
 * `admin_activity_logs`
 
@@ -52,7 +52,7 @@ Each step includes:
 
 **Notes:**
 
-* Consider default plan assignment for new tenants
+* Seed script inserts demo plans, admin user and tenant
 
 ---
 

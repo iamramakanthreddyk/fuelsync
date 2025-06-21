@@ -30,18 +30,18 @@ Each entry is tied to a step from the implementation index.
 
 ## \[Phase 1 - Step 1.1] – Public Schema Migration
 
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 ### 🟩 Features
 
-* Define `public.tenants` table with schema name and status
-* Add `admin_users` table for SuperAdmins
-* Include `plans` and `plan_limits` for SaaS enforcement
-* Enable audit fields and UUID keys for scalability
+* Create `plans`, `tenants`, `admin_users` and `admin_activity_logs` tables
+* Use UUID primary keys and timestamp fields
+* Provide seed script for demo plans, admin user and tenant
 
 ### Files
 
-* `migrations/0001_public_schema.sql`
+* `migrations/001_create_public_schema.sql`
+* `scripts/seed-public-schema.ts`
 
 ---
 
