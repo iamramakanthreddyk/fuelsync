@@ -359,3 +359,16 @@ Each entry is tied to a step from the implementation index.
 * `jest.config.js`
 * `package.json`
 
+
+## [Phase 1 - Step 1.21] – Tenant Schema SQL Template
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added base tenant schema SQL template for runtime provisioning
+* Includes `users`, `stations`, `pumps`, `nozzles`, `fuel_prices`, `nozzle_readings`, `sales`
+
+### Files
+
+* `sql/tenant_schema_template.sql`
