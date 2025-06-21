@@ -27,6 +27,14 @@ JOIN (
 WHERE r.reading < last.prev;
 ```
 
+Additional Sale Rules:
+
+* Each sale references the originating `nozzle_readings.id` via `reading_id`.
+* `volume` is computed from the delta between successive readings.
+* Fuel price at `recorded_at` is applied when calculating `amount`.
+* `payment_method` must be one of `cash`, `card`, `upi`, or `credit`.
+* `recorded_at` timestamps allow daily reconciliation and reporting.
+
 ---
 
 ## 🧮 Credit Sales Logic

@@ -192,3 +192,16 @@ Each step includes:
 **Validations Performed:**
 * Schema check via `scripts/validate-tenant-schema.ts`
 * Manual inspection of SQL trigger example
+
+### 🧱 Step 1.10 – Sales Table Schema
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`
+
+**Overview:**
+* Added `sales` table linking readings, nozzles and users
+* Stores volume, price and computed amount per sale
+* Includes `payment_method` and `recorded_at` for reconciliation
+
+**Validations Performed:**
+* CHECK constraints ensure non-negative volume and valid payment methods

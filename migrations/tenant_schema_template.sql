@@ -65,11 +65,14 @@ CREATE INDEX IF NOT EXISTS idx_readings_nozzle_date
 CREATE TABLE IF NOT EXISTS {{schema_name}}.sales (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
-    nozzle_reading_id UUID REFERENCES {{schema_name}}.nozzle_readings(id) ON DELETE CASCADE,
+    nozzle_id UUID REFERENCES {{schema_name}}.nozzles(id) ON DELETE CASCADE,
     user_id UUID REFERENCES {{schema_name}}.users(id) ON DELETE CASCADE,
-    volume NUMERIC NOT NULL CHECK (volume > 0),
-    price_per_litre NUMERIC NOT NULL CHECK (price_per_litre > 0),
-    sale_amount NUMERIC NOT NULL CHECK (sale_amount > 0),
+    reading_id UUID REFERENCES {{schema_name}}.nozzle_readings(id) ON DELETE CASCADE,
+    volume NUMERIC NOT NULL CHECK (volume >= 0),
+    price NUMERIC NOT NULL CHECK (price > 0),
+    amount NUMERIC GENERATED ALWAYS AS (volume * price) STORED,
+    payment_method TEXT NOT NULL CHECK (payment_method IN ('cash', 'card', 'upi', 'credit')),
+    recorded_at TIMESTAMP NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

@@ -28,7 +28,7 @@ This guide documents the database structure, key constraints, naming patterns, a
 | ----------------- | --------------------------- |
 | `pumps`           | `stations(id)`              |
 | `nozzles`         | `pumps(id)`                 |
-| `sales`           | `nozzles(id)`, `users(id)`  |
+| `sales`           | `nozzles(id)`, `nozzle_readings(id)`, `users(id)` |
 | `user_stations`   | `users(id)`, `stations(id)` |
 | `credit_payments` | `creditors(id)`             |
 | `fuel_deliveries` | `stations(id)`              |
@@ -77,7 +77,7 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | pumps                  | tenant    | FK → stations                          |
 | nozzles                | tenant    | FK → pumps                             |
 | nozzle_readings        | tenant    | FK → nozzles, FK → users               |
-| sales                  | tenant    | Derived from readings                  |
+| sales                  | tenant    | Delta-based transactions with payment method |
 | fuel_prices            | tenant    | Per station, per fuel type             |
 | creditors              | tenant    | Credit customers                       |
 | credit_payments        | tenant    | Payments made on credit                |
