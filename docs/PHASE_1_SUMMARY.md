@@ -86,23 +86,25 @@ Each step includes:
 
 ---
 
-### 🧱 Step 1.3 – Credit Limit Enforcement
+### 🧱 Step 1.3 – Schema Validation Script
 
-**Status:** ⏳ Pending
-**Files:** `tenant_schema_template.sql`
+**Status:** ✅ Done
+**Files:** `scripts/validate-tenant-schema.ts`
 
-**Constraint Added:**
+**Functionality:**
 
-* `check_credit_limit()` BEFORE INSERT ON `sales`
+* Compare each tenant schema against `tenant_schema_template.sql`
+* Report missing tables, columns and datatype mismatches
+* Exit with non-zero code when drift detected
 
 **Business Rules Covered:**
 
-* Block credit sale if balance exceeds limit
+* Tenant schemas must remain consistent with the official template
 
-**Validations To Perform:**
+**Validations Performed:**
 
-* Trigger uses current `creditor_id` balance
-* DEFERRABLE INITIALLY DEFERRED is set
+* Introspect `information_schema` for tables and columns
+* Works with multiple existing tenants
 
 ---
 
@@ -130,24 +132,23 @@ Each step includes:
 
 ---
 
-### 🧱 Step 1.5 – Schema Validation Script
+### 🧱 Step 1.5 – Credit Limit Enforcement
 
 **Status:** ⏳ Pending
-**Files:** `scripts/dbValidate.ts`
+**Files:** `tenant_schema_template.sql`
 
-**Functionality:**
+**Constraint Added:**
 
-* Check live tenant schema vs `tenant_schema_template.sql`
+* `check_credit_limit()` BEFORE INSERT ON `sales`
 
 **Business Rules Covered:**
 
-* Enforce presence of tables, columns, FKs
-* Must report missing or broken structures
+* Block credit sale if balance exceeds limit
 
 **Validations To Perform:**
 
-* Use pg introspection
-* Accept schema as CLI arg
+* Trigger uses current `creditor_id` balance
+* DEFERRABLE INITIALLY DEFERRED is set
 
 ---
 

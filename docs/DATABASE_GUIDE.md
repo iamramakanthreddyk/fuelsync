@@ -51,6 +51,7 @@ All constraints are `ON DELETE CASCADE`.
 
 * Migrations via `migrations/` directory per schema
 * Seeding via `scripts/seed-public-schema.ts` and `scripts/seed-tenant-schema.ts`
+* Schema validation via `scripts/validate-tenant-schema.ts`
 
 ---
 
