@@ -191,3 +191,17 @@ Each entry is tied to a step from the implementation index.
 
 * `migrations/tenant_schema_template.sql`
 * `src/utils/priceUtils.ts`
+
+## [Phase 1 - Step 1.10] – Sales Table Schema
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Created `sales` table for per-delta transactions
+* Links readings to nozzles and users with price lookup
+* Stores payment method and computed amount
+
+### Files
+
+* `migrations/tenant_schema_template.sql`
