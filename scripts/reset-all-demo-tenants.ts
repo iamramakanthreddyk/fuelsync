@@ -3,7 +3,8 @@ import { spawnSync } from 'child_process';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'development' ? '.env.development' : '.env';
+dotenv.config({ path: envFile });
 
 async function reset() {
   const client = new Client({ connectionString: process.env.DATABASE_URL });

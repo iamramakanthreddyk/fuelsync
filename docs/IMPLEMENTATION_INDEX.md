@@ -29,6 +29,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.16 | Schema Validation Tools | ✅ Done | `scripts/validate-tenant-schema.ts`, `scripts/validate-foreign-keys.sql`, `scripts/check-schema-integrity.sql` | `PHASE_1_SUMMARY.md#step-1.16` |
 | fix   | 2025-06-21 | TypeScript Dependency Declarations | ✅ Done | `package.json`, `tsconfig.json` | `docs/STEP_fix_20250621.md` |
 | 1     | 1.17 | Seed/Test Utility Functions | ✅ Done | `src/utils/seedHelpers.ts`, `src/utils/schemaUtils.ts` | `PHASE_1_SUMMARY.md#step-1.17` |
+| 1     | 1.18 | Dev Database via Docker Compose | ✅ Done | `docker-compose.yml`, `.env.development`, scripts updated | `PHASE_1_SUMMARY.md#step-1.18` |
 | 2     | 2.1  | Auth: JWT + Roles            | ⏳ Pending | `auth.controller.ts`, middleware files | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | Delta Sale Service           | ⏳ Pending | `sale.service.ts`, `sale.test.ts`      | `PHASE_2_SUMMARY.md#step-2.2` |
 | 2     | 2.3  | Sales + Creditors API Routes | ⏳ Pending | `routes/v1/`, OpenAPI spec             | `PHASE_2_SUMMARY.md#step-2.3` |

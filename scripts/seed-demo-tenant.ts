@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'development' ? '.env.development' : '.env';
+dotenv.config({ path: envFile });
 
 async function seed() {
   const schema = process.argv[2] || 'demo_tenant_001';
