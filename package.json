@@ -7,15 +7,19 @@
     "db:seed": "ts-node scripts/seed-public-schema.ts",
     "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
-    "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts"
+    "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
+    "test": "jest"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "ts-node": "^10.9.1",
-    "pg": "^8.11.0",
-    "dotenv": "^16.3.1",
+    "@types/dotenv": "^8.2.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.8.10",
     "@types/pg": "^8.6.7",
-    "@types/dotenv": "^8.2.0"
+    "dotenv": "^16.3.1",
+    "jest": "^30.0.2",
+    "pg": "^8.11.0",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.3"
   }
 }
