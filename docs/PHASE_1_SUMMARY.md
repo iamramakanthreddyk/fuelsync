@@ -280,3 +280,16 @@ Each step includes:
 
 **Validations Performed:**
 * Prints mismatches for tables, columns, FK properties and audit columns per tenant
+
+### 🧱 Step 1.17 – Seed/Test Utility Functions
+
+**Status:** ✅ Done
+**Files:** `src/utils/seedHelpers.ts`, `src/utils/schemaUtils.ts`
+
+**Overview:**
+* Provides reusable helpers to create tenants, stations, pumps and nozzles
+* Adds functions to fetch latest nozzle reading and active fuel price
+* Includes utilities to list tenant schemas from `public.tenants`
+
+**Validations Performed:**
+* Manual execution via seed scripts to confirm inserts and queries work

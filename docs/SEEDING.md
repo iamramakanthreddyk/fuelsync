@@ -55,6 +55,42 @@ one pump, and two nozzles. A sample fuel price record is also created.
 
 ---
 
+## Seed Helper Utilities
+
+Use the utility functions added in Step 1.17 to script custom seeds. Example:
+
+```ts
+import { Client } from 'pg';
+import {
+  createTenant,
+  createStation,
+  createPump,
+  createNozzles,
+} from '../src/utils/seedHelpers';
+
+async function run() {
+  const client = new Client();
+  await client.connect();
+
+  const planId = (await client.query<{ id: string }>("SELECT id FROM public.plans LIMIT 1")).rows[0].id;
+  const tenantId = await createTenant(client, { name: 'sample', schemaName: 'sample_schema', planId });
+  const stationId = await createStation(client, 'sample_schema', tenantId, { name: 'Station A' });
+  const pumpId = await createPump(client, 'sample_schema', stationId, tenantId, { name: 'Pump 1' });
+  await createNozzles(client, 'sample_schema', pumpId, tenantId, [
+    { nozzleNumber: 1, fuelType: 'petrol' },
+    { nozzleNumber: 2, fuelType: 'diesel' },
+  ]);
+
+  await client.end();
+}
+
+run();
+```
+
+These helpers keep seed scripts concise and ensure each insert respects the tenant schema context.
+
+---
+
 ## 🧪 Validation Seed
 
 * Use tenant: `demo-fuelco`

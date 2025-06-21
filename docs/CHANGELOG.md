@@ -289,3 +289,19 @@ Each entry is tied to a step from the implementation index.
 * `scripts/validate-foreign-keys.sql`
 * `scripts/check-schema-integrity.sql`
 
+
+## [Phase 1 - Step 1.17] – Seed/Test Utility Functions
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Introduced `seedHelpers.ts` with helper functions to seed tenants and station hierarchy
+* Added `schemaUtils.ts` for retrieving tenant schema names
+* Documented usage examples in `SEEDING.md`
+
+### Files
+
+* `src/utils/seedHelpers.ts`
+* `src/utils/schemaUtils.ts`
+* `docs/SEEDING.md`
