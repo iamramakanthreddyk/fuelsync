@@ -10,6 +10,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 
 | Phase | Step | Title                        | Status    | Output Files                           | Summary Doc                   |
 | ----- | ---- | ---------------------------- | --------- | -------------------------------------- | ----------------------------- |
+| 0     | 0    | Environment Bootstrap       | ✅ Done | `package.json`, `tsconfig.json`, `.env`, `.gitignore` | `PHASE_1_SUMMARY.md#step-0`
 | 1     | 1.1  | Public Schema Migration      | ⏳ Pending | `migrations/0001_public_schema.sql`    | `PHASE_1_SUMMARY.md#step-1.1` |
 | 1     | 1.2  | Tenant Schema Template       | ⏳ Pending | `tenant_schema_template.sql`           | `PHASE_1_SUMMARY.md#step-1.2` |
 | 1     | 1.3  | Credit Limit Enforcement     | ⏳ Pending | `tenant_schema_template.sql`           | `PHASE_1_SUMMARY.md#step-1.3` |

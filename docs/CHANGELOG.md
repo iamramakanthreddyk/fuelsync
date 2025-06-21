@@ -10,6 +10,24 @@ Each entry is tied to a step from the implementation index.
 
 ---
 
+## [Setup - Step 0] – Environment Bootstrap
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Initialize Node project with TypeScript support
+* Provide sample `.env` and `.gitignore`
+* Add scripts for migrations and seeding
+
+### Files
+
+* `package.json`
+* `tsconfig.json`
+* `.env`
+* `.gitignore`
+
+
 ## \[Phase 1 - Step 1.1] – Public Schema Migration
 
 **Status:** ⏳ Pending

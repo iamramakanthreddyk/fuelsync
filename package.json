@@ -1,0 +1,16 @@
+{
+  "name": "fuelsync-hub",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "db:seed": "ts-node scripts/seed-public-schema.ts",
+    "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.1",
+    "pg": "^8.11.0",
+    "dotenv": "^16.3.1"
+  }
+}
