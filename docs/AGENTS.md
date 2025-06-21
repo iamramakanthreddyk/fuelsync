@@ -56,20 +56,31 @@ This file is the **permanent memory and execution protocol** for any AI agent (C
 For **every** new task:
 
 1. **Read context** in this file.
+
 2. **Consult** `IMPLEMENTATION_INDEX.md` for completed / pending steps.
+
 3. **Document the prompt** you are about to execute by creating a file named `STEP_<phase>_<step>_COMMAND.md` in the repo root (or under `docs/`).   This file **must include**:
 
    * Project Context Summary
    * Steps already implemented (with filenames)
    * What to build now, where, and why
    * Required documentation updates
+
 4. **Execute the code changes** exactly as specified in the prompt.
+
 5. **Self‑document results**:
 
    * ✔️ Mark step **Done** in `PHASE_X_SUMMARY.md`
    * 📝 Append entry to `CHANGELOG.md` (Features / Fixes / Enhancements)
    * 🔗 Add row to `IMPLEMENTATION_INDEX.md` with file links
    * 🔗 If new files were created, update any relevant docs (e.g., `DATABASE_GUIDE.md`, `SEEDING.md`)
+
+6. **Dependency Handling**:
+   If any code references external packages (`pg`, `dotenv`, `ts-node`, etc.):
+
+   * Add them to `package.json`
+   * Ensure the repo is runnable without manual installation
+   * Log changes in `CHANGELOG.md`
 
 > If any documentation update is missing, the step is considered **incomplete** and must be fixed before moving on.
 
@@ -128,11 +139,13 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 
 ---
 
-## 🚦 Starting Point
+## 🚦 How to Kick Off Work
 
-> **Repo status:** Fresh repository — only docs exist, no code, no migrations.
->
-> **First executable task:**
-> `Phase 1 – Step 1.1 : Create public schema migration & seed`
->
-> Follow the Execution Protocol above, document the prompt as `STEP_1_1_COMMAND.md`, then implement the migration and seed, and update all logs accordingly.
+Instead of hard‑coding a first task here (which quickly becomes outdated), **always read the live `IMPLEMENTATION_INDEX.md` file to find the next pending step**.
+
+1. Open `IMPLEMENTATION_INDEX.md`.
+2. Locate the first row whose status is `⏳ Pending`.
+3. Create a prompt file named `STEP_<phase>_<step>_COMMAND.md` describing that task.
+4. Follow the Agent Execution Protocol above.
+
+> This keeps AGENTS.md timeless and avoids stale “starting point” instructions.
