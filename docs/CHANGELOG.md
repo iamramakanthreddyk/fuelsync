@@ -94,19 +94,39 @@ Each entry is tied to a step from the implementation index.
 
 ---
 
-## \[Phase 1 - Step 1.5] – Credit Limit Enforcement
 
-**Status:** ⏳ Pending
+## [Phase 1 - Step 1.5] – Audit Fields & Data Constraints
 
-### 🟩 Features
+**Status:** ✅ Done
 
-* Add `check_credit_limit()` trigger to block sales over credit cap
-* Mark constraint as `DEFERRABLE INITIALLY DEFERRED`
+### 🟦 Enhancements
+
+* Added audit timestamp columns to all tenant tables
+* Introduced NOT NULL and CHECK constraints for schema integrity
+* Created `scripts/check-constraints.ts` for verification
 
 ### Files
 
-* `tenant_schema_template.sql`
+* `migrations/tenant_schema_template.sql`
+* `scripts/check-constraints.ts`
+
+> 🧠 Add a new block here after completing each step. Include test results if relevant.
 
 ---
 
-> 🧠 Add a new block here after completing each step. Include test results if relevant.
+## [Fix - 2025-06-21] – TypeScript Dependency Declarations
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Added `@types/node`, `@types/pg`, and `@types/dotenv` to development dependencies
+* Updated `tsconfig.json` with Node module resolution and types
+* Cleaned TypeScript warnings in `scripts/check-constraints.ts`
+
+### Files
+
+* `package.json`
+* `tsconfig.json`
+* `scripts/check-constraints.ts`
+* `docs/STEP_fix_20250621.md`
