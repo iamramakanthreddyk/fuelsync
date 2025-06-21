@@ -27,6 +27,7 @@ Earlier scripts assume a local Postgres instance, but reproducibility is better 
 ### 📂 Files to Create
 
 * `docker-compose.yml`
+* `.env.development`
 
 ### 📄 docker-compose.yml Requirements
 
@@ -38,9 +39,9 @@ db:
   ports:
     - "5432:5432"
   environment:
-    POSTGRES_USER: fuelsync
-    POSTGRES_PASSWORD: fuelsync
-    POSTGRES_DB: fuelsync_hub
+    POSTGRES_USER: ${DB_USER}
+    POSTGRES_PASSWORD: ${DB_PASS}
+    POSTGRES_DB: ${DB_NAME}
   volumes:
     - pgdata:/var/lib/postgresql/data
 
@@ -48,15 +49,18 @@ volumes:
   pgdata:
 ```
 
-Also add `.env` with matching credentials:
+Also add `.env.development` with matching credentials:
 
 ```
+NODE_ENV=development
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=fuelsync
 DB_PASS=fuelsync
 DB_NAME=fuelsync_hub
 ```
+
+Update code to load `.env.development` when `NODE_ENV=development`, and fallback to `.env` otherwise. This enables user-specific overrides and environment-based isolation.
 
 ---
 
@@ -74,6 +78,6 @@ DB_NAME=fuelsync_hub
 * ✅ `docker-compose up -d` starts Postgres container
 * ✅ Seed scripts connect without local Postgres installation
 * ✅ Docker volumes ensure persistent data
+* ✅ `.env.development` is used in dev; `.env` in other envs
 
 ---
-
