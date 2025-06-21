@@ -50,6 +50,7 @@ All tenant tables include `created_at` and `updated_at` columns with `NOW()` def
 * `CHECK(price > 0)` on `fuel_prices`
 * Optional trigger snippet to close previous price period when inserting new row
 * Sales volume auto-calculated via nozzle delta logic
+* Fuel inventory updated by deliveries and sales entries
 * Optional plan limit constraints defined in `database/plan_constraints.sql` (commented by default)
 
 ---
@@ -81,5 +82,6 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | fuel_prices            | tenant    | Per station, per fuel type             |
 | creditors              | tenant    | Credit customers                       |
 | credit_payments        | tenant    | Payments made on credit                |
-| fuel_deliveries        | tenant    | Inventory tracking                     |
+| fuel_deliveries        | tenant    | Incoming fuel by station and type      |
+| fuel_inventory         | tenant    | Current stock level per station        |
 | day_reconciliations    | tenant    | Daily summary for cash, credit, cards  |

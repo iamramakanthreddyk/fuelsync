@@ -218,3 +218,15 @@ Each step includes:
 
 **Validations Performed:**
 * CHECK constraints for `credit_limit >= 0` and `amount > 0`
+
+### 🧱 Step 1.12 – Fuel Delivery & Inventory Schema
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`
+
+**Overview:**
+* Introduced `fuel_deliveries` table with `fuel_type`, `volume`, and `delivery_date`
+* Added `fuel_inventory` table to track `current_volume` per station and fuel type
+
+**Validations Performed:**
+* CHECK constraints ensure `volume > 0` and `current_volume >= 0`
