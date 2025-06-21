@@ -322,3 +322,16 @@ Each step includes:
 **Validations Performed:**
 * Running `start-dev-db.sh` and `stop-dev-db.sh` managed the container successfully
 * `NODE_ENV=development npx ts-node scripts/check-env.ts` outputs variables from `.env.development`
+
+### 🧱 Step 1.20 – Basic DB Integrity Tests
+
+**Status:** ✅ Done
+**Files:** `tests/db.test.ts`, `jest.config.js`, `package.json`
+
+**Overview:**
+* Added Jest-based test verifying public schema and foreign key constraints
+* Configured Jest with Node environment and 10s timeout
+* Introduced `npm test` script for running the suite
+
+**Validations Performed:**
+* `npm test` executes `db.test.ts` and connects to Postgres

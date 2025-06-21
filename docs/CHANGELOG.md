@@ -344,3 +344,18 @@ Each entry is tied to a step from the implementation index.
 * `scripts/check-env.ts`
 * `README.md`
 
+## [Phase 1 - Step 1.20] – Basic DB Integrity Tests
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Introduced Jest test suite verifying public schema structure
+* Added `jest.config.js` and `npm test` script
+
+### Files
+
+* `tests/db.test.ts`
+* `jest.config.js`
+* `package.json`
+
