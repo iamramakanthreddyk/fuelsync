@@ -72,11 +72,11 @@ CREATE TABLE day_reconciliations (
 
 ## 📓 Docs to Update
 
-* [ ] `PHASE_1_SUMMARY.md`: Add reconciliation section
-* [ ] `CHANGELOG.md`: Feature – reconciliation schema
-* [ ] `IMPLEMENTATION_INDEX.md`: Add Step 1.13
-* [ ] `BUSINESS_RULES.md`: Lock & summarize rules
-* [ ] `DATABASE_GUIDE.md`: Table definition & usage
+* [x] `PHASE_1_SUMMARY.md`: Add reconciliation section
+* [x] `CHANGELOG.md`: Feature – reconciliation schema
+* [x] `IMPLEMENTATION_INDEX.md`: Add Step 1.13
+* [x] `BUSINESS_RULES.md`: Lock & summarize rules
+* [x] `DATABASE_GUIDE.md`: Table definition & usage
 
 ---
 

@@ -230,3 +230,16 @@ Each step includes:
 
 **Validations Performed:**
 * CHECK constraints ensure `volume > 0` and `current_volume >= 0`
+
+### 🧱 Step 1.13 – Daily Reconciliation Schema
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`
+
+**Overview:**
+* Added `day_reconciliations` table capturing daily totals per station
+* Stores breakdown of cash, card, UPI and credit sales
+* Tracks outstanding credit balance and lock status via `finalized`
+
+**Validations Performed:**
+* Unique constraint on `(station_id, reconciliation_date)`

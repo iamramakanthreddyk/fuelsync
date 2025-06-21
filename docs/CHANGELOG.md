@@ -232,3 +232,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `migrations/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.13] – Daily Reconciliation Schema
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `day_reconciliations` table for per-station daily summaries
+* Tracks sales breakdown (cash, card, upi, credit) and outstanding credit
+* Includes `finalized` flag to lock records
+
+### Files
+
+* `migrations/tenant_schema_template.sql`

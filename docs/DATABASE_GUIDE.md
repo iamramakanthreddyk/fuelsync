@@ -33,14 +33,14 @@ This guide documents the database structure, key constraints, naming patterns, a
 | `credit_payments` | `creditors(id)`             |
 | `fuel_deliveries` | `stations(id)`              |
 | `fuel_inventory`  | `stations(id)`              |
-| `day_reconciliations` | `stations(id)`          |
+| `day_reconciliations` | `stations(id)` with unique `(station_id, reconciliation_date)` |
 
 All constraints are `ON DELETE CASCADE`.
 
 ---
 ## 📝 Audit Fields & Data Constraints
 
-All tenant tables include `created_at` and `updated_at` columns with `NOW()` defaults. Business rules are enforced with `NOT NULL` and `CHECK` constraints. Example checks include `reading > 0`, `price_per_litre > 0`, and `credit_limit >= 0`. Stations are unique per tenant and daily reconciliations enforce a unique `(station_id, reconciled_on)` pair.
+All tenant tables include `created_at` and `updated_at` columns with `NOW()` defaults. Business rules are enforced with `NOT NULL` and `CHECK` constraints. Example checks include `reading > 0`, `price_per_litre > 0`, and `credit_limit >= 0`. Stations are unique per tenant and daily reconciliations enforce a unique `(station_id, reconciliation_date)` pair.
 
 
 ## ⚠️ Constraint Notes
@@ -84,4 +84,4 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | credit_payments        | tenant    | Payments made on credit                |
 | fuel_deliveries        | tenant    | Incoming fuel by station and type      |
 | fuel_inventory         | tenant    | Current stock level per station        |
-| day_reconciliations    | tenant    | Daily summary for cash, credit, cards  |
+| day_reconciliations    | tenant    | Daily summary with payment breakdown and lock flag |

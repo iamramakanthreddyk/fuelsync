@@ -159,11 +159,16 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.day_reconciliations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE,
-    reconciled_on DATE NOT NULL,
-    total_sales NUMERIC NOT NULL,
-    finalized BOOLEAN NOT NULL DEFAULT FALSE,
+    reconciliation_date DATE NOT NULL,
+    total_sales NUMERIC NOT NULL DEFAULT 0,
+    cash_sales NUMERIC NOT NULL DEFAULT 0,
+    card_sales NUMERIC NOT NULL DEFAULT 0,
+    upi_sales NUMERIC NOT NULL DEFAULT 0,
+    credit_sales NUMERIC NOT NULL DEFAULT 0,
+    total_credit_outstanding NUMERIC NOT NULL DEFAULT 0,
+    finalized BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(station_id, reconciled_on)
+    UNIQUE(station_id, reconciliation_date)
 );
 
