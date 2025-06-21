@@ -47,11 +47,13 @@ Use the development seeder to create a demo schema with minimal data for testing
 
 ```bash
 npm run seed:demo             # seeds demo_tenant_001
+npm run ts-node scripts/seed-tenant-sample.ts demo_tenant_001  # extended sample
 npm run reset:demo            # drops all demo_ schemas and reseeds them
 ```
 
 The script inserts an owner, manager and attendant user, a single station with
-one pump, and two nozzles. A sample fuel price record is also created.
+one pump, two nozzles, and an initial fuel price. The extended sample script also
+adds basic user activity log entries.
 
 ---
 

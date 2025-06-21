@@ -36,6 +36,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.22 | Extended Tenant Tables | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.22` |
 | 1     | 1.23 | Daily Reconciliation Table | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.23` |
 | 1     | 1.24 | Audit Logs Table | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.24` |
+| 1     | 1.25 | Final Schema Wrap-Up | ✅ Done | `database/tenant_schema_template.sql`, `scripts/seed-tenant-sample.ts` | `PHASE_1_SUMMARY.md#step-1.25` |
 | 2     | 2.1  | Auth: JWT + Roles            | ⏳ Pending | `auth.controller.ts`, middleware files | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | Delta Sale Service           | ⏳ Pending | `sale.service.ts`, `sale.test.ts`      | `PHASE_2_SUMMARY.md#step-2.2` |
 | 2     | 2.3  | Sales + Creditors API Routes | ⏳ Pending | `routes/v1/`, OpenAPI spec             | `PHASE_2_SUMMARY.md#step-2.3` |

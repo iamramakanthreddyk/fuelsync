@@ -408,3 +408,19 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `database/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.25] – Final Schema Wrap-Up
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Updated `fuel_prices` table with `station_id`, `tenant_id` and price fields
+* Added `user_activity_logs` for user events
+* Added `validation_issues` table for future QA tracking
+* Created `seed-tenant-sample.ts` to insert example prices and logs
+
+### Files
+
+* `database/tenant_schema_template.sql`
+* `scripts/seed-tenant-sample.ts`
