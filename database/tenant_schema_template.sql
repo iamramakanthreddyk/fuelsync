@@ -34,12 +34,16 @@ CREATE TABLE nozzles (
 
 CREATE TABLE fuel_prices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  station_id UUID NOT NULL REFERENCES stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
-  price_per_litre NUMERIC(10, 2) NOT NULL CHECK (price_per_litre > 0),
+  price NUMERIC(10, 2) NOT NULL CHECK (price > 0),
   effective_from TIMESTAMP NOT NULL,
   effective_to TIMESTAMP,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX idx_prices_station_type ON fuel_prices (station_id, fuel_type);
 
 CREATE TABLE nozzle_readings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -135,4 +139,21 @@ CREATE TABLE audit_logs (
 );
 
 CREATE INDEX ON audit_logs(entity_type, entity_id);
+
+CREATE TABLE user_activity_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
+  ip_address TEXT,
+  user_agent TEXT,
+  event TEXT,
+  recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE validation_issues (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  entity_type TEXT NOT NULL,
+  entity_id UUID NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 

@@ -387,3 +387,21 @@ Each step includes:
 
 **Validations Performed:**
 * Manual review of SQL for constraints and index
+
+### 🧱 Step 1.25 – Final Schema Wrap-Up
+
+**Status:** ✅ Done
+**Files:** `database/tenant_schema_template.sql`, `scripts/seed-tenant-sample.ts`
+
+**Overview:**
+* Revised `fuel_prices` with `station_id` and `tenant_id` columns and price check
+* Added `user_activity_logs` to capture user events
+* Added `validation_issues` table for later QA tooling
+* New seed script populates sample prices and logs
+
+**Validations Performed:**
+* Manual review of schema changes
+
+---
+
+**Phase 1 Completed.** Database schema and seeding utilities are stable for backend development.

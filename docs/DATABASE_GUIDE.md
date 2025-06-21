@@ -46,7 +46,7 @@ All tenant tables include `created_at` and `updated_at` columns with `NOW()` def
 ## ⚠️ Constraint Notes
 
 * No triggers for enforcing entity existence (use app logic)
-* `fuel_prices` table stores `fuel_type`, price and effective date range
+* `fuel_prices` table stores `station_id`, `fuel_type`, price and effective date range
 * `CHECK(price > 0)` on `fuel_prices`
 * `CHECK(reading >= 0)` on `nozzle_readings`
 * Optional trigger snippet to close previous price period when inserting new row
@@ -90,7 +90,9 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 | nozzles                | tenant    | FK → pumps                             |
 | nozzle_readings        | tenant    | FK → nozzles, FK → users               |
 | sales                  | tenant    | Delta-based transactions with payment method |
-| fuel_prices            | tenant    | Per station, per fuel type             |
+| fuel_prices            | tenant    | Per station, per fuel type with history |
+| user_activity_logs     | tenant    | Basic per-user event log               |
+| validation_issues      | tenant    | Records data quality problems          |
 | creditors              | tenant    | Credit customers                       |
 | credit_payments        | tenant    | Payments made on credit                |
 | fuel_deliveries        | tenant    | Incoming fuel by station and type      |
@@ -135,3 +137,26 @@ Introduced in **Step 1.24** to provide a tenant-level audit trail.
 | `entity_type` | Type of record affected (e.g., `sale`)               |
 | `entity_id`   | UUID of the affected record                         |
 | `details`     | Optional JSONB metadata about the action            |
+
+### 🆕 User Activity Logs
+
+Introduced in **Step 1.25** to capture login and usage events per user.
+
+| Field        | Description                                |
+| ------------ | ------------------------------------------ |
+| `user_id`    | FK to `users.id`                           |
+| `ip_address` | IP address of the request                  |
+| `user_agent` | Reported browser / client string           |
+| `event`      | Short event label (e.g., `login`)          |
+| `recorded_at`| Timestamp the event was recorded           |
+
+### 🆕 Validation Issues Table
+
+Used for future data quality workflows.
+
+| Field        | Description                            |
+| ------------ | -------------------------------------- |
+| `entity_type`| Type of record (table)                  |
+| `entity_id`  | UUID of the record with an issue        |
+| `message`    | Description of the problem              |
+| `created_at` | When the issue was captured             |
