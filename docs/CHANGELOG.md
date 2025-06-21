@@ -326,3 +326,21 @@ Each entry is tied to a step from the implementation index.
 * `scripts/validate-demo-tenant.ts`
 * `scripts/reset-all-demo-tenants.ts`
 
+
+## [Phase 1 - Step 1.19] – Dev Helper Scripts & Env Validation
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Added shell scripts to start and stop the dev Postgres container
+* Implemented `check-env.ts` to verify environment variable loading
+* Documented script usage in new `README.md`
+
+### Files
+
+* `scripts/start-dev-db.sh`
+* `scripts/stop-dev-db.sh`
+* `scripts/check-env.ts`
+* `README.md`
+
