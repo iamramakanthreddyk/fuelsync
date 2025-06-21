@@ -308,3 +308,17 @@ Each step includes:
 * `docker-compose up -d` starts `fuelsync-db` container successfully
 * Seed scripts run against the container using credentials from `.env.development`
 
+
+### 🧱 Step 1.19 – Dev Helper Scripts & Env Validation
+
+**Status:** ✅ Done
+**Files:** `scripts/start-dev-db.sh`, `scripts/stop-dev-db.sh`, `scripts/check-env.ts`, `README.md`
+
+**Overview:**
+* Added shell scripts to start and stop the Postgres container
+* Created `check-env.ts` to verify environment file loading
+* Documented usage of these utilities in `README.md`
+
+**Validations Performed:**
+* Running `start-dev-db.sh` and `stop-dev-db.sh` managed the container successfully
+* `NODE_ENV=development npx ts-node scripts/check-env.ts` outputs variables from `.env.development`
