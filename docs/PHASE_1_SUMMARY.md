@@ -16,6 +16,17 @@ Each step includes:
 
 ---
 
+### 🧱 Step 0 – Environment Bootstrap
+
+**Status:** ✅ Done
+**Files:** `package.json`, `tsconfig.json`, `.env`, `.gitignore`
+
+**Overview:**
+
+* Initialize project configuration for TypeScript scripts
+* Provide sample `.env` for local Postgres access
+* Ignore build output and environment files
+
 ### 🧱 Step 1.1 – Public Schema Migration
 
 **Status:** ⏳ Pending
