@@ -138,9 +138,10 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_deliveries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE,
-    litres_delivered NUMERIC NOT NULL CHECK (litres_delivered > 0),
-    supplier TEXT NOT NULL,
-    delivered_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    fuel_type TEXT NOT NULL,
+    volume NUMERIC CHECK (volume > 0),
+    delivered_by TEXT,
+    delivery_date DATE NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -149,9 +150,8 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_inventory (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE,
-    volume NUMERIC NOT NULL,
-    recorded_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fuel_type TEXT NOT NULL,
+    current_volume NUMERIC CHECK (current_volume >= 0),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

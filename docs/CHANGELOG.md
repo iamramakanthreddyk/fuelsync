@@ -219,3 +219,16 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `migrations/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.12] – Fuel Delivery & Inventory Schema
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `fuel_deliveries` table capturing deliveries by fuel type and date
+* Added `fuel_inventory` table tracking current volume per station
+
+### Files
+
+* `migrations/tenant_schema_template.sql`

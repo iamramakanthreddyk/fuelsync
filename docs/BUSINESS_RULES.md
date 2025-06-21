@@ -103,6 +103,16 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 
 ---
 
+## 🛢 Fuel Delivery & Inventory Rules
+
+| Rule | Description |
+| --- | --- |
+| **Delivery Adds Stock** | Each row in `fuel_deliveries` increases `fuel_inventory.current_volume`. |
+| **Sale Reduces Stock** | Recorded sales deduct sold volume from `fuel_inventory`. |
+| **Low Stock Alert** | Future enhancement will trigger alerts when below threshold. |
+
+---
+
 ## ✅ Record Ownership & Integrity
 
 | Entity         | Must Belong To          |
