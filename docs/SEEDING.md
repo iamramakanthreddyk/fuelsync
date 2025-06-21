@@ -81,3 +81,11 @@ verifies that the three user roles exist and that stations, pumps and nozzles ar
 ---
 
 > After each new module (e.g., reconciliations), extend the seed script accordingly and log in `CHANGELOG.md`.
+
+After seeding, run the schema validation script to confirm each tenant matches the latest template:
+
+```bash
+ts-node scripts/validate-tenant-schema.ts
+```
+
+This will report any missing tables, columns or foreign key issues.
