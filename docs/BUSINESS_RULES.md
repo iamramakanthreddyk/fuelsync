@@ -87,9 +87,10 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 
 | Rule                                 | Description                                 |
 | ------------------------------------ | ------------------------------------------- |
-| New price inserts end previous range | Updates `effective_to` of prior record      |
-| Price must be > 0                    | Validated with `CHECK(price > 0)` in schema |
-| Historical lookup allowed            | Used in sales delta logic                   |
+| New price inserts end previous range | Updates `effective_to` of prior record or trigger |
+| Price must be > 0                    | Enforced with `CHECK(price > 0)` |
+| Stored per station & fuel type       | Track via `effective_from`/`effective_to` |
+| Historical lookup allowed            | Used in sales delta logic     |
 
 ---
 

@@ -78,12 +78,29 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_prices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
     station_id UUID NOT NULL REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE,
+    fuel_type TEXT NOT NULL,
     price NUMERIC NOT NULL CHECK (price > 0),
     effective_from TIMESTAMP NOT NULL,
     effective_to TIMESTAMP,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Optional trigger example to auto-close previous price row
+-- CREATE OR REPLACE FUNCTION {{schema_name}}.close_prev_price() RETURNS TRIGGER AS $$
+-- BEGIN
+--   UPDATE {{schema_name}}.fuel_prices
+--   SET effective_to = NEW.effective_from
+--   WHERE station_id = NEW.station_id
+--     AND fuel_type = NEW.fuel_type
+--     AND effective_to IS NULL;
+--   RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER trg_close_prev_price
+-- BEFORE INSERT ON {{schema_name}}.fuel_prices
+-- FOR EACH ROW EXECUTE FUNCTION {{schema_name}}.close_prev_price();
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

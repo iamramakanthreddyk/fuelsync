@@ -176,3 +176,18 @@ Each entry is tied to a step from the implementation index.
 * `src/config/planConfig.ts`
 * `src/middleware/planEnforcement.ts`
 * `database/plan_constraints.sql`
+
+## [Phase 1 - Step 1.9] – Fuel Pricing Table
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `fuel_prices` table with `fuel_type` and date range columns
+* Enforced `price > 0` constraint and optional trigger snippet
+* Created helper `getPriceAtTimestamp` for price lookups
+
+### Files
+
+* `migrations/tenant_schema_template.sql`
+* `src/utils/priceUtils.ts`
