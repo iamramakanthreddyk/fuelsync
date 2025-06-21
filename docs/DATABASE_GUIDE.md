@@ -74,6 +74,7 @@ Generate the diagram locally using `python scripts/generate_erd_image.py`. The o
 |------------------------|-----------|----------------------------------------|
 | tenants                | public    | All tenant accounts                    |
 | admin_users            | public    | SuperAdmin accounts                    |
+| admin_activity_logs    | public    | Audit trail of SuperAdmin actions      |
 | stations               | tenant    | Belongs to tenant                      |
 | pumps                  | tenant    | FK → stations                          |
 | nozzles                | tenant    | FK → pumps                             |
