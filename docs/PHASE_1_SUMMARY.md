@@ -108,27 +108,15 @@ Each step includes:
 
 ---
 
-### 🧱 Step 1.4 – Seed Script
+### 🧱 Step 1.4 – ERD Definition
 
-**Status:** ⏳ Pending
-**Files:** `scripts/seed.ts` or `scripts/seed.sql`
+**Status:** ✅ Done
+**Files:** `scripts/generate_erd_image.py`, `docs/DATABASE_GUIDE.md`
 
-**Data Seeded:**
+**Overview:**
 
-* 2 tenants
-* 1 station per tenant
-* Pumps, nozzles, prices, readings
-* Sales and creditors with payment history
-
-**Business Rules Covered:**
-
-* Must create valid delta chain
-* Creditors seeded with balance < limit
-
-**Validations To Perform:**
-
-* Reading values monotonic
-* Price exists before sale
+* Visual ERD created to illustrate public and tenant schemas
+* Key tables documented with schema prefixes
 
 ---
 

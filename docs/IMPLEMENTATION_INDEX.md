@@ -14,7 +14,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.1  | Public Schema Migration      | ✅ Done | `migrations/001_create_public_schema.sql`, `scripts/seed-public-schema.ts` | `PHASE_1_SUMMARY.md#step-1.1` |
 | 1     | 1.2  | Tenant Schema Template       | ✅ Done | `tenant_schema_template.sql`, `scripts/seed-tenant-schema.ts` | `PHASE_1_SUMMARY.md#step-1.2` |
 | 1     | 1.3  | Schema Validation Script     | ✅ Done | `scripts/validate-tenant-schema.ts` | `PHASE_1_SUMMARY.md#step-1.3` |
-| 1     | 1.4  | Seed Script                  | ⏳ Pending | `scripts/seed.ts` or `.sql`            | `PHASE_1_SUMMARY.md#step-1.4` |
+| 1     | 1.4  | ERD Definition               | ✅ Done | `scripts/generate_erd_image.py`, `docs/DATABASE_GUIDE.md` | `PHASE_1_SUMMARY.md#step-1.4` |
 | 1     | 1.5  | Credit Limit Enforcement     | ⏳ Pending | `tenant_schema_template.sql`           | `PHASE_1_SUMMARY.md#step-1.5` |
 | 2     | 2.1  | Auth: JWT + Roles            | ⏳ Pending | `auth.controller.ts`, middleware files | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | Delta Sale Service           | ⏳ Pending | `sale.service.ts`, `sale.test.ts`      | `PHASE_2_SUMMARY.md#step-2.2` |

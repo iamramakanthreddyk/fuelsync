@@ -78,18 +78,19 @@ Each entry is tied to a step from the implementation index.
 
 ---
 
-## \[Phase 1 - Step 1.4] – Seed Script
+## \[Phase 1 - Step 1.4] – ERD Definition
 
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 ### 🟩 Features
 
-* Seed two tenants, stations, pumps, nozzles, readings
-* Seed fuel prices, one sale, and one creditor
+* Generated ERD diagram showing public and tenant tables
+* Documented key tables in `DATABASE_GUIDE.md`
 
 ### Files
 
-* `scripts/seed.ts`
+* `scripts/generate_erd_image.py`
+* `docs/DATABASE_GUIDE.md`
 
 ---
 
