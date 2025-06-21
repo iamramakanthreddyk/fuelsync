@@ -135,3 +135,16 @@ Each step includes:
 
 
 > ✍️ Update each block once the step is implemented. Add test coverage, design notes, or assumptions as needed.
+
+### 🧱 Step 1.6 – Dev/Test Tenant Seed Scripts
+
+**Status:** ✅ Done
+**Files:** `scripts/seed-demo-tenant.ts`, `scripts/reset-all-demo-tenants.ts`
+
+**Overview:**
+* Provides CLI script to create a demo tenant schema with users, station, pump and nozzles
+* Includes reset utility to drop all `demo_` schemas and reseed them
+* Enables consistent dev and CI environment data
+
+**Validations Performed:**
+* Basic FK relationships ensured during seeding
