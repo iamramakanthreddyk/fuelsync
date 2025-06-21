@@ -466,3 +466,30 @@ Each entry is tied to a step from the implementation index.
 * `src/services/adminUser.service.ts`
 * `src/services/user.service.ts`
 * `src/validators/user.validator.ts`
+
+## [Phase 2 - Step 2.3] – Station, Pump & Nozzle APIs
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* CRUD endpoints for stations with plan limit checks
+* Pump creation and listing with per-station limits
+* Nozzle management with sales history protection
+* Middleware for plan enforcement wrappers
+
+### Files
+
+* `src/controllers/station.controller.ts`
+* `src/controllers/pump.controller.ts`
+* `src/controllers/nozzle.controller.ts`
+* `src/routes/station.route.ts`
+* `src/routes/pump.route.ts`
+* `src/routes/nozzle.route.ts`
+* `src/services/station.service.ts`
+* `src/services/pump.service.ts`
+* `src/services/nozzle.service.ts`
+* `src/middlewares/checkPlanLimits.ts`
+* `src/validators/station.validator.ts`
+* `src/validators/pump.validator.ts`
+* `src/validators/nozzle.validator.ts`

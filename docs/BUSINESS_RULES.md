@@ -122,6 +122,7 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 | Nozzles        | a Pump                  |
 | Sales          | a Nozzle and User       |
 | Credit Payment | a Creditor and Receiver |
+| Stations       | unique name per tenant  |
 
 All enforced via FK constraints within the active tenant schema.
 

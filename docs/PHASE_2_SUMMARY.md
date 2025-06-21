@@ -63,21 +63,22 @@ Each step includes:
 
 ---
 
-### 🛠️ Step 2.3 – Sales & Creditors API
+### 🛠️ Step 2.3 – Station, Pump & Nozzle APIs
 
-**Status:** ⏳ Pending
-**Files:** `routes/v1/sales.ts`, `routes/v1/creditors.ts`, `openapi.yaml`
+**Status:** ✅ Done
+**Files:** `src/controllers/station.controller.ts`, `src/controllers/pump.controller.ts`, `src/controllers/nozzle.controller.ts`, routes and services
 
 **Business Rules Covered:**
 
-* Credit sales blocked if limit exceeded
-* List and update creditor payments
+* Station name unique per tenant
+* Pump belongs to valid station
+* Nozzle belongs to valid pump
+* Plan limits enforced on creation
 
-**Validation To Perform:**
+**Validation Performed:**
 
-* Zod or Joi request validation
-* Consistent error responses (`status`, `code`, `message`)
-* Tenant + role scope must match all requests
+* Basic field checks in validators
+* Plan limit middleware blocks overages
 
 ---
 

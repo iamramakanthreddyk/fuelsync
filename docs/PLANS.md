@@ -11,6 +11,8 @@ This file defines the pricing plans and their effect on feature availability and
 | Starter    | 1           | 2                  | 2                 | 3            | false           | false         | false           |
 | Pro        | 3           | 4                  | 4                 | 10           | true            | true          | false           |
 | Enterprise | ∞           | ∞                  | ∞                 | ∞            | true            | true          | true            |
+`maxStations`, `maxPumpsPerStation` and `maxNozzlesPerPump` define how many stations, pumps and nozzles a tenant may configure. These limits are enforced by middleware during creation requests.
+
 
 ---
 
