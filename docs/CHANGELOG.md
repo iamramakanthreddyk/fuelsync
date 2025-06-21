@@ -372,3 +372,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 
 * `sql/tenant_schema_template.sql`
+
+## [Phase 1 - Step 1.22] – Extended Tenant Tables
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added `creditors`, `credit_payments`, `fuel_deliveries`, `fuel_inventory` tables to tenant schema
+
+### Files
+
+* `database/tenant_schema_template.sql`
