@@ -39,7 +39,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.25 | Final Schema Wrap-Up | ✅ Done | `database/tenant_schema_template.sql`, `scripts/seed-tenant-sample.ts` | `PHASE_1_SUMMARY.md#step-1.25` |
 | 2     | 2.1  | Auth: JWT + Roles            | ✅ Done | `src/services/auth.service.ts`, `src/routes/auth.route.ts`, middlewares | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | User Management APIs         | ✅ Done | `src/controllers/adminUser.controller.ts`, `src/controllers/user.controller.ts`, `src/routes/adminUser.route.ts`, `src/routes/user.route.ts`, `src/services/adminUser.service.ts`, `src/services/user.service.ts`, `src/validators/user.validator.ts` | `PHASE_2_SUMMARY.md#step-2.2` |
-| 2     | 2.3  | Sales + Creditors API Routes | ⏳ Pending | `routes/v1/`, OpenAPI spec             | `PHASE_2_SUMMARY.md#step-2.3` |
+| 2     | 2.3  | Station, Pump & Nozzle APIs | ✅ Done | `src/controllers/station.controller.ts`, `src/routes/station.route.ts` | `PHASE_2_SUMMARY.md#step-2.3` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
