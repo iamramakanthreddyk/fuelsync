@@ -56,3 +56,23 @@ All constraints are `ON DELETE CASCADE`.
 ---
 
 > Keep this file synchronized with the ERD and `PHASE_1_SUMMARY.md`
+
+## 🎯 ERD: Entity Relationship Diagram
+
+Generate the diagram locally using `python scripts/generate_erd_image.py`. The output will be saved to `docs/assets/FuelSync_ERD.png`.
+
+### 🔑 Key Tables Overview
+| Table                  | Schema    | Notes                                  |
+|------------------------|-----------|----------------------------------------|
+| tenants                | public    | All tenant accounts                    |
+| admin_users            | public    | SuperAdmin accounts                    |
+| stations               | tenant    | Belongs to tenant                      |
+| pumps                  | tenant    | FK → stations                          |
+| nozzles                | tenant    | FK → pumps                             |
+| nozzle_readings        | tenant    | FK → nozzles, FK → users               |
+| sales                  | tenant    | Derived from readings                  |
+| fuel_prices            | tenant    | Per station, per fuel type             |
+| creditors              | tenant    | Credit customers                       |
+| credit_payments        | tenant    | Payments made on credit                |
+| fuel_deliveries        | tenant    | Inventory tracking                     |
+| day_reconciliations    | tenant    | Daily summary for cash, credit, cards  |
