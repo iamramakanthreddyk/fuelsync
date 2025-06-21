@@ -177,3 +177,18 @@ Each step includes:
 **Validations Performed:**
 * Manual review of middleware logic
 * No runtime tests yet – enforcement will be hooked in during Phase 2
+
+### 🧱 Step 1.9 – Fuel Pricing Table
+
+**Status:** ✅ Done
+**Files:** `migrations/tenant_schema_template.sql`, `src/utils/priceUtils.ts`
+
+**Overview:**
+* Introduced `fuel_prices` table scoped per station and fuel type
+* Prices contain effective date ranges and require `price > 0`
+* Optional trigger snippet provided to close previous price period
+* Added utility stub `getPriceAtTimestamp()` for future services
+
+**Validations Performed:**
+* Schema check via `scripts/validate-tenant-schema.ts`
+* Manual inspection of SQL trigger example

@@ -19,6 +19,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.6  | Dev/Test Tenant Seeder      | ✅ Done | `scripts/seed-demo-tenant.ts`, `scripts/reset-all-demo-tenants.ts` | `PHASE_1_SUMMARY.md#step-1.6` |
 | 1     | 1.7  | Seed Validation Utility     | ✅ Done | `scripts/validate-demo-tenant.ts` | `PHASE_1_SUMMARY.md#step-1.7` |
 | 1     | 1.8  | Plan Limit Enforcement | ✅ Done | `database/plan_constraints.sql`, `src/config/planConfig.ts`, `src/middleware/planEnforcement.ts` | `PHASE_1_SUMMARY.md#step-1.8`
+| 1     | 1.9  | Fuel Pricing Table           | ✅ Done | `migrations/tenant_schema_template.sql`, `src/utils/priceUtils.ts` | `PHASE_1_SUMMARY.md#step-1.9`
 | fix   | 2025-06-21 | TypeScript Dependency Declarations | ✅ Done | `package.json`, `tsconfig.json` | `docs/STEP_fix_20250621.md` |
 | 2     | 2.1  | Auth: JWT + Roles            | ⏳ Pending | `auth.controller.ts`, middleware files | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | Delta Sale Service           | ⏳ Pending | `sale.service.ts`, `sale.test.ts`      | `PHASE_2_SUMMARY.md#step-2.2` |
