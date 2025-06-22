@@ -270,3 +270,21 @@ These points should be addressed in a future backend patch.
 After installing PostgreSQL locally and seeding the demo data, all Jest suites
 passed. This confirms the automated test database provisioning works when
 `psql` is available or Docker Compose is properly installed.
+If tests skip because the database cannot be created, install PostgreSQL or
+start the Docker container and rerun `npm test`. On Ubuntu/Debian:
+
+```bash
+sudo apt-get update && sudo apt-get install -y postgresql
+```
+
+### 🛠️ Step 2.CRITICAL_FIXES – Backend Hardening
+
+**Status:** ✅ Done
+**Files:** `src/db/index.ts`, `migrations/003_add_indexes.sql`, `src/utils/errorResponse.ts`, tests updated
+
+**Overview:**
+* Introduced PostgreSQL connection pooling
+* Added indexes for frequently queried columns
+* Versioned all API routes under `/v1`
+* Unified error handling via `errorResponse` helper
+* Added regression tests for versioning and error utilities

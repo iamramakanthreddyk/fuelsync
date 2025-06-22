@@ -53,6 +53,25 @@ This file lists known issues, recurring bugs, and their resolutions in FuelSync 
 npm run db:reset && npm run db:seed
 ```
 
+## 🐘 Test DB Provisioning Failure
+
+**Symptom:** `npm test` prints `Skipping tests: unable to provision test DB.`
+
+**Cause:** The Jest global setup couldn't create `fuelsync_test` because
+`psql` is missing or the development database container isn't running.
+
+**Fix:**
+
+* Ensure PostgreSQL is installed and `psql` is on your `PATH`, or start the
+  Docker database with `./scripts/start-dev-db.sh`.
+  On Ubuntu/Debian:
+
+  ```bash
+  sudo apt-get update && sudo apt-get install -y postgresql
+  ```
+* Rerun `npm test` once the database is available. The setup script will
+  create and seed `fuelsync_test` automatically.
+
 ---
 
 ## 🐳 Docker Compose Issues

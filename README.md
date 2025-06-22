@@ -24,4 +24,20 @@ This prints the active environment and database user, confirming `.env.developme
 
 ## API Documentation
 
-Full API endpoints are documented in [docs/openapi.yaml](docs/openapi.yaml). After starting the server, visit `http://localhost:3000/api/docs` for an interactive Swagger UI.
+Full API endpoints are documented in [docs/openapi.yaml](docs/openapi.yaml). After starting the server, visit `http://localhost:3000/api/docs` for an interactive Swagger UI. All routes are versioned under `/v1`.
+
+### Running Tests
+
+```bash
+npm run test
+```
+
+Tests include DB pool config, versioned routes, and error handling.
+
+If Jest reports `Skipping tests: unable to provision test DB`, ensure PostgreSQL
+is installed or start the Docker database with `./scripts/start-dev-db.sh` and
+run the tests again. On Ubuntu/Debian, install Postgres with:
+
+```bash
+sudo apt-get update && sudo apt-get install -y postgresql
+```

@@ -14,6 +14,7 @@ import {
   validateCreatePayment,
   parsePaymentQuery,
 } from '../validators/creditor.validator';
+import { errorResponse } from '../utils/errorResponse';
 
 export function createCreditorHandlers(db: Pool) {
   return {
@@ -21,19 +22,19 @@ export function createCreditorHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateCreditor(req.body);
         const id = await createCreditor(db, tenantId, data);
         res.status(201).json({ id });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     list: async (req: Request, res: Response) => {
       const tenantId = req.user?.tenantId;
       if (!tenantId) {
-        return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+        return errorResponse(res, 400, 'Missing tenant context');
       }
       const creditors = await listCreditors(db, tenantId);
       res.json({ creditors });
@@ -42,51 +43,51 @@ export function createCreditorHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateUpdateCreditor(req.body);
         await updateCreditor(db, tenantId, req.params.id, data);
         res.json({ status: 'ok' });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     remove: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         await markCreditorInactive(db, tenantId, req.params.id);
         res.json({ status: 'ok' });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     createPayment: async (req: Request, res: Response) => {
       try {
         const user = req.user;
         if (!user?.tenantId || !user.userId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreatePayment(req.body);
         const id = await createCreditPayment(db, user.tenantId, data, user.userId);
         res.status(201).json({ id });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     listPayments: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const query = parsePaymentQuery(req.query);
         const payments = await listCreditPayments(db, tenantId, query);
         res.json({ payments });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
   };

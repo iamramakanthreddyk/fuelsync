@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { login } from '../services/auth.service';
+import { errorResponse } from '../utils/errorResponse';
 
 export function createAuthController(db: Pool) {
   return {
@@ -9,9 +10,7 @@ export function createAuthController(db: Pool) {
       const tenantId = req.headers['x-tenant-id'] as string | undefined;
       const token = await login(db, email, password, tenantId);
       if (!token) {
-        return res
-          .status(401)
-          .json({ status: 'error', code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' });
+        return errorResponse(res, 401, 'Invalid email or password');
       }
       return res.json({ token });
     },
