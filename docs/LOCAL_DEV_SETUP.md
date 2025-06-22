@@ -19,6 +19,13 @@ sudo sed -i 's/peer/md5/' /etc/postgresql/16/main/pg_hba.conf
 sudo service postgresql restart
 ```
 
+If you prefer using the Docker helper scripts, install Docker and Docker Compose first:
+
+```bash
+sudo apt-get install -y docker.io docker-compose
+```
+Then run `./scripts/start-dev-db.sh` to start the database container.
+
 ## 2. Create Dev Database
 
 ```bash
@@ -56,7 +63,7 @@ credentials to authenticate and test routes.
 
 ## 5. Run Unit Tests
 
-Install dependencies and execute the Jest test suites. The setup scripts will automatically create and seed a `fuelsync_test` database if PostgreSQL is running.
+Install dependencies and execute the Jest test suites. **Start PostgreSQL first** using `./scripts/start-dev-db.sh` (Docker) or `sudo service postgresql start` if installed locally. Jest's global setup will then create and seed the `fuelsync_test` database automatically.
 
 ```bash
 npm install

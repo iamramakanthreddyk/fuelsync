@@ -55,6 +55,9 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
 | fix | 2025-06-23 | OpenAPI spec file | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20250623.md` |
 | fix | 2025-06-24 | Local dev test instructions | ✅ Done | `docs/LOCAL_DEV_SETUP.md`, `README.md` | `docs/STEP_fix_20250624.md` |
+| fix | 2025-06-25 | Endpoint review notes | ✅ Done | `docs/openapi.yaml`, `docs/PHASE_2_SUMMARY.md` | `docs/STEP_fix_20250625.md` |
+| fix | 2025-06-26 | Clarify test DB setup | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250626.md` |
+| fix | 2025-06-27 | Local DB install & tests | ✅ Done | `docs/LOCAL_DEV_SETUP.md`, `docs/TROUBLESHOOTING.md` | `docs/STEP_fix_20250627.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---
