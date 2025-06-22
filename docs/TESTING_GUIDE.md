@@ -15,6 +15,8 @@ npm install
 npm test
 ```
 
-Tests use Jest with `ts-jest` and load environment variables from `.env.test`. Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
+The test suite will automatically create the `fuelsync_test` database and seed a demo tenant via `scripts/init-test-db.ts`. Jest loads environment variables from `.env.test` and runs the setup script defined in `jest.setup.js`.
+
+Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
 
 Sample coverage includes authentication, nozzle readings, creditors and reconciliation logic. E2E tests verify the login flow and protected routes.

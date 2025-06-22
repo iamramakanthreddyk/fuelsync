@@ -649,3 +649,27 @@ Each entry is tied to a step from the implementation index.
 * `tests/utils/db-utils.ts`
 * `.env.test`
 * `tests/auth.service.test.ts`
+
+## [Phase 2 - Step 2.12] – Test DB Bootstrap & Helpers
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* `scripts/init-test-db.ts` bootstraps a dedicated test database
+* Added `jest.setup.js` to initialize DB before tests
+* Utility helpers `tests/utils/testClient.ts` and `tests/utils/testTenant.ts`
+
+### 🟦 Enhancements
+
+* `package.json` test scripts load env and setup file
+* Renamed `jest.config.js` → `jest.config.ts`
+
+### Files
+
+* `.env.test`
+* `scripts/init-test-db.ts`
+* `jest.setup.js`
+* `jest.config.ts`
+* `tests/utils/testClient.ts`
+* `tests/utils/testTenant.ts`
