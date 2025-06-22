@@ -547,3 +547,20 @@ Each entry is tied to a step from the implementation index.
 * `src/validators/creditor.validator.ts`
 * `src/services/nozzleReading.service.ts`
 * `src/validators/nozzleReading.validator.ts`
+
+## [Phase 2 - Step 2.7] – Fuel Delivery & Inventory Tracking
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Endpoint `POST /api/fuel-deliveries` to record deliveries
+* Endpoint `GET /api/fuel-deliveries` to list deliveries per tenant
+* Inventory volume auto-increments with each delivery
+
+### Files
+
+* `src/controllers/delivery.controller.ts`
+* `src/services/delivery.service.ts`
+* `src/routes/delivery.route.ts`
+* `src/validators/delivery.validator.ts`

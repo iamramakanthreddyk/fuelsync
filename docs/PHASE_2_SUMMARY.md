@@ -137,3 +137,20 @@ Each step includes:
 * Balance updates wrapped in transaction
 
 ---
+
+### 🛠️ Step 2.7 – Fuel Deliveries & Inventory Tracking
+
+**Status:** ✅ Done
+**Files:** `src/controllers/delivery.controller.ts`, `src/services/delivery.service.ts`, `src/routes/delivery.route.ts`, `src/validators/delivery.validator.ts`
+
+**Business Rules Covered:**
+
+* Delivery increases inventory volume
+* Inventory record created if missing
+
+**Validation Performed:**
+
+* Input fields validated for presence and numeric volume
+* Transactional update of delivery and inventory
+
+---
