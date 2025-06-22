@@ -432,7 +432,7 @@ Each entry is tied to a step from the implementation index.
 ### 🟩 Features
 
 * Added JWT authentication service with bcrypt password verification
-* Implemented Express middlewares: `authenticateJWT`, `requireRole`, `requireStationAccess`
+* Implemented Express middlewares: `authenticateJWT`, `requireRole`, `checkStationAccess`
 * Provided `/api/auth/login` route returning signed tokens
 
 ### Files
@@ -441,7 +441,7 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/auth.route.ts`
 * `src/middlewares/authenticateJWT.ts`
 * `src/middlewares/requireRole.ts`
-* `src/middlewares/requireStationAccess.ts`
+* `src/middlewares/checkStationAccess.ts`
 * `src/utils/jwt.ts`
 * `src/constants/auth.ts`
 * `src/types/auth.d.ts`
@@ -583,3 +583,21 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzleReading.service.ts`
 * `src/services/creditor.service.ts`
 * `docs/BUSINESS_RULES.md`
+
+## [Phase 2 - Step 2.9] – Global Auth Enforcement
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* `/api/auth/login` issues JWT tokens containing user and tenant context
+* Middlewares `authenticateJWT`, `requireRole`, and `checkStationAccess` applied across all routes
+* New `/admin-api/*` router for super admin endpoints
+
+### Files
+
+* `src/controllers/auth.controller.ts`
+* `src/routes/auth.route.ts`
+* `src/routes/adminApi.router.ts`
+* `src/middlewares/checkStationAccess.ts`
+* `src/middleware/auth.middleware.ts`
