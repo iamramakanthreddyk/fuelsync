@@ -26,6 +26,10 @@
     "bcrypt": "^5.1.1",
     "@types/bcrypt": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.3.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   }
 }

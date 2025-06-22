@@ -601,3 +601,28 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/adminApi.router.ts`
 * `src/middlewares/checkStationAccess.ts`
 * `src/middleware/auth.middleware.ts`
+
+## [Phase 2 - Step 2.10] – Backend Cleanup, Tests & Swagger
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Added Swagger documentation route `/api/docs`
+
+### 🟦 Enhancements
+
+* Added Jest unit tests for core services and auth flow
+
+### 🟥 Fixes
+
+* Introduced centralized error handler returning `{ status, code, message }`
+
+### Files
+
+* `src/app.ts`
+* `src/docs/swagger.ts`
+* `src/routes/docs.route.ts`
+* `src/middlewares/errorHandler.ts`
+* `src/utils/db.ts`
+* `tests/*`
