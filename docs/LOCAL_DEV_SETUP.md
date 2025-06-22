@@ -71,3 +71,5 @@ npm test
 ```
 
 All tests should pass if the local database is configured correctly.
+If you see `Skipping tests: unable to provision test DB`, make sure PostgreSQL is
+installed or start the dev database container and run the tests again.

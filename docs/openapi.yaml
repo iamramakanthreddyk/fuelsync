@@ -2,47 +2,49 @@ openapi: 3.0.0
 info:
   title: FuelSync Hub API
   version: "1.0.0"
+servers:
+  - url: /v1
 paths:
   /admin-api/users:
     post:
       summary: Create super admin user
     get:
       summary: List super admin users
-  /api/auth/login:
+  /v1/auth/login:
     post:
       summary: User login and JWT issuance
-  /api/users:
+  /v1/users:
     post:
       summary: Create tenant user
     get:
       summary: List tenant users
-  /api/stations:
+  /v1/stations:
     post:
       summary: Create station
     get:
       summary: List stations
-  /api/stations/{id}:
+  /v1/stations/{id}:
     put:
       summary: Update station
     delete:
       summary: Delete station
-  /api/pumps:
+  /v1/pumps:
     post:
       summary: Create pump
     get:
       summary: List pumps
-  /api/pumps/{id}:
+  /v1/pumps/{id}:
     delete:
       summary: Delete pump
-  /api/nozzles:
+  /v1/nozzles:
     post:
       summary: Create nozzle
     get:
       summary: List nozzles
-  /api/nozzles/{id}:
+  /v1/nozzles/{id}:
     delete:
       summary: Delete nozzle
-  /api/nozzle-readings:
+  /v1/nozzle-readings:
     post:
       summary: Record nozzle reading and generate sale
       requestBody:
@@ -74,35 +76,35 @@ paths:
                 - recordedAt
     get:
       summary: List nozzle readings
-  /api/fuel-prices:
+  /v1/fuel-prices:
     post:
       summary: Create fuel price entry
     get:
       summary: List fuel prices
-  /api/creditors:
+  /v1/creditors:
     post:
       summary: Create creditor
     get:
       summary: List creditors
-  /api/creditors/{id}:
+  /v1/creditors/{id}:
     put:
       summary: Update creditor
     delete:
       summary: Delete creditor
-  /api/credit-payments:
+  /v1/credit-payments:
     post:
       summary: Record credit payment
     get:
       summary: List credit payments
-  /api/fuel-deliveries:
+  /v1/fuel-deliveries:
     post:
       summary: Record fuel delivery
     get:
       summary: List fuel deliveries
-  /api/reconciliation:
+  /v1/reconciliation:
     post:
       summary: Run daily reconciliation
-  /api/reconciliation/{stationId}:
+  /v1/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
 

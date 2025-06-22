@@ -748,3 +748,41 @@ Each entry is tied to a step from the implementation index.
 * `docs/STEP_fix_20250627.md`
 * `docs/LOCAL_DEV_SETUP.md`
 * `docs/TROUBLESHOOTING.md`
+
+## [Fix - Step 2.CRITICAL_FIXES] – Backend Hardening
+
+### 🟥 Fixes
+* Added PostgreSQL connection pooling
+* Added missing indexes for sales and user relations
+* Versioned routes under `/v1`
+* Introduced `errorResponse` helper and updated controllers
+
+### Files
+* `src/db/index.ts`
+* `migrations/003_add_indexes.sql`
+* `src/utils/errorResponse.ts`
+* tests in `__tests__/`
+* `docs/API_GUIDELINES.md`, `docs/SCHEMA_CHANGELOG.md`, `docs/CONTRIBUTING.md`
+
+## [Fix - 2025-07-01] – Test DB Provisioning Guidance
+
+### 🟢 Dev Setup
+* Documented fallback instructions when Jest cannot create the test database.
+
+### Files
+* `docs/STEP_fix_20250701.md`
+* `docs/TROUBLESHOOTING.md`
+* `docs/LOCAL_DEV_SETUP.md`
+* `docs/PHASE_2_SUMMARY.md`
+* `README.md`
+
+## [Fix - 2025-07-02] – Apt Install Reminder
+
+### 🟢 Dev Setup
+* Added explicit `sudo apt-get` install commands in fallback docs.
+
+### Files
+* `docs/STEP_fix_20250702.md`
+* `docs/TROUBLESHOOTING.md`
+* `docs/PHASE_2_SUMMARY.md`
+* `README.md`

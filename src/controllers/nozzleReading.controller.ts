@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { createNozzleReading, listNozzleReadings } from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
+import { errorResponse } from '../utils/errorResponse';
 
 export function createNozzleReadingHandlers(db: Pool) {
   return {
@@ -9,20 +10,20 @@ export function createNozzleReadingHandlers(db: Pool) {
       try {
         const user = req.user;
         if (!user?.tenantId || !user.userId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateNozzleReading(req.body);
         const id = await createNozzleReading(db, user.tenantId, data, user.userId);
         res.status(201).json({ id });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     list: async (req: Request, res: Response) => {
       try {
         const user = req.user;
         if (!user?.tenantId) {
-          return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
+          return errorResponse(res, 400, 'Missing tenant context');
         }
         const query = parseReadingQuery(req.query);
         if (query.stationId) {
@@ -31,13 +32,13 @@ export function createNozzleReadingHandlers(db: Pool) {
             [user.userId, query.stationId]
           );
           if (!access.rowCount) {
-            return res.status(403).json({ status: 'error', message: 'Station access denied' });
+            return errorResponse(res, 403, 'Station access denied');
           }
         }
         const readings = await listNozzleReadings(db, user.tenantId, query);
         res.json({ readings });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
   };

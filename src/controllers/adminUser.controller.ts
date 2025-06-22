@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { createAdminUser, listAdminUsers } from '../services/adminUser.service';
 import { validateAdminUser } from '../validators/user.validator';
+import { errorResponse } from '../utils/errorResponse';
 
 export function createAdminUserHandlers(db: Pool) {
   return {
@@ -11,7 +12,7 @@ export function createAdminUserHandlers(db: Pool) {
         await createAdminUser(db, email, password);
         res.status(201).json({ status: 'ok' });
       } catch (err: any) {
-        res.status(400).json({ status: 'error', message: err.message });
+        return errorResponse(res, 400, err.message);
       }
     },
     list: async (_req: Request, res: Response) => {

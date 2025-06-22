@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from './utils/db';
+import { pool } from './db';
 import docsRouter from './routes/docs.route';
 import { createAuthRouter } from './routes/auth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
@@ -27,17 +27,17 @@ export function createApp() {
   });
 
   app.use('/api/docs', docsRouter);
-  app.use('/api/auth', createAuthRouter(pool));
-  app.use('/api/admin', createAdminApiRouter(pool));
-  app.use('/api/users', createUserRouter(pool));
-  app.use('/api/stations', createStationRouter(pool));
-  app.use('/api/pumps', createPumpRouter(pool));
-  app.use('/api/nozzles', createNozzleRouter(pool));
-  app.use('/api/nozzle-readings', createNozzleReadingRouter(pool));
-  app.use('/api/fuel-prices', createFuelPriceRouter(pool));
-  app.use('/api/creditors', createCreditorRouter(pool));
-  app.use('/api/fuel-deliveries', createDeliveryRouter(pool));
-  app.use('/api/reconciliation', createReconciliationRouter(pool));
+  app.use('/v1/auth', createAuthRouter(pool));
+  app.use('/v1/admin', createAdminApiRouter(pool));
+  app.use('/v1/users', createUserRouter(pool));
+  app.use('/v1/stations', createStationRouter(pool));
+  app.use('/v1/pumps', createPumpRouter(pool));
+  app.use('/v1/nozzles', createNozzleRouter(pool));
+  app.use('/v1/nozzle-readings', createNozzleReadingRouter(pool));
+  app.use('/v1/fuel-prices', createFuelPriceRouter(pool));
+  app.use('/v1/creditors', createCreditorRouter(pool));
+  app.use('/v1/fuel-deliveries', createDeliveryRouter(pool));
+  app.use('/v1/reconciliation', createReconciliationRouter(pool));
 
   app.use(errorHandler);
   return app;
