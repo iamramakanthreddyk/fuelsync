@@ -850,3 +850,13 @@ Each entry is tied to a step from the implementation index.
 * Swagger UI accessible at `http://localhost:3000/api/docs`
 * Swagger JSON available at `http://localhost:3000/api/docs/swagger.json`
 * All previously missing routes now properly documented with request/response schemas
+
+## [Step 2.15] – Sales Listing & Tenant Settings API
+
+### 🟩 Features
+* Added GET `/v1/sales` with filtering options
+* Added GET and POST `/v1/settings` for tenant preferences
+
+### Files
+* `src/routes/sales.route.ts`, `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`
+* `src/routes/settings.route.ts`, `src/controllers/settings.controller.ts`, `src/services/settings.service.ts`

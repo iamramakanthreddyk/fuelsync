@@ -308,3 +308,14 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * UUID generation moved entirely to the backend
 * Removed `uuid-ossp` extension and all `DEFAULT uuid_generate_v4()` clauses
+
+### 🛠️ Step 2.15 – Sales Listing & Tenant Settings API
+
+**Status:** ✅ Done
+**Files:** `src/routes/sales.route.ts`, `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/settings.route.ts`, `src/controllers/settings.controller.ts`, `src/services/settings.service.ts`
+
+**Overview:**
+* Added `/v1/sales` endpoint with filtering by station, nozzle and date range
+* Added `/v1/settings` GET and POST endpoints for tenant preferences
+* Owner role required to update settings; owners and managers can view
+* Marks completion of Phase 2 backend implementation

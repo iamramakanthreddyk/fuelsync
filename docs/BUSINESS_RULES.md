@@ -117,6 +117,14 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 | **Sale Reduces Stock** | Recorded sales deduct sold volume from `fuel_inventory`. |
 | **Low Stock Alert** | Future enhancement will trigger alerts when below threshold. |
 
+## ⚙ Tenant Settings
+
+| Rule | Description |
+| --- | --- |
+| **Owner Updates** | Only the tenant owner may modify settings via `/v1/settings` |
+| **Manager Read** | Owners and managers can read current preferences |
+| **Fields** | `receipt_template`, `fuel_rounding`, `branding_logo_url` stored in `tenant_settings` |
+
 ---
 
 ## ✅ Record Ownership & Integrity
