@@ -222,4 +222,19 @@ Each step includes:
 
 ---
 
+### 🛠️ Step 2.12 – Test DB Bootstrap & Helpers
+
+**Status:** ✅ Done
+**Files:** `scripts/init-test-db.ts`, `jest.setup.js`, `jest.config.ts`, `tests/utils/testClient.ts`, `tests/utils/testTenant.ts`, `.env.test`
+
+**Overview:**
+* Bootstraps `fuelsync_test` database with public and tenant schemas
+* Adds Jest setup script to initialize and reset test schemas
+* Provides supertest and tenant helper utilities for service tests
+
+**Validations Performed:**
+* `npm test` runs using the new setup and passes existing suites
+
+---
+
 **Phase 2 Completed.** Backend APIs are stable with docs and basic test coverage.

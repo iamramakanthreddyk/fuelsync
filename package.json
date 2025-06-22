@@ -8,8 +8,8 @@
     "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
     "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "npm run test -- --watch",
     "test:db": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles"
   },
   "devDependencies": {
