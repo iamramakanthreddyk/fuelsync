@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: FuelSync Hub API
+  version: "1.0.0"
+paths:
+  /admin-api/users:
+    post:
+      summary: Create super admin user
+    get:
+      summary: List super admin users
+  /api/auth/login:
+    post:
+      summary: User login and JWT issuance
+  /api/users:
+    post:
+      summary: Create tenant user
+    get:
+      summary: List tenant users
+  /api/stations:
+    post:
+      summary: Create station
+    get:
+      summary: List stations
+  /api/stations/{id}:
+    put:
+      summary: Update station
+    delete:
+      summary: Delete station
+  /api/pumps:
+    post:
+      summary: Create pump
+    get:
+      summary: List pumps
+  /api/pumps/{id}:
+    delete:
+      summary: Delete pump
+  /api/nozzles:
+    post:
+      summary: Create nozzle
+    get:
+      summary: List nozzles
+  /api/nozzles/{id}:
+    delete:
+      summary: Delete nozzle
+  /api/nozzle-readings:
+    post:
+      summary: Record nozzle reading and generate sale
+    get:
+      summary: List nozzle readings
+  /api/fuel-prices:
+    post:
+      summary: Create fuel price entry
+    get:
+      summary: List fuel prices
+  /api/creditors:
+    post:
+      summary: Create creditor
+    get:
+      summary: List creditors
+  /api/creditors/{id}:
+    put:
+      summary: Update creditor
+    delete:
+      summary: Delete creditor
+  /api/credit-payments:
+    post:
+      summary: Record credit payment
+    get:
+      summary: List credit payments
+  /api/fuel-deliveries:
+    post:
+      summary: Record fuel delivery
+    get:
+      summary: List fuel deliveries
+  /api/reconciliation:
+    post:
+      summary: Run daily reconciliation
+  /api/reconciliation/{stationId}:
+    get:
+      summary: Get reconciliation summary

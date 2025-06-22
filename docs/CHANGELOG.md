@@ -698,3 +698,18 @@ Each entry is tied to a step from the implementation index.
 ### 🟢 Dev Setup
 * Documented local Postgres setup and seeding in `LOCAL_DEV_SETUP.md`
 * Fixed seed scripts and station services to run without optional fields
+
+## [Fix - 2025-06-23] – OpenAPI Spec
+
+### 🟩 Features
+* Added static OpenAPI file `docs/openapi.yaml` consolidating all endpoints
+
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250623.md`
+
+## [Fix - 2025-06-24] – Local Dev Test Setup
+
+### 🟢 Dev Setup
+* Expanded `LOCAL_DEV_SETUP.md` with instructions to run tests
+* Referenced `docs/openapi.yaml` in `README.md`

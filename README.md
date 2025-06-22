@@ -21,3 +21,7 @@ NODE_ENV=development npx ts-node scripts/check-env.ts
 
 This prints the active environment and database user, confirming `.env.development` was loaded.
 
+
+## API Documentation
+
+Full API endpoints are documented in [docs/openapi.yaml](docs/openapi.yaml). After starting the server, visit `http://localhost:3000/api/docs` for an interactive Swagger UI.
