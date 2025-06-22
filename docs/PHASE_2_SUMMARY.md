@@ -197,7 +197,7 @@ Each step includes:
 
 **Overview:**
 * Combined all routers into an Express app with tenant header support
-* Added Swagger documentation route at `/api/docs`
+* Added Swagger documentation route at `/api/docs` and generated `docs/openapi.yaml` listing all endpoints
 * Introduced centralized error handler returning `{ status, code, message }`
 * Created Jest unit tests for core services and an e2e auth flow
 

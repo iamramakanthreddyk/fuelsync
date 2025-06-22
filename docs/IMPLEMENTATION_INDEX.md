@@ -53,6 +53,8 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
+| fix | 2025-06-23 | OpenAPI spec file | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20250623.md` |
+| fix | 2025-06-24 | Local dev test instructions | ✅ Done | `docs/LOCAL_DEV_SETUP.md`, `README.md` | `docs/STEP_fix_20250624.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---

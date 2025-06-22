@@ -53,3 +53,14 @@ npm exec ts-node src/app.ts
 
 Visit `http://localhost:3000/api/docs` for the Swagger docs. Use the sample
 credentials to authenticate and test routes.
+
+## 5. Run Unit Tests
+
+Install dependencies and execute the Jest test suites. The setup scripts will automatically create and seed a `fuelsync_test` database if PostgreSQL is running.
+
+```bash
+npm install
+npm test
+```
+
+All tests should pass if the local database is configured correctly.
