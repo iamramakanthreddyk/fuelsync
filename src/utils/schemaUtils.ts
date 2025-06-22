@@ -20,3 +20,11 @@ export async function getSchemaForTenant(
   return rows[0]?.schema_name || null;
 }
 
+
+/** Validate and return a safe schema name. */
+export function getSafeSchema(schema: string): string {
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(schema)) {
+    throw new Error('Invalid schema name');
+  }
+  return schema;
+}

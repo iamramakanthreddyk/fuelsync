@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
+import { ServiceError } from '../errors/ServiceError';
 import {
   createCreditor,
   listCreditors,
@@ -28,6 +29,9 @@ export function createCreditorHandlers(db: Pool) {
         const id = await createCreditor(db, tenantId, data);
         res.status(201).json({ id });
       } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
         return errorResponse(res, 400, err.message);
       }
     },
@@ -49,6 +53,9 @@ export function createCreditorHandlers(db: Pool) {
         await updateCreditor(db, tenantId, req.params.id, data);
         res.json({ status: 'ok' });
       } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
         return errorResponse(res, 400, err.message);
       }
     },
@@ -61,6 +68,9 @@ export function createCreditorHandlers(db: Pool) {
         await markCreditorInactive(db, tenantId, req.params.id);
         res.json({ status: 'ok' });
       } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
         return errorResponse(res, 400, err.message);
       }
     },
@@ -74,6 +84,9 @@ export function createCreditorHandlers(db: Pool) {
         const id = await createCreditPayment(db, user.tenantId, data, user.userId);
         res.status(201).json({ id });
       } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
         return errorResponse(res, 400, err.message);
       }
     },
@@ -87,6 +100,9 @@ export function createCreditorHandlers(db: Pool) {
         const payments = await listCreditPayments(db, tenantId, query);
         res.json({ payments });
       } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
         return errorResponse(res, 400, err.message);
       }
     },

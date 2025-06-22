@@ -786,3 +786,9 @@ Each entry is tied to a step from the implementation index.
 * `docs/TROUBLESHOOTING.md`
 * `docs/PHASE_2_SUMMARY.md`
 * `README.md`
+
+## [Step 2.14] Critical Fixes (Safe Schema & Additional Indexes)
+- Added getSafeSchema utility and ServiceError class
+- Replaced raw tenant schema interpolation in services
+- Added additional indexes for credit payments and fuel prices
+- Updated controllers to use ServiceError for consistent errors

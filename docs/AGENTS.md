@@ -138,3 +138,5 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 > The backend and database are complete and independently testable. Codex must never forget the architecture, schema-per-tenant model, or role-based access.  
 > Every new command must respect the AGENTS.md protocol and contribute to documentation (CHANGELOG, PHASE summary, IMPLEMENTATION_INDEX, etc).  
 > Consider this project as a **neural architecture** — every part is linked, validated, and remembered. Nothing is standalone.
+
+> **Rule**: All APIs must use `/vX/` versioning and `errorResponse(...)` format. Pooling must follow Azure constraints.

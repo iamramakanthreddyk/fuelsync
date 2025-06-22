@@ -288,3 +288,14 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Versioned all API routes under `/v1`
 * Unified error handling via `errorResponse` helper
 * Added regression tests for versioning and error utilities
+
+### 🛠️ Step 2.14 – Safe Schema & Additional Indexes
+
+**Status:** ✅ Done
+**Files:** `src/utils/schemaUtils.ts`, `src/errors/ServiceError.ts`, `migrations/004_add_additional_indexes.sql`, controllers updated
+
+**Overview:**
+* Validates schema names with `getSafeSchema`
+* Uses `ServiceError` for typed service errors
+* Added indexes for credit payments and fuel prices
+* Controllers handle `ServiceError` via `errorResponse`

@@ -31,3 +31,5 @@ If PostgreSQL is not running, the global setup prints a warning and exits withou
 Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
 
 Sample coverage includes authentication, nozzle readings, creditors and reconciliation logic. E2E tests verify the login flow and protected routes.
+
+Creditor service tests validate balance logic in `tests/creditor.service.test.ts`.
