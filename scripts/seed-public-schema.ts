@@ -8,12 +8,14 @@ async function seed() {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
 
-  // Insert demo plans
+  // Insert demo plans if they don't exist
   await client.query(
     `INSERT INTO public.plans (name, config_json)
-     VALUES ('basic', '{}'::jsonb),
-            ('pro', '{}'::jsonb)
-     ON CONFLICT (name) DO NOTHING`
+     SELECT v.name, v.config_json
+     FROM (VALUES ('basic', '{}'::jsonb), ('pro', '{}'::jsonb)) AS v(name, config_json)
+     WHERE NOT EXISTS (
+       SELECT 1 FROM public.plans p WHERE p.name = v.name
+     )`
   );
 
   // Fetch the basic plan id
@@ -26,9 +28,9 @@ async function seed() {
   const { rows: adminRows } = await client.query(
     `INSERT INTO public.admin_users (email, password_hash, role)
      VALUES ($1, $2, 'superadmin')
-     ON CONFLICT (email) DO UPDATE SET email=EXCLUDED.email
+     ON CONFLICT (email) DO UPDATE SET password_hash=EXCLUDED.password_hash
      RETURNING id`,
-    ['admin@fuelsync.dev', 'password-hash']
+    ['admin@fuelsync.dev', '$2b$10$YgD8wAh23oIWsdQ2Z/aMFOgEGxy9MO4i/nDYg9tw3FGnVlHQfDJ2m']
   );
   const adminId = adminRows[0].id;
 

@@ -673,3 +673,28 @@ Each entry is tied to a step from the implementation index.
 * `jest.config.ts`
 * `tests/utils/testClient.ts`
 * `tests/utils/testTenant.ts`
+
+## [Phase 2 - Step 2.13] – Independent Backend Test Execution
+
+**Status:** ✅ Done
+
+### 🟦 Enhancements
+
+* Added `jest.globalSetup.ts` and `jest.globalTeardown.ts` for automated test DB provisioning
+* New scripts `scripts/create-test-db.ts` and `scripts/seed-test-db.ts`
+* Updated Jest config and test script to use `.env.test` and run in-band
+* Global setup now skips tests gracefully if PostgreSQL is unavailable
+* Documented installing PostgreSQL locally for tests; updated seed logic and
+  migration order to run without errors
+
+### Files
+
+* `jest.globalSetup.ts`
+* `jest.globalTeardown.ts`
+* `scripts/create-test-db.ts`
+* `scripts/seed-test-db.ts`
+* `jest.config.ts`
+
+### 🟢 Dev Setup
+* Documented local Postgres setup and seeding in `LOCAL_DEV_SETUP.md`
+* Fixed seed scripts and station services to run without optional fields

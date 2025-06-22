@@ -238,3 +238,18 @@ Each step includes:
 ---
 
 **Phase 2 Completed.** Backend APIs are stable with docs and basic test coverage.
+
+### 🛠️ Step 2.13 – Independent Backend Test Execution
+
+**Status:** ✅ Done
+**Files:** `jest.globalSetup.ts`, `jest.globalTeardown.ts`, `scripts/create-test-db.ts`, `scripts/seed-test-db.ts`, `jest.config.ts`, `package.json`
+
+**Overview:**
+* Automated creation and seeding of `fuelsync_test` database
+* Jest hooks ensure tests run in isolation without manual setup
+* Global setup exits early with a notice when PostgreSQL is unavailable
+* Local testing guide now includes steps to install and start PostgreSQL via
+  `apt-get`
+
+**Validations Performed:**
+* `npm test` triggers database provisioning and runs suites

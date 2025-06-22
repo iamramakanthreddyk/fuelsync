@@ -12,7 +12,7 @@ export function createStationHandlers(db: Pool) {
           return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
         }
         const data = validateCreateStation(req.body);
-        const id = await createStation(db, tenantId, data.name, data.location);
+        const id = await createStation(db, tenantId, data.name);
         res.status(201).json({ id });
       } catch (err: any) {
         res.status(400).json({ status: 'error', message: err.message });
@@ -33,7 +33,7 @@ export function createStationHandlers(db: Pool) {
           return res.status(400).json({ status: 'error', message: 'Missing tenant context' });
         }
         const data = validateUpdateStation(req.body);
-        await updateStation(db, tenantId, req.params.id, data.name, data.location);
+        await updateStation(db, tenantId, req.params.id, data.name);
         res.json({ status: 'ok' });
       } catch (err: any) {
         res.status(400).json({ status: 'error', message: err.message });
