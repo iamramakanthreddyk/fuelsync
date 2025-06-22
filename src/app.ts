@@ -12,6 +12,8 @@ import { createFuelPriceRouter } from './routes/fuelPrice.route';
 import { createCreditorRouter } from './routes/creditor.route';
 import { createDeliveryRouter } from './routes/delivery.route';
 import { createReconciliationRouter } from './routes/reconciliation.route';
+import { createSalesRouter } from './routes/sales.route';
+import { createSettingsRouter } from './routes/settings.route';
 import { errorHandler } from './middlewares/errorHandler';
 
 export function createApp() {
@@ -38,6 +40,8 @@ export function createApp() {
   app.use('/v1/creditors', createCreditorRouter(pool));
   app.use('/v1/fuel-deliveries', createDeliveryRouter(pool));
   app.use('/v1/reconciliation', createReconciliationRouter(pool));
+  app.use('/v1/sales', createSalesRouter(pool));
+  app.use('/v1/settings', createSettingsRouter(pool));
 
   app.use(errorHandler);
   return app;
