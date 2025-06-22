@@ -2,6 +2,7 @@ export interface NozzleReadingInput {
   nozzleId: string;
   reading: number;
   recordedAt: Date;
+  creditorId?: string;
 }
 
 export interface ReadingQuery {
@@ -12,7 +13,7 @@ export interface ReadingQuery {
 }
 
 export function validateCreateNozzleReading(data: any): NozzleReadingInput {
-  const { nozzleId, reading, recordedAt } = data || {};
+  const { nozzleId, reading, recordedAt, creditorId } = data || {};
   if (!nozzleId || typeof nozzleId !== 'string') {
     throw new Error('nozzleId required');
   }
@@ -24,7 +25,11 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   if (!recordedAt || isNaN(ts.getTime())) {
     throw new Error('recordedAt invalid');
   }
-  return { nozzleId, reading: readingNum, recordedAt: ts };
+  const result: NozzleReadingInput = { nozzleId, reading: readingNum, recordedAt: ts };
+  if (creditorId && typeof creditorId === 'string') {
+    result.creditorId = creditorId;
+  }
+  return result;
 }
 
 export function parseReadingQuery(query: any): ReadingQuery {

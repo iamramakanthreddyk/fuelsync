@@ -43,7 +43,7 @@ Additional Sale Rules:
 | Rule                 | Description                                    |
 | -------------------- | ---------------------------------------------- |
 | **Party Must Exist** | Credit sales require a valid `creditor_id` |
-| **Max Limit**        | Block new sales if balance > credit\_limit     |
+| **Max Limit**        | Block new sales if sale amount exceeds available credit (`credit_limit - balance`) |
 | **Payment History**  | Recorded in `credit_payments` table            |
 | **Payment Required** | No new credit sales if balance >= credit_limit |
 

@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
+import { getCreditorById, incrementCreditorBalance } from './creditor.service';
 
 export async function createNozzleReading(
   db: Pool,
@@ -36,9 +37,19 @@ export async function createNozzleReading(
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
     const price = await getPriceAtTimestamp(client, tenantId, station_id, fuel_type, data.recordedAt);
     const saleAmount = price ? parseFloat((volumeSold * price).toFixed(2)) : 0;
+    if (data.creditorId) {
+      const creditor = await getCreditorById(client, tenantId, data.creditorId);
+      if (!creditor) {
+        throw new Error('Invalid creditor');
+      }
+      if (saleAmount > Number(creditor.credit_limit) - Number(creditor.balance)) {
+        throw new Error('Credit limit exceeded');
+      }
+      await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
+    }
     await client.query(
-      `INSERT INTO ${tenantId}.sales (nozzle_id, user_id, volume_sold, sale_amount, sold_at) VALUES ($1,$2,$3,$4,$5)`,
-      [data.nozzleId, userId, volumeSold, saleAmount, data.recordedAt]
+      `INSERT INTO ${tenantId}.sales (nozzle_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+      [data.nozzleId, userId, volumeSold, saleAmount, data.recordedAt, data.creditorId ? 'credit' : 'cash', data.creditorId || null]
     );
     await client.query('COMMIT');
     return readingRes.rows[0].id;
