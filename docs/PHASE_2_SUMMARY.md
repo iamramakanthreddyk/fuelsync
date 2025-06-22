@@ -119,3 +119,21 @@ Each step includes:
 * Overlap check enforced in service
 
 ---
+
+### 🛠️ Step 2.6 – Creditors & Credit Sales
+
+**Status:** ✅ Done
+**Files:** `src/controllers/creditor.controller.ts`, `src/services/creditor.service.ts`, `src/routes/creditor.route.ts`, `src/validators/creditor.validator.ts`, `src/services/nozzleReading.service.ts`
+
+**Business Rules Covered:**
+
+* Creditor must exist for credit sales
+* Sale amount cannot exceed available credit
+* Payments decrease creditor balance
+
+**Validation Performed:**
+
+* Input checks on creditor and payment creation
+* Balance updates wrapped in transaction
+
+---

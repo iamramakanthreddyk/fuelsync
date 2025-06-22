@@ -528,3 +528,22 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/fuelPrice.route.ts`
 * `src/services/fuelPrice.service.ts`
 * `src/validators/fuelPrice.validator.ts`
+
+## [Phase 2 - Step 2.6] – Creditors and Credit Sales
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* CRUD endpoints for creditors
+* Credit payments API with balance updates
+* Credit sales validation against available limit
+
+### Files
+
+* `src/controllers/creditor.controller.ts`
+* `src/services/creditor.service.ts`
+* `src/routes/creditor.route.ts`
+* `src/validators/creditor.validator.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/validators/nozzleReading.validator.ts`
