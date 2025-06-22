@@ -109,6 +109,17 @@ When an issue is found in code or logic:
 * 🚫 **No hidden cloud calls** — seed scripts, migrations, and runtime config are entirely file‑based.
 * 🌐 Optional services (Redis, S3) must be stubbed locally.
 
+🧪 Test Environment Protocol (Mandatory for Agents)
+All AI agents (Codex, Q Dev Agent, etc.) must provision a dedicated test database for each run:
+| Requirement                 | Description                                                                  |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `PGDATABASE=fuelsync_test`  | Agents must use `.env.test` or equivalent for test DB isolation              |
+| **Create DB** if not exists | During test setup, check and create the test DB using Postgres CLI or Node   |
+| **Run migrations**          | Migrate both `public` and `tenant_123` schemas in test DB                    |
+| **Seed data**               | Seed with minimal valid data for all major features                          |
+| **Drop DB** (or truncate)   | Optional: clean up after tests to prevent reuse artifacts                    |
+| **Failure handling**        | If DB setup fails, skip tests with a helpful diagnostic — not AggregateError |
+
 ---
 
 ## 🚨 Codex Prompting Standard
