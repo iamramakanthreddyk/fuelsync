@@ -1,5 +1,6 @@
 import { Pool, PoolClient } from 'pg';
 import { CreditorInput, CreditPaymentInput, PaymentQuery } from '../validators/creditor.validator';
+import { isDateFinalized } from './reconciliation.service';
 
 export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
   const res = await db.query<{ id: string }>(
@@ -64,6 +65,11 @@ export async function createCreditPayment(
   const client = await db.connect();
   try {
     await client.query('BEGIN');
+    const today = new Date();
+    const finalized = await isDateFinalized(client, tenantId, new Date(today.toISOString().slice(0, 10)));
+    if (finalized) {
+      throw new Error('Day already finalized');
+    }
     const creditor = await getCreditorById(client, tenantId, input.creditorId);
     if (!creditor) {
       throw new Error('Invalid creditor');

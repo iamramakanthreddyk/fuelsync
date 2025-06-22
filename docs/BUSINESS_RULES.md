@@ -85,12 +85,13 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 
 ## 🔁 Reconciliation Logic
 
-| Rule           | Description                                                        |
-| -------------- | ------------------------------------------------------------------ |
-| Daily Summary  | For each station: total sales, cash/card split, credit outstanding |
-| Auto Calculate | Totals calculated from `sales` table per date                      |
-| Finalize Flag  | Locked from edits if `finalized = true`                            |
-| One Per Day    | Unique `(station_id, reconciliation_date)` enforced |
+| Rule | Description |
+| -------------- | -------------------------------------------------------------- |
+| Daily Summary | For each station: total sales, cash/card split, credit outstanding |
+| Auto Calculate | Totals calculated from `sales` table per date |
+| Finalize Flag | Locked from edits if `finalized = true` |
+| Locked Mutations | Sales and credit payments blocked after finalization |
+| One Per Day | Unique `(station_id, reconciliation_date)` enforced |
 
 ---
 

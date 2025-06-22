@@ -564,3 +564,22 @@ Each entry is tied to a step from the implementation index.
 * `src/services/delivery.service.ts`
 * `src/routes/delivery.route.ts`
 * `src/validators/delivery.validator.ts`
+
+## [Phase 2 - Step 2.8] – Daily Reconciliation API
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Endpoint `POST /api/reconciliation` to finalize a day per station
+* Endpoint `GET /api/reconciliation/:stationId?date=` to fetch summary
+* Lock prevents new sales or payments once finalized
+
+### Files
+
+* `src/controllers/reconciliation.controller.ts`
+* `src/services/reconciliation.service.ts`
+* `src/routes/reconciliation.route.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/services/creditor.service.ts`
+* `docs/BUSINESS_RULES.md`

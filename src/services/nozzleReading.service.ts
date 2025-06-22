@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
+import { isDayFinalized } from './reconciliation.service';
 
 export async function createNozzleReading(
   db: Pool,
@@ -29,6 +30,11 @@ export async function createNozzleReading(
       throw new Error('Invalid nozzle');
     }
     const { fuel_type, station_id } = nozzleInfo.rows[0];
+
+    const finalized = await isDayFinalized(client, tenantId, station_id, new Date(data.recordedAt));
+    if (finalized) {
+      throw new Error('Day already finalized for this station');
+    }
 
     const readingRes = await client.query<{ id: string }>(
       `INSERT INTO ${tenantId}.nozzle_readings (nozzle_id, reading, recorded_at) VALUES ($1,$2,$3) RETURNING id`,
