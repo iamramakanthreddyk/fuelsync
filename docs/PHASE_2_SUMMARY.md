@@ -207,4 +207,19 @@ Each step includes:
 
 ---
 
+### 🛠️ Step 2.11 – Jest DB Test Infrastructure
+
+**Status:** ✅ Done
+**Files:** `jest.config.js`, `tests/setup.ts`, `tests/teardown.ts`, `tests/utils/db-utils.ts`, `.env.test`, `tests/auth.service.test.ts`
+
+**Overview:**
+* Added global setup/teardown to create and drop a dedicated test schema
+* Introduced `.env.test` for isolated database configuration
+* Extended auth service tests to verify bcrypt usage
+
+**Validations Performed:**
+* `npm test` now runs with `cross-env NODE_ENV=test`
+
+---
+
 **Phase 2 Completed.** Backend APIs are stable with docs and basic test coverage.
