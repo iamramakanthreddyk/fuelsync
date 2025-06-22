@@ -154,3 +154,20 @@ Each step includes:
 * Transactional update of delivery and inventory
 
 ---
+
+### 🛠️ Step 2.8 – Daily Reconciliation API
+
+**Status:** ✅ Done
+**Files:** `src/controllers/reconciliation.controller.ts`, `src/services/reconciliation.service.ts`, `src/routes/reconciliation.route.ts`, `src/services/nozzleReading.service.ts`, `src/services/creditor.service.ts`
+
+**Business Rules Covered:**
+
+* One reconciliation per station per day
+* Day is locked from sales or payments once finalized
+
+**Validation Performed:**
+
+* Aggregates totals from sales table
+* Finalization check before mutations
+
+---

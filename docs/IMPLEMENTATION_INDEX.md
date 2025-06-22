@@ -44,6 +44,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.5  | Fuel Pricing Management | ✅ Done | `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `src/services/fuelPrice.service.ts`, `src/validators/fuelPrice.validator.ts` | `PHASE_2_SUMMARY.md#step-2.5` |
 | 2     | 2.6  | Creditors & Credit Sales | ✅ Done | `src/controllers/creditor.controller.ts`, `src/services/creditor.service.ts`, `src/routes/creditor.route.ts`, `src/validators/creditor.validator.ts` | `PHASE_2_SUMMARY.md#step-2.6` |
 | 2     | 2.7  | Fuel Deliveries & Inventory | ✅ Done | `src/controllers/delivery.controller.ts`, `src/services/delivery.service.ts`, `src/routes/delivery.route.ts`, `src/validators/delivery.validator.ts` | `PHASE_2_SUMMARY.md#step-2.7` |
+| 2     | 2.8  | Daily Reconciliation API | ✅ Done | `src/controllers/reconciliation.controller.ts`, `src/services/reconciliation.service.ts`, `src/routes/reconciliation.route.ts` | `PHASE_2_SUMMARY.md#step-2.8` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
