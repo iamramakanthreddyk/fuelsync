@@ -49,8 +49,10 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.10 | Backend Cleanup, Tests & Swagger | ✅ Done | `src/app.ts`, `src/docs/swagger.ts`, `src/routes/docs.route.ts`, `src/middlewares/errorHandler.ts`, `src/utils/db.ts`, tests | `PHASE_2_SUMMARY.md#step-2.10` |
 | 2     | 2.11 | Jest DB Test Infrastructure | ✅ Done | `jest.config.js`, `tests/setup.ts`, `tests/teardown.ts`, `.env.test` | `PHASE_2_SUMMARY.md#step-2.11` |
 | 2     | 2.12 | Test DB Bootstrap & Helpers | ✅ Done | `scripts/init-test-db.ts`, `jest.setup.js`, `jest.config.ts` | `PHASE_2_SUMMARY.md#step-2.12` |
+| 2     | 2.13 | Independent Backend Test Execution | ✅ Done | `jest.globalSetup.ts`, `jest.globalTeardown.ts`, `scripts/create-test-db.ts`, `scripts/seed-test-db.ts` | `PHASE_2_SUMMARY.md#step-2.13` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
+| fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---

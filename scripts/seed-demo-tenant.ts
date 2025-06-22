@@ -35,7 +35,7 @@ async function seed() {
   for (const role of roles) {
     await client.query(
       `INSERT INTO ${schema}.users (tenant_id, email, password_hash, role)
-       VALUES ($1, $2, 'demo-hash', $3)
+       VALUES ($1, $2, '$2b$10$YgD8wAh23oIWsdQ2Z/aMFOgEGxy9MO4i/nDYg9tw3FGnVlHQfDJ2m', $3)
        ON CONFLICT (email) DO NOTHING`,
       [tenantId, `${role}@${schema}.com`, role]
     );
@@ -45,41 +45,54 @@ async function seed() {
   const { rows: stationRows } = await client.query(
     `INSERT INTO ${schema}.stations (tenant_id, name)
      VALUES ($1, 'Main Station')
-     ON CONFLICT (tenant_id, name) DO UPDATE SET name=EXCLUDED.name
+     ON CONFLICT DO NOTHING
      RETURNING id`,
     [tenantId]
   );
-  const stationId = stationRows[0].id;
+  const stationId =
+    stationRows[0]?.id ??
+    (
+      await client.query(
+        `SELECT id FROM ${schema}.stations WHERE name='Main Station' LIMIT 1`
+      )
+    ).rows[0].id;
 
   // pump
   const { rows: pumpRows } = await client.query(
     `INSERT INTO ${schema}.pumps (tenant_id, station_id, name)
      VALUES ($1, $2, 'Pump 1')
-     ON CONFLICT (station_id, name) DO UPDATE SET name=EXCLUDED.name
+     ON CONFLICT DO NOTHING
      RETURNING id`,
     [tenantId, stationId]
   );
-  const pumpId = pumpRows[0].id;
+  const pumpId =
+    pumpRows[0]?.id ??
+    (
+      await client.query(
+        `SELECT id FROM ${schema}.pumps WHERE station_id=$1 LIMIT 1`,
+        [stationId]
+      )
+    ).rows[0].id;
 
   // nozzles
   await client.query(
     `INSERT INTO ${schema}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type)
      VALUES ($1, $2, 1, 'petrol')
-     ON CONFLICT (pump_id, nozzle_number) DO NOTHING`,
+     ON CONFLICT DO NOTHING`,
     [tenantId, pumpId]
   );
   await client.query(
     `INSERT INTO ${schema}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type)
      VALUES ($1, $2, 2, 'diesel')
-     ON CONFLICT (pump_id, nozzle_number) DO NOTHING`,
+     ON CONFLICT DO NOTHING`,
     [tenantId, pumpId]
   );
 
   // optional fuel price
   await client.query(
-    `INSERT INTO ${schema}.fuel_prices (tenant_id, station_id, price, effective_from)
-     VALUES ($1, $2, 100, NOW())
-     ON CONFLICT (station_id, effective_from) DO NOTHING`,
+    `INSERT INTO ${schema}.fuel_prices (tenant_id, station_id, fuel_type, price, effective_from)
+     VALUES ($1, $2, 'petrol', 100, NOW())
+     ON CONFLICT DO NOTHING`,
     [tenantId, stationId]
   );
 

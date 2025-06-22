@@ -64,6 +64,19 @@ CREATE INDEX IF NOT EXISTS idx_readings_nozzle_date
 CREATE INDEX IF NOT EXISTS idx_readings_recorded_at
     ON {{schema_name}}.nozzle_readings(recorded_at);
 
+CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    party_name TEXT NOT NULL,
+    contact_person TEXT,
+    contact_phone TEXT,
+    email TEXT,
+    credit_limit NUMERIC CHECK (credit_limit >= 0),
+    balance NUMERIC DEFAULT 0,
+    notes TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 CREATE TABLE IF NOT EXISTS {{schema_name}}.sales (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -112,19 +125,6 @@ CREATE INDEX IF NOT EXISTS idx_fuel_prices_effective_from
 -- BEFORE INSERT ON {{schema_name}}.fuel_prices
 -- FOR EACH ROW EXECUTE FUNCTION {{schema_name}}.close_prev_price();
 
-CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
-    party_name TEXT NOT NULL,
-    contact_person TEXT,
-    contact_phone TEXT,
-    email TEXT,
-    credit_limit NUMERIC CHECK (credit_limit >= 0),
-    balance NUMERIC DEFAULT 0,
-    notes TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.credit_payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

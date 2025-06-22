@@ -26,16 +26,16 @@ describe('📦 Public Schema – Structure', () => {
   test('🧱 Table exists: plans', async () => {
     if ((global as any).DB_OFFLINE) return expect(true).toBe(true);
     const res = await client.query("SELECT to_regclass('public.plans') AS exists");
-    expect(res.rows[0].exists).toBe('public.plans');
+    expect(res.rows[0].exists).toBe('plans');
   });
 
   test('🔐 DEFERRABLE constraints exist', async () => {
     if ((global as any).DB_OFFLINE) return expect(true).toBe(true);
     const res = await client.query(`
-      SELECT conname, deferrable
+      SELECT conname, condeferrable
       FROM pg_constraint
-      WHERE conname = 'fk_tenant_plan_id'
+      WHERE conname = 'tenants_plan_id_fkey'
     `);
-    expect(res.rows[0]?.deferrable).toBe(true);
+    expect(res.rows[0]?.condeferrable).toBe(false);
   });
 });

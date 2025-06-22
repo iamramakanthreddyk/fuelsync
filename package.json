@@ -8,7 +8,7 @@
     "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
     "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
-    "test": "NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "npm run test -- --watch",
     "test:db": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles"
   },
@@ -21,6 +21,8 @@
     "@types/node": "^20.8.10",
     "@types/pg": "^8.6.7",
     "@types/supertest": "^2.0.12",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "bcrypt": "^5.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",

@@ -2,20 +2,31 @@
 
 This guide describes how to run unit and e2e tests for FuelSync Hub.
 
-1. Ensure the Postgres database specified in `.env.test` is running. Use:
+1. Ensure PostgreSQL 16 is installed and running locally. On Ubuntu:
+
+```bash
+sudo apt-get update && sudo apt-get install -y postgresql
+sudo service postgresql start
+```
+   Set the `postgres` user password to `postgres` and edit
+   `/etc/postgresql/16/main/pg_hba.conf` to use `md5` for local connections.
+   Restart the service after changes.
+
+2. Verify the database specified in `.env.test` is running. You can also use:
 
 ```bash
 ./scripts/start-dev-db.sh
 ```
 
-2. Install dependencies and run tests:
+3. Install dependencies and run tests:
 
 ```bash
 npm install
 npm test
 ```
 
-The test suite will automatically create the `fuelsync_test` database and seed a demo tenant via `scripts/init-test-db.ts`. Jest loads environment variables from `.env.test` and runs the setup script defined in `jest.setup.js`.
+The test suite automatically provisions the `fuelsync_test` database via `jest.globalSetup.ts`. This script runs `scripts/create-test-db.ts` and `scripts/seed-test-db.ts` using the variables in `.env.test`.
+If PostgreSQL is not running, the global setup prints a warning and exits without running tests.
 
 Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
 
