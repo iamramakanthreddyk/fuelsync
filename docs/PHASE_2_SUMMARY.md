@@ -189,3 +189,22 @@ Each step includes:
 * Middleware chain rejects invalid tokens and roles
 
 ---
+
+### 🛠️ Step 2.10 – Backend Cleanup, Tests & Swagger
+
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `src/docs/swagger.ts`, `src/routes/docs.route.ts`, `src/middlewares/errorHandler.ts`, `src/utils/db.ts`, tests added
+
+**Overview:**
+* Combined all routers into an Express app with tenant header support
+* Added Swagger documentation route at `/api/docs`
+* Introduced centralized error handler returning `{ status, code, message }`
+* Created Jest unit tests for core services and an e2e auth flow
+
+**Validations Performed:**
+* `npm test` executes mocked unit tests
+* Swagger UI loads and lists available endpoints
+
+---
+
+**Phase 2 Completed.** Backend APIs are stable with docs and basic test coverage.

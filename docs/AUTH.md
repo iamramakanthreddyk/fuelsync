@@ -62,3 +62,17 @@ Middlewares live under `src/middlewares` (re-exported via `src/middleware/auth.m
 ---
 
 Login and logout routes exist under `/api/auth`. Tokens expire after one hour and must be renewed via re-login.
+
+### Example Usage
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@example.com","password":"secret"}'
+# => { "token": "<jwt>" }
+
+curl http://localhost:3000/api/stations \
+  -H "Authorization: Bearer <jwt>"
+```
+
+The JWT token grants access to protected routes when supplied in the `Authorization` header.
