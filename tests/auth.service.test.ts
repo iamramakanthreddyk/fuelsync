@@ -18,4 +18,13 @@ describe('auth.service.login', () => {
     const token = await login(db, 'a@test.com', 'pw', 'tenant1');
     expect(token).toBe('signed-token');
   });
+
+  test('uses bcrypt.compare for password validation', async () => {
+    const hash = await bcrypt.hash('pw', 1);
+    const compareSpy = jest.spyOn(bcrypt as any, 'compare').mockResolvedValue(true as any);
+    const db = { query: jest.fn().mockResolvedValue({ rows: [{ id: '1', password_hash: hash, role: 'manager' }] }) } as any;
+    await login(db, 'a@test.com', 'pw', 'tenant1');
+    expect(compareSpy).toHaveBeenCalledWith('pw', hash);
+    compareSpy.mockRestore();
+  });
 });

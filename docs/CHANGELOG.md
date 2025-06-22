@@ -626,3 +626,26 @@ Each entry is tied to a step from the implementation index.
 * `src/middlewares/errorHandler.ts`
 * `src/utils/db.ts`
 * `tests/*`
+
+## [Phase 2 - Step 2.11] – Jest DB Test Infrastructure
+
+**Status:** ✅ Done
+
+### 🟩 Features
+
+* Global Jest setup/teardown creates and drops a dedicated test schema
+* Introduced `.env.test` for isolated database configuration
+
+### 🟦 Enhancements
+
+* Added `test:db` npm script using `cross-env`
+* Extended auth service tests to verify bcrypt usage
+
+### Files
+
+* `jest.config.js`
+* `tests/setup.ts`
+* `tests/teardown.ts`
+* `tests/utils/db-utils.ts`
+* `.env.test`
+* `tests/auth.service.test.ts`

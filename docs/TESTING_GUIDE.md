@@ -2,7 +2,7 @@
 
 This guide describes how to run unit and e2e tests for FuelSync Hub.
 
-1. Ensure the Postgres database specified in `.env.development` is running. Use:
+1. Ensure the Postgres database specified in `.env.test` is running. Use:
 
 ```bash
 ./scripts/start-dev-db.sh
@@ -15,6 +15,6 @@ npm install
 npm test
 ```
 
-Tests use Jest with `ts-jest` and connect to the development database by default. Service tests mock database calls while `tests/db.test.ts` expects a reachable Postgres instance.
+Tests use Jest with `ts-jest` and load environment variables from `.env.test`. Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
 
 Sample coverage includes authentication, nozzle readings, creditors and reconciliation logic. E2E tests verify the login flow and protected routes.
