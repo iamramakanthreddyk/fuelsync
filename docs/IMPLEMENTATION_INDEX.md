@@ -51,6 +51,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.12 | Test DB Bootstrap & Helpers | ✅ Done | `scripts/init-test-db.ts`, `jest.setup.js`, `jest.config.ts` | `PHASE_2_SUMMARY.md#step-2.12` |
 | 2     | 2.13 | Independent Backend Test Execution | ✅ Done | `jest.globalSetup.ts`, `jest.globalTeardown.ts`, `scripts/create-test-db.ts`, `scripts/seed-test-db.ts` | `PHASE_2_SUMMARY.md#step-2.13` |
 | 2     | CRITICAL_FIXES | Critical backend fixes | ✅ Done | `src/db/index.ts`, `migrations/003_add_indexes.sql`, `src/utils/errorResponse.ts`, tests | `docs/STEP_2_CRITICAL_FIXES.md` |
+| 2     | 2.14 | Safe Schema & Indexes | ✅ Done | `src/utils/schemaUtils.ts`, `src/errors/ServiceError.ts`, `migrations/004_add_additional_indexes.sql` | `PHASE_2_SUMMARY.md#step-2.14` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
@@ -61,6 +62,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-06-27 | Local DB install & tests | ✅ Done | `docs/LOCAL_DEV_SETUP.md`, `docs/TROUBLESHOOTING.md` | `docs/STEP_fix_20250627.md` |
 | fix | 2025-07-01 | Test DB provisioning fallback | ✅ Done | `docs/TROUBLESHOOTING.md`, `docs/LOCAL_DEV_SETUP.md`, `README.md` | `docs/STEP_fix_20250701.md` |
 | fix | 2025-07-02 | Apt install reminder | ✅ Done | `docs/TROUBLESHOOTING.md`, `README.md`, `docs/PHASE_2_SUMMARY.md` | `docs/STEP_fix_20250702.md` |
+| fix | 2025-07-03 | Remove uuid-ossp defaults | ✅ Done | `migrations/001_create_public_schema.sql`, `migrations/tenant_schema_template.sql` | `docs/STEP_fix_20250703.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---

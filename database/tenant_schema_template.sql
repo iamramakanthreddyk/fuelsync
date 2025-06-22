@@ -2,7 +2,7 @@
 
 -- Example: template schema for new tenant
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   full_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE stations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   tenant_id UUID NOT NULL,
   name TEXT NOT NULL,
   location TEXT,
@@ -19,21 +19,21 @@ CREATE TABLE stations (
 );
 
 CREATE TABLE pumps (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
   label TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE nozzles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   pump_id UUID NOT NULL REFERENCES pumps(id) DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE fuel_prices (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
   station_id UUID NOT NULL REFERENCES stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE fuel_prices (
 CREATE INDEX idx_prices_station_type ON fuel_prices (station_id, fuel_type);
 
 CREATE TABLE nozzle_readings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   nozzle_id UUID NOT NULL REFERENCES nozzles(id) DEFERRABLE INITIALLY DEFERRED,
   reading NUMERIC(10, 2) NOT NULL,
   recorded_at TIMESTAMP NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE nozzle_readings (
 );
 
 CREATE TABLE sales (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   nozzle_id UUID NOT NULL REFERENCES nozzles(id) DEFERRABLE INITIALLY DEFERRED,
   user_id UUID NOT NULL REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
   volume_sold NUMERIC(10, 2) NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE sales (
 -- New domain tables for credit sales and inventory
 
 CREATE TABLE creditors (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   name TEXT NOT NULL,
   contact_info TEXT,
   credit_limit NUMERIC(10,2) DEFAULT 0 CHECK (credit_limit >= 0),
@@ -78,7 +78,7 @@ CREATE TABLE creditors (
 CREATE INDEX ON creditors(name);
 
 CREATE TABLE credit_payments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   creditor_id UUID NOT NULL REFERENCES creditors(id) DEFERRABLE INITIALLY DEFERRED,
   amount_paid NUMERIC(10,2) NOT NULL CHECK (amount_paid >= 0),
   received_at TIMESTAMP NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE credit_payments (
 CREATE INDEX ON credit_payments(creditor_id);
 
 CREATE TABLE fuel_deliveries (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
   volume NUMERIC(10,2) NOT NULL CHECK (volume > 0),
@@ -101,7 +101,7 @@ CREATE TABLE fuel_deliveries (
 CREATE INDEX ON fuel_deliveries(station_id);
 
 CREATE TABLE fuel_inventory (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
   current_level NUMERIC(10,2) NOT NULL CHECK (current_level >= 0),
@@ -112,7 +112,7 @@ CREATE TABLE fuel_inventory (
 CREATE INDEX ON fuel_inventory(station_id);
 
 CREATE TABLE day_reconciliations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
   date DATE NOT NULL,
   total_sales NUMERIC(10,2) DEFAULT 0,
@@ -129,7 +129,7 @@ CREATE TABLE day_reconciliations (
 CREATE INDEX ON day_reconciliations(station_id);
 
 CREATE TABLE audit_logs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   user_id UUID NOT NULL REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
   action TEXT NOT NULL,
   entity_type TEXT NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE audit_logs (
 CREATE INDEX ON audit_logs(entity_type, entity_id);
 
 CREATE TABLE user_activity_logs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   user_id UUID REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
   ip_address TEXT,
   user_agent TEXT,
@@ -150,7 +150,7 @@ CREATE TABLE user_activity_logs (
 );
 
 CREATE TABLE validation_issues (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   entity_type TEXT NOT NULL,
   entity_id UUID NOT NULL,
   message TEXT NOT NULL,

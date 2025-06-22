@@ -2,7 +2,7 @@
 
 -- Example: template schema for new tenant
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   full_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE stations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   tenant_id UUID NOT NULL,
   name TEXT NOT NULL,
   location TEXT,
@@ -19,21 +19,21 @@ CREATE TABLE stations (
 );
 
 CREATE TABLE pumps (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   station_id UUID NOT NULL REFERENCES stations(id) DEFERRABLE INITIALLY DEFERRED,
   label TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE nozzles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   pump_id UUID NOT NULL REFERENCES pumps(id) DEFERRABLE INITIALLY DEFERRED,
   fuel_type TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE fuel_prices (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   fuel_type TEXT NOT NULL,
   price_per_litre NUMERIC(10, 2) NOT NULL CHECK (price_per_litre > 0),
   effective_from TIMESTAMP NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE fuel_prices (
 );
 
 CREATE TABLE nozzle_readings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   nozzle_id UUID NOT NULL REFERENCES nozzles(id) DEFERRABLE INITIALLY DEFERRED,
   reading NUMERIC(10, 2) NOT NULL,
   recorded_at TIMESTAMP NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE nozzle_readings (
 );
 
 CREATE TABLE sales (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY(),
   nozzle_id UUID NOT NULL REFERENCES nozzles(id) DEFERRABLE INITIALLY DEFERRED,
   user_id UUID NOT NULL REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED,
   volume_sold NUMERIC(10, 2) NOT NULL,
