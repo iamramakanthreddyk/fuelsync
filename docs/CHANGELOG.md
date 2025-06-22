@@ -713,3 +713,38 @@ Each entry is tied to a step from the implementation index.
 ### 🟢 Dev Setup
 * Expanded `LOCAL_DEV_SETUP.md` with instructions to run tests
 * Referenced `docs/openapi.yaml` in `README.md`
+
+## [Fix - 2025-06-25] – Endpoint Review Notes
+
+### 🟦 Enhancements
+* Documented missing `paymentMethod` field for nozzle readings
+* Noted absence of pump/nozzle update endpoints
+* Added request body details to `/api/nozzle-readings` in OpenAPI spec
+
+### Files
+* `docs/STEP_fix_20250625.md`
+* `docs/openapi.yaml`
+* `docs/PHASE_2_SUMMARY.md`
+
+## [Fix - 2025-06-26] – Clarify Test DB Setup
+
+### 🟢 Dev Setup
+* Added reminder in `LOCAL_DEV_SETUP.md` to start PostgreSQL before running tests
+* `PHASE_2_SUMMARY.md` updated with the same note
+
+### Files
+* `docs/STEP_fix_20250626.md`
+* `docs/LOCAL_DEV_SETUP.md`
+* `docs/PHASE_2_SUMMARY.md`
+
+## [Fix - 2025-06-27] – Local DB Install & Tests
+
+### 🟢 Dev Setup
+* Documented Docker Compose requirement in `LOCAL_DEV_SETUP.md`
+* Added troubleshooting note for `docker-compose` missing
+* Verified database setup and ran all Jest suites successfully
+
+### Files
+* `docs/STEP_fix_20250627.md`
+* `docs/LOCAL_DEV_SETUP.md`
+* `docs/TROUBLESHOOTING.md`

@@ -45,6 +45,33 @@ paths:
   /api/nozzle-readings:
     post:
       summary: Record nozzle reading and generate sale
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nozzleId:
+                  type: string
+                reading:
+                  type: number
+                recordedAt:
+                  type: string
+                  format: date-time
+                creditorId:
+                  type: string
+                  nullable: true
+                paymentMethod:
+                  type: string
+                  enum: [cash, card, upi, credit]
+                  description: |
+                    Optional. Currently the API infers 'cash' or 'credit' based on
+                    `creditorId`. Support for `card` and `upi` is planned.
+              required:
+                - nozzleId
+                - reading
+                - recordedAt
     get:
       summary: List nozzle readings
   /api/fuel-prices:
@@ -78,3 +105,5 @@ paths:
   /api/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
+
+# TODO: Define component schemas for all routes

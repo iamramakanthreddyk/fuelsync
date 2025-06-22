@@ -253,3 +253,20 @@ Each step includes:
 
 **Validations Performed:**
 * `npm test` triggers database provisioning and runs suites
+* `LOCAL_DEV_SETUP.md` warns to start PostgreSQL (Docker or service) before tests
+
+### 🔍 Endpoint Review – 2025-06-25
+
+Recent manual review highlighted a few gaps:
+
+* `POST /api/nozzle-readings` does not accept a `paymentMethod` field even though business rules allow `cash`, `card`, `upi`, or `credit`.
+* Pump and nozzle routes lack update endpoints for modifying `label` or `fuelType`.
+* The static OpenAPI file only lists paths without request or response schemas.
+
+These points should be addressed in a future backend patch.
+
+### ✅ Test Verification – 2025-06-27
+
+After installing PostgreSQL locally and seeding the demo data, all Jest suites
+passed. This confirms the automated test database provisioning works when
+`psql` is available or Docker Compose is properly installed.

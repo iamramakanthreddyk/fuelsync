@@ -63,6 +63,7 @@ npm run db:reset && npm run db:seed
 
 * Ensure port `5432` is free or change `DB_PORT` in `.env.development`
 * Remove old volumes via `docker volume rm fuelsync_pgdata`
+* Install Docker and Docker Compose if `docker-compose` is not found
 
 ---
 
