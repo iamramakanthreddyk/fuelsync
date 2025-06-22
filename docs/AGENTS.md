@@ -56,32 +56,24 @@ This file is the **permanent memory and execution protocol** for any AI agent (C
 For **every** new task:
 
 1. **Read context** in this file.
-
 2. **Consult** `IMPLEMENTATION_INDEX.md` for completed / pending steps.
-
 3. **Document the prompt** you are about to execute by creating a file named `STEP_<phase>_<step>_COMMAND.md` in the repo root (or under `docs/`).   This file **must include**:
 
    * Project Context Summary
    * Steps already implemented (with filenames)
    * What to build now, where, and why
    * Required documentation updates
-
 4. **Execute the code changes** exactly as specified in the prompt.
-
 5. **Self‑document results**:
 
    * ✔️ Mark step **Done** in `PHASE_X_SUMMARY.md`
    * 📝 Append entry to `CHANGELOG.md` (Features / Fixes / Enhancements)
    * 🔗 Add row to `IMPLEMENTATION_INDEX.md` with file links
    * 🔗 If new files were created, update any relevant docs (e.g., `DATABASE_GUIDE.md`, `SEEDING.md`)
-
-6. **Dependency Handling**:
-   If any code references external packages (`pg`, `dotenv`, `ts-node`, etc.):
-
-   * Add them to `package.json`
-   * Ensure the repo is runnable without manual installation
-   * Log changes in `CHANGELOG.md`
-
+6. Dependency Handling: If any code references external packages (pg, dotenv, ts-node, etc.):
+   Add them to package.json
+  Ensure the repo is runnable without manual installation
+  Log changes in CHANGELOG.md
 > If any documentation update is missing, the step is considered **incomplete** and must be fixed before moving on.
 
 ---
@@ -108,17 +100,6 @@ When an issue is found in code or logic:
 * 🚫 **No external services** — everything must run in a local Docker + Postgres stack.
 * 🚫 **No hidden cloud calls** — seed scripts, migrations, and runtime config are entirely file‑based.
 * 🌐 Optional services (Redis, S3) must be stubbed locally.
-
-🧪 Test Environment Protocol (Mandatory for Agents)
-All AI agents (Codex, Q Dev Agent, etc.) must provision a dedicated test database for each run:
-| Requirement                 | Description                                                                  |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| `PGDATABASE=fuelsync_test`  | Agents must use `.env.test` or equivalent for test DB isolation              |
-| **Create DB** if not exists | During test setup, check and create the test DB using Postgres CLI or Node   |
-| **Run migrations**          | Migrate both `public` and `tenant_123` schemas in test DB                    |
-| **Seed data**               | Seed with minimal valid data for all major features                          |
-| **Drop DB** (or truncate)   | Optional: clean up after tests to prevent reuse artifacts                    |
-| **Failure handling**        | If DB setup fails, skip tests with a helpful diagnostic — not AggregateError |
 
 ---
 
@@ -150,13 +131,10 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 
 ---
 
-## 🚦 How to Kick Off Work
+## 🧠 Future Prompt Memory Reminder
 
-Instead of hard‑coding a first task here (which quickly becomes outdated), **always read the live `IMPLEMENTATION_INDEX.md` file to find the next pending step**.
-
-1. Open `IMPLEMENTATION_INDEX.md`.
-2. Locate the first row whose status is `⏳ Pending`.
-3. Create a prompt file named `STEP_<phase>_<step>_COMMAND.md` describing that task.
-4. Follow the Agent Execution Protocol above.
-
-> This keeps AGENTS.md timeless and avoids stale “starting point” instructions.
+> This project uses a Codex-first architecture. We’ve already implemented a central brain (`AGENTS.md`) that governs execution rules, changelogs, documentation links, and phase summaries.  
+> All previous steps are documented in `STEP_X_Y_COMMAND.md` files, and each includes project context, prior steps, current task, and doc update instructions.  
+> The backend and database are complete and independently testable. Codex must never forget the architecture, schema-per-tenant model, or role-based access.  
+> Every new command must respect the AGENTS.md protocol and contribute to documentation (CHANGELOG, PHASE summary, IMPLEMENTATION_INDEX, etc).  
+> Consider this project as a **neural architecture** — every part is linked, validated, and remembered. Nothing is standalone.
