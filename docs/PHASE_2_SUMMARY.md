@@ -19,7 +19,7 @@ Each step includes:
 ### 🛠️ Step 2.1 – Authentication & Role Middleware
 
 **Status:** ✅ Done
-**Files:** `src/services/auth.service.ts`, `src/routes/auth.route.ts`, `src/middlewares/authenticateJWT.ts`, `src/middlewares/requireRole.ts`, `src/middlewares/requireStationAccess.ts`, `src/utils/jwt.ts`, `src/constants/auth.ts`, `src/types/auth.d.ts`
+**Files:** `src/services/auth.service.ts`, `src/routes/auth.route.ts`, `src/middlewares/authenticateJWT.ts`, `src/middlewares/requireRole.ts`, `src/middlewares/checkStationAccess.ts`, `src/utils/jwt.ts`, `src/constants/auth.ts`, `src/types/auth.d.ts`
 
 **Business Rules Covered:**
 
@@ -169,5 +169,23 @@ Each step includes:
 
 * Aggregates totals from sales table
 * Finalization check before mutations
+
+---
+
+### 🛠️ Step 2.9 – Global Auth Enforcement
+
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `src/routes/auth.route.ts`, `src/routes/adminApi.router.ts`, `src/middlewares/checkStationAccess.ts`, `src/middleware/auth.middleware.ts`
+
+**Business Rules Covered:**
+
+* JWT-based login flow
+* Role-based access checks on every endpoint
+* Station access verified via `user_stations`
+
+**Validation Performed:**
+
+* Manual login tested for admin and tenant users
+* Middleware chain rejects invalid tokens and roles
 
 ---

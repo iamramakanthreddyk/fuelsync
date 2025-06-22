@@ -6,10 +6,11 @@ This file defines the login flow, session management, and role-based access stra
 
 ## 🔐 Authentication Overview
 
-* Users log in with email + password via `/api/v1/auth/login`
+* Users log in with email + password via `/api/auth/login`
 * Successful login issues a **JWT token**, stored in **HttpOnly cookie**
 * Token contains `user_id`, `tenant_id`, and `role`
 * Route handled in `src/routes/auth.route.ts` which invokes `login()` service
+* Super admins authenticate the same way but access endpoints under `/admin-api`
 
 ---
 
@@ -35,7 +36,7 @@ authenticateJWT()
   → checkStationAccess()
 ```
 
-Middlewares are implemented in `src/middlewares/*.ts` and attach `req.user` after token verification.
+Middlewares live under `src/middlewares` (re-exported via `src/middleware/auth.middleware.ts`) and attach `req.user` after token verification.
 
 ---
 
@@ -56,7 +57,7 @@ Middlewares are implemented in `src/middlewares/*.ts` and attach `req.user` afte
 
 ## 🔓 Logout
 
-* Call `/api/v1/auth/logout` to clear the cookie
+* Call `/api/auth/logout` to clear the cookie
 
 ---
 

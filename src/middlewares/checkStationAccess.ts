@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { Request, Response, NextFunction } from 'express';
 
-export function requireStationAccess(db: Pool) {
+export function checkStationAccess(db: Pool) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     const stationId = req.params.stationId || req.body.stationId;
