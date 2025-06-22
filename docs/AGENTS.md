@@ -140,3 +140,7 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 > Consider this project as a **neural architecture** — every part is linked, validated, and remembered. Nothing is standalone.
 
 > **Rule**: All APIs must use `/vX/` versioning and `errorResponse(...)` format. Pooling must follow Azure constraints.
+
+## blocked_items
+
+- `npm test` fails: test database cannot be created in this environment.

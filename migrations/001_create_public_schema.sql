@@ -1,15 +1,14 @@
 -- Migration: create public schema tables
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- UUIDs are generated in the application layer
 
 CREATE TABLE IF NOT EXISTS public.plans (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     config_json JSONB NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.tenants (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     schema_name TEXT NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -17,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.tenants (
 );
 
 CREATE TABLE IF NOT EXISTS public.admin_users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     role TEXT NOT NULL,
@@ -25,7 +24,7 @@ CREATE TABLE IF NOT EXISTS public.admin_users (
 );
 
 CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY,
     admin_user_id UUID REFERENCES public.admin_users(id) ON DELETE CASCADE,
     action TEXT NOT NULL,
     target_type TEXT,

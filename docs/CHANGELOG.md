@@ -792,3 +792,15 @@ Each entry is tied to a step from the implementation index.
 - Replaced raw tenant schema interpolation in services
 - Added additional indexes for credit payments and fuel prices
 - Updated controllers to use ServiceError for consistent errors
+
+## [Fix - 2025-07-03] – Remove uuid-ossp Defaults
+
+### 🛢️ Database
+* Removed `uuid-ossp` extension and UUID defaults from migrations.
+
+### Files
+* `migrations/001_create_public_schema.sql`
+* `migrations/tenant_schema_template.sql`
+* `sql/tenant_schema_template.sql`
+* `database/tenant_schema_template.sql`
+* `docs/STEP_fix_20250703.md`

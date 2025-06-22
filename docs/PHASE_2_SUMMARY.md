@@ -299,3 +299,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Uses `ServiceError` for typed service errors
 * Added indexes for credit payments and fuel prices
 * Controllers handle `ServiceError` via `errorResponse`
+
+### 🛠️ Fix 2025-07-03 – Remove uuid-ossp Defaults
+
+**Status:** ✅ Done
+**Files:** `migrations/001_create_public_schema.sql`, `migrations/tenant_schema_template.sql` and templates
+
+**Overview:**
+* UUID generation moved entirely to the backend
+* Removed `uuid-ossp` extension and all `DEFAULT uuid_generate_v4()` clauses
