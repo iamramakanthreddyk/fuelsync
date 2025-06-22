@@ -4,7 +4,7 @@
 CREATE SCHEMA IF NOT EXISTS {{schema_name}};
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.users (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.users (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS {{schema_name}}.stations (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     name TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.stations (
 );
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.pumps (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID NOT NULL REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     name TEXT NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.pumps (
 );
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.nozzles (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     pump_id UUID REFERENCES {{schema_name}}.pumps(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     nozzle_number INTEGER NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.user_stations (
 );
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.nozzle_readings (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     nozzle_id UUID REFERENCES {{schema_name}}.nozzles(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     reading NUMERIC NOT NULL CHECK (reading >= 0),
@@ -65,7 +65,7 @@ CREATE INDEX IF NOT EXISTS idx_readings_recorded_at
     ON {{schema_name}}.nozzle_readings(recorded_at);
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     party_name TEXT NOT NULL,
     contact_person TEXT,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.creditors (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS {{schema_name}}.sales (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     nozzle_id UUID REFERENCES {{schema_name}}.nozzles(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     user_id UUID REFERENCES {{schema_name}}.users(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -96,7 +96,7 @@ CREATE INDEX IF NOT EXISTS idx_sales_recorded_at
     ON {{schema_name}}.sales(recorded_at);
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_prices (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID NOT NULL REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     fuel_type TEXT NOT NULL,
@@ -127,7 +127,7 @@ CREATE INDEX IF NOT EXISTS idx_fuel_prices_effective_from
 
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.credit_payments (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     creditor_id UUID REFERENCES {{schema_name}}.creditors(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     amount NUMERIC NOT NULL CHECK (amount > 0),
@@ -143,7 +143,7 @@ CREATE INDEX IF NOT EXISTS idx_credit_payments_received_at
     ON {{schema_name}}.credit_payments(received_at);
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_deliveries (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     fuel_type TEXT NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_deliveries (
 );
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_inventory (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     fuel_type TEXT NOT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.fuel_inventory (
 );
 
 CREATE TABLE IF NOT EXISTS {{schema_name}}.day_reconciliations (
-    id UUID PRIMARY KEY(),
+    id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     reconciliation_date DATE NOT NULL,

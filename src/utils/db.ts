@@ -8,8 +8,9 @@ const pool = new Pool({
   host: process.env.DB_HOST || process.env.PGHOST,
   port: Number(process.env.DB_PORT || process.env.PGPORT || '5432'),
   user: process.env.DB_USER || process.env.PGUSER,
-  password: process.env.DB_PASS || process.env.PGPASSWORD,
+  password: process.env.DB_PASSWORD || process.env.DB_PASS || process.env.PGPASSWORD,
   database: process.env.DB_NAME || process.env.PGDATABASE,
+  ssl: { rejectUnauthorized: false }
 });
 
 export default pool;

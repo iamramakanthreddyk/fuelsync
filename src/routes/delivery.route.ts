@@ -11,6 +11,7 @@ export function createDeliveryRouter(db: Pool) {
 
   router.post('/fuel-deliveries', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
   router.get('/fuel-deliveries', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.get('/fuel-inventory', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.inventory);
 
   return router;
 }

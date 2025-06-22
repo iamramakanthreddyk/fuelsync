@@ -7,6 +7,7 @@
     "db:seed": "ts-node scripts/seed-public-schema.ts",
     "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
+    "seed:all": "ts-node scripts/seed-all.ts",
     "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "npm run test -- --watch",

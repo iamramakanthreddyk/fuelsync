@@ -804,3 +804,49 @@ Each entry is tied to a step from the implementation index.
 * `sql/tenant_schema_template.sql`
 * `database/tenant_schema_template.sql`
 * `docs/STEP_fix_20250703.md`
+
+## [Fix - 2025-12-19] – Complete Swagger API Documentation
+
+### 🟩 Features
+* Fixed empty Swagger UI by replacing JSDoc-based generation with comprehensive static specification
+* Added all missing API endpoints to Swagger documentation including user management, station hierarchy, credit payments, and fuel management
+* Added fuel inventory endpoint with GET `/v1/fuel-inventory` route and controller handler
+* Fixed database import path in `app.ts` from `./db` to `./utils/db`
+
+### 🟦 Enhancements
+* Updated Swagger specification to use proper `/v1` API versioning
+* Added detailed request/response schemas for all endpoints
+* Organized endpoints by functional tags (Authentication, User Management, Station Hierarchy, etc.)
+* Added proper parameter documentation including required headers and query parameters
+
+### 🟥 Fixes
+* Resolved issue where `http://localhost:3000/api/docs` was showing empty page
+* Fixed missing routes in API documentation that were implemented but not documented
+* Corrected server URL in Swagger spec to match actual API structure
+
+### Files
+* `src/docs/swagger.ts` - Complete rewrite with static specification
+* `src/app.ts` - Fixed database import path
+* `src/routes/delivery.route.ts` - Added fuel inventory route
+* `src/controllers/delivery.controller.ts` - Added inventory handler
+
+### API Endpoints Now Documented
+* `/v1/auth/login` - User authentication
+* `/v1/users` - Tenant user management (GET, POST)
+* `/v1/admin/users` - Super admin user management (GET, POST)
+* `/v1/stations` - Station management (GET, POST, PUT, DELETE)
+* `/v1/pumps` - Pump management (GET, POST)
+* `/v1/nozzles` - Nozzle management (GET, POST)
+* `/v1/nozzle-readings` - Reading entry and auto-sales (GET, POST)
+* `/v1/fuel-prices` - Fuel pricing management (GET, POST)
+* `/v1/creditors` - Credit customer management (GET, POST, PUT, DELETE)
+* `/v1/credit-payments` - Credit payment processing (GET, POST)
+* `/v1/fuel-deliveries` - Fuel delivery logging (GET, POST)
+* `/v1/fuel-inventory` - Inventory level viewing (GET)
+* `/v1/reconciliation` - Daily reconciliation (GET, POST)
+
+### Validation
+* Server starts successfully with `NODE_ENV=development npx ts-node src/app.ts`
+* Swagger UI accessible at `http://localhost:3000/api/docs`
+* Swagger JSON available at `http://localhost:3000/api/docs/swagger.json`
+* All previously missing routes now properly documented with request/response schemas

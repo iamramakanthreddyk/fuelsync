@@ -1,5 +1,5 @@
 import express from 'express';
-import { pool } from './db';
+import pool from './utils/db';
 import docsRouter from './routes/docs.route';
 import { createAuthRouter } from './routes/auth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
