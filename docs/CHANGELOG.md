@@ -875,3 +875,13 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`
 * `src/services/auth.service.ts`, `src/controllers/auth.controller.ts`
 * `DB_AUTH_TROUBLESHOOTING.md`, `SERVER_README.md`, `docs/Frontend/*`
+
+## [Step 2.17] – Azure Deployment Restructure
+
+### 🛠 Enhancements
+* Renamed entry script to `index.js` for Azure App Service
+* Updated start script and added Node `20.x` engines requirement
+* Adjusted helper script to launch `index.js`
+
+### Files
+* `index.js`, `package.json`, `scripts/start-and-test.js`

@@ -330,3 +330,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Improved multi-tenant login by looking up user email across schemas
 * Introduced `/v1/fuel-inventory` endpoint with demo seeding
 * Added `DB_AUTH_TROUBLESHOOTING.md` and `SERVER_README.md` for developer guidance
+
+### 🛠️ Step 2.17 – Azure Deployment Restructure
+
+**Status:** ✅ Done
+**Files:** `index.js`, `package.json`, `scripts/start-and-test.js`
+
+**Overview:**
+* Renamed `start-server.js` to `index.js` for Azure compatibility
+* Updated start script and added Node `20.x` engines field
+* Revised utility script to spawn `index.js`
