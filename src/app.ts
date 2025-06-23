@@ -82,40 +82,28 @@ export function createApp() {
     }
   });
   
-  // Simple seed endpoint for Nile DB
-  app.post('/migrate', async (req, res) => {
+  // Simple seed endpoint - both GET and POST
+  const migrateHandler = async (req: any, res: any) => {
     try {
-      const bcrypt = await import('bcrypt');
-      const { randomUUID } = await import('crypto');
-      
-      // Get the tenant schema name
-      const schemas = await pool.query("SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE '%tenant%'");
-      const tenantSchema = schemas.rows[0]?.schema_name;
-      
-      if (!tenantSchema) {
-        return res.status(400).json({ status: 'error', message: 'No tenant schema found' });
-      }
-      
-      // Create admin user in tenant schema
-      const adminHash = await bcrypt.hash('Admin@123!', 10);
-      await pool.query(`INSERT INTO ${tenantSchema}.users (id, email, password_hash, role) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`, 
-        [randomUUID(), 'admin@fuelsync.dev', adminHash, 'superadmin']);
-      
-      // Create demo users
-      const ownerHash = await bcrypt.hash('Owner@123!', 10);
-      await pool.query(`INSERT INTO ${tenantSchema}.users (id, email, password_hash, role) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`, 
-        [randomUUID(), 'owner@demo.com', ownerHash, 'owner']);
-      
+      const { seedDatabase, DEFAULT_SEED_CONFIG, DEMO_TENANT_CONFIG } = await import('./utils/seedUtils');
+      const fullConfig = {
+        publicSchema: DEFAULT_SEED_CONFIG.publicSchema,
+        tenantSchemas: DEMO_TENANT_CONFIG.tenantSchemas
+      };
+      await seedDatabase(fullConfig);
       res.json({ 
         status: 'success', 
-        message: 'Users seeded successfully',
-        schema: tenantSchema,
-        users: ['admin@fuelsync.dev', 'owner@demo.com']
+        message: 'Database migrated and seeded',
+        users: ['admin@fuelsync.dev / password', 'owner@demo.com / password']
       });
     } catch (err: any) {
       res.status(500).json({ status: 'error', message: err.message });
     }
-  });
+  };
+  
+  app.get('/migrate', migrateHandler);
+  app.post('/migrate', migrateHandler);
+
   
   // API Documentation
   app.use('/api/docs', docsRouter);
