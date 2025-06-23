@@ -57,7 +57,9 @@ export function createApp() {
   app.use(cors({
     origin: [
       'http://localhost:8080',
-      'http://localhost:3000',
+      'http://localhost:3003',
+      'https://lovableproject.com',
+      /\.lovableproject\.com$/,
       /\.azurewebsites\.net$/,
       /\.lovable\.app$/
     ],
