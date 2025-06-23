@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "start": "node server.js",
+    "azure:build": "npm install && npm run build",
     "start:server": "npm run build && node start-server.js",
     "start:direct": "ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
