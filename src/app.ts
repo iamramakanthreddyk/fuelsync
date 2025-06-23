@@ -21,6 +21,27 @@ import { errorHandler } from './middlewares/errorHandler';
 export function createApp() {
   const app = express();
   
+  // Handle ALL requests to auth endpoints directly
+  app.all('/v1/auth/login', async (req, res) => {
+    // Handle OPTIONS
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-tenant-id');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      return res.sendStatus(200);
+    }
+    
+    // Handle POST login
+    if (req.method === 'POST') {
+      res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      return res.json({ message: 'Direct login handler working', body: req.body });
+    }
+    
+    res.status(405).json({ error: 'Method not allowed' });
+  });
+  
   // Handle OPTIONS requests FIRST before any other middleware
   app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
