@@ -43,11 +43,17 @@ export function createApp() {
   app.get('/health', async (req, res) => {
     try {
       const { testConnection } = await import('./utils/db');
-      const dbOk = await testConnection();
+      const dbResult = await testConnection();
       res.json({ 
         status: 'ok', 
-        database: dbOk ? 'connected' : 'failed',
+        database: dbResult.success ? 'connected' : 'failed',
+        dbDetails: dbResult,
         env: process.env.NODE_ENV,
+        envVars: {
+          DB_HOST: process.env.DB_HOST,
+          DB_USER: process.env.DB_USER,
+          DB_NAME: process.env.DB_NAME
+        },
         timestamp: new Date().toISOString()
       });
     } catch (err: any) {

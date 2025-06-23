@@ -32,14 +32,26 @@ pool.on('error', (err) => {
 // Add connection test function
 export async function testConnection() {
   try {
+    console.log('[DB] Testing connection with config:', {
+      host: process.env.DB_HOST ? 'SET' : 'NOT_SET',
+      user: process.env.DB_USER ? 'SET' : 'NOT_SET', 
+      database: process.env.DB_NAME ? 'SET' : 'NOT_SET',
+      port: process.env.DB_PORT || '5432'
+    });
+    
     const client = await pool.connect();
-    await client.query('SELECT NOW()');
+    const result = await client.query('SELECT NOW() as current_time');
     client.release();
-    console.log('[DB] Connection test successful');
-    return true;
+    console.log('[DB] Connection test successful:', result.rows[0]);
+    return { success: true, time: result.rows[0].current_time };
   } catch (err: any) {
-    console.error('[DB] Connection test failed:', err.message);
-    return false;
+    console.error('[DB] Connection test failed:', {
+      message: err.message,
+      code: err.code,
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER
+    });
+    return { success: false, error: err.message, code: err.code };
   }
 }
 
