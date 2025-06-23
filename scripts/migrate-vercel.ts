@@ -1,19 +1,18 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@vercel/postgres';
 import fs from 'fs';
 import path from 'path';
 
 async function runMigrations() {
   try {
     console.log('🔄 Running Vercel migrations...');
-    console.log('Environment check:', {
-      POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
-      NODE_ENV: process.env.NODE_ENV
-    });
     
     if (!process.env.POSTGRES_URL) {
       console.log('⚠️ No POSTGRES_URL found, skipping migrations');
       return;
     }
+    
+    const client = createClient();
+    await client.connect();
     
     // Read and run public schema migration
     const publicMigration = fs.readFileSync(
@@ -24,7 +23,7 @@ async function runMigrations() {
     const statements = publicMigration.split(';').filter(s => s.trim());
     for (const statement of statements) {
       if (statement.trim()) {
-        await sql.query(statement);
+        await client.query(statement);
       }
     }
     console.log('✅ Public schema created');
@@ -38,10 +37,12 @@ async function runMigrations() {
     const tenantStatements = tenantTemplate.split(';').filter(s => s.trim());
     for (const statement of tenantStatements) {
       if (statement.trim()) {
-        await sql.query(statement);
+        await client.query(statement);
       }
     }
     console.log('✅ Demo tenant schema created');
+    
+    await client.end();
     
   } catch (error) {
     console.error('❌ Migration failed:', error);
