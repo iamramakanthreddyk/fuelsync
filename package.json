@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "echo 'Using simple app.js - no build needed'",
-    "start": "node app.js",
+    "start": "node index.js",
     "azure:build": "npm install && npm run build",
     "start:server": "npm run build && node start-server.js",
     "start:direct": "ts-node src/app.ts",
