@@ -15,6 +15,7 @@ import { createReconciliationRouter } from './routes/reconciliation.route';
 import { createSalesRouter } from './routes/sales.route';
 import { createSettingsRouter } from './routes/settings.route';
 import { createFuelInventoryRouter } from './routes/fuelInventory.route';
+import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 
 export function createApp() {
@@ -38,7 +39,9 @@ export function createApp() {
     next();
   });
 
-  // Docs route temporarily disabled for deployment
+  // API Documentation
+  app.use('/api/docs', docsRouter);
+  
   app.use('/v1/auth', createAuthRouter(pool));
   app.use('/v1/admin', createAdminApiRouter(pool));
   app.use('/v1/users', createUserRouter(pool));

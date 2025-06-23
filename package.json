@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
+    "@vercel/node": "^3.0.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "bcrypt": "^5.1.1",
