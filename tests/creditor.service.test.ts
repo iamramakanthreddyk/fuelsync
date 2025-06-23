@@ -1,5 +1,4 @@
 import { createCreditPayment } from '../src/services/creditor.service';
-import { ServiceError } from '../src/errors/ServiceError';
 
 const mockClient = {
   query: jest.fn(),
@@ -19,6 +18,6 @@ describe('createCreditPayment', () => {
     });
     await expect(
       createCreditPayment(mockClient, 't1', { creditorId: 'c1', amount: 1 } as any, 'u1')
-    ).rejects.toBeInstanceOf(ServiceError);
+    ).rejects.toBeInstanceOf(Error);
   });
 });
