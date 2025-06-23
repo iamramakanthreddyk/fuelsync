@@ -8,19 +8,42 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 console.log('[DB] Environment:', process.env.NODE_ENV);
-console.log('[DB] Host:', process.env.DB_HOST || 'NOT_SET');
-console.log('[DB] User:', process.env.DB_USER || 'NOT_SET');
-console.log('[DB] Database:', process.env.DB_NAME || 'NOT_SET');
 
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL || process.env.NILEDB_URL,
-  ssl: { 
-    rejectUnauthorized: false
-  },
-  connectionTimeoutMillis: 8000,
-  idleTimeoutMillis: 10000,
-  max: 1 // Limit connections for serverless
-});
+// Determine connection method: Vercel/Nile (connection string) vs Azure (individual params)
+const useConnectionString = process.env.POSTGRES_URL || process.env.NILEDB_URL;
+const useAzureParams = process.env.DB_HOST && process.env.DB_USER;
+
+let pool: Pool;
+
+if (useConnectionString) {
+  console.log('[DB] Using connection string (Vercel/Nile)');
+  pool = new Pool({
+    connectionString: process.env.POSTGRES_URL || process.env.NILEDB_URL,
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 8000,
+    idleTimeoutMillis: 10000,
+    max: 1
+  });
+} else if (useAzureParams) {
+  console.log('[DB] Using Azure PostgreSQL params');
+  console.log('[DB] Host:', process.env.DB_HOST);
+  console.log('[DB] User:', process.env.DB_USER);
+  console.log('[DB] Database:', process.env.DB_NAME);
+  pool = new Pool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT || '5432'),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 8000,
+    idleTimeoutMillis: 10000,
+    max: process.env.NODE_ENV === 'production' ? 1 : 10
+  });
+} else {
+  console.error('[DB] No database configuration found!');
+  throw new Error('Database configuration missing');
+}
 
 // Test connection on startup
 pool.on('error', (err) => {

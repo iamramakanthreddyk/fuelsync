@@ -50,8 +50,13 @@ export function createApp() {
         dbDetails: dbResult,
         env: process.env.NODE_ENV,
         envVars: {
+          // Vercel/Nile
           POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
-          NILEDB_URL: process.env.NILEDB_URL ? 'SET' : 'NOT_SET'
+          NILEDB_URL: process.env.NILEDB_URL ? 'SET' : 'NOT_SET',
+          // Azure
+          DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT_SET',
+          DB_USER: process.env.DB_USER ? 'SET' : 'NOT_SET',
+          DB_NAME: process.env.DB_NAME ? 'SET' : 'NOT_SET'
         },
         timestamp: new Date().toISOString()
       });
@@ -60,16 +65,53 @@ export function createApp() {
     }
   });
   
-  // Runtime migration endpoint
+  // Debug schemas and tables endpoint
+  app.get('/schemas', async (req, res) => {
+    try {
+      const schemas = await pool.query("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast')");
+      
+      const tablesInfo: Record<string, string[]> = {};
+      for (const schema of schemas.rows) {
+        const tables = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = $1", [schema.schema_name]);
+        tablesInfo[schema.schema_name] = tables.rows.map(t => t.table_name);
+      }
+      
+      res.json({ schemas: schemas.rows, tables: tablesInfo });
+    } catch (err: any) {
+      res.status(500).json({ status: 'error', message: err.message });
+    }
+  });
+  
+  // Simple seed endpoint for Nile DB
   app.post('/migrate', async (req, res) => {
     try {
-      const { seedDatabase, DEFAULT_SEED_CONFIG, DEMO_TENANT_CONFIG } = await import('./utils/seedUtils');
-      const fullConfig = {
-        publicSchema: DEFAULT_SEED_CONFIG.publicSchema,
-        tenantSchemas: DEMO_TENANT_CONFIG.tenantSchemas
-      };
-      await seedDatabase(fullConfig);
-      res.json({ status: 'success', message: 'Database migrated and seeded' });
+      const bcrypt = await import('bcrypt');
+      const { randomUUID } = await import('crypto');
+      
+      // Get the tenant schema name
+      const schemas = await pool.query("SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE '%tenant%'");
+      const tenantSchema = schemas.rows[0]?.schema_name;
+      
+      if (!tenantSchema) {
+        return res.status(400).json({ status: 'error', message: 'No tenant schema found' });
+      }
+      
+      // Create admin user in tenant schema
+      const adminHash = await bcrypt.hash('Admin@123!', 10);
+      await pool.query(`INSERT INTO ${tenantSchema}.users (id, email, password_hash, role) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`, 
+        [randomUUID(), 'admin@fuelsync.dev', adminHash, 'superadmin']);
+      
+      // Create demo users
+      const ownerHash = await bcrypt.hash('Owner@123!', 10);
+      await pool.query(`INSERT INTO ${tenantSchema}.users (id, email, password_hash, role) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`, 
+        [randomUUID(), 'owner@demo.com', ownerHash, 'owner']);
+      
+      res.json({ 
+        status: 'success', 
+        message: 'Users seeded successfully',
+        schema: tenantSchema,
+        users: ['admin@fuelsync.dev', 'owner@demo.com']
+      });
     } catch (err: any) {
       res.status(500).json({ status: 'error', message: err.message });
     }
