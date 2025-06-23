@@ -11,7 +11,9 @@ async function runMigrations() {
       return;
     }
     
-    const client = createClient();
+    const client = createClient({
+      connectionString: process.env.POSTGRES_URL
+    });
     await client.connect();
     
     // Read and run public schema migration

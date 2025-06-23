@@ -13,19 +13,13 @@ console.log('[DB] User:', process.env.DB_USER || 'NOT_SET');
 console.log('[DB] Database:', process.env.DB_NAME || 'NOT_SET');
 
 const pool = new Pool({
-  host: process.env.DB_HOST || process.env.PGHOST,
-  port: Number(process.env.DB_PORT || process.env.PGPORT || '5432'),
-  user: process.env.DB_USER || process.env.PGUSER,
-  password: process.env.DB_PASSWORD || process.env.DB_PASS || process.env.PGPASSWORD,
-  database: process.env.DB_NAME || process.env.PGDATABASE,
+  connectionString: process.env.POSTGRES_URL || process.env.NILEDB_URL,
   ssl: { 
     rejectUnauthorized: false
   },
   connectionTimeoutMillis: 8000,
   idleTimeoutMillis: 10000,
-  max: 1, // Limit connections for serverless
-  keepAlive: true,
-  keepAliveInitialDelayMillis: 10000
+  max: 1 // Limit connections for serverless
 });
 
 // Test connection on startup
