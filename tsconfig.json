@@ -3,21 +3,29 @@
     "target": "ES2020",
     "module": "CommonJS",
     "outDir": "dist",
+    "rootDir": ".",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "types": [
       "node",
       "jest"
     ]
   },
   "include": [
-    "scripts/**/*.ts",
+    "api/**/*.ts",
     "src/**/*.ts",
-    "tests/**/*.ts"
-  ]
-  ,
+    "scripts/**/*.ts"
+  ],
   "exclude": [
-    "tests/**"
+    "node_modules",
+    "dist",
+    "tests/**",
+    "__tests__/**",
+    "*.test.ts"
   ]
 }

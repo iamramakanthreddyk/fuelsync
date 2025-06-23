@@ -21,7 +21,12 @@ import { errorHandler } from './middlewares/errorHandler';
 export function createApp() {
   const app = express();
   app.use(cors({
-    origin: ['http://localhost:8080', 'http://localhost:3000'],
+    origin: [
+      'http://localhost:8080', 
+      'http://localhost:3000',
+      'https://your-app.vercel.app', // Replace with your actual Vercel domain
+      /\.vercel\.app$/
+    ],
     credentials: true
   }));
   app.use(express.json());
@@ -54,9 +59,14 @@ export function createApp() {
   return app;
 }
 
+// Export the app for Vercel
+const app = createApp();
+export default app;
+
+// For local development
 if (require.main === module) {
-  const port = process.env.PORT || 3001; // Changed to port 3001
-  createApp().listen(port, () => {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => {
     console.log(`FuelSync API listening on ${port}`);
   });
 }
