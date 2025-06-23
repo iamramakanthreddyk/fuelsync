@@ -9,13 +9,13 @@ export function createCreditorRouter(db: Pool) {
   const router = Router();
   const handlers = createCreditorHandlers(db);
 
-  router.post('/creditors', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
-  router.get('/creditors', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
-  router.put('/creditors/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
-  router.delete('/creditors/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
+  router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
+  router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.put('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
+  router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 
-  router.post('/credit-payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.createPayment);
-  router.get('/credit-payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.listPayments);
+  router.post('/payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.createPayment);
+  router.get('/payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.listPayments);
 
   return router;
 }

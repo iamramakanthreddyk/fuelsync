@@ -25,7 +25,8 @@ export function createStationHandlers(db: Pool) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const stations = await listStations(db, tenantId);
-      res.json({ stations });
+      // Return the stations array directly instead of wrapping it in an object
+      res.json(stations);
     },
     update: async (req: Request, res: Response) => {
       try {

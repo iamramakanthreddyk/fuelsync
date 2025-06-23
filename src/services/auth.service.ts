@@ -4,28 +4,99 @@ import { generateToken } from '../utils/jwt';
 import { AuthPayload } from '../types/auth';
 import { UserRole } from '../constants/auth';
 
-export async function login(db: Pool, email: string, password: string, tenantId?: string): Promise<string | null> {
+interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: UserRole;
+    tenantId?: string;
+    tenantName?: string;
+  };
+}
+
+export async function login(db: Pool, email: string, password: string, tenantId?: string): Promise<LoginResponse | null> {
   if (tenantId) {
+    console.log(`[AUTH-SERVICE] Tenant login attempt for email: ${email}, schema: ${tenantId}`);
+    
+    // Get tenant name
+    const tenantRes = await db.query(
+      'SELECT name FROM public.tenants WHERE schema_name = $1',
+      [tenantId]
+    );
+    const tenantName = tenantRes.rows[0]?.name;
+    
+    if (!tenantName) {
+      console.log(`[AUTH-SERVICE] Tenant not found for schema: ${tenantId}`);
+    }
+
+    // Get user details
     const res = await db.query(
-      `SELECT id, password_hash, role FROM ${tenantId}.users WHERE email = $1`,
+      `SELECT id, email, password_hash, role FROM ${tenantId}.users WHERE email = $1`,
       [email]
     );
     const user = res.rows[0];
-    if (!user) return null;
+    if (!user) {
+      console.log(`[AUTH-SERVICE] User not found: ${email} in tenant: ${tenantId}`);
+      return null;
+    }
+    
     const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return null;
+    if (!ok) {
+      console.log(`[AUTH-SERVICE] Password mismatch for user: ${email}`);
+      return null;
+    }
+    
     const payload: AuthPayload = { userId: user.id, tenantId, role: user.role as UserRole };
-    return generateToken(payload);
+    const token = generateToken(payload);
+    
+    console.log(`[AUTH-SERVICE] Tenant login successful for user: ${user.id}, role: ${user.role}`);
+    
+    return {
+      token,
+      user: {
+        id: user.id,
+        name: email.split('@')[0], // Use part of email as name if not available
+        email: user.email,
+        role: user.role as UserRole,
+        tenantId,
+        tenantName: tenantName || undefined
+      }
+    };
   }
 
+  // SuperAdmin login
+  console.log(`[AUTH-SERVICE] SuperAdmin login attempt for email: ${email}`);
+  
   const res = await db.query(
-    'SELECT id, password_hash, role FROM public.admin_users WHERE email = $1',
+    'SELECT id, email, password_hash, role FROM public.admin_users WHERE email = $1',
     [email]
   );
   const user = res.rows[0];
-  if (!user) return null;
+  if (!user) {
+    console.log(`[AUTH-SERVICE] Admin user not found: ${email}`);
+    return null;
+  }
+  
   const ok = await bcrypt.compare(password, user.password_hash);
-  if (!ok) return null;
+  if (!ok) {
+    console.log(`[AUTH-SERVICE] Password mismatch for admin user: ${email}`);
+    return null;
+  }
+  
   const payload: AuthPayload = { userId: user.id, role: user.role as UserRole, tenantId: null };
-  return generateToken(payload);
+  const token = generateToken(payload);
+  
+  console.log(`[AUTH-SERVICE] SuperAdmin login successful for user: ${user.id}`);
+  
+  return {
+    token,
+    user: {
+      id: user.id,
+      name: email.split('@')[0], // Use part of email as name if not available
+      email: user.email,
+      role: user.role as UserRole
+    }
+  };
 }

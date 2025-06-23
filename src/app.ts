@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import pool from './utils/db';
 import docsRouter from './routes/docs.route';
 import { createAuthRouter } from './routes/auth.route';
@@ -14,10 +15,15 @@ import { createDeliveryRouter } from './routes/delivery.route';
 import { createReconciliationRouter } from './routes/reconciliation.route';
 import { createSalesRouter } from './routes/sales.route';
 import { createSettingsRouter } from './routes/settings.route';
+import { createFuelInventoryRouter } from './routes/fuelInventory.route';
 import { errorHandler } from './middlewares/errorHandler';
 
 export function createApp() {
   const app = express();
+  app.use(cors({
+    origin: ['http://localhost:8080', 'http://localhost:3000'],
+    credentials: true
+  }));
   app.use(express.json());
 
   app.use((req, _res, next) => {
@@ -42,13 +48,14 @@ export function createApp() {
   app.use('/v1/reconciliation', createReconciliationRouter(pool));
   app.use('/v1/sales', createSalesRouter(pool));
   app.use('/v1/settings', createSettingsRouter(pool));
+  app.use('/v1/fuel-inventory', createFuelInventoryRouter(pool));
 
   app.use(errorHandler);
   return app;
 }
 
 if (require.main === module) {
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001; // Changed to port 3001
   createApp().listen(port, () => {
     console.log(`FuelSync API listening on ${port}`);
   });

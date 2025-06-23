@@ -7,6 +7,12 @@ export function createAuthRouter(db: Pool) {
   const controller = createAuthController(db);
 
   router.post('/login', controller.login);
+  
+  // Add a simple test endpoint
+  router.get('/test', (_req, res) => {
+    console.log('[AUTH-ROUTE] Test endpoint called');
+    return res.json({ status: 'ok', message: 'Auth API is working' });
+  });
 
   return router;
 }

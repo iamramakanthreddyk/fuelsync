@@ -11,7 +11,7 @@ async function seed() {
       schemaName: schema,
       users: tenant.users?.map(user => ({
         ...user,
-        email: user.email.replace('@demo.com', `@${schema}.com`)
+        email: user.email.replace('@demo.com', `@${schema.replace(/_/g, '-')}.com`)
       }))
     }))
   };

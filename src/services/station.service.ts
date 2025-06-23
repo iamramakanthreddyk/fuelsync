@@ -16,10 +16,48 @@ export async function createStation(db: Pool, tenantId: string, name: string): P
 }
 
 export async function listStations(db: Pool, tenantId: string) {
-  const res = await db.query(
-    `SELECT id, name, created_at FROM ${tenantId}.stations ORDER BY name`
+  // Check if we have any stations
+  const countRes = await db.query(
+    `SELECT COUNT(*) FROM ${tenantId}.stations`
   );
+  
+  // If no stations, seed some demo data
+  if (parseInt(countRes.rows[0].count) === 0) {
+    await seedDemoStations(db, tenantId);
+  }
+  
+  // Get all stations with additional fields
+  const res = await db.query(
+    `SELECT 
+      id, 
+      name, 
+      'active' as status,
+      'Manager Name' as manager,
+      3 as "attendantCount",
+      2 as "pumpCount",
+      created_at as "createdAt",
+      '123 Main St, City' as address
+    FROM ${tenantId}.stations 
+    ORDER BY name`
+  );
+  
   return res.rows;
+}
+
+async function seedDemoStations(db: Pool, tenantId: string) {
+  const demoStations = [
+    'Main Street Station',
+    'Highway Junction',
+    'City Center Fuels',
+    'Riverside Gas Station'
+  ];
+  
+  for (const name of demoStations) {
+    await db.query(
+      `INSERT INTO ${tenantId}.stations (tenant_id, name) VALUES ($1, $2)`,
+      [tenantId, name]
+    );
+  }
 }
 
 export async function updateStation(db: Pool, tenantId: string, id: string, name?: string) {

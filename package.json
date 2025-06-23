@@ -4,10 +4,29 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "start": "node start-server.js",
+    "start:direct": "ts-node src/app.ts",
+    "dev": "ts-node --watch src/app.ts",
     "db:seed": "ts-node scripts/seed-public-schema.ts",
-    "db:migrate": "psql -U postgres -f migrations/001_create_public_schema.sql",
+    "db:migrate": "ts-node scripts/run-migration.ts",
+    "db:migrate:all": "ts-node scripts/run-all-migrations.ts",
+    "db:migrate:psql": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
     "seed:all": "ts-node scripts/seed-all.ts",
+    "seed:test-users": "ts-node scripts/seed-test-users.ts",
+    "check:db": "ts-node scripts/check-db-users.ts",
+    "check:db-connection": "ts-node scripts/check-db-connection.ts",
+    "check:server": "node scripts/check-server.js",
+    "reset:passwords": "ts-node scripts/reset-passwords.ts",
+    "db:init": "node scripts/init-db.js",
+    "test:login": "ts-node scripts/test-login.ts",
+    "test:api-login": "ts-node scripts/test-api-login.ts",
+    "test:simple-login": "node scripts/simple-login-test.js",
+    "test:direct-login": "node scripts/direct-login-test.js",
+    "frontend:login": "node scripts/frontend-login.js",
+    "generate:frontend-login": "ts-node scripts/generate-frontend-login.ts",
+    "test:all": "node scripts/run-all-tests.js",
+    "start:test": "node scripts/start-and-test.js",
     "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "npm run test -- --watch",
@@ -37,5 +56,10 @@
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5"
   }
 }

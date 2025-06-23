@@ -9,9 +9,9 @@ export function createDeliveryRouter(db: Pool) {
   const router = Router();
   const handlers = createDeliveryHandlers(db);
 
-  router.post('/fuel-deliveries', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
-  router.get('/fuel-deliveries', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
-  router.get('/fuel-inventory', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.inventory);
+  router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
+  router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.get('/inventory', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.inventory);
 
   return router;
 }
