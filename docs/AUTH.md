@@ -10,7 +10,7 @@ This file defines the login flow, session management, and role-based access stra
 * Successful login issues a **JWT token**, stored in **HttpOnly cookie**
 * Token contains `user_id`, `tenant_id`, and `role`
 * Route handled in `src/routes/auth.route.ts` which invokes `login()` service
-* Super admins authenticate the same way but access endpoints under `/admin-api`
+* Super admins authenticate the same way but access endpoints under `/v1/admin`
 
 ---
 

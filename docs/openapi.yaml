@@ -3,48 +3,54 @@ info:
   title: FuelSync Hub API
   version: "1.0.0"
 servers:
-  - url: /v1
+  - url: /api/v1
 paths:
-  /admin-api/users:
+  /admin/users:
     post:
       summary: Create super admin user
     get:
       summary: List super admin users
-  /v1/auth/login:
+  /api/v1/auth/login:
     post:
       summary: User login and JWT issuance
-  /v1/users:
+  /api/v1/auth/logout:
+    post:
+      summary: User logout
+  /api/v1/auth/refresh:
+    post:
+      summary: Refresh JWT token
+  /api/v1/users:
     post:
       summary: Create tenant user
     get:
       summary: List tenant users
-  /v1/stations:
+  /api/v1/stations:
     post:
       summary: Create station
     get:
       summary: List stations
-  /v1/stations/{id}:
+  /api/v1/stations/{id}:
     put:
       summary: Update station
     delete:
       summary: Delete station
-  /v1/pumps:
+  /api/v1/pumps:
     post:
       summary: Create pump
     get:
       summary: List pumps
-  /v1/pumps/{id}:
+  /api/v1/pumps/{id}:
     delete:
       summary: Delete pump
-  /v1/nozzles:
+  /api/v1/nozzles:
     post:
       summary: Create nozzle
     get:
       summary: List nozzles
-  /v1/nozzles/{id}:
+  /api/v1/nozzles/{id}:
     delete:
       summary: Delete nozzle
-  /v1/nozzle-readings:
+  /api/v1/nozzle-readings:
     post:
       summary: Record nozzle reading and generate sale
       requestBody:
@@ -76,36 +82,70 @@ paths:
                 - recordedAt
     get:
       summary: List nozzle readings
-  /v1/fuel-prices:
+  /api/v1/fuel-prices:
     post:
       summary: Create fuel price entry
     get:
       summary: List fuel prices
-  /v1/creditors:
+  /api/v1/creditors:
     post:
       summary: Create creditor
     get:
       summary: List creditors
-  /v1/creditors/{id}:
+  /api/v1/creditors/{id}:
     put:
       summary: Update creditor
     delete:
       summary: Delete creditor
-  /v1/credit-payments:
+  /api/v1/credit-payments:
     post:
       summary: Record credit payment
     get:
       summary: List credit payments
-  /v1/fuel-deliveries:
+  /api/v1/fuel-deliveries:
     post:
       summary: Record fuel delivery
     get:
       summary: List fuel deliveries
-  /v1/reconciliation:
+  /api/v1/reconciliation:
     post:
       summary: Run daily reconciliation
-  /v1/reconciliation/{stationId}:
+  /api/v1/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
+  /api/v1/reconciliation/daily-summary:
+    get:
+      summary: Daily nozzle reading summary
+  /api/v1/dashboard/sales-summary:
+    get:
+      summary: Dashboard sales summary
+  /api/v1/dashboard/payment-methods:
+    get:
+      summary: Dashboard payment method breakdown
+  /api/v1/dashboard/fuel-breakdown:
+    get:
+      summary: Dashboard fuel breakdown
+  /api/v1/dashboard/top-creditors:
+    get:
+      summary: Dashboard top creditors
+  /api/v1/dashboard/sales-trend:
+    get:
+      summary: Dashboard sales trend
+  /admin/tenants/summary:
+    get:
+      summary: Get tenant metrics summary
+  /admin/tenants:
+    get:
+      summary: List tenants
+    post:
+      summary: Create tenant
+  /admin/analytics:
+    get:
+      summary: Super admin analytics
+  /api/v1/tenants:
+    get:
+      summary: List tenants
+    post:
+      summary: Create tenant
 
 # TODO: Define component schemas for all routes

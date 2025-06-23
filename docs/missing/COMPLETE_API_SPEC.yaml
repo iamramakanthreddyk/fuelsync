@@ -12,7 +12,7 @@ info:
     - ❌ Missing - needs implementation
     
 servers:
-  - url: /v1
+  - url: /api/v1
     description: Current backend server
   - url: /api/v1  
     description: Expected by frontend (needs alignment)
@@ -298,7 +298,7 @@ paths:
   
   /auth/logout:
     post:
-      summary: "❌ User logout (MISSING - needs implementation)"
+      summary: "User logout"
       tags: [Authentication]
       security:
         - BearerAuth: []
@@ -310,7 +310,7 @@ paths:
   
   /auth/refresh:
     post:
-      summary: "❌ Refresh JWT token (MISSING - needs implementation)"
+      summary: "Refresh JWT token"
       tags: [Authentication]
       security:
         - BearerAuth: []
@@ -762,10 +762,10 @@ paths:
         '200':
           description: List of readings
 
-  # ❌ MISSING DASHBOARD ENDPOINTS
+  # Dashboard Endpoints
   /dashboard/sales-summary:
     get:
-      summary: "❌ Get sales summary (MISSING - needs implementation)"
+      summary: "Get sales summary"
       tags: [Dashboard]
       security:
         - BearerAuth: []
@@ -786,7 +786,7 @@ paths:
 
   /dashboard/payment-methods:
     get:
-      summary: "❌ Get payment method breakdown (MISSING - needs implementation)"
+      summary: "Get payment method breakdown"
       tags: [Dashboard]
       security:
         - BearerAuth: []
@@ -802,7 +802,7 @@ paths:
 
   /dashboard/fuel-breakdown:
     get:
-      summary: "❌ Get fuel type breakdown (MISSING - needs implementation)"
+      summary: "Get fuel type breakdown"
       tags: [Dashboard]
       security:
         - BearerAuth: []
@@ -818,7 +818,7 @@ paths:
 
   /dashboard/top-creditors:
     get:
-      summary: "❌ Get top creditors (MISSING - needs implementation)"
+      summary: "Get top creditors"
       tags: [Dashboard]
       security:
         - BearerAuth: []
@@ -840,7 +840,7 @@ paths:
 
   /dashboard/sales-trend:
     get:
-      summary: "❌ Get daily sales trend (MISSING - needs implementation)"
+      summary: "Get daily sales trend"
       tags: [Dashboard]
       security:
         - BearerAuth: []
@@ -917,7 +917,7 @@ paths:
 
   /reconciliation/daily-summary:
     get:
-      summary: "❌ Get daily readings summary (MISSING - frontend expects this)"
+      summary: "Get daily readings summary"
       tags: [Reconciliation]
       security:
         - BearerAuth: []
@@ -992,7 +992,7 @@ paths:
   # ❌ MISSING ADMIN ANALYTICS
   /admin/analytics:
     get:
-      summary: "❌ Get super admin analytics (MISSING - needs implementation)"
+      summary: "Get super admin analytics"
       tags: [Admin]
       security:
         - BearerAuth: []

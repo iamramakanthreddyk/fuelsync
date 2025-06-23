@@ -10,11 +10,14 @@ import { createNozzleRouter } from './routes/nozzle.route';
 import { createNozzleReadingRouter } from './routes/nozzleReading.route';
 import { createFuelPriceRouter } from './routes/fuelPrice.route';
 import { createCreditorRouter } from './routes/creditor.route';
+import { createCreditPaymentRouter } from './routes/creditPayment.route';
 import { createDeliveryRouter } from './routes/delivery.route';
 import { createReconciliationRouter } from './routes/reconciliation.route';
 import { createSalesRouter } from './routes/sales.route';
 import { createSettingsRouter } from './routes/settings.route';
 import { createFuelInventoryRouter } from './routes/fuelInventory.route';
+import { createTenantRouter } from './routes/tenant.route';
+import { createDashboardRouter } from './routes/dashboard.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 
@@ -201,20 +204,25 @@ export function createApp() {
   // API Documentation
   app.use('/api/docs', docsRouter);
   
-  app.use('/v1/auth', createAuthRouter(pool));
-  app.use('/v1/admin', createAdminApiRouter(pool));
-  app.use('/v1/users', createUserRouter(pool));
-  app.use('/v1/stations', createStationRouter(pool));
-  app.use('/v1/pumps', createPumpRouter(pool));
-  app.use('/v1/nozzles', createNozzleRouter(pool));
-  app.use('/v1/nozzle-readings', createNozzleReadingRouter(pool));
-  app.use('/v1/fuel-prices', createFuelPriceRouter(pool));
-  app.use('/v1/creditors', createCreditorRouter(pool));
-  app.use('/v1/fuel-deliveries', createDeliveryRouter(pool));
-  app.use('/v1/reconciliation', createReconciliationRouter(pool));
-  app.use('/v1/sales', createSalesRouter(pool));
-  app.use('/v1/settings', createSettingsRouter(pool));
-  app.use('/v1/fuel-inventory', createFuelInventoryRouter(pool));
+  const API_PREFIX = '/api/v1';
+
+  app.use(`${API_PREFIX}/auth`, createAuthRouter(pool));
+  app.use(`${API_PREFIX}/admin`, createAdminApiRouter(pool));
+  app.use(`${API_PREFIX}/users`, createUserRouter(pool));
+  app.use(`${API_PREFIX}/stations`, createStationRouter(pool));
+  app.use(`${API_PREFIX}/pumps`, createPumpRouter(pool));
+  app.use(`${API_PREFIX}/nozzles`, createNozzleRouter(pool));
+  app.use(`${API_PREFIX}/nozzle-readings`, createNozzleReadingRouter(pool));
+  app.use(`${API_PREFIX}/fuel-prices`, createFuelPriceRouter(pool));
+  app.use(`${API_PREFIX}/creditors`, createCreditorRouter(pool));
+  app.use(`${API_PREFIX}/credit-payments`, createCreditPaymentRouter(pool));
+  app.use(`${API_PREFIX}/fuel-deliveries`, createDeliveryRouter(pool));
+  app.use(`${API_PREFIX}/reconciliation`, createReconciliationRouter(pool));
+  app.use(`${API_PREFIX}/sales`, createSalesRouter(pool));
+  app.use(`${API_PREFIX}/settings`, createSettingsRouter(pool));
+  app.use(`${API_PREFIX}/fuel-inventory`, createFuelInventoryRouter(pool));
+  app.use(`${API_PREFIX}/tenants`, createTenantRouter(pool));
+  app.use(`${API_PREFIX}/dashboard`, createDashboardRouter(pool));
 
   app.use(errorHandler);
   return app;

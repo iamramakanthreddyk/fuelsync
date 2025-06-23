@@ -52,5 +52,69 @@ export function createReconciliationHandlers(db: Pool) {
         return errorResponse(res, 400, err.message);
       }
     },
+    getDailySummary: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        const { stationId, date } = req.query as { stationId?: string; date?: string };
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        if (!stationId || !date) {
+          return errorResponse(res, 400, 'stationId and date are required');
+        }
+
+        const query = `
+          WITH daily_readings AS (
+            SELECT
+              nr.nozzle_id,
+              n.nozzle_number,
+              n.fuel_type,
+              nr.reading as current_reading,
+              LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) as previous_reading,
+              nr.payment_method,
+              fp.price as price_per_litre
+            FROM ${tenantId}.nozzle_readings nr
+            JOIN ${tenantId}.nozzles n ON nr.nozzle_id = n.id
+            JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+            LEFT JOIN ${tenantId}.fuel_prices fp ON p.station_id = fp.station_id AND n.fuel_type = fp.fuel_type
+            WHERE p.station_id = $1
+            AND DATE(nr.recorded_at) = $2
+            ORDER BY nr.nozzle_id, nr.recorded_at
+          )
+          SELECT
+            nozzle_id,
+            nozzle_number,
+            fuel_type,
+            COALESCE(previous_reading, 0) as previous_reading,
+            current_reading,
+            GREATEST(current_reading - COALESCE(previous_reading, 0), 0) as delta_volume,
+            COALESCE(price_per_litre, 0) as price_per_litre,
+            GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) as sale_value,
+            payment_method,
+            CASE WHEN payment_method = 'cash' THEN GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) ELSE 0 END as cash_declared
+          FROM daily_readings
+          WHERE previous_reading IS NOT NULL
+        `;
+
+        const result = await db.query(query, [stationId, date]);
+
+        const summary = result.rows.map(row => ({
+          nozzleId: row.nozzle_id,
+          nozzleNumber: parseInt(row.nozzle_number),
+          previousReading: parseFloat(row.previous_reading),
+          currentReading: parseFloat(row.current_reading),
+          deltaVolume: parseFloat(row.delta_volume),
+          pricePerLitre: parseFloat(row.price_per_litre),
+          saleValue: parseFloat(row.sale_value),
+          paymentMethod: row.payment_method,
+          cashDeclared: parseFloat(row.cash_declared),
+          fuelType: row.fuel_type,
+        }));
+
+        res.json(summary);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
   };
 }

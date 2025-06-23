@@ -1,7 +1,7 @@
-import { Client } from 'pg';
+import { Client, Pool, PoolClient } from 'pg';
 
 /** Get all tenant schema names. */
-export async function getTenantSchemas(client: Client): Promise<string[]> {
+export async function getTenantSchemas(client: Client | Pool | PoolClient): Promise<string[]> {
   const { rows } = await client.query<{ schema_name: string }>(
     'SELECT schema_name FROM public.tenants ORDER BY id'
   );

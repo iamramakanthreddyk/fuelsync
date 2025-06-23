@@ -375,3 +375,28 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Removed remaining Vercel deployment code and documentation.
 * Updated CORS origins to allow only Azure domains.
 * Dropped Vercel scripts and dependencies from the project.
+
+### 🛠️ Step 2.18 – Tenants API & Summary
+
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`, `src/routes/tenant.route.ts`, `src/routes/adminTenant.route.ts`, `src/routes/adminApi.router.ts`, `src/validators/tenant.validator.ts`, `src/app.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Implemented `/v1/tenants` endpoints for superadmin tenant management.
+* Added `/v1/admin/tenants/summary` providing overall tenant metrics.
+* Tenant creation applies schema template and optional owner account.
+* Documented new APIs in the OpenAPI file.
+
+### 🛠️ Fix 2025-07-09 – API Alignment
+
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`,
+`src/controllers/reconciliation.controller.ts`, `src/routes/reconciliation.route.ts`,
+`src/controllers/auth.controller.ts`, `src/routes/auth.route.ts`,
+`src/controllers/adminAnalytics.controller.ts`, `src/routes/adminAnalytics.route.ts`,
+`src/routes/creditPayment.route.ts`, `src/routes/creditor.route.ts`, `src/services/station.service.ts`
+
+**Overview:**
+* All frontend-documented endpoints are now available under `/api/v1`.
+* Added dashboard analytics, logout and token refresh, admin analytics and daily reconciliation summary.
+* Credit payment routes aligned and station listing now returns real counts.

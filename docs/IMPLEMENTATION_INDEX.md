@@ -55,6 +55,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.15 | Sales Listing & Settings API | ✅ Done | `src/routes/sales.route.ts`, `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/settings.route.ts`, `src/controllers/settings.controller.ts`, `src/services/settings.service.ts` | `PHASE_2_SUMMARY.md#step-2.15` |
 | 2     | 2.16 | Utility Scripts & Fuel Inventory | ✅ Done | `start-server.js`, `scripts/`, `src/services/auth.service.ts`, `src/controllers/auth.controller.ts`, `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts` | `PHASE_2_SUMMARY.md#step-2.16` |
 | 2     | 2.17 | Azure Deployment Restructure | ✅ Done | `index.js`, `package.json`, `scripts/start-and-test.js` | `PHASE_2_SUMMARY.md#step-2.17` |
+| 2     | 2.18 | Tenants API & Summary | ✅ Done | `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`, `src/routes/tenant.route.ts`, `src/routes/adminTenant.route.ts`, `src/routes/adminApi.router.ts`, `src/validators/tenant.validator.ts`, `src/app.ts`, `docs/openapi.yaml` | `PHASE_2_SUMMARY.md#step-2.18` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
@@ -71,6 +72,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-06 | cross-env dependency fix | ✅ Done | `package.json` | `docs/STEP_fix_20250706.md` |
 | fix | 2025-07-07 | Node typings for Azure | ✅ Done | `package.json`, `tsconfig.json` | `docs/STEP_fix_20250707.md` |
 | fix | 2025-07-08 | Azure cleanup | ✅ Done | `package.json`, `app.js`, `src/app.ts` | `docs/STEP_fix_20250708.md` |
+| fix | 2025-07-09 | API alignment | ✅ Done | `src/app.ts`, controllers, routes | `docs/STEP_fix_20250709.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---
