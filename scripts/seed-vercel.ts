@@ -6,6 +6,11 @@ async function seedVercel() {
   try {
     console.log('🌱 Seeding Vercel database...');
     
+    if (!process.env.POSTGRES_URL) {
+      console.log('⚠️ No POSTGRES_URL found, skipping seeding');
+      return;
+    }
+    
     // Create plans
     const basicPlanId = randomUUID();
     await sql`INSERT INTO public.plans (id, name, config_json) VALUES (${basicPlanId}, 'basic', '{}') ON CONFLICT (name) DO NOTHING`;
@@ -28,7 +33,7 @@ async function seedVercel() {
     
   } catch (error) {
     console.error('❌ Seeding failed:', error);
-    process.exit(1);
+    console.log('⚠️ Continuing build without seeding');
   }
 }
 
