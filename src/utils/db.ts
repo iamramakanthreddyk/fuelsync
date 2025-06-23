@@ -19,8 +19,28 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || process.env.DB_PASS || process.env.PGPASSWORD,
   database: process.env.DB_NAME || process.env.PGDATABASE,
   ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 10000
+  connectionTimeoutMillis: 3000,
+  idleTimeoutMillis: 5000,
+  max: 1 // Limit connections for serverless
 });
+
+// Test connection on startup
+pool.on('error', (err) => {
+  console.error('[DB] Pool error:', err);
+});
+
+// Add connection test function
+export async function testConnection() {
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT NOW()');
+    client.release();
+    console.log('[DB] Connection test successful');
+    return true;
+  } catch (err: any) {
+    console.error('[DB] Connection test failed:', err.message);
+    return false;
+  }
+}
 
 export default pool;

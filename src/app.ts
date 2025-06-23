@@ -39,6 +39,22 @@ export function createApp() {
     next();
   });
 
+  // Health check endpoint
+  app.get('/health', async (req, res) => {
+    try {
+      const { testConnection } = await import('./utils/db');
+      const dbOk = await testConnection();
+      res.json({ 
+        status: 'ok', 
+        database: dbOk ? 'connected' : 'failed',
+        env: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+      });
+    } catch (err: any) {
+      res.status(500).json({ status: 'error', message: err.message });
+    }
+  });
+  
   // API Documentation
   app.use('/api/docs', docsRouter);
   
