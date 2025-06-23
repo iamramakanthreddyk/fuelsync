@@ -19,13 +19,17 @@ export function createAuthController(db: Pool) {
         
         // If no tenant ID is provided, try to find the tenant for this email
         if (!tenantId) {
+          console.log(`[AUTH] No tenant ID provided, checking admin users first`);
           // First check if it's an admin user
           const adminCheck = await db.query(
             'SELECT id FROM public.admin_users WHERE email = $1',
             [email]
           );
           
+          console.log(`[AUTH] Admin check result: ${adminCheck.rows.length} rows`);
+          
           if (adminCheck.rows.length > 0) {
+            console.log(`[AUTH] Found admin user: ${email}`);
             userExists = true;
             userSchema = 'public';
             foundTenantId = undefined; // Admin users don't have tenant ID
@@ -35,6 +39,7 @@ export function createAuthController(db: Pool) {
             
             // Get all tenant schemas
             const { rows: tenants } = await db.query('SELECT schema_name FROM public.tenants');
+            console.log(`[AUTH] Found ${tenants.length} tenant schemas:`, tenants.map(t => t.schema_name));
             
             // Check each tenant schema for the user
             for (const tenant of tenants) {
