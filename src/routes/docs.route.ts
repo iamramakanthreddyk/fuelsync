@@ -22,9 +22,9 @@ const swaggerSpec = {
 
 const router = Router();
 
-router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 router.get('/swagger.json', (_req, res) => {
   res.json(swaggerSpec);
 });
+router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default router;
