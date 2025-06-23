@@ -26,19 +26,25 @@ export async function listStations(db: Pool, tenantId: string) {
     await seedDemoStations(db, tenantId);
   }
   
-  // Get all stations with additional fields
   const res = await db.query(
-    `SELECT 
-      id, 
-      name, 
+    `SELECT
+      s.id,
+      s.name,
       'active' as status,
-      'Manager Name' as manager,
-      3 as "attendantCount",
-      2 as "pumpCount",
-      created_at as "createdAt",
-      '123 Main St, City' as address
-    FROM ${tenantId}.stations 
-    ORDER BY name`
+      NULL as manager,
+      (
+        SELECT COUNT(*)
+        FROM ${tenantId}.user_stations us
+        JOIN ${tenantId}.users u ON us.user_id = u.id
+        WHERE us.station_id = s.id AND u.role = 'attendant'
+      ) as "attendantCount",
+      (
+        SELECT COUNT(*) FROM ${tenantId}.pumps p WHERE p.station_id = s.id
+      ) as "pumpCount",
+      s.created_at as "createdAt",
+      '' as address
+    FROM ${tenantId}.stations s
+    ORDER BY s.name`
   );
   
   return res.rows;

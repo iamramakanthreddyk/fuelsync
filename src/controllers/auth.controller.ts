@@ -110,5 +110,34 @@ export function createAuthController(db: Pool) {
         return errorResponse(res, 500, `Login error: ${error?.message || 'Unknown error'}`);
       }
     },
+    logout: async (_req: Request, res: Response) => {
+      try {
+        res.json({ message: 'Logged out successfully' });
+      } catch (error: any) {
+        return errorResponse(res, 500, error.message);
+      }
+    },
+    refreshToken: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user) {
+          return errorResponse(res, 401, 'Invalid token');
+        }
+        const jwt = require('jsonwebtoken');
+        const token = jwt.sign(
+          {
+            userId: user.userId,
+            tenantId: user.tenantId,
+            role: user.role
+          },
+          process.env.JWT_SECRET || 'fallback-secret',
+          { expiresIn: '24h' }
+        );
+
+        res.json({ token, user });
+      } catch (error: any) {
+        return errorResponse(res, 500, error.message);
+      }
+    },
   };
 }

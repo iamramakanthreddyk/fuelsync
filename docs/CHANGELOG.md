@@ -952,3 +952,19 @@ Each entry is tied to a step from the implementation index.
 * `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`
 * `src/routes/tenant.route.ts`, `src/routes/adminTenant.route.ts`, `src/routes/adminApi.router.ts`
 * `src/validators/tenant.validator.ts`, `src/app.ts`, `docs/openapi.yaml`
+
+## [Fix - 2025-07-09] – Align Backend with API Contract
+
+### 🟥 Fixes
+* Added missing dashboard routes and daily summary endpoint.
+* Implemented logout and refresh token APIs.
+* Introduced admin analytics and credit payment route `/credit-payments`.
+* Unified base path to `/api/v1` and updated station listings.
+
+### Files
+* `src/app.ts`, `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`
+* `src/controllers/adminAnalytics.controller.ts`, `src/routes/adminAnalytics.route.ts`
+* `src/controllers/auth.controller.ts`, `src/routes/auth.route.ts`
+* `src/controllers/reconciliation.controller.ts`, `src/routes/reconciliation.route.ts`
+* `src/routes/creditPayment.route.ts`, `src/routes/creditor.route.ts`
+* `src/services/station.service.ts`, `docs/openapi.yaml`, `docs/missing/*`
