@@ -1,4 +1,4 @@
-import { seedTestDb } from './scripts/seed-test-db';
+import { createTestDb } from './scripts/create-test-db';
 import { Client } from 'pg';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -7,7 +7,7 @@ dotenv.config({ path: '.env.test' });
 
 export default async function () {
   try {
-    await seedTestDb();
+    await createTestDb();
     const client = new Client({
       host: process.env.DB_HOST || process.env.PGHOST,
       port: parseInt(process.env.DB_PORT || process.env.PGPORT || '5432'),

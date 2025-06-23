@@ -12,17 +12,14 @@
     "start:server": "npm run build && node start-server.js",
     "start:direct": "ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
-    "db:seed": "ts-node scripts/seed-public-schema.ts",
+    "db:seed": "ts-node scripts/seed-production.ts",
     "db:migrate": "ts-node scripts/run-migration.ts",
     "db:migrate:all": "ts-node scripts/run-all-migrations.ts",
     "db:migrate:psql": "psql -U postgres -f migrations/001_create_public_schema.sql",
-    "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
-    "seed:all": "ts-node scripts/seed-all.ts",
     "seed:production": "ts-node scripts/seed-production.ts",
     "vercel-build": "tsc",
     "migrate:vercel": "node dist/scripts/migrate-vercel.js",
     "seed:vercel": "node dist/scripts/seed-vercel.js",
-    "seed:test-users": "ts-node scripts/seed-test-users.ts",
     "check:db": "ts-node scripts/check-db-users.ts",
     "check:db-connection": "ts-node scripts/check-db-connection.ts",
     "check:server": "node scripts/check-server.js",
@@ -36,7 +33,6 @@
     "generate:frontend-login": "ts-node scripts/generate-frontend-login.ts",
     "test:all": "node scripts/run-all-tests.js",
     "start:test": "node scripts/start-and-test.js",
-    "reset:demo": "ts-node scripts/reset-all-demo-tenants.ts",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "npm run test -- --watch",
     "test:db": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles"
@@ -55,7 +51,8 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -68,7 +65,6 @@
     "@types/supertest": "^2.0.12",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "cross-env": "^7.0.3",
     "jest": "^30.0.2",
     "supertest": "^6.3.3",
     "ts-jest": "^29.4.0"

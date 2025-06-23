@@ -897,3 +897,22 @@ Each entry is tied to a step from the implementation index.
 
 ### Files
 * `index.js`, `package.json`, `scripts/start-and-test.js`
+
+## [Fix - 2025-07-05] – Simplify Seeding Scripts
+
+### 🟦 Enhancements
+* Consolidated multiple seed utilities into `scripts/seed-production.ts`.
+* Updated documentation to describe connecting, migrating and seeding in three steps.
+
+### Files
+* `scripts/seed-production.ts` (existing)
+* `docs/SEEDING.md`, `docs/LOCAL_DEV_SETUP.md`, `SERVER_README.md`, `docs/TROUBLESHOOTING.md`, `docs/TESTING_GUIDE.md`, `docs/PHASE_1_SUMMARY.md`
+* `package.json`, `jest.globalSetup.ts`, `scripts/init-db.js`
+
+## [Fix - 2025-07-06] – Ensure cross-env Available for Tests
+
+### 🟥 Fixes
+* Moved `cross-env` from devDependencies to dependencies so `npm test` works in clean environments.
+
+### Files
+* `package.json`, documentation updates

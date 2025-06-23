@@ -36,7 +36,7 @@ To initialize the database with all required tables, data, and users:
 npm run db:init
 ```
 
-This will run all migrations, seed the database, create test users, and reset passwords.
+This will run all migrations and seed the database with demo data.
 
 ### Manual Setup Steps
 
@@ -52,22 +52,12 @@ If you prefer to run the steps individually:
    npm run db:migrate:all
    ```
 
-3. Seed the database:
-   ```bash
-   npm run db:seed
-   ```
+ 3. Seed the database:
+    ```bash
+    npm run db:seed
+    ```
 
-4. Create test users:
-   ```bash
-   npm run seed:test-users
-   ```
-
-5. Reset user passwords:
-   ```bash
-   npm run reset:passwords
-   ```
-
-6. Check if users exist in the database:
+4. Check if users exist in the database:
    ```bash
    npm run check:db
    ```
@@ -84,7 +74,7 @@ npm run test:all
 
 This will:
 1. Check database connection
-2. Reset and seed the database
+2. Reset and seed the database using the production seeder
 3. Check database users
 4. Test login functionality
 5. Test API login and generate frontend login code

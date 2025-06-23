@@ -25,7 +25,7 @@ npm install
 npm test
 ```
 
-The test suite automatically provisions the `fuelsync_test` database via `jest.globalSetup.ts`. This script runs `scripts/create-test-db.ts` and `scripts/seed-test-db.ts` using the variables in `.env.test`.
+The test suite automatically provisions the `fuelsync_test` database via `jest.globalSetup.ts`. This setup runs `scripts/create-test-db.ts` using the variables in `.env.test`.
 If PostgreSQL is not running, the global setup prints a warning and exits without running tests.
 
 Service tests mock database calls while integration tests create and drop a dedicated schema using the global setup and teardown scripts.
