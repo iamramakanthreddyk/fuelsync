@@ -365,3 +365,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Moved `@types/node` into regular dependencies and removed `jest` from the build configuration so Azure deployments compile successfully.
+
+### 🛠️ Fix 2025-07-08 – Azure Cleanup
+
+**Status:** ✅ Done
+**Files:** `package.json`, `package-lock.json`, `app.js`, `src/app.ts`, `src/utils/db.ts`
+
+**Overview:**
+* Removed remaining Vercel deployment code and documentation.
+* Updated CORS origins to allow only Azure domains.
+* Dropped Vercel scripts and dependencies from the project.

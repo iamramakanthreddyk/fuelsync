@@ -18,9 +18,6 @@
     "db:migrate:all": "ts-node scripts/run-all-migrations.ts",
     "db:migrate:psql": "psql -U postgres -f migrations/001_create_public_schema.sql",
     "seed:production": "ts-node scripts/seed-production.ts",
-    "vercel-build": "tsc",
-    "migrate:vercel": "node dist/scripts/migrate-vercel.js",
-    "seed:vercel": "node dist/scripts/seed-vercel.js",
     "check:db": "ts-node scripts/check-db-users.ts",
     "check:db-connection": "ts-node scripts/check-db-connection.ts",
     "check:server": "node scripts/check-server.js",
@@ -40,8 +37,6 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
-    "@vercel/node": "^3.0.0",
-    "@vercel/postgres": "^0.10.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "bcrypt": "^5.1.1",

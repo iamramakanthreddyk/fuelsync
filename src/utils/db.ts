@@ -9,14 +9,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 console.log('[DB] Environment:', process.env.NODE_ENV);
 
-// Determine connection method: Vercel/Nile (connection string) vs Azure (individual params)
+// Determine connection method: connection string vs Azure parameters
 const useConnectionString = process.env.POSTGRES_URL || process.env.NILEDB_URL;
 const useAzureParams = process.env.DB_HOST && process.env.DB_USER;
 
 let pool: Pool;
 
 if (useConnectionString) {
-  console.log('[DB] Using connection string (Vercel/Nile)');
+  console.log('[DB] Using connection string');
   pool = new Pool({
     connectionString: process.env.POSTGRES_URL || process.env.NILEDB_URL,
     ssl: { rejectUnauthorized: false },
