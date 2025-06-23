@@ -32,6 +32,15 @@ export function createApp() {
   }));
   app.use(express.json());
 
+  // Handle OPTIONS requests before auth middleware
+  app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-tenant-id');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(200);
+  });
+
   app.use((req, _res, next) => {
     const schema = req.headers['x-tenant-id'];
     if (typeof schema === 'string') {
