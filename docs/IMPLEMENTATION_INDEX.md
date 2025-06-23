@@ -69,6 +69,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-04 | Test DB UUID & Jest cleanup | ✅ Done | `scripts/create-test-db.ts`, `tests/*.ts` | `docs/STEP_fix_20250704.md` |
 | fix | 2025-07-05 | Simplify seeding scripts | ✅ Done | `scripts/seed-production.ts` | `docs/STEP_fix_20250705.md` |
 | fix | 2025-07-06 | cross-env dependency fix | ✅ Done | `package.json` | `docs/STEP_fix_20250706.md` |
+| fix | 2025-07-07 | Node typings for Azure | ✅ Done | `package.json`, `tsconfig.json` | `docs/STEP_fix_20250707.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---

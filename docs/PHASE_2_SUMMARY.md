@@ -357,3 +357,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Moved `cross-env` to regular dependencies so running `npm test` without installing dev packages still works.
+
+### 🛠️ Fix 2025-07-07 – TypeScript Typings
+
+**Status:** ✅ Done
+**Files:** `package.json`, `tsconfig.json`
+
+**Overview:**
+* Moved `@types/node` into regular dependencies and removed `jest` from the build configuration so Azure deployments compile successfully.
