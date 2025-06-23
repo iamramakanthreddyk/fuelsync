@@ -23,7 +23,7 @@ if (!fs.existsSync(logsDir)) {
 
 // Start the server
 console.log(`${colors.yellow}Starting server...${colors.reset}`);
-const server = spawn('node', ['start-server.js'], {
+const server = spawn('node', ['index.js'], {
   stdio: ['ignore', 'pipe', 'pipe'],
   detached: true
 });
