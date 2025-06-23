@@ -28,6 +28,7 @@ export function createAuthController(db: Pool) {
           if (adminCheck.rows.length > 0) {
             userExists = true;
             userSchema = 'public';
+            foundTenantId = undefined; // Admin users don't have tenant ID
           } else {
             // Not an admin user, try to find in tenant schemas
             console.log(`[AUTH] User not found in public schema, checking tenant schemas for: ${email}`);
@@ -84,7 +85,9 @@ export function createAuthController(db: Pool) {
         }
         
         // Attempt login with the found tenant ID
-        const result = await login(db, email, password, foundTenantId);
+        const result = foundTenantId ? 
+          await login(db, email, password, foundTenantId) : 
+          await login(db, email, password);
         
         if (!result) {
           console.log(`[AUTH] Login failed for email: ${email} (password mismatch)`);
