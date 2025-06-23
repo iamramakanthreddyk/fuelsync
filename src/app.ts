@@ -58,6 +58,11 @@ export function createApp() {
     res.json({ message: 'POST working', body: req.body });
   });
   
+  // Simple auth test
+  app.post('/test-login', (req, res) => {
+    res.json({ message: 'Login endpoint working', body: req.body });
+  });
+  
   // Health check endpoint
   app.get('/health', async (req, res) => {
     try {
