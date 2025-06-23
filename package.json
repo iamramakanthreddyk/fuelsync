@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "start:server": "node start-server.js",
+    "start:server": "npm run build && node start-server.js",
     "start:direct": "ts-node src/app.ts",
     "dev": "ts-node src/app.ts",
     "db:seed": "ts-node scripts/seed-public-schema.ts",

@@ -18,10 +18,15 @@ const pool = new Pool({
   user: process.env.DB_USER || process.env.PGUSER,
   password: process.env.DB_PASSWORD || process.env.DB_PASS || process.env.PGPASSWORD,
   database: process.env.DB_NAME || process.env.PGDATABASE,
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 3000,
-  idleTimeoutMillis: 5000,
-  max: 1 // Limit connections for serverless
+  ssl: { 
+    rejectUnauthorized: false,
+    require: true
+  },
+  connectionTimeoutMillis: 8000,
+  idleTimeoutMillis: 10000,
+  max: 1, // Limit connections for serverless
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000
 });
 
 // Test connection on startup
