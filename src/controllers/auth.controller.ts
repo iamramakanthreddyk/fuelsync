@@ -22,11 +22,15 @@ export function createAuthController(db: Pool) {
           console.log(`[AUTH] No tenant ID provided, checking admin users first`);
           // First check if it's an admin user
           const adminCheck = await db.query(
-            'SELECT id FROM public.admin_users WHERE email = $1',
+            'SELECT id, email, role FROM public.admin_users WHERE email = $1',
             [email]
           );
           
-          console.log(`[AUTH] Admin check result: ${adminCheck.rows.length} rows`);
+          console.log(`[AUTH] Admin check result: ${adminCheck.rows.length} rows`, adminCheck.rows);
+          
+          // Also log all admin users for debugging
+          const allAdmins = await db.query('SELECT email, role FROM public.admin_users');
+          console.log(`[AUTH] All admin users in DB:`, allAdmins.rows);
           
           if (adminCheck.rows.length > 0) {
             console.log(`[AUTH] Found admin user: ${email}`);
