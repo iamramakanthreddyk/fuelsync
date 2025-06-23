@@ -402,6 +402,18 @@ Each step includes:
 **Validations Performed:**
 * Manual review of schema changes
 
+### 🛠️ Fix 2025-07-05 – Simplified Seeding Scripts
+
+**Status:** ✅ Done
+**Files:** `scripts/seed-production.ts`, documentation updates
+
+**Overview:**
+* Removed obsolete seed scripts in favour of a single production seeder.
+* Updated dev guides and troubleshooting docs to reference the new process.
+
+**Validations Performed:**
+* Manual run of `npm run seed:production` on a fresh database.
+
 ---
 
 **Phase 1 Completed.** Database schema and seeding utilities are stable for backend development.

@@ -349,3 +349,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Renamed `start-server.js` to `index.js` for Azure compatibility
 * Updated start script and added Node `20.x` engines field
 * Revised utility script to spawn `index.js`
+
+### 🛠️ Fix 2025-07-06 – cross-env Dependency
+
+**Status:** ✅ Done
+**Files:** `package.json`
+
+**Overview:**
+* Moved `cross-env` to regular dependencies so running `npm test` without installing dev packages still works.

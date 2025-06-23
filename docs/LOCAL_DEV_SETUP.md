@@ -39,18 +39,16 @@ Run the public schema migration:
 psql -U postgres -d fuelsync_hub -f migrations/001_create_public_schema.sql
 ```
 
-## 3. Seed Demo Data
+## 3. Seed Data
 
-Set a connection string and execute the seed scripts:
+Set a connection string and run the production seeder:
 
 ```bash
 export DATABASE_URL=postgres://fuelsync:fuelsync@localhost:5432/fuelsync_hub
-NODE_ENV=development npx ts-node scripts/seed-public-schema.ts
-NODE_ENV=development npx ts-node scripts/seed-demo-tenant.ts demo_tenant_001
+NODE_ENV=development npx ts-node scripts/seed-production.ts
 ```
 
-This inserts a superadmin account (`admin@fuelsync.dev` / `password`) and a demo
-tenant with owner, manager and attendant users.
+This inserts an admin user and a demo tenant with basic accounts.
 
 ## 4. Run the Server
 

@@ -50,7 +50,7 @@ This file lists known issues, recurring bugs, and their resolutions in FuelSync 
 **Fix:**
 
 ```bash
-npm run db:reset && npm run db:seed
+npm run db:reset && npm run seed:production
 ```
 
 ## 🐘 Test DB Provisioning Failure
