@@ -5,7 +5,7 @@ info:
 servers:
   - url: /v1
 paths:
-  /admin-api/users:
+  /admin/users:
     post:
       summary: Create super admin user
     get:
@@ -107,5 +107,18 @@ paths:
   /v1/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
+  /admin/tenants/summary:
+    get:
+      summary: Get tenant metrics summary
+  /admin/tenants:
+    get:
+      summary: List tenants
+    post:
+      summary: Create tenant
+  /v1/tenants:
+    get:
+      summary: List tenants
+    post:
+      summary: Create tenant
 
 # TODO: Define component schemas for all routes

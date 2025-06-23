@@ -592,7 +592,7 @@ Each entry is tied to a step from the implementation index.
 
 * `/api/auth/login` issues JWT tokens containing user and tenant context
 * Middlewares `authenticateJWT`, `requireRole`, and `checkStationAccess` applied across all routes
-* New `/admin-api/*` router for super admin endpoints
+* New `/v1/admin/*` router for super admin endpoints
 
 ### Files
 
@@ -941,3 +941,14 @@ Each entry is tied to a step from the implementation index.
 * Deleted `vercel.json`, `.vercelignore`, `VERCEL_DEPLOYMENT.md`, `api/index.*`,
   `scripts/migrate-vercel.ts`, `vercel-postgres-setup.md`
 * Documentation updates across `DEV_GUIDE.md` and summaries
+
+## [Step 2.18] – Tenant APIs and Admin Summary
+
+### 🟩 Features
+* Added `/v1/tenants` endpoints for SuperAdmin tenant management.
+* Added `/v1/admin/tenants/summary` for global tenant metrics.
+
+### Files
+* `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`
+* `src/routes/tenant.route.ts`, `src/routes/adminTenant.route.ts`, `src/routes/adminApi.router.ts`
+* `src/validators/tenant.validator.ts`, `src/app.ts`, `docs/openapi.yaml`
