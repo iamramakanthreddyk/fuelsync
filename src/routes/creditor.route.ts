@@ -14,8 +14,6 @@ export function createCreditorRouter(db: Pool) {
   router.put('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
   router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 
-  router.post('/payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.createPayment);
-  router.get('/payments', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.listPayments);
 
   return router;
 }

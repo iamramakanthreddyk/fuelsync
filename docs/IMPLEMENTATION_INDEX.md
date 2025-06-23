@@ -72,6 +72,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-06 | cross-env dependency fix | ✅ Done | `package.json` | `docs/STEP_fix_20250706.md` |
 | fix | 2025-07-07 | Node typings for Azure | ✅ Done | `package.json`, `tsconfig.json` | `docs/STEP_fix_20250707.md` |
 | fix | 2025-07-08 | Azure cleanup | ✅ Done | `package.json`, `app.js`, `src/app.ts` | `docs/STEP_fix_20250708.md` |
+| fix | 2025-07-09 | API alignment | ✅ Done | `src/app.ts`, controllers, routes | `docs/STEP_fix_20250709.md` |
 | 3     | 3.3  | Creditors View + Payments    | ⏳ Pending | `frontend/app/creditors/`              | `PHASE_3_SUMMARY.md#step-3.3` |
 
 ---
