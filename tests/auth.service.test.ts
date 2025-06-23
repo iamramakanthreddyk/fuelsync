@@ -14,15 +14,25 @@ describe('auth.service.login', () => {
 
   test('returns token when password matches', async () => {
     const hash = await bcrypt.hash('pw', 1);
-    const db = { query: jest.fn().mockResolvedValue({ rows: [{ id: '1', password_hash: hash, role: 'manager' }] }) } as any;
-    const token = await login(db, 'a@test.com', 'pw', 'tenant1');
-    expect(token).toBe('signed-token');
+    const db = { query: jest.fn().mockResolvedValue({ rows: [{ id: '1', email: 'a@test.com', password_hash: hash, role: 'manager' }] }) } as any;
+    const result = await login(db, 'a@test.com', 'pw', 'tenant1');
+    expect(result).toEqual({
+      token: 'signed-token',
+      user: {
+        id: '1',
+        name: 'a',
+        email: 'a@test.com',
+        role: 'manager',
+        tenantId: 'tenant1',
+        tenantName: undefined
+      }
+    });
   });
 
   test('uses bcrypt.compare for password validation', async () => {
     const hash = await bcrypt.hash('pw', 1);
     const compareSpy = jest.spyOn(bcrypt as any, 'compare').mockResolvedValue(true as any);
-    const db = { query: jest.fn().mockResolvedValue({ rows: [{ id: '1', password_hash: hash, role: 'manager' }] }) } as any;
+    const db = { query: jest.fn().mockResolvedValue({ rows: [{ id: '1', email: 'a@test.com', password_hash: hash, role: 'manager' }] }) } as any;
     await login(db, 'a@test.com', 'pw', 'tenant1');
     expect(compareSpy).toHaveBeenCalledWith('pw', hash);
     compareSpy.mockRestore();

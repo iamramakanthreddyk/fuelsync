@@ -805,6 +805,18 @@ Each entry is tied to a step from the implementation index.
 * `database/tenant_schema_template.sql`
 * `docs/STEP_fix_20250703.md`
 
+## [Fix - 2025-07-04] – Test DB UUID & Jest Cleanup
+
+### 🟢 Tests
+* Fixed failing Jest setup by inserting a generated UUID when creating the basic plan.
+* Updated unit tests to reflect current login response shapes.
+
+### Files
+* `scripts/create-test-db.ts`
+* `tests/auth.service.test.ts`
+* `tests/creditor.service.test.ts`
+* `docs/STEP_fix_20250704.md`
+
 ## [Fix - 2025-12-19] – Complete Swagger API Documentation
 
 ### 🟩 Features

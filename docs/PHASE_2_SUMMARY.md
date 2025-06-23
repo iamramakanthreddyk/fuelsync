@@ -309,6 +309,15 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * UUID generation moved entirely to the backend
 * Removed `uuid-ossp` extension and all `DEFAULT uuid_generate_v4()` clauses
 
+### 🛠️ Fix 2025-07-04 – Test DB UUID & Jest Cleanup
+
+**Status:** ✅ Done
+**Files:** `scripts/create-test-db.ts`, tests
+
+**Overview:**
+* Inserted generated UUID in test DB creation script to satisfy NOT NULL constraint.
+* Updated unit tests to match current login and error handling logic.
+
 ### 🛠️ Step 2.15 – Sales Listing & Tenant Settings API
 
 **Status:** ✅ Done

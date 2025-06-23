@@ -2,6 +2,7 @@ import { Client } from 'pg';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import { randomUUID } from 'crypto';
 
 dotenv.config({ path: '.env.test' });
 
@@ -35,9 +36,11 @@ export async function createTestDb(retries = 5): Promise<void> {
   const publicSql = fs.readFileSync(path.join(__dirname, '../migrations/001_create_public_schema.sql'), 'utf8');
   await client.query(publicSql);
 
-  await client.query(`INSERT INTO public.plans (name, config_json)
-    VALUES ('basic', '{}'::jsonb)
-    ON CONFLICT DO NOTHING`);
+  await client.query(
+    `INSERT INTO public.plans (id, name, config_json)
+     VALUES ($1, $2, $3)`,
+    [randomUUID(), 'basic', '{}']
+  );
 
   await client.end();
 }
