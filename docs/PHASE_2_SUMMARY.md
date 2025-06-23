@@ -319,3 +319,14 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Added `/v1/settings` GET and POST endpoints for tenant preferences
 * Owner role required to update settings; owners and managers can view
 * Marks completion of Phase 2 backend implementation
+
+### 🛠️ Step 2.16 – Utility Scripts & Fuel Inventory
+
+**Status:** ✅ Done
+**Files:** `start-server.js`, `scripts/`, `src/services/auth.service.ts`, `src/controllers/auth.controller.ts`, `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`, documentation
+
+**Overview:**
+* Added helper scripts for migrations, DB checks and login tests
+* Improved multi-tenant login by looking up user email across schemas
+* Introduced `/v1/fuel-inventory` endpoint with demo seeding
+* Added `DB_AUTH_TROUBLESHOOTING.md` and `SERVER_README.md` for developer guidance
