@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'Using simple app.js - no build needed'",
     "start": "node app.js",
     "azure:build": "npm install && npm run build",
     "start:server": "npm run build && node start-server.js",
