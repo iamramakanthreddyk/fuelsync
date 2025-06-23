@@ -49,6 +49,15 @@ export function createApp() {
     next();
   });
 
+  // Simple test endpoint
+  app.get('/test', (req, res) => {
+    res.json({ message: 'API is working', method: req.method });
+  });
+  
+  app.post('/test', (req, res) => {
+    res.json({ message: 'POST working', body: req.body });
+  });
+  
   // Health check endpoint
   app.get('/health', async (req, res) => {
     try {
