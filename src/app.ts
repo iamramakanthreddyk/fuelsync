@@ -85,12 +85,35 @@ export function createApp() {
   // Simple seed endpoint - both GET and POST
   const migrateHandler = async (req: any, res: any) => {
     try {
-      const { seedDatabase, DEFAULT_SEED_CONFIG, DEMO_TENANT_CONFIG } = await import('./utils/seedUtils');
-      const fullConfig = {
-        publicSchema: DEFAULT_SEED_CONFIG.publicSchema,
-        tenantSchemas: DEMO_TENANT_CONFIG.tenantSchemas
-      };
-      await seedDatabase(fullConfig);
+      const fs = await import('fs');
+      const path = await import('path');
+      const bcrypt = await import('bcrypt');
+      const { randomUUID } = await import('crypto');
+      
+      // Run migration SQL first
+      const migrationSql = fs.readFileSync(path.join(process.cwd(), 'migrations/001_create_public_schema.sql'), 'utf8');
+      await pool.query(migrationSql);
+      
+      // Create tenant schema
+      await pool.query('CREATE SCHEMA IF NOT EXISTS demo_tenant_001');
+      
+      const tenantSql = fs.readFileSync(path.join(process.cwd(), 'migrations/tenant_schema_template.sql'), 'utf8')
+        .replace(/{{schema_name}}/g, 'demo_tenant_001');
+      await pool.query(tenantSql);
+      
+      // Seed data
+      const planId = randomUUID();
+      const tenantId = randomUUID();
+      
+      await pool.query('INSERT INTO public.plans (id, name, config_json) VALUES ($1, $2, $3)', [planId, 'basic', '{}']);
+      await pool.query('INSERT INTO public.tenants (id, name, schema_name, plan_id) VALUES ($1, $2, $3, $4)', [tenantId, 'Demo Company', 'demo_tenant_001', planId]);
+      
+      const adminHash = await bcrypt.hash('password', 10);
+      await pool.query('INSERT INTO public.admin_users (id, email, password_hash, role) VALUES ($1, $2, $3, $4)', [randomUUID(), 'admin@fuelsync.dev', adminHash, 'superadmin']);
+      
+      const ownerHash = await bcrypt.hash('password', 10);
+      await pool.query('INSERT INTO demo_tenant_001.users (id, tenant_id, email, password_hash, role) VALUES ($1, $2, $3, $4, $5)', [randomUUID(), tenantId, 'owner@demo.com', ownerHash, 'owner']);
+      
       res.json({ 
         status: 'success', 
         message: 'Database migrated and seeded',
