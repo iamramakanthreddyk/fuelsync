@@ -90,16 +90,43 @@ export function createApp() {
       const bcrypt = await import('bcrypt');
       const { randomUUID } = await import('crypto');
       
-      // Run migration SQL first
-      const migrationSql = fs.readFileSync(path.join(process.cwd(), 'migrations/001_create_public_schema.sql'), 'utf8');
-      await pool.query(migrationSql);
+      // Create tables directly
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS public.plans (
+          id UUID PRIMARY KEY,
+          name TEXT NOT NULL,
+          config_json JSONB NOT NULL
+        );
+        
+        CREATE TABLE IF NOT EXISTS public.tenants (
+          id UUID PRIMARY KEY,
+          name TEXT NOT NULL,
+          schema_name TEXT NOT NULL UNIQUE,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+          plan_id UUID REFERENCES public.plans(id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS public.admin_users (
+          id UUID PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          role TEXT NOT NULL,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+      `);
       
-      // Create tenant schema
+      // Create tenant schema and table
       await pool.query('CREATE SCHEMA IF NOT EXISTS demo_tenant_001');
-      
-      const tenantSql = fs.readFileSync(path.join(process.cwd(), 'migrations/tenant_schema_template.sql'), 'utf8')
-        .replace(/{{schema_name}}/g, 'demo_tenant_001');
-      await pool.query(tenantSql);
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS demo_tenant_001.users (
+          id UUID PRIMARY KEY,
+          tenant_id UUID NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          role TEXT NOT NULL,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+      `);
       
       // Seed data
       const planId = randomUUID();
