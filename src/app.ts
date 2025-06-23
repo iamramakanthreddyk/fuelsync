@@ -53,9 +53,9 @@ export function createApp() {
   
   app.use(cors({
     origin: [
-      'http://localhost:8080', 
+      'http://localhost:8080',
       'http://localhost:3000',
-      /\.vercel\.app$/
+      /\.azurewebsites\.net$/
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -96,10 +96,6 @@ export function createApp() {
         dbDetails: dbResult,
         env: process.env.NODE_ENV,
         envVars: {
-          // Vercel/Nile
-          POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
-          NILEDB_URL: process.env.NILEDB_URL ? 'SET' : 'NOT_SET',
-          // Azure
           DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT_SET',
           DB_USER: process.env.DB_USER ? 'SET' : 'NOT_SET',
           DB_NAME: process.env.DB_NAME ? 'SET' : 'NOT_SET'
@@ -223,7 +219,7 @@ export function createApp() {
   return app;
 }
 
-// Export the app for Vercel
+// Export the app for external integrations
 const app = createApp();
 export default app;
 

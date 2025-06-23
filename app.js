@@ -13,7 +13,7 @@ app.options('*', (req, res) => {
 });
 
 app.use(cors({
-  origin: ['http://localhost:8080', /\.vercel\.app$/, /\.azurewebsites\.net$/],
+  origin: ['http://localhost:8080', /\.azurewebsites\.net$/],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id']

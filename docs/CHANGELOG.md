@@ -925,3 +925,19 @@ Each entry is tied to a step from the implementation index.
 
 ### Files
 * `package.json`, `tsconfig.json`, documentation updates
+
+## [Fix - 2025-07-08] – Azure Cleanup and Finalisation
+
+### 🟦 Enhancements
+* Added `AZURE_DEPLOYMENT.md` describing direct Git deployment.
+
+### 🟥 Fixes
+* Removed all Vercel-related configuration and docs.
+* Updated CORS and DB utilities for Azure-only environment.
+* Package scripts cleaned to run compiled output on Azure.
+
+### Files
+* `app.js`, `src/app.ts`, `src/utils/db.ts`, `package.json`, `package-lock.json`
+* Deleted `vercel.json`, `.vercelignore`, `VERCEL_DEPLOYMENT.md`, `api/index.*`,
+  `scripts/migrate-vercel.ts`, `vercel-postgres-setup.md`
+* Documentation updates across `DEV_GUIDE.md` and summaries

@@ -1,17 +1,15 @@
 # FuelSync Development Guide
 
 ## Overview
-This guide covers setting up FuelSync in three environments:
+This guide covers setting up FuelSync for local development and Azure deployment:
 1. **Local Development** (with Azure PostgreSQL)
-2. **Vercel Production** (with Neon PostgreSQL)
-3. **Alternative Deployment** (if Vercel issues persist)
+2. **Azure Production** (using Azure Web App)
 
 ## Prerequisites
 - Node.js 20.x
 - npm or yarn
 - Git
 - Azure PostgreSQL instance (existing)
-- Neon account (for Vercel deployment)
 
 ---
 
@@ -83,113 +81,6 @@ curl -X POST http://localhost:3001/v1/auth/login \
 
 ---
 
-## 2. Vercel Production Setup
-
-### Step 1: Create Neon Database
-1. Go to [neon.tech](https://neon.tech)
-2. Create account and new database
-3. Copy connection string (looks like: `postgresql://user:pass@host/db`)
-
-### Step 2: Configure Vercel Environment
-1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
-2. Add these variables:
-```
-POSTGRES_URL=postgresql://user:pass@host/db
-JWT_SECRET=your-production-secret
-JWT_EXPIRATION=1h
-NODE_ENV=production
-```
-
-### Step 3: Deploy to Vercel
-```bash
-# Push to trigger deployment
-git add .
-git commit -m "Deploy to Vercel"
-git push origin main
-
-# Or deploy directly
-vercel --prod
-```
-
-### Step 4: Initialize Production Database
-```bash
-# Run migration endpoint
-curl https://your-app.vercel.app/migrate
-
-# Expected response:
-# {"status":"success","message":"Database migrated and seeded"}
-```
-
-### Step 5: Test Production API
-```bash
-# Test health
-curl https://your-app.vercel.app/health
-
-# Test login
-curl -X POST https://your-app.vercel.app/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@fuelsync.dev","password":"password"}'
-```
-
----
-
-## 3. Troubleshooting Common Issues
-
-### CORS Issues on Vercel
-If you get 401 Unauthorized on OPTIONS requests:
-
-**Solution 1: Use Vercel API Routes**
-Create `pages/api/auth/login.ts`:
-```typescript
-import { NextApiRequest, NextApiResponse } from 'next';
-import { createAuthController } from '../../../src/controllers/auth.controller';
-import pool from '../../../src/utils/db';
-
-const authController = createAuthController(pool);
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Handle CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-tenant-id');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  if (req.method === 'POST') {
-    return authController.login(req, res);
-  }
-  
-  res.status(405).json({ error: 'Method not allowed' });
-}
-```
-
-**Solution 2: Alternative Deployment**
-Consider Railway, Render, or DigitalOcean App Platform if Vercel CORS issues persist.
-
-### Database Connection Issues
-```bash
-# Check connection
-curl https://your-app.vercel.app/health
-
-# Common fixes:
-# 1. Verify POSTGRES_URL format
-# 2. Check Neon database is active
-# 3. Verify environment variables are set
-```
-
-### Migration Failures
-```bash
-# Check what tables exist
-curl https://your-app.vercel.app/schemas
-
-# Re-run migration
-curl -X POST https://your-app.vercel.app/migrate
-```
-
----
-
 ## 4. Development Workflow
 
 ### Local Development
@@ -208,14 +99,14 @@ git commit -m "Your changes"
 
 ### Deployment
 ```bash
-# 1. Push to trigger Vercel deployment
-git push origin main
+# 1. Push to your Azure remote to deploy
+git push azure main
 
 # 2. Verify deployment
-curl https://your-app.vercel.app/health
+curl https://your-app.azurewebsites.net/health
 
 # 3. Run migrations if schema changed
-curl -X POST https://your-app.vercel.app/migrate
+curl -X POST https://your-app.azurewebsites.net/migrate
 ```
 
 ---
@@ -257,20 +148,20 @@ curl -X POST https://your-app.vercel.app/migrate
 
 ## 7. Environment Comparison
 
-| Feature | Local | Vercel |
-|---------|-------|--------|
-| Database | Azure PostgreSQL | Neon PostgreSQL |
-| Environment | .env.development | Vercel Dashboard |
-| URL | localhost:3001 | your-app.vercel.app |
+| Feature | Local | Azure |
+|---------|-------|-------|
+| Database | Azure PostgreSQL | Azure PostgreSQL |
+| Environment | .env.development | Azure App Settings |
+| URL | localhost:3001 | your-app.azurewebsites.net |
 | CORS | Not needed | Required |
-| Migrations | npm scripts | HTTP endpoints |
+| Migrations | npm scripts | npm scripts or `/migrate` endpoint |
 
 ---
 
 ## 8. Next Steps
 
 1. **Complete local setup** and verify all endpoints work
-2. **Deploy to Vercel** with Neon database
+2. **Deploy to Azure** using the steps in `AZURE_DEPLOYMENT.md`
 3. **Test production** endpoints
 4. **Set up CI/CD** for automated deployments
 5. **Add monitoring** and error tracking
@@ -284,5 +175,5 @@ If you encounter issues:
 1. Check the troubleshooting section
 2. Verify environment variables
 3. Test database connectivity
-4. Check Vercel deployment logs
-5. Consider alternative deployment platforms if CORS issues persist
+4. Check Azure deployment logs
+5. Consider container redeploy if connectivity issues persist
