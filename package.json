@@ -19,6 +19,9 @@
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
     "seed:all": "ts-node scripts/seed-all.ts",
     "seed:production": "ts-node scripts/seed-production.ts",
+    "vercel-build": "tsc && npm run migrate:vercel && npm run seed:vercel",
+    "migrate:vercel": "node dist/scripts/migrate-vercel.js",
+    "seed:vercel": "node dist/scripts/seed-vercel.js",
     "seed:test-users": "ts-node scripts/seed-test-users.ts",
     "check:db": "ts-node scripts/check-db-users.ts",
     "check:db-connection": "ts-node scripts/check-db-connection.ts",
@@ -41,6 +44,7 @@
   "dependencies": {
     "@types/cors": "^2.8.19",
     "@vercel/node": "^3.0.0",
+    "@vercel/postgres": "^0.10.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "bcrypt": "^5.1.1",
