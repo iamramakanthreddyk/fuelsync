@@ -50,12 +50,26 @@ export function createApp() {
         dbDetails: dbResult,
         env: process.env.NODE_ENV,
         envVars: {
-          DB_HOST: process.env.DB_HOST,
-          DB_USER: process.env.DB_USER,
-          DB_NAME: process.env.DB_NAME
+          POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
+          NILEDB_URL: process.env.NILEDB_URL ? 'SET' : 'NOT_SET'
         },
         timestamp: new Date().toISOString()
       });
+    } catch (err: any) {
+      res.status(500).json({ status: 'error', message: err.message });
+    }
+  });
+  
+  // Runtime migration endpoint
+  app.post('/migrate', async (req, res) => {
+    try {
+      const { seedDatabase, DEFAULT_SEED_CONFIG, DEMO_TENANT_CONFIG } = await import('./utils/seedUtils');
+      const fullConfig = {
+        publicSchema: DEFAULT_SEED_CONFIG.publicSchema,
+        tenantSchemas: DEMO_TENANT_CONFIG.tenantSchemas
+      };
+      await seedDatabase(fullConfig);
+      res.json({ status: 'success', message: 'Database migrated and seeded' });
     } catch (err: any) {
       res.status(500).json({ status: 'error', message: err.message });
     }

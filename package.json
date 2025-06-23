@@ -19,7 +19,7 @@
     "seed:demo": "ts-node scripts/seed-demo-tenant.ts",
     "seed:all": "ts-node scripts/seed-all.ts",
     "seed:production": "ts-node scripts/seed-production.ts",
-    "vercel-build": "tsc && npm run migrate:vercel && npm run seed:vercel",
+    "vercel-build": "tsc",
     "migrate:vercel": "node dist/scripts/migrate-vercel.js",
     "seed:vercel": "node dist/scripts/seed-vercel.js",
     "seed:test-users": "ts-node scripts/seed-test-users.ts",
