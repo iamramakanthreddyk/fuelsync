@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import pool from './utils/db';
-import docsRouter from './routes/docs.route';
 import { createAuthRouter } from './routes/auth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
 import { createUserRouter } from './routes/user.route';
@@ -39,7 +38,7 @@ export function createApp() {
     next();
   });
 
-  app.use('/api/docs', docsRouter);
+  // Docs route temporarily disabled for deployment
   app.use('/v1/auth', createAuthRouter(pool));
   app.use('/v1/admin', createAdminApiRouter(pool));
   app.use('/v1/users', createUserRouter(pool));
