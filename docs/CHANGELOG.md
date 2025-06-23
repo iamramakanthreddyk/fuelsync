@@ -916,3 +916,12 @@ Each entry is tied to a step from the implementation index.
 
 ### Files
 * `package.json`, documentation updates
+
+## [Fix - 2025-07-07] – TypeScript typings on Azure
+
+### 🟥 Fixes
+* Moved `@types/node` to dependencies so production builds include Node typings.
+* Removed `jest` from `tsconfig.json` to avoid missing type errors in Azure.
+
+### Files
+* `package.json`, `tsconfig.json`, documentation updates
