@@ -36,8 +36,14 @@ Tests include DB pool config, versioned routes, and error handling.
 
 If Jest reports `Skipping tests: unable to provision test DB`, ensure PostgreSQL
 is installed or start the Docker database with `./scripts/start-dev-db.sh` and
-run the tests again. On Ubuntu/Debian, install Postgres with:
+run the tests again. As a fallback, install and start Postgres manually:
 
 ```bash
 sudo apt-get update && sudo apt-get install -y postgresql
+sudo service postgresql start
 ```
+
+## Additional Documentation
+
+- [SERVER_README.md](SERVER_README.md) – how to start the API server and run quick login tests
+- [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues

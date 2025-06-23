@@ -860,3 +860,18 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/routes/sales.route.ts`, `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`
 * `src/routes/settings.route.ts`, `src/controllers/settings.controller.ts`, `src/services/settings.service.ts`
+
+## [Step 2.16] – Utility Scripts & Fuel Inventory
+
+### 🟩 Features
+* Added `/v1/fuel-inventory` endpoint with auto-seeding when empty
+* Enhanced auth logic to locate tenant by email when no schema is provided
+* Added `start-server.js` and numerous helper scripts for DB checks and login tests
+* Created `DB_AUTH_TROUBLESHOOTING.md` and `SERVER_README.md`
+* Added initial frontend planning documents under `docs/Frontend`
+
+### Files
+* `start-server.js`, `scripts/*.ts`, `src/services/fuelInventory.service.ts`
+* `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`
+* `src/services/auth.service.ts`, `src/controllers/auth.controller.ts`
+* `DB_AUTH_TROUBLESHOOTING.md`, `SERVER_README.md`, `docs/Frontend/*`

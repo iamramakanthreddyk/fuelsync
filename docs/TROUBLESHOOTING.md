@@ -68,6 +68,7 @@ npm run db:reset && npm run db:seed
 
   ```bash
   sudo apt-get update && sudo apt-get install -y postgresql
+  sudo service postgresql start
   ```
 * Rerun `npm test` once the database is available. The setup script will
   create and seed `fuelsync_test` automatically.

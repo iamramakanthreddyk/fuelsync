@@ -53,6 +53,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | CRITICAL_FIXES | Critical backend fixes | ✅ Done | `src/db/index.ts`, `migrations/003_add_indexes.sql`, `src/utils/errorResponse.ts`, tests | `docs/STEP_2_CRITICAL_FIXES.md` |
 | 2     | 2.14 | Safe Schema & Indexes | ✅ Done | `src/utils/schemaUtils.ts`, `src/errors/ServiceError.ts`, `migrations/004_add_additional_indexes.sql` | `PHASE_2_SUMMARY.md#step-2.14` |
 | 2     | 2.15 | Sales Listing & Settings API | ✅ Done | `src/routes/sales.route.ts`, `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/settings.route.ts`, `src/controllers/settings.controller.ts`, `src/services/settings.service.ts` | `PHASE_2_SUMMARY.md#step-2.15` |
+| 2     | 2.16 | Utility Scripts & Fuel Inventory | ✅ Done | `start-server.js`, `scripts/`, `src/services/auth.service.ts`, `src/controllers/auth.controller.ts`, `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts` | `PHASE_2_SUMMARY.md#step-2.16` |
 | 3     | 3.1  | Owner Dashboard UI           | ⏳ Pending | `frontend/app/dashboard/`              | `PHASE_3_SUMMARY.md#step-3.1` |
 | 3     | 3.2  | Manual Reading Entry UI      | ⏳ Pending | `frontend/app/readings/new.tsx`        | `PHASE_3_SUMMARY.md#step-3.2` |
 | fix | 2025-06-22 | Local dev setup and seed fixes | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20250622.md` |
