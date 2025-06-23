@@ -19,8 +19,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || process.env.DB_PASS || process.env.PGPASSWORD,
   database: process.env.DB_NAME || process.env.PGDATABASE,
   ssl: { 
-    rejectUnauthorized: false,
-    require: true
+    rejectUnauthorized: false
   },
   connectionTimeoutMillis: 8000,
   idleTimeoutMillis: 10000,
