@@ -55,7 +55,8 @@ export function createApp() {
     origin: [
       'http://localhost:8080',
       'http://localhost:3000',
-      /\.azurewebsites\.net$/
+      /\.azurewebsites\.net$/,
+      /\.lovable\.app$/
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
