@@ -30,7 +30,7 @@ FuelSync Hub supports multi‑role authentication and authorization across tenan
 
 ### 3. SuperAdmin Auth
 
-* Use separate route prefix `/admin-api/*`
+* Use separate route prefix `/v1/admin/*`
 * Validate credentials against the `public.admin_users` table
 
 ### 4. Secure All Routes

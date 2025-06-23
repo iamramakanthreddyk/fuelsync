@@ -74,7 +74,7 @@ Additional Sale Rules:
 | Session must be JWT  | All users authenticate via JWT in HttpOnly cookie |
 | Role-specific routes | `requireRole('owner')`, etc.                      |
 | Station access check | `user_stations` must include station\_id for user |
-| Super admin prefix   | `/admin-api/*` validated against `public.admin_users` |
+| Super admin prefix   | `/v1/admin/*` validated against `public.admin_users` |
 
 Example middleware chain:
 

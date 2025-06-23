@@ -15,6 +15,7 @@ import { createReconciliationRouter } from './routes/reconciliation.route';
 import { createSalesRouter } from './routes/sales.route';
 import { createSettingsRouter } from './routes/settings.route';
 import { createFuelInventoryRouter } from './routes/fuelInventory.route';
+import { createTenantRouter } from './routes/tenant.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 
@@ -214,6 +215,7 @@ export function createApp() {
   app.use('/v1/sales', createSalesRouter(pool));
   app.use('/v1/settings', createSettingsRouter(pool));
   app.use('/v1/fuel-inventory', createFuelInventoryRouter(pool));
+  app.use('/v1/tenants', createTenantRouter(pool));
 
   app.use(errorHandler);
   return app;
