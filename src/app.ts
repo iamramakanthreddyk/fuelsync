@@ -130,69 +130,29 @@ export function createApp() {
     }
   });
   
-  // Simple seed endpoint - both GET and POST
+  // Production migration endpoint
   const migrateHandler = async (req: any, res: any) => {
     try {
       const fs = await import('fs');
       const path = await import('path');
-      const bcrypt = await import('bcrypt');
-      const { randomUUID } = await import('crypto');
       
-      // Create tables directly
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS public.plans (
-          id UUID PRIMARY KEY,
-          name TEXT NOT NULL,
-          config_json JSONB NOT NULL
-        );
-        
-        CREATE TABLE IF NOT EXISTS public.tenants (
-          id UUID PRIMARY KEY,
-          name TEXT NOT NULL,
-          schema_name TEXT NOT NULL UNIQUE,
-          created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-          plan_id UUID REFERENCES public.plans(id)
-        );
-        
-        CREATE TABLE IF NOT EXISTS public.admin_users (
-          id UUID PRIMARY KEY,
-          email TEXT NOT NULL UNIQUE,
-          password_hash TEXT NOT NULL,
-          role TEXT NOT NULL,
-          created_at TIMESTAMP NOT NULL DEFAULT NOW()
-        );
-      `);
+      // Run production schema migration
+      const schemaSQL = fs.readFileSync(path.join(__dirname, '../migrations/001_production_schema.sql'), 'utf8');
+      await pool.query(schemaSQL);
       
-      // Create tenant schema and table
-      await pool.query('CREATE SCHEMA IF NOT EXISTS demo_tenant_001');
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS demo_tenant_001.users (
-          id UUID PRIMARY KEY,
-          tenant_id UUID NOT NULL,
-          email TEXT NOT NULL UNIQUE,
-          password_hash TEXT NOT NULL,
-          role TEXT NOT NULL,
-          created_at TIMESTAMP NOT NULL DEFAULT NOW()
-        );
-      `);
-      
-      // Seed data
-      const planId = randomUUID();
-      const tenantId = randomUUID();
-      
-      await pool.query('INSERT INTO public.plans (id, name, config_json) VALUES ($1, $2, $3)', [planId, 'basic', '{}']);
-      await pool.query('INSERT INTO public.tenants (id, name, schema_name, plan_id) VALUES ($1, $2, $3, $4)', [tenantId, 'Demo Company', 'demo_tenant_001', planId]);
-      
-      const adminHash = await bcrypt.hash('password', 10);
-      await pool.query('INSERT INTO public.admin_users (id, email, password_hash, role) VALUES ($1, $2, $3, $4)', [randomUUID(), 'admin@fuelsync.dev', adminHash, 'superadmin']);
-      
-      const ownerHash = await bcrypt.hash('password', 10);
-      await pool.query('INSERT INTO demo_tenant_001.users (id, tenant_id, email, password_hash, role) VALUES ($1, $2, $3, $4, $5)', [randomUUID(), tenantId, 'owner@demo.com', ownerHash, 'owner']);
+      // Run production seed data
+      const seedSQL = fs.readFileSync(path.join(__dirname, '../migrations/002_production_seed.sql'), 'utf8');
+      await pool.query(seedSQL);
       
       res.json({ 
         status: 'success', 
-        message: 'Database migrated and seeded',
-        users: ['admin@fuelsync.dev / password', 'owner@demo.com / password']
+        message: 'Production database migrated and seeded',
+        users: [
+          'admin@fuelsync.com / admin123 (SuperAdmin)',
+          'owner@fuelsync.com / admin123 (Owner)',
+          'manager@fuelsync.com / admin123 (Manager)',
+          'attendant@fuelsync.com / admin123 (Attendant)'
+        ]
       });
     } catch (err: any) {
       res.status(500).json({ status: 'error', message: err.message });
