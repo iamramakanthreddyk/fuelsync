@@ -11,9 +11,7 @@
     "migrate:down": "node scripts/migrate.js down",
     "migrate:status": "node scripts/migrate.js status",
     "migrate:create-tenant": "node scripts/migrate.js create-tenant",
-    "seed": "node scripts/run-seed.js",
-    "azure-seed": "node scripts/azure-seed.js",
-    "update-azure-seed": "node scripts/update-azure-seed.js",
+    "setup-db": "node scripts/setup-database.js",
     "check-db": "node scripts/check-db-connection.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },

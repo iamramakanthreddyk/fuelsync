@@ -22,6 +22,8 @@ import { createInventoryRouter } from './routes/inventory.route';
 import { createReportsRouter } from './routes/reports.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
+import { defaultTenant } from './middlewares/defaultTenant';
+import { debugRequest } from './middlewares/debugRequest';
 
 export function createApp() {
   const app = express();
@@ -56,18 +58,33 @@ export function createApp() {
     res.sendStatus(200);
   });
   
-  app.use(cors({
-    origin: '*', // Allow all origins for testing
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id']
-  }));
+  // CORS middleware with more detailed configuration
+  app.use((req, res, next) => {
+    // Allow all origins for testing
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-tenant-id');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    
+    next();
+  });
   app.use(express.json());
 
+  // Tenant context middleware - Part 1
   app.use((req, _res, next) => {
     const schema = req.headers['x-tenant-id'];
+    
+    // For debugging
+    console.log('Request headers:', req.headers);
+    console.log('x-tenant-id:', schema);
+    
     if (typeof schema === 'string') {
       (req as any).schemaName = schema;
+      console.log('Set schema name:', schema);
     }
     next();
   });
@@ -332,6 +349,10 @@ export function createApp() {
   
 
 
+  
+  // Add debug and default tenant middleware
+  app.use(debugRequest);
+  app.use(defaultTenant);
   
   // API Documentation
   app.use('/api/docs', docsRouter);
