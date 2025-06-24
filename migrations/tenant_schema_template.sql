@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS {{schema_name}}.pumps (
     id UUID PRIMARY KEY,
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
     station_id UUID NOT NULL REFERENCES {{schema_name}}.stations(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
-    name TEXT NOT NULL,
+    label TEXT NOT NULL,
+    serial_number VARCHAR(100),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

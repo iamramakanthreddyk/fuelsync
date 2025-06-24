@@ -3,6 +3,7 @@ import { UserRole } from '../constants/auth';
 export interface AdminUserInput {
   email: string;
   password: string;
+  name?: string; // Optional, ignored for admin users
 }
 
 export interface TenantUserInput extends AdminUserInput {
@@ -11,14 +12,14 @@ export interface TenantUserInput extends AdminUserInput {
 }
 
 export function validateAdminUser(data: any): AdminUserInput {
-  const { email, password } = data || {};
+  const { email, password, name } = data || {};
   if (!email || typeof email !== 'string') {
     throw new Error('Invalid email');
   }
   if (!password || typeof password !== 'string' || password.length < 6) {
     throw new Error('Password must be at least 6 characters');
   }
-  return { email, password };
+  return { email, password, name };
 }
 
 export function validateTenantUser(data: any): TenantUserInput {
