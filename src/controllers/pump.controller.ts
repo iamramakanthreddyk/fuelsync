@@ -13,7 +13,7 @@ export function createPumpHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreatePump(req.body);
-        const id = await createPump(db, tenantId, data.stationId, data.label);
+        const id = await createPump(db, tenantId, data.stationId, data.label, data.serialNumber);
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
