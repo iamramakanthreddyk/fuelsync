@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import { Pool } from 'pg';
+import { authenticateJWT } from '../middlewares/authenticateJWT';
+import { requireRole } from '../middlewares/requireRole';
+import { UserRole } from '../constants/auth';
+import { createReportsHandlers } from '../controllers/reports.controller';
+
+export function createReportsRouter(db: Pool) {
+  const router = Router();
+  const handlers = createReportsHandlers(db);
+
+  router.get('/sales/export', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.exportSales);
+  router.get('/financial/export', authenticateJWT, requireRole([UserRole.Owner]), handlers.exportFinancial);
+
+  return router;
+}

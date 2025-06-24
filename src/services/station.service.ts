@@ -134,3 +134,65 @@ export async function getStationPerformance(db: Pool, tenantId: string, stationI
   const growth = prevAmount ? ((current.totalSales - prevAmount) / prevAmount) * 100 : null;
   return { ...current, previousSales: prevAmount, previousVolume: prevVolume, growth };
 }
+
+export async function getStationComparison(db: Pool, tenantId: string, stationIds: string[], period: string) {
+  const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
+  const query = `
+    SELECT 
+      st.id,
+      st.name,
+      COALESCE(SUM(s.amount), 0) as total_sales,
+      COALESCE(SUM(s.profit), 0) as total_profit,
+      COALESCE(SUM(s.volume), 0) as total_volume,
+      COUNT(s.id) as transaction_count,
+      COALESCE(AVG(s.amount), 0) as avg_transaction,
+      CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
+    FROM ${tenantId}.stations st
+    LEFT JOIN ${tenantId}.sales s ON st.id = s.station_id 
+      AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
+    WHERE st.id = ANY($1)
+    GROUP BY st.id, st.name
+    ORDER BY total_sales DESC
+  `;
+  const result = await db.query(query, [stationIds]);
+  return result.rows.map(row => ({
+    id: row.id,
+    name: row.name,
+    totalSales: parseFloat(row.total_sales),
+    totalProfit: parseFloat(row.total_profit),
+    totalVolume: parseFloat(row.total_volume),
+    transactionCount: parseInt(row.transaction_count),
+    avgTransaction: parseFloat(row.avg_transaction),
+    profitMargin: parseFloat(row.profit_margin)
+  }));
+}
+
+export async function getStationRanking(db: Pool, tenantId: string, metric: string, period: string) {
+  const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
+  const orderBy = metric === 'profit' ? 'total_profit' : metric === 'volume' ? 'total_volume' : 'total_sales';
+  const query = `
+    SELECT 
+      st.id,
+      st.name,
+      COALESCE(SUM(s.amount), 0) as total_sales,
+      COALESCE(SUM(s.profit), 0) as total_profit,
+      COALESCE(SUM(s.volume), 0) as total_volume,
+      COUNT(s.id) as transaction_count,
+      RANK() OVER (ORDER BY COALESCE(SUM(${orderBy === 'total_sales' ? 's.amount' : orderBy === 'total_profit' ? 's.profit' : 's.volume'}), 0) DESC) as rank
+    FROM ${tenantId}.stations st
+    LEFT JOIN ${tenantId}.sales s ON st.id = s.station_id 
+      AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
+    GROUP BY st.id, st.name
+    ORDER BY ${orderBy} DESC
+  `;
+  const result = await db.query(query);
+  return result.rows.map(row => ({
+    rank: parseInt(row.rank),
+    id: row.id,
+    name: row.name,
+    totalSales: parseFloat(row.total_sales),
+    totalProfit: parseFloat(row.total_profit),
+    totalVolume: parseFloat(row.total_volume),
+    transactionCount: parseInt(row.transaction_count)
+  }));
+}

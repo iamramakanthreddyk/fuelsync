@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createStation, listStations, updateStation, deleteStation, getStationMetrics, getStationPerformance } from '../services/station.service';
+import { createStation, listStations, updateStation, deleteStation, getStationMetrics, getStationPerformance, getStationComparison, getStationRanking } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -71,6 +71,30 @@ export function createStationHandlers(db: Pool) {
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const perf = await getStationPerformance(db, tenantId, req.params.id, req.query.range as string || 'monthly');
         res.json(perf);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    compare: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const stationIds = (req.query.stationIds as string)?.split(',') || [];
+        if (stationIds.length === 0) return errorResponse(res, 400, 'Station IDs required');
+        const comparison = await getStationComparison(db, tenantId, stationIds, req.query.period as string || 'monthly');
+        res.json(comparison);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    ranking: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const ranking = await getStationRanking(db, tenantId, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
+        res.json(ranking);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
