@@ -20,6 +20,7 @@ import { createTenantRouter } from './routes/tenant.route';
 import { createDashboardRouter } from './routes/dashboard.route';
 import { createInventoryRouter } from './routes/inventory.route';
 import { createReportsRouter } from './routes/reports.route';
+import { createAnalyticsRouter } from './routes/analytics.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 import { defaultTenant } from './middlewares/defaultTenant';
@@ -378,6 +379,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/dashboard`, createDashboardRouter(pool));
   app.use(`${API_PREFIX}/inventory`, createInventoryRouter(pool));
   app.use(`${API_PREFIX}/reports`, createReportsRouter(pool));
+  app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter(pool));
 
   app.use(errorHandler);
   return app;
