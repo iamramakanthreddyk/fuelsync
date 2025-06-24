@@ -70,9 +70,9 @@ Each tenant has its own schema with these tables:
 - `support@fuelsync.com / admin123` (Admin role)
 
 ### Tenant Users
-- `owner@production_tenant.com / admin123`
-- `manager@production_tenant.com / admin123`
-- `attendant@production_tenant.com / admin123`
+- `owner@production-tenant.com / admin123`
+- `manager@production-tenant.com / admin123`
+- `attendant@production-tenant.com / admin123`
 
 ## Tenant Structure
 

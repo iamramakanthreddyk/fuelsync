@@ -52,7 +52,7 @@ You should see:
 
 Login as Owner:
 - URL: https://fuelsync-frontend.azurewebsites.net/login
-- Email: `owner@production_tenant.com`
+- Email: `owner@production-tenant.com`
 - Password: `admin123`
 
 You should see:

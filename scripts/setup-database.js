@@ -231,26 +231,27 @@ async function setupDatabase() {
       // Create users
       const userHash = await bcrypt.hash('admin123', 10);
       
-      // Create owner
+      // Create owner with domain-friendly email
+      const emailPrefix = tenant.schema.replace(/_/g, '-');
       await pool.query(`
         INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'owner')
-      `, [tenant.id, `owner@${tenant.schema}.com`, userHash, `${tenant.name} Owner`]);
-      console.log(`Created Owner: owner@${tenant.schema}.com`);
+      `, [tenant.id, `owner@${emailPrefix}.com`, userHash, `${tenant.name} Owner`]);
+      console.log(`Created Owner: owner@${emailPrefix}.com`);
       
-      // Create manager
+      // Create manager with domain-friendly email
       await pool.query(`
         INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'manager')
-      `, [tenant.id, `manager@${tenant.schema}.com`, userHash, `${tenant.name} Manager`]);
-      console.log(`Created Manager: manager@${tenant.schema}.com`);
+      `, [tenant.id, `manager@${emailPrefix}.com`, userHash, `${tenant.name} Manager`]);
+      console.log(`Created Manager: manager@${emailPrefix}.com`);
       
-      // Create attendant
+      // Create attendant with domain-friendly email
       await pool.query(`
         INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'attendant')
-      `, [tenant.id, `attendant@${tenant.schema}.com`, userHash, `${tenant.name} Attendant`]);
-      console.log(`Created Attendant: attendant@${tenant.schema}.com`);
+      `, [tenant.id, `attendant@${emailPrefix}.com`, userHash, `${tenant.name} Attendant`]);
+      console.log(`Created Attendant: attendant@${emailPrefix}.com`);
       
       // Create stations
       const station1Result = await pool.query(`
@@ -446,9 +447,9 @@ async function setupDatabase() {
     console.log('SuperAdmin: admin2@fuelsync.com / admin123');
     console.log('Admin: support@fuelsync.com / admin123');
     console.log('\nTenant credentials:');
-    console.log('Owner: owner@production_tenant.com / admin123');
-    console.log('Manager: manager@production_tenant.com / admin123');
-    console.log('Attendant: attendant@production_tenant.com / admin123');
+    console.log('Owner: owner@production-tenant.com / admin123');
+    console.log('Manager: manager@production-tenant.com / admin123');
+    console.log('Attendant: attendant@production-tenant.com / admin123');
     
   } catch (error) {
     console.error('Error setting up database:', error);
