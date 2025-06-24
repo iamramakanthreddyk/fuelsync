@@ -12,6 +12,7 @@ export interface TenantOutput {
   name: string;
   schemaName: string;
   planId: string;
+  planName?: string;
   status: string;
   createdAt: Date;
 }

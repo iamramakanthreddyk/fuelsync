@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { listTenants, createTenant, getTenantsSummary } from '../services/tenant.service';
+import { listTenants, createTenant } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -12,8 +12,9 @@ export function createTenantHandlers(db: Pool) {
     },
     create: async (req: Request, res: Response) => {
       try {
-        const { name, schemaName, plan, ownerEmail, ownerPassword } = validateTenantInput(req.body);
-        const id = await createTenant(db, name, schemaName, plan, ownerEmail, ownerPassword);
+        const { name, planId } = validateTenantInput(req.body);
+        const tenant = await createTenant(db, { name, planId });
+        const id = tenant.id;
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
@@ -27,8 +28,8 @@ export function createAdminTenantHandlers(db: Pool) {
   return {
     ...base,
     summary: async (_req: Request, res: Response) => {
-      const summary = await getTenantsSummary(db);
-      res.json(summary);
+      const tenants = await listTenants(db);
+      res.json({ tenantCount: tenants.length });
     }
   };
 }
