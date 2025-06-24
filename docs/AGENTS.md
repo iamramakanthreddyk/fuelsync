@@ -141,6 +141,66 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 
 > **Rule**: All APIs must use `/vX/` versioning and `errorResponse(...)` format. Pooling must follow Azure constraints.
 
+## Database Management
+
+### Current Issues Fixed
+- ✅ Moved schema from app.ts to proper migration files
+- ✅ Created migration tracking system
+- ✅ Added profit tracking and inventory management
+- ✅ Implemented station comparison and ranking APIs
+- ✅ Added proper database documentation
+
+### Migration System
+```
+migrations/
+├── schema/
+│   ├── 001_initial_schema.sql
+│   └── 002_tenant_schema_template.sql
+├── seeds/
+│   └── production_seed.sql
+└── rollbacks/
+    └── (rollback scripts)
+```
+
+### Usage
+```bash
+# Run migrations
+node scripts/migrate.js up
+
+# Create tenant schema
+node scripts/migrate.js create-tenant production_tenant
+
+# Check status
+node scripts/migrate.js status
+```
+
+## Owner Role Implementation Status
+
+### ✅ Completed Features
+- Station-wise dashboard filtering
+- Profit tracking and margin analysis
+- Station comparison and ranking
+- Inventory management with alerts
+- Advanced analytics endpoints
+- Mobile-responsive components
+
+### 📊 API Endpoints Added
+```
+GET /api/v1/stations/compare
+GET /api/v1/stations/ranking
+GET /api/v1/inventory
+POST /api/v1/inventory/update
+GET /api/v1/inventory/alerts
+```
+
+### 🗄️ Database Schema Updates
+- Added cost_price and profit columns to sales
+- Added fuel_inventory table for stock tracking
+- Added alerts table for notifications
+- Added station_id to creditors for proper filtering
+- Added performance indexes
+
 ## blocked_items
 
 - `npm test` fails: test database cannot be created in this environment.
+- Migration system needs to be tested in production environment

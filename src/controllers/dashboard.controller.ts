@@ -30,8 +30,10 @@ export function createDashboardHandlers(db: Pool) {
         const query = `
           SELECT
             COALESCE(SUM(s.amount), 0) as total_sales,
+            COALESCE(SUM(s.profit), 0) as total_profit,
             COALESCE(SUM(s.volume), 0) as total_volume,
-            COUNT(s.id) as transaction_count
+            COUNT(s.id) as transaction_count,
+            CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
           FROM ${tenantId}.sales s
           JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
           JOIN ${tenantId}.pumps p ON n.pump_id = p.id
@@ -42,6 +44,8 @@ export function createDashboardHandlers(db: Pool) {
 
         res.json({
           totalSales: parseFloat(row.total_sales),
+          totalProfit: parseFloat(row.total_profit),
+          profitMargin: parseFloat(row.profit_margin),
           totalVolume: parseFloat(row.total_volume),
           transactionCount: parseInt(row.transaction_count),
           period: range
@@ -105,7 +109,7 @@ export function createDashboardHandlers(db: Pool) {
 
     getFuelTypeBreakdown: async (req: Request, res: Response) => {
       try {
-        const tenantId = res.locals.user?.tenantId || res.req.user?.tenantId;
+        const tenantId = req.user?.tenantId;
         const stationId = req.query.stationId as string | undefined;
         const period = (req.query.period as string) || 'monthly';
 
