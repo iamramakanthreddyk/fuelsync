@@ -6,6 +6,8 @@ export interface TenantInput {
   name: string;
   planId: string;
   schemaName?: string;
+  adminEmail?: string;
+  adminPassword?: string;
 }
 
 export interface TenantOutput {
@@ -59,15 +61,17 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     await client.query(schemaSql);
     
     // Create owner user for tenant
-    const adminHash = await import('bcrypt').then(bcrypt => bcrypt.hash('tenant123', 10));
-    
-    // Create email-friendly domain name (replace underscores with hyphens)
+    const rawPassword = input.adminPassword || 'tenant123';
+    const adminHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
+
+    // Determine admin email
     const emailDomain = schemaName.replace(/_/g, '-');
-    
+    const ownerEmail = input.adminEmail || `owner@${emailDomain}.com`;
+
     const ownerResult = await client.query(
-      `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role) 
+      `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role)
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [tenant.id, `owner@${emailDomain}.com`, adminHash, `${input.name} Owner`, 'owner']
+      [tenant.id, ownerEmail, adminHash, `${input.name} Owner`, 'owner']
     );
     
     await client.query('COMMIT');
