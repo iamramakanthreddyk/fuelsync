@@ -1,46 +1,38 @@
 export interface TenantInput {
   name: string;
-  schemaName: string;
-  plan: string;
-  ownerEmail?: string;
-  ownerPassword?: string;
+  planId: string;
+  schemaName?: string;
 }
 
 export function validateTenantInput(data: any): TenantInput {
-  const { name, schema, schemaName, plan, email, ownerEmail, password, ownerPassword } = data || {};
+  const { name, planId, planType, schema, schemaName } = data || {};
   
   if (!name || typeof name !== 'string') {
     throw new Error('Invalid tenant name');
   }
   
-  // Accept both 'schema' and 'schemaName' from frontend
-  const finalSchemaName = schema || schemaName;
-  if (!finalSchemaName || typeof finalSchemaName !== 'string') {
-    throw new Error('Invalid schema name');
+  // Handle both planId and planType (frontend uses planType)
+  let finalPlanId = planId;
+  if (!finalPlanId && planType) {
+    // Convert planType to planId by looking up in database
+    // For now, we'll use a simple mapping
+    if (planType === 'basic') finalPlanId = 'basic';
+    else if (planType === 'pro') finalPlanId = 'pro';
+    else if (planType === 'premium') finalPlanId = 'premium';
+    else finalPlanId = 'basic'; // Default
   }
   
-  // Validate schema name format (lowercase, alphanumeric, underscores)
+  if (!finalPlanId || typeof finalPlanId !== 'string') {
+    throw new Error('Invalid plan ID or type');
+  }
+  
+  // Handle schema name (frontend uses schema)
+  const finalSchemaName = schemaName || schema || name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  
+  // Validate schema name format
   if (!/^[a-z0-9_]+$/.test(finalSchemaName)) {
     throw new Error('Schema name must be lowercase letters, numbers, and underscores only');
   }
   
-  if (!plan || typeof plan !== 'string') {
-    throw new Error('Invalid plan');
-  }
-  
-  // Accept both 'email' and 'ownerEmail', 'password' and 'ownerPassword'
-  const finalEmail = email || ownerEmail;
-  const finalPassword = password || ownerPassword;
-  
-  if ((finalEmail && typeof finalEmail !== 'string') || (finalPassword && typeof finalPassword !== 'string')) {
-    throw new Error('Invalid owner credentials');
-  }
-  
-  return { 
-    name, 
-    schemaName: finalSchemaName, 
-    plan, 
-    ownerEmail: finalEmail, 
-    ownerPassword: finalPassword 
-  };
+  return { name, planId: finalPlanId, schemaName: finalSchemaName };
 }

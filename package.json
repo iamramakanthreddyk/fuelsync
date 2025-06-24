@@ -11,6 +11,8 @@
     "migrate:down": "node scripts/migrate.js down",
     "migrate:status": "node scripts/migrate.js status",
     "migrate:create-tenant": "node scripts/migrate.js create-tenant",
+    "setup-db": "node scripts/setup-database.js",
+    "check-db": "node scripts/check-db-connection.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },
   "dependencies": {
