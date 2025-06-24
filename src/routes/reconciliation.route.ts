@@ -10,8 +10,8 @@ export function createReconciliationRouter(db: Pool) {
   const handlers = createReconciliationHandlers(db);
 
   router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
-  router.get('/:stationId', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.get('/daily-summary', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
+  router.get('/:stationId', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
 
   return router;
 }
