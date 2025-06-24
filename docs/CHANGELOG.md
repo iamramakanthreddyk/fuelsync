@@ -981,3 +981,18 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/dashboard.controller.ts`
 * `src/controllers/adminUser.controller.ts`, `src/routes/adminApi.router.ts`
 * `docs/STEP_fix_20250710.md`
+
+## [Step 2.19] – Dashboard & Sales Metrics Expansion
+
+### 🟩 Features
+* Dashboard endpoints accept `stationId` and date range filters.
+* Station list can include metrics with `/stations?includeMetrics=true`.
+* New station metrics and performance routes.
+* Sales listing supports pagination and `/sales/analytics` returns station-wise totals.
+
+### Files
+* `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`
+* `src/controllers/station.controller.ts`, `src/routes/station.route.ts`, `src/services/station.service.ts`
+* `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/sales.route.ts`, `src/validators/sales.validator.ts`
+* `src/middlewares/checkStationAccess.ts`
+* `docs/openapi.yaml`, `docs/STEP_2_19_COMMAND.md`

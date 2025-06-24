@@ -410,3 +410,17 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Reordered reconciliation routes so the daily summary endpoint is reachable.
 * Dashboard payment method breakdown now uses `req.user` consistently.
 * Added lightweight analytics summary for SuperAdmin users.
+
+### 🛠️ Step 2.19 – Dashboard & Sales Metrics Expansion
+
+**Status:** ✅ Done
+**Files:** `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`,
+`src/controllers/station.controller.ts`, `src/routes/station.route.ts`, `src/services/station.service.ts`,
+`src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/sales.route.ts`,
+`src/validators/sales.validator.ts`, `src/middlewares/checkStationAccess.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added station and date range parameters to dashboard metrics.
+* Stations can return metrics and month-over-month performance.
+* Sales listing now paginated and analytics endpoint provides station totals.
+* Middleware updated to check `stationId` from query parameters.

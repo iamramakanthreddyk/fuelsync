@@ -10,6 +10,7 @@ export function createSalesRouter(db: Pool) {
   const handlers = createSalesHandlers(db);
 
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.get('/analytics', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.analytics);
 
   return router;
 }

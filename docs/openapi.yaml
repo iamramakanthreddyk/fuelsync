@@ -34,6 +34,12 @@ paths:
       summary: Update station
     delete:
       summary: Delete station
+  /api/v1/stations/{id}/metrics:
+    get:
+      summary: Station metrics summary
+  /api/v1/stations/{id}/performance:
+    get:
+      summary: Station performance comparison
   /api/v1/pumps:
     post:
       summary: Create pump
@@ -107,6 +113,12 @@ paths:
       summary: Record fuel delivery
     get:
       summary: List fuel deliveries
+  /api/v1/sales:
+    get:
+      summary: List sales records
+  /api/v1/sales/analytics:
+    get:
+      summary: Sales aggregation metrics
   /api/v1/reconciliation:
     post:
       summary: Run daily reconciliation

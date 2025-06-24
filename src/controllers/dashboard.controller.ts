@@ -7,6 +7,7 @@ export function createDashboardHandlers(db: Pool) {
     getSalesSummary: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
+        const stationId = req.query.stationId as string | undefined;
         const range = (req.query.range as string) || 'monthly';
 
         let dateFilter = '';
@@ -25,16 +26,18 @@ export function createDashboardHandlers(db: Pool) {
             break;
         }
 
+        const stationFilter = stationId ? `AND p.station_id = $1` : '';
         const query = `
           SELECT
             COALESCE(SUM(s.amount), 0) as total_sales,
             COALESCE(SUM(s.volume), 0) as total_volume,
             COUNT(s.id) as transaction_count
           FROM ${tenantId}.sales s
-          WHERE 1=1 ${dateFilter}
+          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
+          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+          WHERE 1=1 ${dateFilter} ${stationFilter}
         `;
-
-        const result = await db.query(query);
+        const result = await db.query(query, stationId ? [stationId] : []);
         const row = result.rows[0];
 
         res.json({
@@ -51,6 +54,26 @@ export function createDashboardHandlers(db: Pool) {
     getPaymentMethodBreakdown: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
+        const stationId = req.query.stationId as string | undefined;
+        const dateFrom = req.query.dateFrom as string | undefined;
+        const dateTo = req.query.dateTo as string | undefined;
+
+        const conds: string[] = [];
+        const params: any[] = [];
+        let idx = 1;
+        if (stationId) {
+          conds.push(`p.station_id = $${idx++}`);
+          params.push(stationId);
+        }
+        if (dateFrom) {
+          conds.push(`s.recorded_at >= $${idx++}`);
+          params.push(dateFrom);
+        }
+        if (dateTo) {
+          conds.push(`s.recorded_at <= $${idx++}`);
+          params.push(dateTo);
+        }
+        const where = conds.length ? 'WHERE ' + conds.join(' AND ') : '';
 
         const query = `
           SELECT
@@ -58,12 +81,14 @@ export function createDashboardHandlers(db: Pool) {
             SUM(s.amount) as amount,
             COUNT(*) as count
           FROM ${tenantId}.sales s
-          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '30 days'
+          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
+          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+          ${where}
           GROUP BY s.payment_method
           ORDER BY amount DESC
         `;
 
-        const result = await db.query(query);
+        const result = await db.query(query, params);
         const totalAmount = result.rows.reduce((sum, row) => sum + parseFloat(row.amount), 0);
 
         const breakdown = result.rows.map(row => ({
@@ -78,22 +103,43 @@ export function createDashboardHandlers(db: Pool) {
       }
     },
 
-    getFuelTypeBreakdown: async (_req: Request, res: Response) => {
+    getFuelTypeBreakdown: async (req: Request, res: Response) => {
       try {
         const tenantId = res.locals.user?.tenantId || res.req.user?.tenantId;
+        const stationId = req.query.stationId as string | undefined;
+        const period = (req.query.period as string) || 'monthly';
 
+        let dateFilter = '';
+        switch (period) {
+          case 'daily':
+            dateFilter = "AND s.recorded_at >= CURRENT_DATE";
+            break;
+          case 'weekly':
+            dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '7 days'";
+            break;
+          case 'monthly':
+            dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '30 days'";
+            break;
+          case 'yearly':
+            dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '1 year'";
+            break;
+        }
+
+        const stationFilter = stationId ? `AND p.station_id = $1` : '';
         const query = `
           SELECT
             s.fuel_type,
             SUM(s.volume) as volume,
             SUM(s.amount) as amount
           FROM ${tenantId}.sales s
-          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '30 days'
+          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
+          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+          WHERE 1=1 ${dateFilter} ${stationFilter}
           GROUP BY s.fuel_type
           ORDER BY amount DESC
         `;
 
-        const result = await db.query(query);
+        const result = await db.query(query, stationId ? [stationId] : []);
 
         const breakdown = result.rows.map(row => ({
           fuelType: row.fuel_type,
@@ -110,6 +156,7 @@ export function createDashboardHandlers(db: Pool) {
     getTopCreditors: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
+        const stationId = req.query.stationId as string | undefined;
         const limit = parseInt(req.query.limit as string) || 5;
 
         const query = `
@@ -120,15 +167,18 @@ export function createDashboardHandlers(db: Pool) {
             c.credit_limit
           FROM ${tenantId}.creditors c
           LEFT JOIN ${tenantId}.sales s ON c.id = s.creditor_id AND s.payment_method = 'credit'
+          LEFT JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
+          LEFT JOIN ${tenantId}.pumps p ON n.pump_id = p.id
           LEFT JOIN ${tenantId}.credit_payments cp ON c.id = cp.creditor_id
-          WHERE c.status = 'active'
+          WHERE c.status = 'active' ${stationId ? 'AND p.station_id = $2' : ''}
           GROUP BY c.id, c.party_name, c.credit_limit
           HAVING COALESCE(SUM(s.amount) - COALESCE(SUM(cp.amount), 0), 0) > 0
           ORDER BY outstanding_amount DESC
           LIMIT $1
         `;
 
-        const result = await db.query(query, [limit]);
+        const params = stationId ? [limit, stationId] : [limit];
+        const result = await db.query(query, params);
 
         const topCreditors = result.rows.map(row => ({
           id: row.id,
@@ -146,6 +196,7 @@ export function createDashboardHandlers(db: Pool) {
     getDailySalesTrend: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
+        const stationId = req.query.stationId as string | undefined;
         const days = parseInt(req.query.days as string) || 7;
 
         const query = `
@@ -154,12 +205,14 @@ export function createDashboardHandlers(db: Pool) {
             SUM(s.amount) as amount,
             SUM(s.volume) as volume
           FROM ${tenantId}.sales s
-          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days'
+          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
+          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days' ${stationId ? 'AND p.station_id = $1' : ''}
           GROUP BY DATE(s.recorded_at)
           ORDER BY date ASC
         `;
 
-        const result = await db.query(query);
+        const result = await db.query(query, stationId ? [stationId] : []);
 
         const trend = result.rows.map(row => ({
           date: row.date,

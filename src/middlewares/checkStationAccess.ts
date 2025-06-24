@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 export function checkStationAccess(db: Pool) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
-    const stationId = req.params.stationId || req.body.stationId;
+    const stationId = req.params.stationId || req.body.stationId || req.query.stationId;
     if (!user || !user.tenantId || !stationId) {
       return res.status(403).json({ status: 'error', code: 'FORBIDDEN', message: 'Station access denied' });
     }

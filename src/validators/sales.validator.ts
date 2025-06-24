@@ -3,10 +3,12 @@ export interface SalesQuery {
   nozzleId?: string;
   startDate?: Date;
   endDate?: Date;
+  page?: number;
+  limit?: number;
 }
 
 export function parseSalesQuery(query: any): SalesQuery {
-  const { stationId, nozzleId, startDate, endDate } = query || {};
+  const { stationId, nozzleId, startDate, endDate, page, limit } = query || {};
   const result: SalesQuery = {};
   if (stationId && typeof stationId === 'string') {
     result.stationId = stationId;
@@ -21,6 +23,14 @@ export function parseSalesQuery(query: any): SalesQuery {
   if (endDate) {
     const d = new Date(endDate);
     if (!isNaN(d.getTime())) result.endDate = d;
+  }
+  if (page) {
+    const p = parseInt(page as any);
+    if (!isNaN(p) && p > 0) result.page = p;
+  }
+  if (limit) {
+    const l = parseInt(limit as any);
+    if (!isNaN(l) && l > 0) result.limit = l;
   }
   return result;
 }

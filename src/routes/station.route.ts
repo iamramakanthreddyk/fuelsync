@@ -14,6 +14,8 @@ export function createStationRouter(db: Pool) {
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.put('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
   router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
+  router.get('/:id/metrics', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.metrics);
+  router.get('/:id/performance', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.performance);
 
   return router;
 }
