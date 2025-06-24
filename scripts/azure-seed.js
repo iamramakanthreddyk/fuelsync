@@ -4,21 +4,29 @@ const bcrypt = require('bcrypt');
 async function seedProductionData() {
   console.log('Starting Azure production seed...');
   
+    try {
+    require('dotenv').config();
+  } catch (e) {
+    console.log('dotenv not available, using environment variables');
+  }
+  
+  
+  
   // Azure PostgreSQL connection
   const pool = new Pool({
-    host: process.env.POSTGRES_HOST || process.env.DB_HOST,
-    port: process.env.POSTGRES_PORT || process.env.DB_PORT || 5432,
-    database: process.env.POSTGRES_DATABASE || process.env.DB_NAME,
-    user: process.env.POSTGRES_USER || process.env.DB_USER,
-    password: process.env.POSTGRES_PASSWORD || process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME,
+    user:process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     ssl: { rejectUnauthorized: false } // Required for Azure PostgreSQL
   });
 
   try {
     console.log('Connected to Azure database');
-    console.log('Host:', process.env.POSTGRES_HOST || process.env.DB_HOST);
-    console.log('Database:', process.env.POSTGRES_DATABASE || process.env.DB_NAME);
-    console.log('User:', process.env.POSTGRES_USER || process.env.DB_USER);
+    console.log('Host:', process.env.DB_HOST);
+    console.log('Database:',process.env.DB_NAME);
+    console.log('User:', process.env.DB_USER);
     
     // Drop existing schemas
     await pool.query('DROP SCHEMA IF EXISTS production_tenant CASCADE');
