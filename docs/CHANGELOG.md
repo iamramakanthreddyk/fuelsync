@@ -1024,3 +1024,14 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`, `scripts/init-db.js`, `scripts/run-all-tests.js`
 * `docs/STEP_fix_20250712.md`
 
+
+## [Fix - 2025-07-13] – Document Frontend API Contract
+
+### 🟦 Enhancements
+* Added comprehensive frontend OpenAPI spec.
+* Created API diff table highlighting missing endpoints and path mismatches.
+
+### Files
+* `frontend/docs/openapi-v1.yaml`
+* `frontend/docs/api-diff.md`
+* `docs/STEP_fix_20250713.md`

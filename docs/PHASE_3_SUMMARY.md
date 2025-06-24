@@ -93,3 +93,7 @@ Each step includes:
 ---
 
 > 🎯 After building each page or component, update its status and include links to relevant backend and OpenAPI references.
+
+### 📄 Documentation Addendum – 2025-07-13
+
+A new file `frontend/docs/openapi-v1.yaml` captures the full API contract expected by the frontend. Differences between this specification and the backend are tracked in `frontend/docs/api-diff.md`.
