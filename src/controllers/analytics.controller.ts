@@ -52,9 +52,15 @@ export function createAnalyticsHandlers(db: Pool) {
         `);
         const stationCount = parseInt(stationCountResult.rows[0].count || '0');
         
-        // Get recent tenants
+        // Get recent tenants with formatted dates
         const recentTenantsResult = await db.query(`
-          SELECT id, name, schema_name, status, created_at 
+          SELECT 
+            id, 
+            name, 
+            schema_name, 
+            status, 
+            created_at,
+            TO_CHAR(created_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at_iso
           FROM public.tenants 
           ORDER BY created_at DESC 
           LIMIT 5
@@ -69,6 +75,12 @@ export function createAnalyticsHandlers(db: Pool) {
           ORDER BY tenant_count DESC
         `);
         
+        // Format the response for frontend compatibility
+        const formattedTenants = recentTenantsResult.rows.map(tenant => ({
+          ...tenant,
+          created_at: tenant.created_at_iso // Use ISO formatted date
+        }));
+        
         res.json({
           tenantCount,
           activeTenantCount,
@@ -76,8 +88,14 @@ export function createAnalyticsHandlers(db: Pool) {
           adminCount,
           userCount,
           stationCount,
-          recentTenants: recentTenantsResult.rows,
-          planDistribution: planDistributionResult.rows
+          recentTenants: formattedTenants,
+          planDistribution: planDistributionResult.rows,
+          // Add summary for frontend
+          summary: {
+            tenants: tenantCount,
+            users: userCount,
+            stations: stationCount
+          }
         });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -135,13 +153,26 @@ export function createAnalyticsHandlers(db: Pool) {
           console.log('Sales table not found for tenant:', schemaName);
         }
         
+        // Format tenant date for frontend
+        const formattedTenant = {
+          ...tenant,
+          created_at: new Date(tenant.created_at).toISOString()
+        };
+        
         res.json({
-          tenant,
+          tenant: formattedTenant,
           userCount,
           stationCount,
           pumpCount,
           salesCount,
-          totalSales
+          totalSales,
+          // Add summary for frontend
+          summary: {
+            users: userCount,
+            stations: stationCount,
+            pumps: pumpCount,
+            sales: salesCount
+          }
         });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
