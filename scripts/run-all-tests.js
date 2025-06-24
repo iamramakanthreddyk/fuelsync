@@ -54,7 +54,7 @@ async function main() {
   
   // Step 2: Reset and seed the database
   console.log(`\n${colors.cyan}=== Database Setup ===${colors.reset}`);
-  runCommand('npm run db:init', 'db-init');
+  runCommand('npm run setup-db', 'setup-db');
   
   // Step 3: Check database users
   runCommand('npm run check:db', 'check-db');

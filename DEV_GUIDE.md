@@ -106,7 +106,7 @@ git push azure main
 curl https://your-app.azurewebsites.net/health
 
 # 3. Run migrations if schema changed
-curl -X POST https://your-app.azurewebsites.net/migrate
+npm run migrate:up
 ```
 
 ---
@@ -129,7 +129,6 @@ curl -X POST https://your-app.azurewebsites.net/migrate
 ### Utility
 - `GET /health` - Health check
 - `GET /schemas` - Debug database schemas
-- `POST /migrate` - Run migrations and seeding
 
 ---
 
@@ -154,7 +153,7 @@ curl -X POST https://your-app.azurewebsites.net/migrate
 | Environment | .env.development | Azure App Settings |
 | URL | localhost:3001 | your-app.azurewebsites.net |
 | CORS | Not needed | Required |
-| Migrations | npm scripts | npm scripts or `/migrate` endpoint |
+| Migrations | npm scripts | npm scripts |
 
 ---
 

@@ -414,6 +414,18 @@ Each step includes:
 **Validations Performed:**
 * Manual run of `npm run seed:production` on a fresh database.
 
+### 🛠️ Fix 2025-07-12 – Remove Legacy Seeders
+
+**Status:** ✅ Done
+**Files:** `scripts/setup-database.js`, removed seed scripts
+
+**Overview:**
+* Deleted all deprecated seeding utilities and the `/migrate` endpoint.
+* `npm run setup-db` now handles full database preparation.
+
+**Validations Performed:**
+* Manual run of `npm run setup-db` created demo data successfully.
+
 ---
 
 **Phase 1 Completed.** Database schema and seeding utilities are stable for backend development.

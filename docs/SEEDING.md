@@ -1,6 +1,6 @@
 # SEEDING.md — Quick Database Seeding
 
-FuelSync now relies on a single seeding script for all environments. Follow these steps to populate a new database.
+FuelSync uses one setup script to prepare a demo database. Follow these steps to populate a new instance.
 
 ## 1. Connect to PostgreSQL
 Set `DATABASE_URL` in your `.env` file to point at any reachable Postgres instance and ensure the server is running.
@@ -13,10 +13,10 @@ npm run db:migrate:all
 ```
 
 ## 3. Seed Data
-Execute the production seeder to insert default plans, an admin account and a demo tenant:
+Run the setup script to create all tables and insert demo data:
 
 ```bash
-npm run seed:production
+npm run setup-db
 ```
 
 ### What to Test

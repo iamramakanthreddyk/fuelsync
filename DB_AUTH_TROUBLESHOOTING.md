@@ -24,10 +24,10 @@ This will show all admin users and tenant users in the database.
 
 ## Restore Users
 
-If no users are found or passwords were changed, run the production seeder again:
+If no users are found or passwords were changed, run the setup script again:
 
 ```bash
-npm run seed:production
+npm run setup-db
 ```
 
 This recreates the admin and demo tenant accounts with default passwords.
@@ -36,19 +36,19 @@ This recreates the admin and demo tenant accounts with default passwords.
 
 1. **Database Connection**: If the connection check fails, verify your database is running and the .env file has correct credentials.
 
-2. **Missing Users**: If the check shows no users, run the production seeder:
+2. **Missing Users**: If the check shows no users, run the setup script:
    ```bash
-   npm run seed:production
+   npm run setup-db
    ```
 
 3. **Schema Issues**: If you see errors about missing schemas, run migrations again and re-seed.
 
-5. **Database Not Initialized**: If the database structure doesn't exist, run the initialization script:
+5. **Database Not Initialized**: If the database structure doesn't exist, run the setup script:
    ```bash
-   npm run db:init
+   npm run setup-db
    ```
-   
-   This will run all migrations and seed the database.
+
+   This recreates all tables and demo data.
 
 ## Testing Login
 
