@@ -968,3 +968,16 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/reconciliation.controller.ts`, `src/routes/reconciliation.route.ts`
 * `src/routes/creditPayment.route.ts`, `src/routes/creditor.route.ts`
 * `src/services/station.service.ts`, `docs/openapi.yaml`, `docs/missing/*`
+
+## [Fix - 2025-07-10] – Dashboard & Reconciliation Bug Fixes
+
+### 🟥 Fixes
+* Corrected route order in reconciliation router so `/daily-summary` works.
+* Unified tenant lookup in dashboard payment method breakdown.
+* Added basic analytics summary endpoint for SuperAdmin.
+
+### Files
+* `src/routes/reconciliation.route.ts`
+* `src/controllers/dashboard.controller.ts`
+* `src/controllers/adminUser.controller.ts`, `src/routes/adminApi.router.ts`
+* `docs/STEP_fix_20250710.md`

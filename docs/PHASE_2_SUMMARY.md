@@ -400,3 +400,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * All frontend-documented endpoints are now available under `/api/v1`.
 * Added dashboard analytics, logout and token refresh, admin analytics and daily reconciliation summary.
 * Credit payment routes aligned and station listing now returns real counts.
+
+### 🛠️ Fix 2025-07-10 – Dashboard & Reconciliation Bug Fixes
+
+**Status:** ✅ Done
+**Files:** `src/routes/reconciliation.route.ts`, `src/controllers/dashboard.controller.ts`, `src/controllers/adminUser.controller.ts`, `src/routes/adminApi.router.ts`
+
+**Overview:**
+* Reordered reconciliation routes so the daily summary endpoint is reachable.
+* Dashboard payment method breakdown now uses `req.user` consistently.
+* Added lightweight analytics summary for SuperAdmin users.

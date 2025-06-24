@@ -48,9 +48,9 @@ export function createDashboardHandlers(db: Pool) {
       }
     },
 
-    getPaymentMethodBreakdown: async (_req: Request, res: Response) => {
+    getPaymentMethodBreakdown: async (req: Request, res: Response) => {
       try {
-        const tenantId = res.locals.user?.tenantId || res.req.user?.tenantId;
+        const tenantId = req.user?.tenantId;
 
         const query = `
           SELECT

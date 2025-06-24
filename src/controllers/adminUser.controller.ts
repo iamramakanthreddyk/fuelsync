@@ -19,5 +19,17 @@ export function createAdminUserHandlers(db: Pool) {
       const users = await listAdminUsers(db);
       res.json({ users });
     },
+    getAnalytics: async (_req: Request, res: Response) => {
+      try {
+        const summary = await db.query(`
+          SELECT 
+            (SELECT COUNT(*) FROM public.tenants) as total_tenants,
+            (SELECT COUNT(*) FROM public.tenants WHERE created_at >= CURRENT_DATE - INTERVAL '30 days') as new_tenants
+        `);
+        res.json(summary.rows[0]);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
   };
 }
