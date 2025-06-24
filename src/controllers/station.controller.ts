@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createStation, listStations, updateStation, deleteStation } from '../services/station.service';
+import { createStation, listStations, updateStation, deleteStation, getStationMetrics, getStationPerformance } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -24,8 +24,8 @@ export function createStationHandlers(db: Pool) {
       if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
-      const stations = await listStations(db, tenantId);
-      // Return the stations array directly instead of wrapping it in an object
+      const includeMetrics = req.query.includeMetrics === 'true';
+      const stations = await listStations(db, tenantId, includeMetrics);
       res.json(stations);
     },
     update: async (req: Request, res: Response) => {
@@ -53,5 +53,27 @@ export function createStationHandlers(db: Pool) {
         return errorResponse(res, 400, err.message);
       }
     },
+
+    metrics: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const metrics = await getStationMetrics(db, tenantId, req.params.id, req.query.period as string || 'today');
+        res.json(metrics);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    performance: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const perf = await getStationPerformance(db, tenantId, req.params.id, req.query.range as string || 'monthly');
+        res.json(perf);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    }
   };
 }
