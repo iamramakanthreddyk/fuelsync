@@ -12,6 +12,7 @@
     "migrate:status": "node scripts/migrate.js status",
     "migrate:create-tenant": "node scripts/migrate.js create-tenant",
     "setup-db": "node scripts/setup-database.js",
+    "add-yearly-price": "node scripts/add-yearly-price.js",
     "check-db": "node scripts/check-db-connection.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },
