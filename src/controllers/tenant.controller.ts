@@ -12,11 +12,31 @@ export function createTenantHandlers(db: Pool) {
     },
     create: async (req: Request, res: Response) => {
       try {
-        const { name, planId } = validateTenantInput(req.body);
-        const tenant = await createTenant(db, { name, planId });
-        const id = tenant.id;
-        res.status(201).json({ id });
+        console.log('Tenant creation request:', req.body);
+        const { name, planId, schemaName } = validateTenantInput(req.body);
+        console.log('Validated tenant input:', { name, planId, schemaName });
+        
+        // Get plan ID from name if needed
+        let actualPlanId = planId;
+        if (planId === 'basic' || planId === 'pro' || planId === 'premium') {
+          const planResult = await db.query('SELECT id FROM public.plans WHERE name ILIKE $1', [`%${planId}%`]);
+          if (planResult.rows.length > 0) {
+            actualPlanId = planResult.rows[0].id;
+            console.log(`Resolved plan ID for ${planId}:`, actualPlanId);
+          }
+        }
+        
+        const tenant = await createTenant(db, { name, planId: actualPlanId, schemaName });
+        console.log('Tenant created:', tenant);
+        
+        res.status(201).json({ 
+          id: tenant.id,
+          name: tenant.name,
+          schemaName: tenant.schemaName,
+          status: tenant.status
+        });
       } catch (err: any) {
+        console.error('Error creating tenant:', err);
         return errorResponse(res, 400, err.message);
       }
     }

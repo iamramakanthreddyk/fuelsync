@@ -5,6 +5,7 @@ import path from 'path';
 export interface TenantInput {
   name: string;
   planId: string;
+  schemaName?: string;
 }
 
 export interface TenantOutput {
@@ -26,8 +27,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
   try {
     await client.query('BEGIN');
     
-    // Generate schema name (lowercase, no spaces)
-    const schemaName = `tenant_${input.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now().toString().slice(-6)}`;
+    // Use provided schema name or generate one
+    const schemaName = input.schemaName || `tenant_${input.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now().toString().slice(-6)}`;
     
     // Create tenant record
     const result = await client.query(
@@ -60,10 +61,13 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     // Create owner user for tenant
     const adminHash = await import('bcrypt').then(bcrypt => bcrypt.hash('tenant123', 10));
     
+    // Create email-friendly domain name (replace underscores with hyphens)
+    const emailDomain = schemaName.replace(/_/g, '-');
+    
     const ownerResult = await client.query(
       `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role) 
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [tenant.id, `owner@${schemaName}.com`, adminHash, `${input.name} Owner`, 'owner']
+      [tenant.id, `owner@${emailDomain}.com`, adminHash, `${input.name} Owner`, 'owner']
     );
     
     await client.query('COMMIT');
