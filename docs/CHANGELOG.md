@@ -1012,3 +1012,15 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/analytics.controller.ts`
 * `docs/STEP_fix_20250711.md`
 
+## [Fix - 2025-07-12] – Remove Legacy Seeders
+
+### 🟥 Fixes
+* Deleted obsolete seed scripts and `/migrate` endpoint.
+* `setup-database.js` is now the only seeding mechanism.
+
+### Files
+* Removed scripts under `scripts/` and `src/utils/seedUtils.ts`
+* Updated docs referencing old seed commands
+* `src/app.ts`, `scripts/init-db.js`, `scripts/run-all-tests.js`
+* `docs/STEP_fix_20250712.md`
+

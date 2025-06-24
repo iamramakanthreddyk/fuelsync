@@ -33,7 +33,7 @@ Before starting the server, make sure your database is properly set up:
 To initialize the database with all required tables, data, and users:
 
 ```bash
-npm run db:init
+npm run setup-db
 ```
 
 This will run all migrations and seed the database with demo data.
