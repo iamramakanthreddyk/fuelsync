@@ -23,6 +23,15 @@ export function createTenantHandlers(db: Pool) {
           if (planResult.rows.length > 0) {
             actualPlanId = planResult.rows[0].id;
             console.log(`Resolved plan ID for ${planId}:`, actualPlanId);
+          } else {
+            // Fallback to first plan if no match found
+            const defaultPlanResult = await db.query('SELECT id FROM public.plans LIMIT 1');
+            if (defaultPlanResult.rows.length > 0) {
+              actualPlanId = defaultPlanResult.rows[0].id;
+              console.log(`Using default plan ID:`, actualPlanId);
+            } else {
+              throw new Error('No plans found in the system');
+            }
           }
         }
         

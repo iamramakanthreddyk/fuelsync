@@ -57,6 +57,14 @@ The API accepts the following formats:
    - Password: `tenant123`
    - Role: `owner`
 
+## User Management After Tenant Creation
+
+1. The owner should login with the automatically created credentials
+2. The owner should change their password immediately
+3. The owner can create additional users (managers and attendants)
+4. Each user can change their own password
+5. The owner can reset passwords for other users if needed
+
 ## Example
 
 ### Request
