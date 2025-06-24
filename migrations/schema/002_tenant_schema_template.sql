@@ -118,3 +118,15 @@ CREATE TABLE {{schema_name}}.alerts (
   is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Fuel deliveries
+CREATE TABLE {{schema_name}}.fuel_deliveries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL,
+  station_id UUID NOT NULL REFERENCES {{schema_name}}.stations(id),
+  fuel_type TEXT NOT NULL,
+  volume DECIMAL(10,3) NOT NULL CHECK (volume > 0),
+  delivered_by TEXT,
+  delivery_date DATE NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

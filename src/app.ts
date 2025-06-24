@@ -176,6 +176,7 @@ export function createApp() {
         CREATE TABLE production_tenant.credit_payments (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), tenant_id UUID NOT NULL, creditor_id UUID NOT NULL REFERENCES production_tenant.creditors(id), amount DECIMAL(10,2) NOT NULL, payment_method TEXT NOT NULL, reference_number TEXT, notes TEXT);
         CREATE TABLE production_tenant.fuel_inventory (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), tenant_id UUID NOT NULL, station_id UUID NOT NULL REFERENCES production_tenant.stations(id), fuel_type TEXT NOT NULL, current_stock DECIMAL(10,3) NOT NULL DEFAULT 0, minimum_level DECIMAL(10,3) NOT NULL DEFAULT 1000, last_updated TIMESTAMPTZ NOT NULL DEFAULT NOW());
         CREATE TABLE production_tenant.alerts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), tenant_id UUID NOT NULL, station_id UUID REFERENCES production_tenant.stations(id), alert_type TEXT NOT NULL, message TEXT NOT NULL, severity TEXT NOT NULL DEFAULT 'info', is_read BOOLEAN DEFAULT FALSE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+        CREATE TABLE production_tenant.fuel_deliveries (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), tenant_id UUID NOT NULL, station_id UUID NOT NULL REFERENCES production_tenant.stations(id), fuel_type TEXT NOT NULL, volume DECIMAL(10,3) NOT NULL CHECK (volume > 0), delivered_by TEXT, delivery_date DATE NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
       `);
       
       // Comprehensive seed data
