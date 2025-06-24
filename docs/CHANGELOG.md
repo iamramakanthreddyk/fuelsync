@@ -996,3 +996,19 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/sales.controller.ts`, `src/services/sales.service.ts`, `src/routes/sales.route.ts`, `src/validators/sales.validator.ts`
 * `src/middlewares/checkStationAccess.ts`
 * `docs/openapi.yaml`, `docs/STEP_2_19_COMMAND.md`
+
+## [Fix - 2025-07-11] – SuperAdmin API Alignment
+
+### 🟥 Fixes
+* Added `price_yearly` field to plans and exposed in APIs.
+* Analytics summary now returns `signupsThisMonth` and `tenantsByPlan` with percentages.
+* Tenant creation accepts custom admin credentials.
+* Tenant status update uses PATCH.
+
+### Files
+* `migrations/005_add_price_yearly_to_plans.sql`
+* `src/services/plan.service.ts`, `src/controllers/admin.controller.ts`
+* `src/services/tenant.service.ts`, `src/routes/adminApi.router.ts`
+* `src/controllers/analytics.controller.ts`
+* `docs/STEP_fix_20250711.md`
+

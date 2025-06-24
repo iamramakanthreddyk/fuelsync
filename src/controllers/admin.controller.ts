@@ -10,13 +10,19 @@ export function createAdminApiHandlers(db: Pool) {
     // Tenant Management
     createTenant: async (req: Request, res: Response) => {
       try {
-        const { name, planId } = req.body;
+        const { name, planId, schemaName, adminEmail, adminPassword } = req.body;
         
         if (!name || !planId) {
           return errorResponse(res, 400, 'Name and planId are required');
         }
         
-        const tenant = await tenantService.createTenant(db, { name, planId });
+        const tenant = await tenantService.createTenant(db, {
+          name,
+          planId,
+          schemaName,
+          adminEmail,
+          adminPassword
+        });
         res.status(201).json(tenant);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -73,7 +79,7 @@ export function createAdminApiHandlers(db: Pool) {
     // Plan Management
     createPlan: async (req: Request, res: Response) => {
       try {
-        const { name, maxStations, maxPumpsPerStation, maxNozzlesPerPump, priceMonthly, features } = req.body;
+        const { name, maxStations, maxPumpsPerStation, maxNozzlesPerPump, priceMonthly, priceYearly, features } = req.body;
         
         if (!name) {
           return errorResponse(res, 400, 'Plan name is required');
@@ -85,6 +91,7 @@ export function createAdminApiHandlers(db: Pool) {
           maxPumpsPerStation,
           maxNozzlesPerPump,
           priceMonthly,
+          priceYearly,
           features
         });
         
@@ -119,7 +126,7 @@ export function createAdminApiHandlers(db: Pool) {
     
     updatePlan: async (req: Request, res: Response) => {
       try {
-        const { name, maxStations, maxPumpsPerStation, maxNozzlesPerPump, priceMonthly, features } = req.body;
+        const { name, maxStations, maxPumpsPerStation, maxNozzlesPerPump, priceMonthly, priceYearly, features } = req.body;
         
         const plan = await planService.updatePlan(db, req.params.id, {
           name,
@@ -127,6 +134,7 @@ export function createAdminApiHandlers(db: Pool) {
           maxPumpsPerStation,
           maxNozzlesPerPump,
           priceMonthly,
+          priceYearly,
           features
         });
         

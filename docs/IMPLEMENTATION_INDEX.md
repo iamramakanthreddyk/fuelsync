@@ -90,3 +90,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
   * `PHASE_X_SUMMARY.md` files
 
 > This index allows Codex or future agents to resume from the correct point without confusion.
+| fix | 2025-07-11 | SuperAdmin API Alignment | ✅ Done | `migrations/005_add_price_yearly_to_plans.sql`, `src/services/plan.service.ts`, `src/controllers/admin.controller.ts`, `src/services/tenant.service.ts`, `src/routes/adminApi.router.ts`, `src/controllers/analytics.controller.ts` | `docs/STEP_fix_20250711.md` |

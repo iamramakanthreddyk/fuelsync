@@ -19,7 +19,7 @@ export function createAdminApiRouter(db: Pool) {
   router.post('/tenants', authenticateJWT, requireSuperAdmin, handlers.createTenant);
   router.get('/tenants', authenticateJWT, requireSuperAdmin, handlers.listTenants);
   router.get('/tenants/:id', authenticateJWT, requireSuperAdmin, handlers.getTenant);
-  router.put('/tenants/:id/status', authenticateJWT, requireSuperAdmin, handlers.updateTenantStatus);
+  router.patch('/tenants/:id/status', authenticateJWT, requireSuperAdmin, handlers.updateTenantStatus);
   router.delete('/tenants/:id', authenticateJWT, requireSuperAdmin, handlers.deleteTenant);
   
   // Plan Management

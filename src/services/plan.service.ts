@@ -6,6 +6,7 @@ export interface PlanInput {
   maxPumpsPerStation?: number;
   maxNozzlesPerPump?: number;
   priceMonthly?: number;
+  priceYearly?: number;
   features?: string[];
 }
 
@@ -16,6 +17,7 @@ export interface PlanOutput {
   maxPumpsPerStation: number;
   maxNozzlesPerPump: number;
   priceMonthly: number;
+  priceYearly: number;
   features: string[];
   createdAt: Date;
 }
@@ -25,16 +27,17 @@ export interface PlanOutput {
  */
 export async function createPlan(db: Pool, input: PlanInput): Promise<PlanOutput> {
   const result = await db.query(
-    `INSERT INTO public.plans 
-     (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features) 
-     VALUES ($1, $2, $3, $4, $5, $6) 
-     RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features, created_at`,
+    `INSERT INTO public.plans
+     (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at`,
     [
       input.name,
       input.maxStations || 5,
       input.maxPumpsPerStation || 10,
       input.maxNozzlesPerPump || 4,
       input.priceMonthly || 0,
+      input.priceYearly || 0,
       JSON.stringify(input.features || [])
     ]
   );
@@ -47,6 +50,7 @@ export async function createPlan(db: Pool, input: PlanInput): Promise<PlanOutput
     maxPumpsPerStation: plan.max_pumps_per_station,
     maxNozzlesPerPump: plan.max_nozzles_per_pump,
     priceMonthly: parseFloat(plan.price_monthly),
+    priceYearly: parseFloat(plan.price_yearly),
     features: plan.features,
     createdAt: plan.created_at
   };
@@ -57,11 +61,11 @@ export async function createPlan(db: Pool, input: PlanInput): Promise<PlanOutput
  */
 export async function listPlans(db: Pool): Promise<PlanOutput[]> {
   const result = await db.query(
-    `SELECT id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features, created_at
+    `SELECT id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at
      FROM public.plans
      ORDER BY created_at DESC`
   );
-  
+
   return result.rows.map(plan => ({
     id: plan.id,
     name: plan.name,
@@ -69,6 +73,7 @@ export async function listPlans(db: Pool): Promise<PlanOutput[]> {
     maxPumpsPerStation: plan.max_pumps_per_station,
     maxNozzlesPerPump: plan.max_nozzles_per_pump,
     priceMonthly: parseFloat(plan.price_monthly),
+    priceYearly: parseFloat(plan.price_yearly),
     features: plan.features,
     createdAt: plan.created_at
   }));
@@ -79,7 +84,7 @@ export async function listPlans(db: Pool): Promise<PlanOutput[]> {
  */
 export async function getPlan(db: Pool, id: string): Promise<PlanOutput | null> {
   const result = await db.query(
-    `SELECT id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features, created_at
+    `SELECT id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at
      FROM public.plans
      WHERE id = $1`,
     [id]
@@ -97,6 +102,7 @@ export async function getPlan(db: Pool, id: string): Promise<PlanOutput | null> 
     maxPumpsPerStation: plan.max_pumps_per_station,
     maxNozzlesPerPump: plan.max_nozzles_per_pump,
     priceMonthly: parseFloat(plan.price_monthly),
+    priceYearly: parseFloat(plan.price_yearly),
     features: plan.features,
     createdAt: plan.created_at
   };
@@ -113,15 +119,17 @@ export async function updatePlan(db: Pool, id: string, input: PlanInput): Promis
          max_pumps_per_station = COALESCE($3, max_pumps_per_station),
          max_nozzles_per_pump = COALESCE($4, max_nozzles_per_pump),
          price_monthly = COALESCE($5, price_monthly),
-         features = COALESCE($6, features)
-     WHERE id = $7
-     RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features, created_at`,
+         price_yearly = COALESCE($6, price_yearly),
+         features = COALESCE($7, features)
+     WHERE id = $8
+     RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at`,
     [
       input.name,
       input.maxStations,
       input.maxPumpsPerStation,
       input.maxNozzlesPerPump,
       input.priceMonthly,
+      input.priceYearly,
       input.features ? JSON.stringify(input.features) : null,
       id
     ]
@@ -139,6 +147,7 @@ export async function updatePlan(db: Pool, id: string, input: PlanInput): Promis
     maxPumpsPerStation: plan.max_pumps_per_station,
     maxNozzlesPerPump: plan.max_nozzles_per_pump,
     priceMonthly: parseFloat(plan.price_monthly),
+    priceYearly: parseFloat(plan.price_yearly),
     features: plan.features,
     createdAt: plan.created_at
   };

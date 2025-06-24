@@ -424,3 +424,15 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Stations can return metrics and month-over-month performance.
 * Sales listing now paginated and analytics endpoint provides station totals.
 * Middleware updated to check `stationId` from query parameters.
+
+### 🛠️ Fix 2025-07-11 – SuperAdmin API Alignment
+
+**Status:** ✅ Done
+**Files:** `migrations/005_add_price_yearly_to_plans.sql`, `src/services/plan.service.ts`, `src/controllers/admin.controller.ts`, `src/services/tenant.service.ts`, `src/routes/adminApi.router.ts`, `src/controllers/analytics.controller.ts`
+
+**Overview:**
+* Plans now include `price_yearly` and APIs expose `priceYearly`.
+* Dashboard summary returns new fields (`signupsThisMonth`, `tenantsByPlan`).
+* Tenant creation supports custom owner credentials.
+* Tenant status updates via PATCH.
+

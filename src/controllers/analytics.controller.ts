@@ -13,6 +13,12 @@ export function createAnalyticsHandlers(db: Pool) {
         // Get active tenant count
         const activeTenantResult = await db.query("SELECT COUNT(*) FROM public.tenants WHERE status = 'active'");
         const activeTenantCount = parseInt(activeTenantResult.rows[0].count);
+
+        // Signups in current month
+        const signupsResult = await db.query(
+          `SELECT COUNT(*) FROM public.tenants WHERE date_trunc('month', created_at) = date_trunc('month', CURRENT_DATE)`
+        );
+        const signupsThisMonth = parseInt(signupsResult.rows[0].count);
         
         // Get plan count
         const planResult = await db.query('SELECT COUNT(*) FROM public.plans');
@@ -74,28 +80,31 @@ export function createAnalyticsHandlers(db: Pool) {
           GROUP BY p.name
           ORDER BY tenant_count DESC
         `);
+
+        const tenantsByPlan = planDistributionResult.rows.map(row => ({
+          planName: row.plan_name,
+          count: parseInt(row.tenant_count),
+          percentage: tenantCount > 0 ? parseFloat(((row.tenant_count / tenantCount) * 100).toFixed(2)) : 0
+        }));
         
         // Format the response for frontend compatibility
         const formattedTenants = recentTenantsResult.rows.map(tenant => ({
-          ...tenant,
-          created_at: tenant.created_at_iso // Use ISO formatted date
+          id: tenant.id,
+          name: tenant.name,
+          createdAt: tenant.created_at_iso,
+          status: tenant.status
         }));
-        
+
         res.json({
-          tenantCount,
-          activeTenantCount,
-          planCount,
-          adminCount,
-          userCount,
-          stationCount,
+          totalTenants: tenantCount,
+          activeTenants: activeTenantCount,
+          totalPlans: planCount,
+          totalAdminUsers: adminCount,
+          totalUsers: userCount,
+          totalStations: stationCount,
+          signupsThisMonth,
           recentTenants: formattedTenants,
-          planDistribution: planDistributionResult.rows,
-          // Add summary for frontend
-          summary: {
-            tenants: tenantCount,
-            users: userCount,
-            stations: stationCount
-          }
+          tenantsByPlan,
         });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
