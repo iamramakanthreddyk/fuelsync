@@ -1,0 +1,24 @@
+# API Differences Between Frontend Expectations and Backend Implementation
+
+The file `openapi-v1.yaml` describes the REST API expected by the frontend. The backend currently exposes a smaller set of endpoints under the prefix `/api/v1`. Paths and response structures do not fully match. The table below captures the main gaps.
+
+| API Endpoint (Frontend) | Frontend Expects | Backend Provides | Status |
+|-------------------------|-----------------|------------------|-------|
+| **POST /v1/auth/login** | `{ email, password } → { token, user }` | `POST /api/v1/auth/login` same payload | 🔧 Path prefix mismatch |
+| **POST /v1/auth/logout** | no body → `200` | `POST /api/v1/auth/logout` | 🔧 Path prefix mismatch |
+| **POST /v1/auth/refresh** | none → `{ token, user }` | `POST /api/v1/auth/refresh` | 🔧 Path prefix mismatch |
+| **GET /v1/alerts** | `Alert[]` | ❌ not implemented | ❌ Missing |
+| **PATCH /v1/alerts/{id}/read** | mark alert read | ❌ not implemented | ❌ Missing |
+| **GET /v1/analytics/station-comparison** | `StationComparison[]` | ❌ not implemented | ❌ Missing |
+| **GET /v1/fuel-inventory** | `FuelInventory[]` | ❌ not implemented | ❌ Missing |
+| **POST /v1/fuel-prices** | create price | `POST /api/v1/fuel-prices` | 🔧 Path prefix mismatch |
+| **PUT /v1/fuel-prices/{id}** | update price | ❌ no matching route | ❌ Missing |
+| **GET /v1/stations** | list stations (`includeMetrics` param) | `GET /api/v1/stations` (param supported) | 🔧 Path prefix mismatch |
+| **GET /v1/stations/{id}** | station details | `GET /api/v1/stations/{id}` | 🔧 Path prefix mismatch |
+| **GET /v1/nozzle-readings** | readings filtered by `nozzleId` | `GET /api/v1/nozzle-readings` | 🔧 Path prefix mismatch |
+| **POST /v1/reports/sales** | CSV export, summary | ❌ no `/reports` routes in backend | ❌ Missing |
+| **GET /v1/sales** | list with filters | `GET /api/v1/sales` | 🔧 Path prefix mismatch |
+| **GET /v1/users** | user list | `GET /api/v1/users` | 🔧 Path prefix mismatch |
+| **POST /v1/users** | create user | `POST /api/v1/users` | 🔧 Path prefix mismatch |
+
+`❌ Missing` denotes endpoints defined in `openapi-v1.yaml` that are not present in `docs/openapi.yaml` or backend routes. `🔧 Path prefix mismatch` indicates functionality exists but under `/api/v1/*` rather than `/v1/*`.

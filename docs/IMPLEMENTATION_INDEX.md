@@ -92,3 +92,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 > This index allows Codex or future agents to resume from the correct point without confusion.
 | fix | 2025-07-11 | SuperAdmin API Alignment | ✅ Done | `migrations/005_add_price_yearly_to_plans.sql`, `src/services/plan.service.ts`, `src/controllers/admin.controller.ts`, `src/services/tenant.service.ts`, `src/routes/adminApi.router.ts`, `src/controllers/analytics.controller.ts` | `docs/STEP_fix_20250711.md` |
 | fix | 2025-07-12 | Remove Legacy Seeders | ✅ Done | `src/app.ts`, `scripts/setup-database.js`, removed scripts | `docs/STEP_fix_20250712.md` |
+| fix | 2025-07-13 | Document Frontend API Contract | ✅ Done | `frontend/docs/openapi-v1.yaml`, `frontend/docs/api-diff.md` | `docs/STEP_fix_20250713.md` |
