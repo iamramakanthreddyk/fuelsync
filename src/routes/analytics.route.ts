@@ -14,6 +14,7 @@ export function createAnalyticsRouter(db: Pool) {
   
   // Dashboard metrics
   router.get('/dashboard', authenticateJWT, requireSuperAdmin, handlers.getDashboardMetrics);
+  router.get('/superadmin', authenticateJWT, requireSuperAdmin, handlers.getDashboardMetrics);
   
   // Tenant analytics
   router.get('/tenant/:id', authenticateJWT, requireSuperAdmin, handlers.getTenantAnalytics);
