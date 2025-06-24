@@ -57,14 +57,7 @@ export function createApp() {
   });
   
   app.use(cors({
-    origin: [
-      'http://localhost:8080',
-      'http://localhost:3003',
-      'https://lovableproject.com',
-      /\.lovableproject\.com$/,
-      /\.azurewebsites\.net$/,
-      /\.lovable\.app$/
-    ],
+    origin: '*', // Allow all origins for testing
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id']

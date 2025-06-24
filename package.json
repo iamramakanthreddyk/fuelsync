@@ -11,6 +11,7 @@
     "migrate:down": "node scripts/migrate.js down",
     "migrate:status": "node scripts/migrate.js status",
     "migrate:create-tenant": "node scripts/migrate.js create-tenant",
+    "seed": "node scripts/run-seed.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },
   "dependencies": {
