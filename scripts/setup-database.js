@@ -63,6 +63,7 @@ async function setupDatabase() {
         max_pumps_per_station INTEGER NOT NULL DEFAULT 10,
         max_nozzles_per_pump INTEGER NOT NULL DEFAULT 4,
         price_monthly DECIMAL(10,2) NOT NULL DEFAULT 0,
+        price_yearly DECIMAL(10,2) NOT NULL DEFAULT 0,
         features JSONB NOT NULL DEFAULT '[]',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
@@ -90,8 +91,8 @@ async function setupDatabase() {
     
     // Create Basic Plan
     const basicPlanResult = await pool.query(`
-      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features)
-      VALUES ('Basic Plan', 5, 10, 4, 49.99, '["Station Management", "Sales Tracking", "Basic Reports"]')
+      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
+      VALUES ('Basic Plan', 5, 10, 4, 49.99, 499.99, '["Station Management", "Sales Tracking", "Basic Reports"]')
       RETURNING id
     `);
     const basicPlanId = basicPlanResult.rows[0].id;
@@ -99,8 +100,8 @@ async function setupDatabase() {
     
     // Create Pro Plan
     const proPlanResult = await pool.query(`
-      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features)
-      VALUES ('Pro Plan', 15, 20, 6, 99.99, '["Station Management", "Sales Tracking", "Advanced Reports", "API Access", "Multi-User Access"]')
+      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
+      VALUES ('Pro Plan', 15, 20, 6, 99.99, 999.99, '["Station Management", "Sales Tracking", "Advanced Reports", "API Access", "Multi-User Access"]')
       RETURNING id
     `);
     const proPlanId = proPlanResult.rows[0].id;
@@ -108,8 +109,8 @@ async function setupDatabase() {
     
     // Create Enterprise Plan
     const enterprisePlanResult = await pool.query(`
-      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, features)
-      VALUES ('Enterprise Plan', 50, 30, 8, 199.99, '["Station Management", "Sales Tracking", "Advanced Reports", "API Access", "Multi-User Access", "Priority Support", "Custom Branding", "Data Export"]')
+      INSERT INTO public.plans (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
+      VALUES ('Enterprise Plan', 50, 30, 8, 199.99, 1999.99, '["Station Management", "Sales Tracking", "Advanced Reports", "API Access", "Multi-User Access", "Priority Support", "Custom Branding", "Data Export"]')
       RETURNING id
     `);
     const enterprisePlanId = enterprisePlanResult.rows[0].id;
