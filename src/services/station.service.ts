@@ -1,12 +1,25 @@
 import { Pool } from 'pg';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 
-export async function createStation(db: Pool, tenantId: string, name: string): Promise<string> {
+export async function createStation(db: Pool, schemaName: string, name: string): Promise<string> {
   const client = await db.connect();
   try {
-    await beforeCreateStation(client, tenantId);
+    await beforeCreateStation(client, schemaName);
+    
+    // Get actual tenant UUID from schema name
+    const tenantRes = await client.query(
+      'SELECT id FROM public.tenants WHERE schema_name = $1',
+      [schemaName]
+    );
+    
+    if (tenantRes.rows.length === 0) {
+      throw new Error(`Tenant not found for schema: ${schemaName}`);
+    }
+    
+    const tenantId = tenantRes.rows[0].id;
+    
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.stations (tenant_id, name) VALUES ($1,$2) RETURNING id`,
+      `INSERT INTO ${schemaName}.stations (tenant_id, name) VALUES ($1,$2) RETURNING id`,
       [tenantId, name]
     );
     return res.rows[0].id;
@@ -15,35 +28,30 @@ export async function createStation(db: Pool, tenantId: string, name: string): P
   }
 }
 
-export async function listStations(db: Pool, tenantId: string, includeMetrics = false) {
+export async function listStations(db: Pool, schemaName: string, includeMetrics = false) {
   // Check if we have any stations
   const countRes = await db.query(
-    `SELECT COUNT(*) FROM ${tenantId}.stations`
+    `SELECT COUNT(*) FROM ${schemaName}.stations`
   );
   
   // If no stations, seed some demo data
   if (parseInt(countRes.rows[0].count) === 0) {
-    await seedDemoStations(db, tenantId);
+    await seedDemoStations(db, schemaName);
   }
   
   const res = await db.query(
     `SELECT
       s.id,
       s.name,
-      'active' as status,
+      s.status,
+      s.address,
       NULL as manager,
+      0 as "attendantCount",
       (
-        SELECT COUNT(*)
-        FROM ${tenantId}.user_stations us
-        JOIN ${tenantId}.users u ON us.user_id = u.id
-        WHERE us.station_id = s.id AND u.role = 'attendant'
-      ) as "attendantCount",
-      (
-        SELECT COUNT(*) FROM ${tenantId}.pumps p WHERE p.station_id = s.id
+        SELECT COUNT(*) FROM ${schemaName}.pumps p WHERE p.station_id = s.id
       ) as "pumpCount",
-      s.created_at as "createdAt",
-      '' as address
-    FROM ${tenantId}.stations s
+      s.created_at as "createdAt"
+    FROM ${schemaName}.stations s
     ORDER BY s.name`
   );
 
@@ -51,13 +59,25 @@ export async function listStations(db: Pool, tenantId: string, includeMetrics = 
   if (!includeMetrics) return stations;
 
   for (const st of stations) {
-    const metrics = await getStationMetrics(db, tenantId, st.id, 'today');
+    const metrics = await getStationMetrics(db, schemaName, st.id, 'today');
     st.metrics = metrics;
   }
   return stations;
 }
 
-async function seedDemoStations(db: Pool, tenantId: string) {
+async function seedDemoStations(db: Pool, schemaName: string) {
+  // Get actual tenant UUID
+  const tenantRes = await db.query(
+    'SELECT id FROM public.tenants WHERE schema_name = $1',
+    [schemaName]
+  );
+  
+  if (tenantRes.rows.length === 0) {
+    throw new Error(`Tenant not found for schema: ${schemaName}`);
+  }
+  
+  const tenantId = tenantRes.rows[0].id;
+  
   const demoStations = [
     'Main Street Station',
     'Highway Junction',
@@ -67,24 +87,24 @@ async function seedDemoStations(db: Pool, tenantId: string) {
   
   for (const name of demoStations) {
     await db.query(
-      `INSERT INTO ${tenantId}.stations (tenant_id, name) VALUES ($1, $2)`,
+      `INSERT INTO ${schemaName}.stations (tenant_id, name) VALUES ($1, $2)`,
       [tenantId, name]
     );
   }
 }
 
-export async function updateStation(db: Pool, tenantId: string, id: string, name?: string) {
+export async function updateStation(db: Pool, schemaName: string, id: string, name?: string) {
   await db.query(
-    `UPDATE ${tenantId}.stations SET name = COALESCE($2,name) WHERE id = $1`,
+    `UPDATE ${schemaName}.stations SET name = COALESCE($2,name) WHERE id = $1`,
     [id, name || null]
   );
 }
 
-export async function deleteStation(db: Pool, tenantId: string, id: string) {
-  await db.query(`DELETE FROM ${tenantId}.stations WHERE id = $1`, [id]);
+export async function deleteStation(db: Pool, schemaName: string, id: string) {
+  await db.query(`DELETE FROM ${schemaName}.stations WHERE id = $1`, [id]);
 }
 
-export async function getStationMetrics(db: Pool, tenantId: string, stationId: string, period: string) {
+export async function getStationMetrics(db: Pool, schemaName: string, stationId: string, period: string) {
   let dateFilter = '';
   switch (period) {
     case 'today':
@@ -101,9 +121,9 @@ export async function getStationMetrics(db: Pool, tenantId: string, stationId: s
       COALESCE(SUM(s.amount),0) as amount,
       COALESCE(SUM(s.volume),0) as volume,
       COUNT(s.id) as count
-    FROM ${tenantId}.sales s
-    JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-    JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+    FROM ${schemaName}.sales s
+    JOIN ${schemaName}.nozzles n ON s.nozzle_id = n.id
+    JOIN ${schemaName}.pumps p ON n.pump_id = p.id
     WHERE p.station_id = $1 ${dateFilter}
   `;
   const res = await db.query(query, [stationId]);
@@ -114,8 +134,8 @@ export async function getStationMetrics(db: Pool, tenantId: string, stationId: s
   };
 }
 
-export async function getStationPerformance(db: Pool, tenantId: string, stationId: string, range: string) {
-  const current = await getStationMetrics(db, tenantId, stationId, range);
+export async function getStationPerformance(db: Pool, schemaName: string, stationId: string, range: string) {
+  const current = await getStationMetrics(db, schemaName, stationId, range);
   let previousFilter = '';
   if (range === 'monthly') previousFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '60 days' AND s.recorded_at < CURRENT_DATE - INTERVAL '30 days'";
   else previousFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '2 days' AND s.recorded_at < CURRENT_DATE";
@@ -123,9 +143,9 @@ export async function getStationPerformance(db: Pool, tenantId: string, stationI
     SELECT
       COALESCE(SUM(s.amount),0) as amount,
       COALESCE(SUM(s.volume),0) as volume
-    FROM ${tenantId}.sales s
-    JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-    JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+    FROM ${schemaName}.sales s
+    JOIN ${schemaName}.nozzles n ON s.nozzle_id = n.id
+    JOIN ${schemaName}.pumps p ON n.pump_id = p.id
     WHERE p.station_id = $1 ${previousFilter}
   `;
   const res = await db.query(query, [stationId]);
@@ -135,7 +155,7 @@ export async function getStationPerformance(db: Pool, tenantId: string, stationI
   return { ...current, previousSales: prevAmount, previousVolume: prevVolume, growth };
 }
 
-export async function getStationComparison(db: Pool, tenantId: string, stationIds: string[], period: string) {
+export async function getStationComparison(db: Pool, schemaName: string, stationIds: string[], period: string) {
   const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
   const query = `
     SELECT 
@@ -147,8 +167,8 @@ export async function getStationComparison(db: Pool, tenantId: string, stationId
       COUNT(s.id) as transaction_count,
       COALESCE(AVG(s.amount), 0) as avg_transaction,
       CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
-    FROM ${tenantId}.stations st
-    LEFT JOIN ${tenantId}.sales s ON st.id = s.station_id 
+    FROM ${schemaName}.stations st
+    LEFT JOIN ${schemaName}.sales s ON st.id = s.station_id 
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
     WHERE st.id = ANY($1)
     GROUP BY st.id, st.name
@@ -167,7 +187,7 @@ export async function getStationComparison(db: Pool, tenantId: string, stationId
   }));
 }
 
-export async function getStationRanking(db: Pool, tenantId: string, metric: string, period: string) {
+export async function getStationRanking(db: Pool, schemaName: string, metric: string, period: string) {
   const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
   const orderBy = metric === 'profit' ? 'total_profit' : metric === 'volume' ? 'total_volume' : 'total_sales';
   const query = `
@@ -179,8 +199,8 @@ export async function getStationRanking(db: Pool, tenantId: string, metric: stri
       COALESCE(SUM(s.volume), 0) as total_volume,
       COUNT(s.id) as transaction_count,
       RANK() OVER (ORDER BY COALESCE(SUM(${orderBy === 'total_sales' ? 's.amount' : orderBy === 'total_profit' ? 's.profit' : 's.volume'}), 0) DESC) as rank
-    FROM ${tenantId}.stations st
-    LEFT JOIN ${tenantId}.sales s ON st.id = s.station_id 
+    FROM ${schemaName}.stations st
+    LEFT JOIN ${schemaName}.sales s ON st.id = s.station_id 
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
     GROUP BY st.id, st.name
     ORDER BY ${orderBy} DESC

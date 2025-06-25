@@ -8,7 +8,8 @@ export function createStationHandlers(db: Pool) {
   return {
     create: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        // Get tenant ID from JWT token or header
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
@@ -20,7 +21,7 @@ export function createStationHandlers(db: Pool) {
       }
     },
     list: async (req: Request, res: Response) => {
-      const tenantId = req.user?.tenantId;
+      const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
       if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
@@ -30,7 +31,7 @@ export function createStationHandlers(db: Pool) {
     },
     update: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
@@ -43,7 +44,7 @@ export function createStationHandlers(db: Pool) {
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
@@ -56,7 +57,7 @@ export function createStationHandlers(db: Pool) {
 
     metrics: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const metrics = await getStationMetrics(db, tenantId, req.params.id, req.query.period as string || 'today');
         res.json(metrics);
@@ -67,7 +68,7 @@ export function createStationHandlers(db: Pool) {
 
     performance: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const perf = await getStationPerformance(db, tenantId, req.params.id, req.query.range as string || 'monthly');
         res.json(perf);
@@ -78,7 +79,7 @@ export function createStationHandlers(db: Pool) {
 
     compare: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const stationIds = (req.query.stationIds as string)?.split(',') || [];
         if (stationIds.length === 0) return errorResponse(res, 400, 'Station IDs required');
@@ -91,7 +92,7 @@ export function createStationHandlers(db: Pool) {
 
     ranking: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const ranking = await getStationRanking(db, tenantId, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
         res.json(ranking);

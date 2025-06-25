@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { listTenants, createTenant } from '../services/tenant.service';
+import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -35,14 +35,21 @@ export function createTenantHandlers(db: Pool) {
           }
         }
         
-        const tenant = await createTenant(db, { name, planId: actualPlanId, schemaName });
-        console.log('Tenant created:', tenant);
+        const result = await createTenant(db, { name, planId: actualPlanId, schemaName });
+        console.log('Tenant created:', result);
         
         res.status(201).json({ 
-          id: tenant.id,
-          name: tenant.name,
-          schemaName: tenant.schemaName,
-          status: tenant.status
+          tenant: {
+            id: result.tenant.id,
+            name: result.tenant.name,
+            schemaName: result.tenant.schemaName,
+            status: result.tenant.status
+          },
+          owner: {
+            email: result.owner.email,
+            password: result.owner.password,
+            name: result.owner.name
+          }
         });
       } catch (err: any) {
         console.error('Error creating tenant:', err);
@@ -59,6 +66,36 @@ export function createAdminTenantHandlers(db: Pool) {
     summary: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
       res.json({ tenantCount: tenants.length });
+    },
+    updateStatus: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        if (!['active', 'suspended', 'cancelled'].includes(status)) {
+          return errorResponse(res, 400, 'Invalid status');
+        }
+        
+        await updateTenantStatus(db, id, status);
+        const tenant = await getTenant(db, id);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        res.json(tenant);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+    delete: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        await deleteTenant(db, id);
+        res.json({ message: 'Tenant deleted successfully' });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
     }
   };
 }

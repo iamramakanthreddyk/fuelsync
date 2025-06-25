@@ -8,7 +8,7 @@ export function createNozzleHandlers(db: Pool) {
   return {
     create: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
@@ -20,7 +20,7 @@ export function createNozzleHandlers(db: Pool) {
       }
     },
     list: async (req: Request, res: Response) => {
-      const tenantId = req.user?.tenantId;
+      const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
       if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
@@ -30,7 +30,7 @@ export function createNozzleHandlers(db: Pool) {
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
