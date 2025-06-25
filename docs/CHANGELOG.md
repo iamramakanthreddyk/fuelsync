@@ -1169,3 +1169,24 @@ Each entry is tied to a step from the implementation index.
 * `docs/STEP_hierarchy_components.md` - Step command documentation
 * `docs/FRONTEND_HIERARCHY_GUIDE.md` - Complete frontend hierarchy guide
 * `docs/BACKEND_HIERARCHY_API.md` - Backend API documentation
+
+## [Fix - 2025-12-25] – Tenant Details Routing & Admin User Names
+
+### 🟥 Fixes
+* Fixed 404 error on tenant details page by adding missing route `/superadmin/tenants/:tenantId`
+* Added missing Collapsible UI component for hierarchy tree structure
+* Fixed admin users to support name field in database and API
+* Added migration to add name column to admin_users table
+
+### 🟦 Enhancements
+* Enhanced admin user creation and updates to include name field
+* Auto-generate admin user names from email if not provided
+* Updated all admin user queries to include name field
+* Improved tenant details navigation flow
+
+### Files
+* `src/App.tsx` (frontend) - Added tenant details route and import
+* `src/components/ui/collapsible.tsx` (frontend) - Added missing UI component
+* `migrations/007_add_name_to_admin_users.sql` - Database migration for name field
+* `src/services/admin.service.ts` - Enhanced admin user service with name support
+* `src/controllers/admin.controller.ts` - Updated controllers to handle name field
