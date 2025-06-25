@@ -24,6 +24,17 @@ paths:
       summary: Create tenant user
     get:
       summary: List tenant users
+  /api/v1/users/{id}:
+    put:
+      summary: Update tenant user
+    delete:
+      summary: Delete tenant user
+  /api/v1/users/{id}/change-password:
+    post:
+      summary: Change user password
+  /api/v1/users/{id}/reset-password:
+    post:
+      summary: Reset user password
   /api/v1/stations:
     post:
       summary: Create station
@@ -46,6 +57,8 @@ paths:
     get:
       summary: List pumps
   /api/v1/pumps/{id}:
+    put:
+      summary: Update pump
     delete:
       summary: Delete pump
   /api/v1/nozzles:
@@ -54,6 +67,8 @@ paths:
     get:
       summary: List nozzles
   /api/v1/nozzles/{id}:
+    put:
+      summary: Update nozzle
     delete:
       summary: Delete nozzle
   /api/v1/nozzle-readings:
@@ -96,6 +111,8 @@ paths:
   /api/v1/fuel-prices/{id}:
     put:
       summary: Update fuel price
+    delete:
+      summary: Delete fuel price
   /api/v1/alerts:
     get:
       summary: List alerts

@@ -1344,3 +1344,27 @@ Each entry is tied to a step from the implementation index.
 * `src/middlewares/setTenantContext.ts` - Enhanced with security documentation
 * `src/routes/pump.route.ts` - Added setTenantContext middleware
 * `docs/SECURITY_tenant_authorization.md` - Comprehensive security model documentation
+
+## [Feature - Step 2.21] – CRUD Completion Endpoints
+
+### 🟩 Features
+* Added `updatePump` service and corresponding route/controller.
+* Documented update and delete routes for pumps, nozzles and users in OpenAPI.
+
+### Files
+* `src/services/pump.service.ts`
+* `src/controllers/pump.controller.ts`
+* `src/routes/pump.route.ts`
+* `docs/openapi.yaml`
+
+## [Feature - Step 2.22] – Fuel Price Delete Endpoint
+
+### 🟩 Features
+* Added `deleteFuelPrice` service, controller method and route.
+* Documented DELETE `/fuel-prices/{id}` in OpenAPI.
+
+### Files
+* `src/services/fuelPrice.service.ts`
+* `src/controllers/fuelPrice.controller.ts`
+* `src/routes/fuelPrice.route.ts`
+* `docs/openapi.yaml`

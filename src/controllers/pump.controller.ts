@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { createPump, listPumps, deletePump } from '../services/pump.service';
+import { updatePump } from '../services/pump.service';
 import { validateCreatePump } from '../validators/pump.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -51,6 +52,19 @@ export function createPumpHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         await deletePump(db, schemaName, req.params.id);
+        res.json({ status: 'ok' });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    update: async (req: Request, res: Response) => {
+      try {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const { label, serialNumber } = req.body;
+        await updatePump(db, schemaName, req.params.id, label, serialNumber);
         res.json({ status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

@@ -464,3 +464,22 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Plan enforcement now resolves tenant plan by `schema_name` instead of UUID, preventing `invalid input syntax for type uuid` errors during station creation.
+
+### 🛠️ Step 2.21 – CRUD Completion Endpoints
+
+**Status:** ✅ Done
+**Files:** `src/services/pump.service.ts`, `src/controllers/pump.controller.ts`, `src/routes/pump.route.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added pump update service and route protected by tenant context and role checks.
+* Documented update and delete routes for pumps, nozzles and users in OpenAPI spec.
+* Backend now exposes full CRUD operations for stations, pumps, nozzles and users.
+
+### 🛠️ Step 2.22 – Fuel Price Delete Endpoint
+
+**Status:** ✅ Done
+**Files:** `src/services/fuelPrice.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added service, controller and route to remove fuel price records.
+* Documented DELETE `/fuel-prices/{id}` in OpenAPI spec.
