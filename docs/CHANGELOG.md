@@ -1249,3 +1249,32 @@ Each entry is tied to a step from the implementation index.
 * `src/services/pump.service.ts` - Added nozzle count to listings
 * `src/services/nozzle.service.ts` - Fixed schema name usage and added required fields
 * `src/validators/station.validator.ts` - Added address field support
+
+## [Critical Fix - 2025-12-25] – UUID Tenant Context Resolution
+
+### 🟥 Critical Fixes
+* Fixed "invalid input syntax for type uuid" error preventing station creation
+* Resolved tenant context mismatch between controllers and services
+* Fixed all controllers to use schemaName instead of tenantId for database operations
+* Corrected tenant context resolution across station, pump, and nozzle operations
+* Fixed UUID validation errors in all CRUD operations
+
+### 🔧 Technical Resolution
+* Updated station controller to use `(req as any).schemaName` instead of `req.user?.tenantId`
+* Fixed pump controller tenant context resolution for all handlers
+* Corrected nozzle controller to use proper schema names
+* Ensured consistent tenant context pattern across all controllers
+* Maintained tenant isolation while fixing UUID validation
+
+### 📊 Root Cause Analysis
+* Controllers were passing user tenantId (like "bittu") instead of schema names
+* Services expected schema names (like "tenant_acme_corp_123456") for database operations
+* UUID validation failed when non-UUID strings passed to database queries
+* Tenant context middleware sets schemaName but controllers weren't using it
+
+### Files
+* `src/controllers/station.controller.ts` - Fixed all CRUD operations to use schemaName
+* `src/controllers/pump.controller.ts` - Updated create, list, delete handlers
+* `src/controllers/nozzle.controller.ts` - Fixed all nozzle operations
+* `src/validators/nozzle.validator.ts` - Added nozzleNumber validation
+* `docs/STEP_uuid_tenant_context_fix.md` - Complete fix documentation

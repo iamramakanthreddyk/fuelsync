@@ -8,33 +8,33 @@ export function createNozzleHandlers(db: Pool) {
   return {
     create: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateNozzle(req.body);
-        const id = await createNozzle(db, tenantId, data.pumpId, data.nozzleNumber, data.fuelType);
+        const id = await createNozzle(db, schemaName, data.pumpId, data.nozzleNumber, data.fuelType);
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
     },
     list: async (req: Request, res: Response) => {
-      const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-      if (!tenantId) {
+      const schemaName = (req as any).schemaName;
+      if (!schemaName) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const pumpId = req.query.pumpId as string | undefined;
-      const nozzles = await listNozzles(db, tenantId, pumpId);
+      const nozzles = await listNozzles(db, schemaName, pumpId);
       res.json({ nozzles });
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        await deleteNozzle(db, tenantId, req.params.id);
+        await deleteNozzle(db, schemaName, req.params.id);
         res.json({ status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
