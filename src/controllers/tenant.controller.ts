@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { listTenants, createTenant } from '../services/tenant.service';
+import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -59,6 +59,36 @@ export function createAdminTenantHandlers(db: Pool) {
     summary: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
       res.json({ tenantCount: tenants.length });
+    },
+    updateStatus: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        if (!['active', 'suspended', 'cancelled'].includes(status)) {
+          return errorResponse(res, 400, 'Invalid status');
+        }
+        
+        await updateTenantStatus(db, id, status);
+        const tenant = await getTenant(db, id);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        res.json(tenant);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+    delete: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        await deleteTenant(db, id);
+        res.json({ message: 'Tenant deleted successfully' });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
     }
   };
 }
