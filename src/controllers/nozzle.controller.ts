@@ -13,7 +13,7 @@ export function createNozzleHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateNozzle(req.body);
-        const id = await createNozzle(db, tenantId, data.pumpId, data.fuelType);
+        const id = await createNozzle(db, tenantId, data.pumpId, data.nozzleNumber, data.fuelType);
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
