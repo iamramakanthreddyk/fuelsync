@@ -27,6 +27,36 @@ export async function createNozzle(db: Pool, schemaName: string, pumpId: string,
   }
 }
 
+export async function updateNozzle(db: Pool, schemaName: string, nozzleId: string, fuelType?: string, status?: string): Promise<void> {
+  const client = await db.connect();
+  try {
+    const updates = [];
+    const params = [nozzleId];
+    let paramIndex = 2;
+    
+    if (fuelType) {
+      updates.push(`fuel_type = $${paramIndex++}`);
+      params.push(fuelType);
+    }
+    
+    if (status) {
+      updates.push(`status = $${paramIndex++}`);
+      params.push(status);
+    }
+    
+    if (updates.length === 0) {
+      return; // Nothing to update
+    }
+    
+    await client.query(
+      `UPDATE ${schemaName}.nozzles SET ${updates.join(', ')} WHERE id = $1`,
+      params
+    );
+  } finally {
+    client.release();
+  }
+}
+
 export async function listNozzles(db: Pool, schemaName: string, pumpId?: string) {
   const where = pumpId ? 'WHERE pump_id = $1' : '';
   const params = pumpId ? [pumpId] : [];
