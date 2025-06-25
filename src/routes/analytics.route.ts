@@ -18,6 +18,9 @@ export function createAnalyticsRouter(db: Pool) {
   
   // Tenant analytics
   router.get('/tenant/:id', authenticateJWT, requireSuperAdmin, handlers.getTenantAnalytics);
+
+  // Station comparison for owners
+  router.get('/station-comparison', authenticateJWT, requireRole([UserRole.Owner]), handlers.stationComparison);
   
   return router;
 }

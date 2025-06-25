@@ -1035,3 +1035,22 @@ Each entry is tied to a step from the implementation index.
 * `frontend/docs/openapi-v1.yaml`
 * `frontend/docs/api-diff.md`
 * `docs/STEP_fix_20250713.md`
+
+## [Feature - 2025-07-14] – API Alignment Endpoints
+
+### 🟢 Features
+* Added alerts API with mark-read support.
+* Added `/analytics/station-comparison` endpoint.
+* Fuel prices can be updated via PUT.
+* Sales reports export available via POST.
+* OpenAPI and Swagger docs updated.
+* Frontend integration instructions added.
+
+### Files
+* `src/controllers/alerts.controller.ts`, `src/routes/alerts.route.ts`
+* `src/controllers/analytics.controller.ts`, `src/routes/analytics.route.ts`
+* `src/services/fuelPrice.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`
+* `src/controllers/reports.controller.ts`, `src/routes/reports.route.ts`
+* `src/app.ts`, `docs/openapi.yaml`, `src/docs/swagger.ts`
+* `frontend/docs/integration-instructions.md`, `frontend/docs/api-diff.md`
+* `docs/STEP_2_20_COMMAND.md`

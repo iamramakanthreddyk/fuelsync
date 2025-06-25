@@ -21,6 +21,7 @@ import { createDashboardRouter } from './routes/dashboard.route';
 import { createInventoryRouter } from './routes/inventory.route';
 import { createReportsRouter } from './routes/reports.route';
 import { createAnalyticsRouter } from './routes/analytics.route';
+import { createAlertsRouter } from './routes/alerts.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 import { defaultTenant } from './middlewares/defaultTenant';
@@ -185,6 +186,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/sales`, createSalesRouter(pool));
   app.use(`${API_PREFIX}/settings`, createSettingsRouter(pool));
   app.use(`${API_PREFIX}/fuel-inventory`, createFuelInventoryRouter(pool));
+  app.use(`${API_PREFIX}/alerts`, createAlertsRouter(pool));
   app.use(`${API_PREFIX}/tenants`, createTenantRouter(pool));
   app.use(`${API_PREFIX}/dashboard`, createDashboardRouter(pool));
   app.use(`${API_PREFIX}/inventory`, createInventoryRouter(pool));

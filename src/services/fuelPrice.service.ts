@@ -40,6 +40,15 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
   }
 }
 
+export async function updateFuelPrice(db: Pool, tenantId: string, id: string, input: FuelPriceInput): Promise<void> {
+  await db.query(
+    `UPDATE ${tenantId}.fuel_prices
+     SET station_id = $2, fuel_type = $3, price = $4, effective_from = $5
+     WHERE id = $1`,
+    [id, input.stationId, input.fuelType, input.price, input.effectiveFrom]
+  );
+}
+
 export async function listFuelPrices(db: Pool, tenantId: string, query: FuelPriceQuery) {
   const params: any[] = [];
   let idx = 1;

@@ -93,6 +93,21 @@ paths:
       summary: Create fuel price entry
     get:
       summary: List fuel prices
+  /api/v1/fuel-prices/{id}:
+    put:
+      summary: Update fuel price
+  /api/v1/alerts:
+    get:
+      summary: List alerts
+  /api/v1/alerts/{id}/read:
+    patch:
+      summary: Mark alert read
+  /api/v1/analytics/station-comparison:
+    get:
+      summary: Station comparison metrics
+  /api/v1/reports/sales:
+    post:
+      summary: Export sales report
   /api/v1/creditors:
     post:
       summary: Create creditor

@@ -10,6 +10,7 @@ export function createReportsRouter(db: Pool) {
   const handlers = createReportsHandlers(db);
 
   router.get('/sales/export', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.exportSales);
+  router.post('/sales', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.exportSalesPost);
   router.get('/financial/export', authenticateJWT, requireRole([UserRole.Owner]), handlers.exportFinancial);
 
   return router;

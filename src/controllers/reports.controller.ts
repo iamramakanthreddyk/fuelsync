@@ -3,8 +3,7 @@ import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 
 export function createReportsHandlers(db: Pool) {
-  return {
-    exportSales: async (req: Request, res: Response) => {
+  async function runExportSales(req: Request, res: Response) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
@@ -73,6 +72,14 @@ export function createReportsHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
+    }
+  }
+
+  return {
+    exportSales: runExportSales,
+    exportSalesPost: async (req: Request, res: Response) => {
+      req.query = { ...req.body } as any;
+      await runExportSales(req, res);
     },
 
     exportFinancial: async (req: Request, res: Response) => {
