@@ -2,19 +2,31 @@ import { Pool, PoolClient } from 'pg';
 import { CreditorInput, CreditPaymentInput, PaymentQuery } from '../validators/creditor.validator';
 import { isDateFinalized } from './reconciliation.service';
 
-export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
+export async function createCreditor(db: Pool, schemaName: string, input: CreditorInput): Promise<string> {
+  // Get actual tenant UUID from schema name
+  const tenantRes = await db.query(
+    'SELECT id FROM public.tenants WHERE schema_name = $1',
+    [schemaName]
+  );
+  
+  if (tenantRes.rows.length === 0) {
+    throw new Error(`Tenant not found for schema: ${schemaName}`);
+  }
+  
+  const tenantId = tenantRes.rows[0].id;
+  
   const res = await db.query<{ id: string }>(
-    `INSERT INTO ${tenantId}.creditors (tenant_id, party_name, contact_person, contact_phone, email, credit_limit)
-     VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
-    [tenantId, input.partyName, input.contactPerson || null, input.contactPhone || null, input.email || null, input.creditLimit || 0]
+    `INSERT INTO ${schemaName}.creditors (tenant_id, party_name, contact_number, address, credit_limit)
+     VALUES ($1,$2,$3,$4,$5) RETURNING id`,
+    [tenantId, input.partyName, input.contactNumber || null, input.address || null, input.creditLimit || 0]
   );
   return res.rows[0].id;
 }
 
-export async function listCreditors(db: Pool, tenantId: string) {
+export async function listCreditors(db: Pool, schemaName: string) {
   const res = await db.query(
-    `SELECT id, party_name, contact_person, contact_phone, email, credit_limit, balance, notes, created_at
-     FROM ${tenantId}.creditors ORDER BY party_name`
+    `SELECT id, party_name, contact_number, address, credit_limit, status, created_at
+     FROM ${schemaName}.creditors ORDER BY party_name`
   );
   return res.rows;
 }

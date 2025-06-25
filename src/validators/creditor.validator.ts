@@ -1,8 +1,7 @@
 export interface CreditorInput {
   partyName: string;
-  contactPerson?: string;
-  contactPhone?: string;
-  email?: string;
+  contactNumber?: string;
+  address?: string;
   creditLimit?: number;
 }
 
@@ -18,7 +17,7 @@ export interface PaymentQuery {
 }
 
 export function validateCreateCreditor(data: any): CreditorInput {
-  const { partyName, contactPerson, contactPhone, email, creditLimit } = data || {};
+  const { partyName, contactNumber, address, creditLimit } = data || {};
   if (!partyName || typeof partyName !== 'string') {
     throw new Error('partyName required');
   }
@@ -30,7 +29,7 @@ export function validateCreateCreditor(data: any): CreditorInput {
     }
     limitNum = n;
   }
-  return { partyName, contactPerson, contactPhone, email, creditLimit: limitNum };
+  return { partyName, contactNumber, address, creditLimit: limitNum };
 }
 
 export function validateUpdateCreditor(data: any): CreditorInput {

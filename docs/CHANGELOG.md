@@ -1278,3 +1278,58 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/nozzle.controller.ts` - Fixed all nozzle operations
 * `src/validators/nozzle.validator.ts` - Added nozzleNumber validation
 * `docs/STEP_uuid_tenant_context_fix.md` - Complete fix documentation
+
+## [Complete Fix - 2025-12-25] – Frontend-Backend Tenant Context Integration
+
+### 🟥 Critical Fixes
+* Created setTenantContext middleware to properly extract schema names from JWT tokens
+* Fixed creditor table schema mismatch - removed non-existent contact_person column
+* Updated creditor service to use correct column names (party_name, contact_number, address)
+* Fixed all remaining controllers to use schemaName instead of tenantId
+* Resolved frontend-backend tenant context integration issues
+
+### 🔧 Technical Implementation
+* Added setTenantContext middleware that extracts tenantId from JWT and sets as schemaName
+* Updated creditor service to match actual database schema structure
+* Fixed creditor validator to use correct field names
+* Applied setTenantContext middleware to station and creditor routes
+* Ensured consistent tenant context flow: JWT → Middleware → Controller → Service
+
+### 📊 Database Schema Alignment
+* Creditor table uses: party_name, contact_number, address (not contact_person)
+* All services now properly resolve tenant UUID from schema names
+* Consistent column naming across all tenant operations
+* Proper foreign key relationships maintained
+
+### Files
+* `src/middlewares/setTenantContext.ts` - New middleware for tenant context resolution
+* `src/routes/station.route.ts` - Added setTenantContext middleware
+* `src/routes/creditor.route.ts` - Added setTenantContext middleware
+* `src/services/creditor.service.ts` - Fixed schema alignment and tenant UUID resolution
+* `src/controllers/creditor.controller.ts` - Updated to use schemaName
+* `src/validators/creditor.validator.ts` - Fixed field names to match schema
+
+## [Security Clarification - 2025-12-25] – Multi-Tenant Authorization Model
+
+### 🔒 Security Architecture Clarified
+* **Schema Isolation**: tenantId provides data separation between different companies
+* **Role Authorization**: JWT role field provides permission control within same tenant
+* **User Identity**: userId enables user-specific operations and audit trails
+* **Secure Pattern**: authenticateJWT → setTenantContext → requireRole → handler
+
+### 📊 Authorization Matrix
+* **Owner**: Full access - create stations, manage users, view reports, enter sales
+* **Manager**: Limited access - create stations, view reports, enter sales (no user management)
+* **Attendant**: Restricted access - only enter sales and view assigned data
+* **Schema Shared**: All users in same tenant access same schema but with different permissions
+
+### 🔧 Technical Implementation
+* JWT contains: {userId, tenantId (schema), role}
+* setTenantContext: Extracts schema name for data isolation
+* requireRole: Enforces permission control based on user role
+* Route protection ensures both tenant isolation and role authorization
+
+### Files
+* `src/middlewares/setTenantContext.ts` - Enhanced with security documentation
+* `src/routes/pump.route.ts` - Added setTenantContext middleware
+* `docs/SECURITY_tenant_authorization.md` - Comprehensive security model documentation
