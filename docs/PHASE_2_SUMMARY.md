@@ -456,3 +456,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Removed extra closing brace which stopped `tsc` with error `TS1128`.
+
+### 🛠️ Fix 2025-07-15 – Plan Enforcement Schema Lookup
+
+**Status:** ✅ Done
+**Files:** `src/middleware/planEnforcement.ts`
+
+**Overview:**
+* Plan enforcement now resolves tenant plan by `schema_name` instead of UUID, preventing `invalid input syntax for type uuid` errors during station creation.

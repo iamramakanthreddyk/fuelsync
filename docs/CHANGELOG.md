@@ -1063,6 +1063,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/reports.controller.ts`
 * `docs/STEP_fix_20250714.md`
+## [Fix - 2025-07-15] – Plan Enforcement Schema Lookup
+
+### 🟥 Fixes
+* Plan enforcement middleware queried tenants by UUID but received schema names, causing `invalid input syntax for type uuid` errors during station creation.
+* Updated `planEnforcement.ts` functions to resolve plan details via `schema_name`.
+* Owners can now create stations without UUID errors.
+
+### Files
+* `src/middleware/planEnforcement.ts`
+* `docs/STEP_fix_20250715.md`
+
 
 ## [Fix - 2025-12-25] – Tenant Context & UUID Resolution
 
