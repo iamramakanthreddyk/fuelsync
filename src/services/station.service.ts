@@ -2,32 +2,27 @@ import { Pool } from 'pg';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 
 export async function createStation(db: Pool, schemaName: string, name: string, address?: string): Promise<string> {
-  console.log('[STATION-SERVICE] createStation called with schemaName:', schemaName);
   const client = await db.connect();
   try {
-    await beforeCreateStation(client, schemaName);
-    
     // Get actual tenant UUID from schema name
-    console.log('[STATION-SERVICE] Looking up tenant UUID for schema:', schemaName);
     const tenantRes = await client.query(
       'SELECT id FROM public.tenants WHERE schema_name = $1',
       [schemaName]
     );
-    
-    console.log('[STATION-SERVICE] Tenant lookup result:', tenantRes.rows);
     
     if (tenantRes.rows.length === 0) {
       throw new Error(`Tenant not found for schema: ${schemaName}`);
     }
     
     const tenantId = tenantRes.rows[0].id;
-    console.log('[STATION-SERVICE] Using tenant UUID:', tenantId);
+    
+    // Call beforeCreateStation with the tenant UUID
+    await beforeCreateStation(client, tenantId);
     
     const res = await client.query<{ id: string }>(
       `INSERT INTO ${schemaName}.stations (tenant_id, name, address) VALUES ($1,$2,$3) RETURNING id`,
       [tenantId, name, address || null]
     );
-    console.log('[STATION-SERVICE] Station created with ID:', res.rows[0].id);
     return res.rows[0].id;
   } finally {
     client.release();
