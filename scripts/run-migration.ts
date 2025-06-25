@@ -8,7 +8,7 @@ async function runMigration() {
   
   try {
     // Read the migration SQL file
-    const migrationPath = path.join(process.cwd(), 'migrations/001_create_public_schema.sql');
+    const migrationPath = path.join(process.cwd(), 'migrations/schema/001_initial_schema.sql');
     console.log(`Reading migration file: ${migrationPath}`);
     
     if (!fs.existsSync(migrationPath)) {
