@@ -31,23 +31,21 @@ export async function listCreditors(db: Pool, schemaName: string) {
   return res.rows;
 }
 
-export async function updateCreditor(db: Pool, tenantId: string, id: string, input: CreditorInput) {
+export async function updateCreditor(db: Pool, schemaName: string, id: string, input: CreditorInput) {
   await db.query(
-    `UPDATE ${tenantId}.creditors SET
+    `UPDATE ${schemaName}.creditors SET
       party_name = COALESCE($2, party_name),
-      contact_person = COALESCE($3, contact_person),
-      contact_phone = COALESCE($4, contact_phone),
-      email = COALESCE($5, email),
-      credit_limit = COALESCE($6, credit_limit),
-      updated_at = NOW()
+      contact_number = COALESCE($3, contact_number),
+      address = COALESCE($4, address),
+      credit_limit = COALESCE($5, credit_limit)
      WHERE id = $1`,
-    [id, input.partyName || null, input.contactPerson || null, input.contactPhone || null, input.email || null, input.creditLimit]
+    [id, input.partyName || null, input.contactNumber || null, input.address || null, input.creditLimit]
   );
 }
 
-export async function markCreditorInactive(db: Pool, tenantId: string, id: string) {
+export async function markCreditorInactive(db: Pool, schemaName: string, id: string) {
   await db.query(
-    `UPDATE ${tenantId}.creditors SET credit_limit = 0, notes = COALESCE(notes,'') || '[INACTIVE]', updated_at = NOW() WHERE id = $1`,
+    `UPDATE ${schemaName}.creditors SET status = 'inactive' WHERE id = $1`,
     [id]
   );
 }

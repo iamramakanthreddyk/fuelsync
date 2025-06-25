@@ -33,8 +33,8 @@ export function validateCreateCreditor(data: any): CreditorInput {
 }
 
 export function validateUpdateCreditor(data: any): CreditorInput {
-  const { partyName, contactPerson, contactPhone, email, creditLimit } = data || {};
-  if (!partyName && !contactPerson && !contactPhone && !email && creditLimit === undefined) {
+  const { partyName, contactNumber, address, creditLimit } = data || {};
+  if (!partyName && !contactNumber && !address && creditLimit === undefined) {
     throw new Error('No update fields');
   }
   let limitNum: number | undefined = undefined;
@@ -45,7 +45,7 @@ export function validateUpdateCreditor(data: any): CreditorInput {
     }
     limitNum = n;
   }
-  return { partyName, contactPerson, contactPhone, email, creditLimit: limitNum };
+  return { partyName, contactNumber, address, creditLimit: limitNum };
 }
 
 export function validateCreatePayment(data: any): CreditPaymentInput {

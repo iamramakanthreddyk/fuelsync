@@ -45,12 +45,12 @@ export function createCreditorHandlers(db: Pool) {
     },
     update: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateUpdateCreditor(req.body);
-        await updateCreditor(db, tenantId, req.params.id, data);
+        await updateCreditor(db, schemaName, req.params.id, data);
         res.json({ status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {
@@ -61,11 +61,11 @@ export function createCreditorHandlers(db: Pool) {
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        await markCreditorInactive(db, tenantId, req.params.id);
+        await markCreditorInactive(db, schemaName, req.params.id);
         res.json({ status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {
