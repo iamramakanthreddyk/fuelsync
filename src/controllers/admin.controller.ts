@@ -10,7 +10,7 @@ export function createAdminApiHandlers(db: Pool) {
     // Tenant Management
     createTenant: async (req: Request, res: Response) => {
       try {
-        const { name, planId, schemaName, adminEmail, adminPassword } = req.body;
+        const { name, planId, schemaName, ownerName, ownerEmail, ownerPassword } = req.body;
         
         if (!name || !planId) {
           return errorResponse(res, 400, 'Name and planId are required');
@@ -20,8 +20,9 @@ export function createAdminApiHandlers(db: Pool) {
           name,
           planId,
           schemaName,
-          adminEmail,
-          adminPassword
+          ownerName,
+          ownerEmail,
+          ownerPassword
         });
         res.status(201).json(tenant);
       } catch (err: any) {

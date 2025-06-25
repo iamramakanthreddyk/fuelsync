@@ -50,7 +50,22 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     await client.query('BEGIN');
     
     // Use provided schema name or generate one
-    const schemaName = input.schemaName || `tenant_${input.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now().toString().slice(-6)}`;
+    let schemaName = input.schemaName;
+    
+    if (!schemaName) {
+      const baseName = `tenant_${input.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+      schemaName = `${baseName}_${Date.now().toString().slice(-6)}`;
+    }
+    
+    // Check if schema name already exists
+    const existingSchema = await client.query(
+      'SELECT id FROM public.tenants WHERE schema_name = $1',
+      [schemaName]
+    );
+    
+    if (existingSchema.rows.length > 0) {
+      throw new Error(`Schema name '${schemaName}' already exists`);
+    }
     
     // Create tenant record
     const result = await client.query(
@@ -169,9 +184,9 @@ export async function listTenants(db: Pool, includeDeleted = false): Promise<Ten
 }
 
 /**
- * Get tenant by ID
+ * Get tenant by ID with detailed information
  */
-export async function getTenant(db: Pool, id: string): Promise<TenantOutput | null> {
+export async function getTenant(db: Pool, id: string): Promise<any | null> {
   const result = await db.query(
     `SELECT t.id, t.name, t.schema_name, t.plan_id, t.status, t.created_at, p.name as plan_name
      FROM public.tenants t
@@ -185,6 +200,50 @@ export async function getTenant(db: Pool, id: string): Promise<TenantOutput | nu
   }
   
   const row = result.rows[0];
+  const schemaName = row.schema_name;
+  
+  // Get users
+  const usersResult = await db.query(
+    `SELECT id, email, name, role, created_at FROM ${schemaName}.users ORDER BY 
+     CASE role WHEN 'owner' THEN 1 WHEN 'manager' THEN 2 WHEN 'attendant' THEN 3 END`
+  );
+  
+  // Get stations with hierarchy
+  const stationsResult = await db.query(
+    `SELECT s.id, s.name, s.address, s.status,
+     (SELECT COUNT(*) FROM ${schemaName}.pumps p WHERE p.station_id = s.id) as pump_count
+     FROM ${schemaName}.stations s ORDER BY s.name`
+  );
+  
+  const stations = [];
+  for (const station of stationsResult.rows) {
+    const pumpsResult = await db.query(
+      `SELECT p.id, p.label, p.serial_number, p.status,
+       (SELECT COUNT(*) FROM ${schemaName}.nozzles n WHERE n.pump_id = p.id) as nozzle_count
+       FROM ${schemaName}.pumps p WHERE p.station_id = $1 ORDER BY p.label`,
+      [station.id]
+    );
+    
+    const pumps = [];
+    for (const pump of pumpsResult.rows) {
+      const nozzlesResult = await db.query(
+        `SELECT id, nozzle_number, fuel_type, status FROM ${schemaName}.nozzles 
+         WHERE pump_id = $1 ORDER BY nozzle_number`,
+        [pump.id]
+      );
+      
+      pumps.push({
+        ...pump,
+        nozzles: nozzlesResult.rows
+      });
+    }
+    
+    stations.push({
+      ...station,
+      pumps
+    });
+  }
+  
   return {
     id: row.id,
     name: row.name,
@@ -192,7 +251,11 @@ export async function getTenant(db: Pool, id: string): Promise<TenantOutput | nu
     planId: row.plan_id,
     planName: row.plan_name,
     status: row.status,
-    createdAt: row.created_at
+    createdAt: row.created_at,
+    users: usersResult.rows,
+    stations,
+    userCount: usersResult.rows.length,
+    stationCount: stations.length
   };
 }
 
