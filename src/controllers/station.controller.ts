@@ -56,9 +56,9 @@ export function createStationHandlers(db: Pool) {
 
     metrics: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const metrics = await getStationMetrics(db, tenantId, req.params.id, req.query.period as string || 'today');
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
+        const metrics = await getStationMetrics(db, schemaName, req.params.id, req.query.period as string || 'today');
         res.json(metrics);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -67,9 +67,9 @@ export function createStationHandlers(db: Pool) {
 
     performance: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const perf = await getStationPerformance(db, tenantId, req.params.id, req.query.range as string || 'monthly');
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
+        const perf = await getStationPerformance(db, schemaName, req.params.id, req.query.range as string || 'monthly');
         res.json(perf);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -78,11 +78,11 @@ export function createStationHandlers(db: Pool) {
 
     compare: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
         const stationIds = (req.query.stationIds as string)?.split(',') || [];
         if (stationIds.length === 0) return errorResponse(res, 400, 'Station IDs required');
-        const comparison = await getStationComparison(db, tenantId, stationIds, req.query.period as string || 'monthly');
+        const comparison = await getStationComparison(db, schemaName, stationIds, req.query.period as string || 'monthly');
         res.json(comparison);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -91,9 +91,9 @@ export function createStationHandlers(db: Pool) {
 
     ranking: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const ranking = await getStationRanking(db, tenantId, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
+        const ranking = await getStationRanking(db, schemaName, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
         res.json(ranking);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
