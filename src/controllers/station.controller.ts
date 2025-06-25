@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createStation, listStations, updateStation, deleteStation, getStationMetrics, getStationPerformance, getStationComparison, getStationRanking } from '../services/station.service';
+import { createStation, getStation, listStations, updateStation, deleteStation, getStationMetrics, getStationPerformance, getStationComparison, getStationRanking } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -27,6 +27,19 @@ export function createStationHandlers(db: Pool) {
       const includeMetrics = req.query.includeMetrics === 'true';
       const stations = await listStations(db, schemaName, includeMetrics);
       res.json(stations);
+    },
+    get: async (req: Request, res: Response) => {
+      try {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const includeMetrics = req.query.includeMetrics === 'true';
+        const station = await getStation(db, schemaName, req.params.id, includeMetrics);
+        res.json(station);
+      } catch (err: any) {
+        return errorResponse(res, 404, err.message);
+      }
     },
     update: async (req: Request, res: Response) => {
       try {
