@@ -1368,3 +1368,71 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/fuelPrice.controller.ts`
 * `src/routes/fuelPrice.route.ts`
 * `docs/openapi.yaml`
+
+## [Fix - 2025-07-16] – Schema Consolidation Migration
+
+### 🟥 Fixes
+* Migrated from schema-per-tenant design to a unified `public` schema with `tenant_id` columns.
+* Added `db_brain.md` documenting database structure and best practices.
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+* `docs/STEP_fix_20250716.md`
+
+## [Fix - 2025-07-17] – Unified Schema Enhancements
+
+### 🟥 Fixes
+* Added missing `schema_migrations` and `admin_users` table definitions to migration 003.
+* Enforced foreign key references on all `tenant_id` columns.
+* Documented referential integrity in `db_brain.md`.
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+* `docs/STEP_fix_20250717.md`
+
+## [Fix - 2025-07-18] – Schema Alignment with Business Rules
+
+### 🟥 Fixes
+* Added `reading_id` to `sales` table
+* Added `user_stations` and `tenant_settings` tables
+* Extended `fuel_prices` with `effective_to`
+* Updated `db_brain.md` with new structures
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+* `docs/STEP_fix_20250718.md`
+
+## [Fix - 2025-07-19] – Final Schema Adjustments
+
+### 🟥 Fixes
+* Added `admin_activity_logs` table for super admin auditing
+* Added `updated_at` column to all major tables
+* Inserted missing table comments for clarity
+* Updated `db_brain.md` with new fields and tables
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+* `docs/STEP_fix_20250719.md`
+
+## [Fix - 2025-07-20] – Remove Legacy DB Files
+
+### 🟥 Fixes
+* Deleted obsolete production schema and seed scripts
+* Removed unused tenant schema templates
+* Updated helper scripts to load `001_initial_schema.sql`
+* Documented migration procedure in `db_brain.md`
+
+### Files
+* `migrations/001_production_schema.sql` (deleted)
+* `migrations/002_production_seed.sql` (deleted)
+* `database/tenant_schema_template.sql` (deleted)
+* `sql/tenant_schema_template.sql` (deleted)
+* `scripts/run-migration.ts`
+* `scripts/create-test-db.ts`
+* `scripts/init-test-db.js`
+* `db_brain.md`
+* `docs/STEP_fix_20250720.md`

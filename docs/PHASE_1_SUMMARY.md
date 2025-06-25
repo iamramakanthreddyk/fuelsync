@@ -426,6 +426,69 @@ Each step includes:
 **Validations Performed:**
 * Manual run of `npm run setup-db` created demo data successfully.
 
+### 🛠 Fix 2025-07-16 – Schema Consolidation Migration
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Dropped all tenant schemas and recreated tables in `public` with `tenant_id`.
+* Added living database documentation `db_brain.md`.
+
+**Validations Performed:**
+* Manual inspection of migration script for idempotency.
+
+### 🛠 Fix 2025-07-17 – Unified Schema Enhancements
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Added missing admin and migration tables in the consolidation script.
+* Enforced tenant foreign keys on all tables.
+* Documented referential integrity in `db_brain.md`.
+
+**Validations Performed:**
+* Manual linting and review of migration for idempotency.
+
+### 🛠 Fix 2025-07-18 – Schema Alignment with Business Rules
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Added reading_id in sales for traceability
+* Added user_stations and tenant_settings tables
+* Added effective_to to fuel_prices
+
+**Validations Performed:**
+* Manual review of migration ordering
+
 ---
 
 **Phase 1 Completed.** Database schema and seeding utilities are stable for backend development.
+
+### 🛠 Fix 2025-07-19 – Final Schema Adjustments
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Added admin_activity_logs table for auditing
+* Added updated_at timestamps and table comments
+
+**Validations Performed:**
+* Manual verification of SQL syntax and documentation updates
+
+### 🛠 Fix 2025-07-20 – Remove Legacy DB Files
+
+**Status:** ✅ Done
+**Files:** `scripts/run-migration.ts`, `scripts/create-test-db.ts`, `scripts/init-test-db.js`, `db_brain.md`
+
+**Overview:**
+* Deleted outdated production migrations and tenant schema templates
+* Updated helper scripts to reference `001_initial_schema.sql`
+* Documented unified schema migration steps in `db_brain.md`
+
+**Validations Performed:**
+* Manual run of `ts-node scripts/run-migration.ts` on a clean DB

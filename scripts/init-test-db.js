@@ -25,7 +25,7 @@ async function initTestDb() {
   const client = new Client({ host, port, user, password, database: dbName });
   await client.connect();
 
-  const publicSql = fs.readFileSync(path.join(__dirname, '../migrations/001_create_public_schema.sql'), 'utf8');
+  const publicSql = fs.readFileSync(path.join(__dirname, '../migrations/schema/001_initial_schema.sql'), 'utf8');
   await client.query(publicSql);
 
   await client.query(`INSERT INTO public.plans (name, config_json) VALUES ('basic', '{}'::jsonb) ON CONFLICT (name) DO NOTHING`);

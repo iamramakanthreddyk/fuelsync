@@ -98,3 +98,8 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-13 | Document Frontend API Contract | ✅ Done | `frontend/docs/openapi-v1.yaml`, `frontend/docs/api-diff.md` | `docs/STEP_fix_20250713.md` |
 | fix | 2025-07-14 | Reports Controller Compile Fix | ✅ Done | `src/controllers/reports.controller.ts` | `docs/STEP_fix_20250714.md` |
 | fix | 2025-07-15 | Plan Enforcement Schema Lookup | ✅ Done | `src/middleware/planEnforcement.ts` | `docs/STEP_fix_20250715.md` |
+| fix | 2025-07-16 | Schema Consolidation Migration | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250716.md` |
+| fix | 2025-07-17 | Unified Schema Enhancements | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250717.md` |
+| fix | 2025-07-18 | Schema Alignment with Business Rules | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250718.md` |
+| fix | 2025-07-19 | Final Schema Adjustments | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250719.md` |
+| fix | 2025-07-20 | Remove Legacy DB Files | ✅ Done | scripts updated, old migrations removed | `docs/STEP_fix_20250720.md` |

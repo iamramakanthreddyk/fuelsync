@@ -36,7 +36,7 @@ sudo -u postgres psql -c "CREATE DATABASE fuelsync_hub OWNER fuelsync;"
 Run the public schema migration:
 
 ```bash
-psql -U postgres -d fuelsync_hub -f migrations/001_create_public_schema.sql
+psql -U postgres -d fuelsync_hub -f migrations/schema/001_initial_schema.sql
 ```
 
 ## 3. Seed Data
