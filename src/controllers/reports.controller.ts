@@ -73,7 +73,6 @@ export function createReportsHandlers(db: Pool) {
         return errorResponse(res, 500, err.message);
       }
     }
-  }
 
   return {
     exportSales: runExportSales,
