@@ -1063,3 +1063,36 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/reports.controller.ts`
 * `docs/STEP_fix_20250714.md`
+
+## [Fix - 2025-12-25] – Tenant Context & UUID Resolution
+
+### 🟥 Fixes
+* Fixed "invalid input syntax for type uuid" error by resolving schema names to actual tenant UUIDs
+* Updated all service functions to get tenant UUID from schema name before database operations
+* Fixed controller tenant context retrieval to check both JWT token and x-tenant-id header
+* Added missing tenant status update and delete routes for super admin management
+* Fixed frontend client header logic to properly handle super admin vs tenant user authentication
+
+### 🟦 Enhancements
+* Updated frontend StationsPage to use real API data instead of mock data
+* Added loading states and error handling to frontend station management
+* Improved tenant context handling across all controllers (station, pump, nozzle)
+* Added comprehensive documentation of tenant UUID vs schema name resolution pattern
+
+### Files
+* `src/services/station.service.ts` - Fixed UUID resolution for all station operations
+* `src/services/pump.service.ts` - Fixed UUID resolution for pump operations
+* `src/services/inventory.service.ts` - Fixed null check for rowCount
+* `src/controllers/station.controller.ts` - Fixed tenant context retrieval
+* `src/controllers/pump.controller.ts` - Fixed tenant context retrieval
+* `src/controllers/nozzle.controller.ts` - Fixed tenant context retrieval
+* `src/controllers/tenant.controller.ts` - Added missing status update and delete handlers
+* `src/routes/adminTenant.route.ts` - Added missing routes
+* `src/api/client.ts` (frontend) - Fixed header logic for different user types
+* `src/api/stations.ts` (frontend) - Updated Station interface and API methods
+* `src/api/dashboard.ts` (frontend) - Added data transformation for backend compatibility
+* `src/hooks/useStations.ts` (frontend) - Enhanced hooks with metrics support
+* `src/pages/dashboard/StationsPage.tsx` (frontend) - Replaced mock data with real API calls
+* `TENANT_CONTEXT_FIX.md` - Comprehensive fix documentation
+* `TENANT_UUID_FIX_SUMMARY.md` - Technical implementation details
+* `FRONTEND_INTERFACE_ALIGNMENT.md` - Frontend interface alignment documentation
