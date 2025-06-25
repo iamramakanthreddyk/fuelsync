@@ -1190,3 +1190,26 @@ Each entry is tied to a step from the implementation index.
 * `migrations/007_add_name_to_admin_users.sql` - Database migration for name field
 * `src/services/admin.service.ts` - Enhanced admin user service with name support
 * `src/controllers/admin.controller.ts` - Updated controllers to handle name field
+
+## [Fix - 2025-12-25] – Owner Functionality & Service Consistency
+
+### 🟥 Fixes
+* Removed automatic dummy station seeding that was creating unwanted test data
+* Fixed password display in tenant creation form to show correct schema name
+* Fixed service layer inconsistency between tenantId and schemaName usage
+* Enhanced user creation service to include name field and proper tenant UUID resolution
+* Fixed fuel price service to use schema names consistently
+* Removed station auto-seeding that was interfering with owner management
+
+### 🟦 Enhancements
+* Updated user service to support proper name field in user creation
+* Enhanced fuel price service with proper tenant context resolution
+* Improved service layer consistency across all tenant operations
+* Fixed user controller to handle all CRUD operations properly
+
+### Files
+* `src/services/station.service.ts` - Removed dummy data seeding
+* `src/components/admin/TenantForm.tsx` (frontend) - Fixed password display
+* `src/services/user.service.ts` - Enhanced with name support and schema consistency
+* `src/services/fuelPrice.service.ts` - Fixed schema name usage and tenant UUID resolution
+* `src/controllers/user.controller.ts` - Complete user management functionality
