@@ -28,6 +28,22 @@ export function createPumpHandlers(db: Pool) {
       const pumps = await listPumps(db, schemaName, stationId);
       res.json({ pumps });
     },
+    get: async (req: Request, res: Response) => {
+      try {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const pumps = await listPumps(db, schemaName);
+        const pump = pumps.find(p => p.id === req.params.id);
+        if (!pump) {
+          return errorResponse(res, 404, 'Pump not found');
+        }
+        res.json(pump);
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
     remove: async (req: Request, res: Response) => {
       try {
         const schemaName = (req as any).schemaName;
