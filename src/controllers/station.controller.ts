@@ -14,7 +14,7 @@ export function createStationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateStation(req.body);
-        const id = await createStation(db, tenantId, data.name);
+        const id = await createStation(db, tenantId, data.name, data.address);
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

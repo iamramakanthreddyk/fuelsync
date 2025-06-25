@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 
-export async function createStation(db: Pool, schemaName: string, name: string): Promise<string> {
+export async function createStation(db: Pool, schemaName: string, name: string, address?: string): Promise<string> {
   const client = await db.connect();
   try {
     await beforeCreateStation(client, schemaName);
@@ -19,8 +19,8 @@ export async function createStation(db: Pool, schemaName: string, name: string):
     const tenantId = tenantRes.rows[0].id;
     
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${schemaName}.stations (tenant_id, name) VALUES ($1,$2) RETURNING id`,
-      [tenantId, name]
+      `INSERT INTO ${schemaName}.stations (tenant_id, name, address) VALUES ($1,$2,$3) RETURNING id`,
+      [tenantId, name, address || null]
     );
     return res.rows[0].id;
   } finally {
