@@ -1,13 +1,14 @@
 export interface StationInput {
   name: string;
+  address?: string;
 }
 
 export function validateCreateStation(data: any): StationInput {
-  const { name } = data || {};
+  const { name, address } = data || {};
   if (!name || typeof name !== 'string') {
     throw new Error('Invalid station name');
   }
-  return { name };
+  return { name, address };
 }
 
 export function validateUpdateStation(data: any): StationInput {

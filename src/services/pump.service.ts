@@ -29,13 +29,18 @@ export async function createPump(db: Pool, schemaName: string, stationId: string
 }
 
 export async function listPumps(db: Pool, schemaName: string, stationId?: string) {
-  const where = stationId ? 'WHERE station_id = $1' : '';
+  const where = stationId ? 'WHERE p.station_id = $1' : '';
   const params = stationId ? [stationId] : [];
   const res = await db.query(
-    `SELECT id, station_id, label, serial_number, status, created_at FROM ${schemaName}.pumps ${where} ORDER BY label`,
+    `SELECT p.id, p.station_id, p.label, p.serial_number, p.status, p.created_at,
+     (SELECT COUNT(*) FROM ${schemaName}.nozzles n WHERE n.pump_id = p.id) as nozzle_count
+     FROM ${schemaName}.pumps p ${where} ORDER BY p.label`,
     params
   );
-  return res.rows;
+  return res.rows.map(row => ({
+    ...row,
+    nozzleCount: parseInt(row.nozzle_count)
+  }));
 }
 
 export async function deletePump(db: Pool, schemaName: string, pumpId: string) {

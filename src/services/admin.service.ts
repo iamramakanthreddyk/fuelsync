@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 export interface AdminUserInput {
   email: string;
+  name?: string;
   password?: string;
   role?: string;
 }
@@ -10,6 +11,7 @@ export interface AdminUserInput {
 export interface AdminUserOutput {
   id: string;
   email: string;
+  name?: string;
   role: string;
   createdAt: Date;
 }
@@ -32,14 +34,15 @@ export async function createAdminUser(db: Pool, input: AdminUserInput): Promise<
   const passwordHash = await bcrypt.hash(input.password || 'admin123', 10);
   
   const result = await db.query(
-    'INSERT INTO public.admin_users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role, created_at',
-    [input.email, passwordHash, input.role || 'superadmin']
+    'INSERT INTO public.admin_users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role, created_at',
+    [input.email, input.name || input.email.split('@')[0], passwordHash, input.role || 'superadmin']
   );
   
   const user = result.rows[0];
   return {
     id: user.id,
     email: user.email,
+    name: user.name,
     role: user.role,
     createdAt: user.created_at
   };
@@ -50,12 +53,13 @@ export async function createAdminUser(db: Pool, input: AdminUserInput): Promise<
  */
 export async function listAdminUsers(db: Pool): Promise<AdminUserOutput[]> {
   const result = await db.query(
-    'SELECT id, email, role, created_at FROM public.admin_users ORDER BY created_at DESC'
+    'SELECT id, email, name, role, created_at FROM public.admin_users ORDER BY created_at DESC'
   );
   
   return result.rows.map(user => ({
     id: user.id,
     email: user.email,
+    name: user.name,
     role: user.role,
     createdAt: user.created_at
   }));
@@ -66,7 +70,7 @@ export async function listAdminUsers(db: Pool): Promise<AdminUserOutput[]> {
  */
 export async function getAdminUser(db: Pool, id: string): Promise<AdminUserOutput | null> {
   const result = await db.query(
-    'SELECT id, email, role, created_at FROM public.admin_users WHERE id = $1',
+    'SELECT id, email, name, role, created_at FROM public.admin_users WHERE id = $1',
     [id]
   );
   
@@ -78,6 +82,7 @@ export async function getAdminUser(db: Pool, id: string): Promise<AdminUserOutpu
   return {
     id: user.id,
     email: user.email,
+    name: user.name,
     role: user.role,
     createdAt: user.created_at
   };
@@ -96,6 +101,11 @@ export async function updateAdminUser(db: Pool, id: string, input: AdminUserInpu
     updates.push(`email = $${params.length}`);
   }
   
+  if (input.name) {
+    params.push(input.name);
+    updates.push(`name = $${params.length}`);
+  }
+  
   if (input.password) {
     const passwordHash = await bcrypt.hash(input.password, 10);
     params.push(passwordHash);
@@ -112,7 +122,7 @@ export async function updateAdminUser(db: Pool, id: string, input: AdminUserInpu
   }
   
   params.push(id);
-  query += updates.join(', ') + ` WHERE id = $${params.length} RETURNING id, email, role, created_at`;
+  query += updates.join(', ') + ` WHERE id = $${params.length} RETURNING id, email, name, role, created_at`;
   
   const result = await db.query(query, params);
   
@@ -124,6 +134,7 @@ export async function updateAdminUser(db: Pool, id: string, input: AdminUserInpu
   return {
     id: user.id,
     email: user.email,
+    name: user.name,
     role: user.role,
     createdAt: user.created_at
   };

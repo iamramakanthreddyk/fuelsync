@@ -8,35 +8,34 @@ export function createStationHandlers(db: Pool) {
   return {
     create: async (req: Request, res: Response) => {
       try {
-        // Get tenant ID from JWT token or header
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateStation(req.body);
-        const id = await createStation(db, tenantId, data.name);
+        const id = await createStation(db, schemaName, data.name, data.address);
         res.status(201).json({ id });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
     },
     list: async (req: Request, res: Response) => {
-      const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-      if (!tenantId) {
+      const schemaName = (req as any).schemaName;
+      if (!schemaName) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const includeMetrics = req.query.includeMetrics === 'true';
-      const stations = await listStations(db, tenantId, includeMetrics);
+      const stations = await listStations(db, schemaName, includeMetrics);
       res.json(stations);
     },
     update: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateUpdateStation(req.body);
-        await updateStation(db, tenantId, req.params.id, data.name);
+        await updateStation(db, schemaName, req.params.id, data.name);
         res.json({ status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
@@ -44,11 +43,11 @@ export function createStationHandlers(db: Pool) {
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string;
-        if (!tenantId) {
+        const schemaName = (req as any).schemaName;
+        if (!schemaName) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        await deleteStation(db, tenantId, req.params.id);
+        await deleteStation(db, schemaName, req.params.id);
         res.json({ status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

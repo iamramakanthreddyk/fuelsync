@@ -5,36 +5,41 @@ import { beforeCreateUser } from '../middleware/planEnforcement';
 
 export async function createUser(
   db: Pool,
-  tenantId: string,
+  schemaName: string,
   email: string,
   password: string,
-  role: UserRole,
-  stationIds: string[] = []
+  name: string,
+  role: UserRole
 ): Promise<string> {
   const client = await db.connect();
   try {
-    await beforeCreateUser(client, tenantId);
+    // Get actual tenant UUID from schema name
+    const tenantRes = await client.query(
+      'SELECT id FROM public.tenants WHERE schema_name = $1',
+      [schemaName]
+    );
+    
+    if (tenantRes.rows.length === 0) {
+      throw new Error(`Tenant not found for schema: ${schemaName}`);
+    }
+    
+    const tenantId = tenantRes.rows[0].id;
+    
+    await beforeCreateUser(client, schemaName);
     const hash = await bcrypt.hash(password, 10);
     const res = await client.query(
-      `INSERT INTO ${tenantId}.users (tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4) RETURNING id`,
-      [tenantId, email, hash, role]
+      `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5) RETURNING id`,
+      [tenantId, email, hash, name, role]
     );
-    const userId = res.rows[0].id;
-    for (const stationId of stationIds) {
-      await client.query(
-        `INSERT INTO ${tenantId}.user_stations (user_id, station_id) VALUES ($1,$2)`,
-        [userId, stationId]
-      );
-    }
-    return userId;
+    return res.rows[0].id;
   } finally {
     client.release();
   }
 }
 
-export async function listUsers(db: Pool, tenantId: string) {
+export async function listUsers(db: Pool, schemaName: string) {
   const res = await db.query(
-    `SELECT id, email, role, created_at FROM ${tenantId}.users ORDER BY email`
+    `SELECT id, email, name, role, created_at FROM ${schemaName}.users ORDER BY email`
   );
   return res.rows;
 }

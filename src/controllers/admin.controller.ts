@@ -10,7 +10,7 @@ export function createAdminApiHandlers(db: Pool) {
     // Tenant Management
     createTenant: async (req: Request, res: Response) => {
       try {
-        const { name, planId, schemaName, adminEmail, adminPassword } = req.body;
+        const { name, planId, schemaName, ownerName, ownerEmail, ownerPassword } = req.body;
         
         if (!name || !planId) {
           return errorResponse(res, 400, 'Name and planId are required');
@@ -20,8 +20,9 @@ export function createAdminApiHandlers(db: Pool) {
           name,
           planId,
           schemaName,
-          adminEmail,
-          adminPassword
+          ownerName,
+          ownerEmail,
+          ownerPassword
         });
         res.status(201).json(tenant);
       } catch (err: any) {
@@ -156,13 +157,13 @@ export function createAdminApiHandlers(db: Pool) {
     // Admin User Management
     createAdminUser: async (req: Request, res: Response) => {
       try {
-        const { email, password, role } = req.body;
+        const { email, name, password, role } = req.body;
         
         if (!email) {
           return errorResponse(res, 400, 'Email is required');
         }
         
-        const adminUser = await adminService.createAdminUser(db, { email, password, role });
+        const adminUser = await adminService.createAdminUser(db, { email, name, password, role });
         res.status(201).json(adminUser);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -194,9 +195,9 @@ export function createAdminApiHandlers(db: Pool) {
     
     updateAdminUser: async (req: Request, res: Response) => {
       try {
-        const { email, role } = req.body;
+        const { email, name, role } = req.body;
         
-        const adminUser = await adminService.updateAdminUser(db, req.params.id, { email, role });
+        const adminUser = await adminService.updateAdminUser(db, req.params.id, { email, name, role });
         res.json(adminUser);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

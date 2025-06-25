@@ -1,34 +1,26 @@
 import { Pool } from 'pg';
 import { FuelPriceInput, FuelPriceQuery } from '../validators/fuelPrice.validator';
 
-export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPriceInput): Promise<string> {
+export async function createFuelPrice(db: Pool, schemaName: string, input: FuelPriceInput): Promise<string> {
   const client = await db.connect();
   try {
-    await client.query('BEGIN');
-    const overlap = await client.query<{ id: string; effective_to: Date | null }>(
-      `SELECT id, effective_to FROM ${tenantId}.fuel_prices
-       WHERE station_id = $1 AND fuel_type = $2
-         AND effective_from <= $3
-         AND (effective_to IS NULL OR effective_to >= $3)
-       ORDER BY effective_from DESC
-       LIMIT 1`,
-      [input.stationId, input.fuelType, input.effectiveFrom]
+    // Get actual tenant UUID from schema name
+    const tenantRes = await client.query(
+      'SELECT id FROM public.tenants WHERE schema_name = $1',
+      [schemaName]
     );
-    if (overlap.rowCount) {
-      const row = overlap.rows[0];
-      if (row.effective_to === null) {
-        await client.query(
-          `UPDATE ${tenantId}.fuel_prices SET effective_to = $2 WHERE id = $1`,
-          [row.id, new Date(input.effectiveFrom.getTime() - 1000)]
-        );
-      } else {
-        throw new Error('Overlapping price range');
-      }
+    
+    if (tenantRes.rows.length === 0) {
+      throw new Error(`Tenant not found for schema: ${schemaName}`);
     }
+    
+    const tenantId = tenantRes.rows[0].id;
+    
+    await client.query('BEGIN');
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.fuel_prices (tenant_id, station_id, fuel_type, price, effective_from)
+      `INSERT INTO ${schemaName}.fuel_prices (tenant_id, station_id, fuel_type, price, valid_from)
        VALUES ($1,$2,$3,$4,$5) RETURNING id`,
-      [tenantId, input.stationId, input.fuelType, input.price, input.effectiveFrom]
+      [tenantId, input.stationId, input.fuelType, input.price, input.effectiveFrom || new Date()]
     );
     await client.query('COMMIT');
     return res.rows[0].id;
@@ -49,7 +41,7 @@ export async function updateFuelPrice(db: Pool, tenantId: string, id: string, in
   );
 }
 
-export async function listFuelPrices(db: Pool, tenantId: string, query: FuelPriceQuery) {
+export async function listFuelPrices(db: Pool, schemaName: string, query: FuelPriceQuery) {
   const params: any[] = [];
   let idx = 1;
   const conds: string[] = [];
@@ -62,10 +54,10 @@ export async function listFuelPrices(db: Pool, tenantId: string, query: FuelPric
     params.push(query.fuelType);
   }
   const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
-  const sql = `SELECT id, station_id, fuel_type, price, effective_from, effective_to
-               FROM ${tenantId}.fuel_prices
+  const sql = `SELECT id, station_id, fuel_type, price, valid_from, created_at
+               FROM ${schemaName}.fuel_prices
                ${where}
-               ORDER BY effective_from DESC`;
+               ORDER BY valid_from DESC`;
   const res = await db.query(sql, params);
   return res.rows;
 }

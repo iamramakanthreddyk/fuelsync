@@ -2,40 +2,50 @@ import { Pool, PoolClient } from 'pg';
 import { CreditorInput, CreditPaymentInput, PaymentQuery } from '../validators/creditor.validator';
 import { isDateFinalized } from './reconciliation.service';
 
-export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
+export async function createCreditor(db: Pool, schemaName: string, input: CreditorInput): Promise<string> {
+  // Get actual tenant UUID from schema name
+  const tenantRes = await db.query(
+    'SELECT id FROM public.tenants WHERE schema_name = $1',
+    [schemaName]
+  );
+  
+  if (tenantRes.rows.length === 0) {
+    throw new Error(`Tenant not found for schema: ${schemaName}`);
+  }
+  
+  const tenantId = tenantRes.rows[0].id;
+  
   const res = await db.query<{ id: string }>(
-    `INSERT INTO ${tenantId}.creditors (tenant_id, party_name, contact_person, contact_phone, email, credit_limit)
-     VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
-    [tenantId, input.partyName, input.contactPerson || null, input.contactPhone || null, input.email || null, input.creditLimit || 0]
+    `INSERT INTO ${schemaName}.creditors (tenant_id, party_name, contact_number, address, credit_limit)
+     VALUES ($1,$2,$3,$4,$5) RETURNING id`,
+    [tenantId, input.partyName, input.contactNumber || null, input.address || null, input.creditLimit || 0]
   );
   return res.rows[0].id;
 }
 
-export async function listCreditors(db: Pool, tenantId: string) {
+export async function listCreditors(db: Pool, schemaName: string) {
   const res = await db.query(
-    `SELECT id, party_name, contact_person, contact_phone, email, credit_limit, balance, notes, created_at
-     FROM ${tenantId}.creditors ORDER BY party_name`
+    `SELECT id, party_name, contact_number, address, credit_limit, status, created_at
+     FROM ${schemaName}.creditors ORDER BY party_name`
   );
   return res.rows;
 }
 
-export async function updateCreditor(db: Pool, tenantId: string, id: string, input: CreditorInput) {
+export async function updateCreditor(db: Pool, schemaName: string, id: string, input: CreditorInput) {
   await db.query(
-    `UPDATE ${tenantId}.creditors SET
+    `UPDATE ${schemaName}.creditors SET
       party_name = COALESCE($2, party_name),
-      contact_person = COALESCE($3, contact_person),
-      contact_phone = COALESCE($4, contact_phone),
-      email = COALESCE($5, email),
-      credit_limit = COALESCE($6, credit_limit),
-      updated_at = NOW()
+      contact_number = COALESCE($3, contact_number),
+      address = COALESCE($4, address),
+      credit_limit = COALESCE($5, credit_limit)
      WHERE id = $1`,
-    [id, input.partyName || null, input.contactPerson || null, input.contactPhone || null, input.email || null, input.creditLimit]
+    [id, input.partyName || null, input.contactNumber || null, input.address || null, input.creditLimit]
   );
 }
 
-export async function markCreditorInactive(db: Pool, tenantId: string, id: string) {
+export async function markCreditorInactive(db: Pool, schemaName: string, id: string) {
   await db.query(
-    `UPDATE ${tenantId}.creditors SET credit_limit = 0, notes = COALESCE(notes,'') || '[INACTIVE]', updated_at = NOW() WHERE id = $1`,
+    `UPDATE ${schemaName}.creditors SET status = 'inactive' WHERE id = $1`,
     [id]
   );
 }

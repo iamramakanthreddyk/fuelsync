@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 
-export async function createStation(db: Pool, schemaName: string, name: string): Promise<string> {
+export async function createStation(db: Pool, schemaName: string, name: string, address?: string): Promise<string> {
   const client = await db.connect();
   try {
     await beforeCreateStation(client, schemaName);
@@ -19,8 +19,8 @@ export async function createStation(db: Pool, schemaName: string, name: string):
     const tenantId = tenantRes.rows[0].id;
     
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${schemaName}.stations (tenant_id, name) VALUES ($1,$2) RETURNING id`,
-      [tenantId, name]
+      `INSERT INTO ${schemaName}.stations (tenant_id, name, address) VALUES ($1,$2,$3) RETURNING id`,
+      [tenantId, name, address || null]
     );
     return res.rows[0].id;
   } finally {
@@ -29,16 +29,6 @@ export async function createStation(db: Pool, schemaName: string, name: string):
 }
 
 export async function listStations(db: Pool, schemaName: string, includeMetrics = false) {
-  // Check if we have any stations
-  const countRes = await db.query(
-    `SELECT COUNT(*) FROM ${schemaName}.stations`
-  );
-  
-  // If no stations, seed some demo data
-  if (parseInt(countRes.rows[0].count) === 0) {
-    await seedDemoStations(db, schemaName);
-  }
-  
   const res = await db.query(
     `SELECT
       s.id,
@@ -65,33 +55,7 @@ export async function listStations(db: Pool, schemaName: string, includeMetrics 
   return stations;
 }
 
-async function seedDemoStations(db: Pool, schemaName: string) {
-  // Get actual tenant UUID
-  const tenantRes = await db.query(
-    'SELECT id FROM public.tenants WHERE schema_name = $1',
-    [schemaName]
-  );
-  
-  if (tenantRes.rows.length === 0) {
-    throw new Error(`Tenant not found for schema: ${schemaName}`);
-  }
-  
-  const tenantId = tenantRes.rows[0].id;
-  
-  const demoStations = [
-    'Main Street Station',
-    'Highway Junction',
-    'City Center Fuels',
-    'Riverside Gas Station'
-  ];
-  
-  for (const name of demoStations) {
-    await db.query(
-      `INSERT INTO ${schemaName}.stations (tenant_id, name) VALUES ($1, $2)`,
-      [tenantId, name]
-    );
-  }
-}
+
 
 export async function updateStation(db: Pool, schemaName: string, id: string, name?: string) {
   await db.query(

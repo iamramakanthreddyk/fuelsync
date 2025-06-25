@@ -1096,3 +1096,240 @@ Each entry is tied to a step from the implementation index.
 * `TENANT_CONTEXT_FIX.md` - Comprehensive fix documentation
 * `TENANT_UUID_FIX_SUMMARY.md` - Technical implementation details
 * `FRONTEND_INTERFACE_ALIGNMENT.md` - Frontend interface alignment documentation
+
+## [Fix - 2025-12-25] – Tenant Management & User Creation Improvements
+
+### 🟥 Fixes
+* Fixed TypeScript build error: replaced `adminEmail` with `ownerEmail` in TenantInput interface
+* Added schema name uniqueness validation to prevent tenant isolation conflicts
+* Fixed tenant status management actions (activate, suspend, cancel) with conditional UI
+* Improved tenant creation process with automatic user hierarchy generation
+
+### 🟦 Enhancements
+* Enhanced tenant details API to return complete organizational structure (users, stations, pumps, nozzles)
+* Simplified frontend tenant creation form with auto-generation preview instead of manual fields
+* Added better password generation pattern: `{firstname}@{schema}123` instead of weak `tenant123`
+* Improved tenant status actions with conditional display and clear labels with emojis
+* Added comprehensive tenant management documentation following AGENTS.md protocol
+
+### 🟩 Features
+* Automatic creation of Owner, Manager, and Attendant users for each new tenant
+* Schema name collision detection with proper error handling
+* Enhanced tenant details endpoint showing complete hierarchy structure
+* Status lifecycle management: Active ↔ Suspended ↔ Cancelled → Deleted
+* Auto-generation preview in frontend showing emails and password patterns
+
+### Files
+* `src/services/tenant.service.ts` - Added schema validation and enhanced tenant details
+* `src/controllers/admin.controller.ts` - Fixed TypeScript interface alignment
+* `src/components/admin/TenantForm.tsx` (frontend) - Simplified form with auto-generation preview
+* `src/pages/superadmin/TenantsPage.tsx` (frontend) - Improved status management UI
+* `docs/STEP_tenant_management_fixes.md` - Step command documentation
+* `docs/TENANT_MANAGEMENT_GUIDE.md` - Comprehensive management guide
+* `TENANT_USER_CREATION_PROCESS.md` - Complete user creation documentation
+
+## [Feature - 2025-12-25] – Hierarchical Organization Components
+
+### 🟩 Features
+* Created TenantHierarchy component for SuperAdmin complete organizational structure view
+* Built OrganizationHierarchy component for Owner/Manager self-service organization view
+* Added TenantDetailsPage with full tenant hierarchy visualization
+* Implemented collapsible tree structure: Tenant → Users → Stations → Pumps → Nozzles
+* Enhanced tenant details API to return complete nested organizational data
+
+### 🟦 Enhancements
+* Updated frontend tenant interfaces to support hierarchical data structures
+* Added role-based icons and visual indicators (👑 Owner, 🛡️ Manager, 🔧 Attendant)
+* Integrated live performance metrics in organization hierarchy display
+* Added "View Details" navigation from tenant management to detailed hierarchy
+* Enhanced dashboard with organization structure card for quick overview
+
+### 📊 API Enhancements
+* Enhanced GET /admin/tenants/{id} to return complete organizational hierarchy
+* Added nested data structure with users, stations, pumps, and nozzles
+* Implemented efficient database queries with proper indexing for hierarchy data
+* Added useTenantDetails hook for frontend data fetching
+* Created getTenantDetails API method with full structure support
+
+### 🎨 UI/UX Improvements
+* Responsive collapsible tree design for mobile and desktop
+* Color-coded status badges for all organizational entities
+* Quick action buttons for navigation to management pages
+* Empty states with helpful guidance for setup
+* Loading states with skeleton components for smooth experience
+
+### Files
+* `src/components/admin/TenantHierarchy.tsx` (frontend) - SuperAdmin hierarchy component
+* `src/components/dashboard/OrganizationHierarchy.tsx` (frontend) - User hierarchy component
+* `src/pages/superadmin/TenantDetailsPage.tsx` (frontend) - Dedicated tenant details page
+* `src/hooks/useTenantDetails.ts` (frontend) - Data fetching hook
+* `src/api/tenants.ts` (frontend) - Enhanced interfaces and API methods
+* `src/pages/superadmin/TenantsPage.tsx` (frontend) - Added "View Details" navigation
+* `src/pages/dashboard/SummaryPage.tsx` (frontend) - Added organization hierarchy
+* `docs/STEP_hierarchy_components.md` - Step command documentation
+* `docs/FRONTEND_HIERARCHY_GUIDE.md` - Complete frontend hierarchy guide
+* `docs/BACKEND_HIERARCHY_API.md` - Backend API documentation
+
+## [Fix - 2025-12-25] – Tenant Details Routing & Admin User Names
+
+### 🟥 Fixes
+* Fixed 404 error on tenant details page by adding missing route `/superadmin/tenants/:tenantId`
+* Added missing Collapsible UI component for hierarchy tree structure
+* Fixed admin users to support name field in database and API
+* Added migration to add name column to admin_users table
+
+### 🟦 Enhancements
+* Enhanced admin user creation and updates to include name field
+* Auto-generate admin user names from email if not provided
+* Updated all admin user queries to include name field
+* Improved tenant details navigation flow
+
+### Files
+* `src/App.tsx` (frontend) - Added tenant details route and import
+* `src/components/ui/collapsible.tsx` (frontend) - Added missing UI component
+* `migrations/007_add_name_to_admin_users.sql` - Database migration for name field
+* `src/services/admin.service.ts` - Enhanced admin user service with name support
+* `src/controllers/admin.controller.ts` - Updated controllers to handle name field
+
+## [Fix - 2025-12-25] – Owner Functionality & Service Consistency
+
+### 🟥 Fixes
+* Removed automatic dummy station seeding that was creating unwanted test data
+* Fixed password display in tenant creation form to show correct schema name
+* Fixed service layer inconsistency between tenantId and schemaName usage
+* Enhanced user creation service to include name field and proper tenant UUID resolution
+* Fixed fuel price service to use schema names consistently
+* Removed station auto-seeding that was interfering with owner management
+
+### 🟦 Enhancements
+* Updated user service to support proper name field in user creation
+* Enhanced fuel price service with proper tenant context resolution
+* Improved service layer consistency across all tenant operations
+* Fixed user controller to handle all CRUD operations properly
+
+### Files
+* `src/services/station.service.ts` - Removed dummy data seeding
+* `src/components/admin/TenantForm.tsx` (frontend) - Fixed password display
+* `src/services/user.service.ts` - Enhanced with name support and schema consistency
+* `src/services/fuelPrice.service.ts` - Fixed schema name usage and tenant UUID resolution
+* `src/controllers/user.controller.ts` - Complete user management functionality
+
+## [Feature - 2025-12-25] – Complete Station Management Workflow
+
+### 🟩 Features
+* Added functional station creation with CreateStationDialog component
+* Implemented pump creation and management with real API integration
+* Created nozzle management system with proper data flow
+* Added complete CRUD operations for stations, pumps, and nozzles
+* Enhanced backend services with proper schema name handling and tenant UUID resolution
+
+### 🟥 Fixes
+* Fixed station creation button functionality - now opens dialog and creates stations
+* Fixed API interface mismatches between frontend and backend
+* Corrected pump and nozzle services to use schema names consistently
+* Fixed pump listing to include nozzle counts
+* Updated validators to support address field in station creation
+
+### 🟦 Enhancements
+* Enhanced station service to support address field in creation
+* Updated pump service to include nozzle count in listings
+* Improved nozzle service with proper tenant context and field support
+* Added comprehensive error handling in all CRUD operations
+* Enhanced frontend components with proper loading states and error handling
+
+### Files
+* `src/components/dashboard/CreateStationDialog.tsx` (frontend) - Station creation dialog
+* `src/components/dashboard/CreatePumpDialog.tsx` (frontend) - Pump creation dialog
+* `src/api/stations.ts` (frontend) - Added createStation method
+* `src/api/pumps.ts` (frontend) - Complete pump API with proper endpoints
+* `src/api/nozzles.ts` (frontend) - New nozzle API for CRUD operations
+* `src/pages/dashboard/StationsPage.tsx` (frontend) - Integrated station creation dialog
+* `src/pages/dashboard/PumpsPage.tsx` (frontend) - Fixed API interface mismatches
+* `src/services/station.service.ts` - Enhanced with address field support
+* `src/services/pump.service.ts` - Added nozzle count to listings
+* `src/services/nozzle.service.ts` - Fixed schema name usage and added required fields
+* `src/validators/station.validator.ts` - Added address field support
+
+## [Critical Fix - 2025-12-25] – UUID Tenant Context Resolution
+
+### 🟥 Critical Fixes
+* Fixed "invalid input syntax for type uuid" error preventing station creation
+* Resolved tenant context mismatch between controllers and services
+* Fixed all controllers to use schemaName instead of tenantId for database operations
+* Corrected tenant context resolution across station, pump, and nozzle operations
+* Fixed UUID validation errors in all CRUD operations
+
+### 🔧 Technical Resolution
+* Updated station controller to use `(req as any).schemaName` instead of `req.user?.tenantId`
+* Fixed pump controller tenant context resolution for all handlers
+* Corrected nozzle controller to use proper schema names
+* Ensured consistent tenant context pattern across all controllers
+* Maintained tenant isolation while fixing UUID validation
+
+### 📊 Root Cause Analysis
+* Controllers were passing user tenantId (like "bittu") instead of schema names
+* Services expected schema names (like "tenant_acme_corp_123456") for database operations
+* UUID validation failed when non-UUID strings passed to database queries
+* Tenant context middleware sets schemaName but controllers weren't using it
+
+### Files
+* `src/controllers/station.controller.ts` - Fixed all CRUD operations to use schemaName
+* `src/controllers/pump.controller.ts` - Updated create, list, delete handlers
+* `src/controllers/nozzle.controller.ts` - Fixed all nozzle operations
+* `src/validators/nozzle.validator.ts` - Added nozzleNumber validation
+* `docs/STEP_uuid_tenant_context_fix.md` - Complete fix documentation
+
+## [Complete Fix - 2025-12-25] – Frontend-Backend Tenant Context Integration
+
+### 🟥 Critical Fixes
+* Created setTenantContext middleware to properly extract schema names from JWT tokens
+* Fixed creditor table schema mismatch - removed non-existent contact_person column
+* Updated creditor service to use correct column names (party_name, contact_number, address)
+* Fixed all remaining controllers to use schemaName instead of tenantId
+* Resolved frontend-backend tenant context integration issues
+
+### 🔧 Technical Implementation
+* Added setTenantContext middleware that extracts tenantId from JWT and sets as schemaName
+* Updated creditor service to match actual database schema structure
+* Fixed creditor validator to use correct field names
+* Applied setTenantContext middleware to station and creditor routes
+* Ensured consistent tenant context flow: JWT → Middleware → Controller → Service
+
+### 📊 Database Schema Alignment
+* Creditor table uses: party_name, contact_number, address (not contact_person)
+* All services now properly resolve tenant UUID from schema names
+* Consistent column naming across all tenant operations
+* Proper foreign key relationships maintained
+
+### Files
+* `src/middlewares/setTenantContext.ts` - New middleware for tenant context resolution
+* `src/routes/station.route.ts` - Added setTenantContext middleware
+* `src/routes/creditor.route.ts` - Added setTenantContext middleware
+* `src/services/creditor.service.ts` - Fixed schema alignment and tenant UUID resolution
+* `src/controllers/creditor.controller.ts` - Updated to use schemaName
+* `src/validators/creditor.validator.ts` - Fixed field names to match schema
+
+## [Security Clarification - 2025-12-25] – Multi-Tenant Authorization Model
+
+### 🔒 Security Architecture Clarified
+* **Schema Isolation**: tenantId provides data separation between different companies
+* **Role Authorization**: JWT role field provides permission control within same tenant
+* **User Identity**: userId enables user-specific operations and audit trails
+* **Secure Pattern**: authenticateJWT → setTenantContext → requireRole → handler
+
+### 📊 Authorization Matrix
+* **Owner**: Full access - create stations, manage users, view reports, enter sales
+* **Manager**: Limited access - create stations, view reports, enter sales (no user management)
+* **Attendant**: Restricted access - only enter sales and view assigned data
+* **Schema Shared**: All users in same tenant access same schema but with different permissions
+
+### 🔧 Technical Implementation
+* JWT contains: {userId, tenantId (schema), role}
+* setTenantContext: Extracts schema name for data isolation
+* requireRole: Enforces permission control based on user role
+* Route protection ensures both tenant isolation and role authorization
+
+### Files
+* `src/middlewares/setTenantContext.ts` - Enhanced with security documentation
+* `src/routes/pump.route.ts` - Added setTenantContext middleware
+* `docs/SECURITY_tenant_authorization.md` - Comprehensive security model documentation
