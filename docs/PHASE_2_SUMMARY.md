@@ -448,3 +448,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Fuel price records can now be updated via `PUT`.
 * Sales reports available via `POST /reports/sales`.
 * OpenAPI docs and Swagger spec updated.
+
+### 🛠️ Fix 2025-07-14 – Reports Controller Compile Fix
+
+**Status:** ✅ Done
+**Files:** `src/controllers/reports.controller.ts`
+
+**Overview:**
+* Removed extra closing brace which stopped `tsc` with error `TS1128`.

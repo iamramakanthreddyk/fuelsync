@@ -1054,3 +1054,12 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`, `docs/openapi.yaml`, `src/docs/swagger.ts`
 * `frontend/docs/integration-instructions.md`, `frontend/docs/api-diff.md`
 * `docs/STEP_2_20_COMMAND.md`
+
+## [Fix - 2025-07-14] – Reports Controller Compile Error
+
+### 🟥 Fixes
+* Removed stray closing brace causing TypeScript error in `createReportsHandlers`.
+
+### Files
+* `src/controllers/reports.controller.ts`
+* `docs/STEP_fix_20250714.md`
