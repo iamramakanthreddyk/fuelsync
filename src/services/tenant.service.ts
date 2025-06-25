@@ -6,8 +6,19 @@ export interface TenantInput {
   name: string;
   planId: string;
   schemaName?: string;
-  adminEmail?: string;
-  adminPassword?: string;
+  ownerName?: string;
+  ownerEmail?: string;
+  ownerPassword?: string;
+}
+
+export interface TenantCreationResult {
+  tenant: TenantOutput;
+  owner: {
+    id: string;
+    email: string;
+    password: string; // Plain text for initial communication
+    name: string;
+  };
 }
 
 export interface TenantOutput {
@@ -21,9 +32,18 @@ export interface TenantOutput {
 }
 
 /**
- * Create a new tenant with its own schema
+ * Generate secure password based on tenant name and schema
  */
-export async function createTenant(db: Pool, input: TenantInput): Promise<TenantOutput> {
+function generatePassword(tenantName: string, schemaName: string): string {
+  const firstName = tenantName.split(' ')[0].toLowerCase();
+  const schemaPrefix = schemaName.split('_')[0] || 'tenant';
+  return `${firstName}@${schemaPrefix}123`;
+}
+
+/**
+ * Create a new tenant with its own schema and owner user
+ */
+export async function createTenant(db: Pool, input: TenantInput): Promise<TenantCreationResult> {
   const client = await db.connect();
   
   try {
@@ -60,29 +80,60 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     // Create tenant tables
     await client.query(schemaSql);
     
-    // Create owner user for tenant
-    const rawPassword = input.adminPassword || 'tenant123';
-    const adminHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
-
-    // Determine admin email
+    // Generate owner credentials
+    const ownerName = input.ownerName || `${input.name} Owner`;
     const emailDomain = schemaName.replace(/_/g, '-');
-    const ownerEmail = input.adminEmail || `owner@${emailDomain}.com`;
+    const ownerEmail = input.ownerEmail || `owner@${emailDomain}.com`;
+    const rawPassword = input.ownerPassword || generatePassword(input.name, schemaName);
+    const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
+    // Create owner user
     const ownerResult = await client.query(
       `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role)
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [tenant.id, ownerEmail, adminHash, `${input.name} Owner`, 'owner']
+      [tenant.id, ownerEmail, passwordHash, ownerName, 'owner']
+    );
+    
+    const ownerId = ownerResult.rows[0].id;
+    
+    // Create default manager and attendant users
+    const managerEmail = `manager@${emailDomain}.com`;
+    const managerPassword = generatePassword(`${input.name} Manager`, schemaName);
+    const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
+    
+    await client.query(
+      `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
+    );
+    
+    const attendantEmail = `attendant@${emailDomain}.com`;
+    const attendantPassword = generatePassword(`${input.name} Attendant`, schemaName);
+    const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
+    
+    await client.query(
+      `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [tenant.id, attendantEmail, attendantHash, `${input.name} Attendant`, 'attendant']
     );
     
     await client.query('COMMIT');
     
     return {
-      id: tenant.id,
-      name: tenant.name,
-      schemaName: tenant.schema_name,
-      planId: tenant.plan_id,
-      status: tenant.status,
-      createdAt: tenant.created_at
+      tenant: {
+        id: tenant.id,
+        name: tenant.name,
+        schemaName: tenant.schema_name,
+        planId: tenant.plan_id,
+        status: tenant.status,
+        createdAt: tenant.created_at
+      },
+      owner: {
+        id: ownerId,
+        email: ownerEmail,
+        password: rawPassword,
+        name: ownerName
+      }
     };
   } catch (error) {
     await client.query('ROLLBACK');
@@ -96,11 +147,13 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 /**
  * List all tenants
  */
-export async function listTenants(db: Pool): Promise<TenantOutput[]> {
+export async function listTenants(db: Pool, includeDeleted = false): Promise<TenantOutput[]> {
+  const whereClause = includeDeleted ? '' : "WHERE t.status != 'deleted'";
   const result = await db.query(
     `SELECT t.id, t.name, t.schema_name, t.plan_id, t.status, t.created_at, p.name as plan_name
      FROM public.tenants t
      LEFT JOIN public.plans p ON t.plan_id = p.id
+     ${whereClause}
      ORDER BY t.created_at DESC`
   );
   
@@ -144,6 +197,45 @@ export async function getTenant(db: Pool, id: string): Promise<TenantOutput | nu
 }
 
 /**
+ * Create additional user for existing tenant
+ */
+export async function createTenantUser(db: Pool, tenantId: string, userData: {
+  name: string;
+  email: string;
+  role: 'owner' | 'manager' | 'attendant';
+  password?: string;
+}): Promise<{ id: string; email: string; password: string }> {
+  // Get tenant info
+  const tenantResult = await db.query(
+    'SELECT name, schema_name FROM public.tenants WHERE id = $1',
+    [tenantId]
+  );
+  
+  if (tenantResult.rows.length === 0) {
+    throw new Error('Tenant not found');
+  }
+  
+  const { name: tenantName, schema_name: schemaName } = tenantResult.rows[0];
+  
+  // Generate password if not provided
+  const rawPassword = userData.password || generatePassword(userData.name, schemaName);
+  const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
+  
+  // Create user
+  const userResult = await db.query(
+    `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    [tenantId, userData.email, passwordHash, userData.name, userData.role]
+  );
+  
+  return {
+    id: userResult.rows[0].id,
+    email: userData.email,
+    password: rawPassword
+  };
+}
+
+/**
  * Update tenant status
  */
 export async function updateTenantStatus(db: Pool, id: string, status: string): Promise<void> {
@@ -154,9 +246,21 @@ export async function updateTenantStatus(db: Pool, id: string, status: string): 
 }
 
 /**
- * Delete tenant and its schema
+ * Soft delete tenant (set status to 'deleted' instead of destroying data)
  */
 export async function deleteTenant(db: Pool, id: string): Promise<void> {
+  // Soft delete - just mark as deleted instead of destroying all data
+  await db.query(
+    'UPDATE public.tenants SET status = $1, deleted_at = NOW() WHERE id = $2',
+    ['deleted', id]
+  );
+}
+
+/**
+ * DANGEROUS: Permanently delete tenant and all data (admin only)
+ * This should only be used in extreme cases with explicit confirmation
+ */
+export async function permanentlyDeleteTenant(db: Pool, id: string): Promise<void> {
   const client = await db.connect();
   
   try {
@@ -174,7 +278,7 @@ export async function deleteTenant(db: Pool, id: string): Promise<void> {
     
     const schemaName = result.rows[0].schema_name;
     
-    // Drop schema
+    // Drop schema - THIS DESTROYS ALL DATA
     await client.query(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`);
     
     // Delete tenant record

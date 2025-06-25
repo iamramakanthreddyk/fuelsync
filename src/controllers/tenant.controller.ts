@@ -35,14 +35,21 @@ export function createTenantHandlers(db: Pool) {
           }
         }
         
-        const tenant = await createTenant(db, { name, planId: actualPlanId, schemaName });
-        console.log('Tenant created:', tenant);
+        const result = await createTenant(db, { name, planId: actualPlanId, schemaName });
+        console.log('Tenant created:', result);
         
         res.status(201).json({ 
-          id: tenant.id,
-          name: tenant.name,
-          schemaName: tenant.schemaName,
-          status: tenant.status
+          tenant: {
+            id: result.tenant.id,
+            name: result.tenant.name,
+            schemaName: result.tenant.schemaName,
+            status: result.tenant.status
+          },
+          owner: {
+            email: result.owner.email,
+            password: result.owner.password,
+            name: result.owner.name
+          }
         });
       } catch (err: any) {
         console.error('Error creating tenant:', err);
