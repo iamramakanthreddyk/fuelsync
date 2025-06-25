@@ -54,8 +54,8 @@ export async function createNozzleReading(
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }
     await client.query(
-      `INSERT INTO ${tenantId}.sales (nozzle_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
-      [data.nozzleId, userId, volumeSold, saleAmount, data.recordedAt, data.creditorId ? 'credit' : 'cash', data.creditorId || null]
+      `INSERT INTO ${tenantId}.sales (nozzle_id, station_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+      [data.nozzleId, station_id, userId, volumeSold, saleAmount, data.recordedAt, data.paymentMethod || (data.creditorId ? 'credit' : 'cash'), data.creditorId || null]
     );
     await client.query('COMMIT');
     return readingRes.rows[0].id;

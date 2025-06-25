@@ -29,6 +29,37 @@ export async function createStation(db: Pool, schemaName: string, name: string, 
   }
 }
 
+export async function getStation(db: Pool, schemaName: string, stationId: string, includeMetrics = false) {
+  const res = await db.query(
+    `SELECT
+      s.id,
+      s.name,
+      s.status,
+      s.address,
+      NULL as manager,
+      0 as "attendantCount",
+      (
+        SELECT COUNT(*) FROM ${schemaName}.pumps p WHERE p.station_id = s.id
+      ) as "pumpCount",
+      s.created_at as "createdAt"
+    FROM ${schemaName}.stations s
+    WHERE s.id = $1`,
+    [stationId]
+  );
+
+  if (res.rows.length === 0) {
+    throw new Error(`Station not found: ${stationId}`);
+  }
+
+  const station = res.rows[0];
+  
+  if (includeMetrics) {
+    station.metrics = await getStationMetrics(db, schemaName, stationId, 'today');
+  }
+  
+  return station;
+}
+
 export async function listStations(db: Pool, schemaName: string, includeMetrics = false) {
   const res = await db.query(
     `SELECT
