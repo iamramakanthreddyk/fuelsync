@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createFuelPrice, listFuelPrices, updateFuelPrice } from '../services/fuelPrice.service';
+import { createFuelPrice, listFuelPrices, updateFuelPrice, deleteFuelPrice } from '../services/fuelPrice.service';
 import { validateCreateFuelPrice, parseFuelPriceQuery } from '../validators/fuelPrice.validator';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -38,6 +38,19 @@ export function createFuelPriceHandlers(db: Pool) {
         const data = validateCreateFuelPrice(req.body);
         await updateFuelPrice(db, tenantId, req.params.id, data);
         res.json({ status: 'updated' });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+
+    remove: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        await deleteFuelPrice(db, tenantId, req.params.id);
+        res.json({ status: 'deleted' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

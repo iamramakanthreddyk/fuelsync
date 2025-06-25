@@ -41,6 +41,10 @@ export async function updateFuelPrice(db: Pool, tenantId: string, id: string, in
   );
 }
 
+export async function deleteFuelPrice(db: Pool, schemaName: string, id: string): Promise<void> {
+  await db.query(`DELETE FROM ${schemaName}.fuel_prices WHERE id = $1`, [id]);
+}
+
 export async function listFuelPrices(db: Pool, schemaName: string, query: FuelPriceQuery) {
   const params: any[] = [];
   let idx = 1;

@@ -51,3 +51,34 @@ export async function deletePump(db: Pool, schemaName: string, pumpId: string) {
   }
   await db.query(`DELETE FROM ${schemaName}.pumps WHERE id = $1`, [pumpId]);
 }
+
+export async function updatePump(
+  db: Pool,
+  schemaName: string,
+  pumpId: string,
+  label?: string,
+  serialNumber?: string
+) {
+  const updates = [] as string[];
+  const params = [pumpId];
+  let idx = 2;
+
+  if (label !== undefined) {
+    updates.push(`label = $${idx}`);
+    params.push(label);
+    idx++;
+  }
+
+  if (serialNumber !== undefined) {
+    updates.push(`serial_number = $${idx}`);
+    params.push(serialNumber);
+    idx++;
+  }
+
+  if (updates.length === 0) return;
+
+  await db.query(
+    `UPDATE ${schemaName}.pumps SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $1`,
+    params
+  );
+}
