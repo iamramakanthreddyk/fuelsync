@@ -24,7 +24,7 @@ import { createAnalyticsRouter } from './routes/analytics.route';
 import { createAlertsRouter } from './routes/alerts.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
-import { defaultTenant } from './middlewares/defaultTenant';
+
 import { debugRequest } from './middlewares/debugRequest';
 
 export function createApp() {
@@ -76,20 +76,8 @@ export function createApp() {
   });
   app.use(express.json());
 
-  // Tenant context middleware - Part 1
-  app.use((req, _res, next) => {
-    const schema = req.headers['x-tenant-id'];
-    
-    // For debugging
-    console.log('Request headers:', req.headers);
-    console.log('x-tenant-id:', schema);
-    
-    if (typeof schema === 'string') {
-      (req as any).schemaName = schema;
-      console.log('Set schema name:', schema);
-    }
-    next();
-  });
+  // Tenant context is now handled by JWT-based setTenantContext middleware in individual routes
+  // No global tenant context middleware needed
 
   // Simple test endpoint
   app.get('/test', (req, res) => {
@@ -162,9 +150,8 @@ export function createApp() {
 
 
   
-  // Add debug and default tenant middleware
+  // Add debug middleware
   app.use(debugRequest);
-  app.use(defaultTenant);
   
   // API Documentation
   app.use('/api/docs', docsRouter);

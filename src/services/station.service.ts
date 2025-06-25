@@ -4,8 +4,6 @@ import { beforeCreateStation } from '../middleware/planEnforcement';
 export async function createStation(db: Pool, schemaName: string, name: string, address?: string): Promise<string> {
   const client = await db.connect();
   try {
-    await beforeCreateStation(client, schemaName);
-    
     // Get actual tenant UUID from schema name
     const tenantRes = await client.query(
       'SELECT id FROM public.tenants WHERE schema_name = $1',
@@ -17,6 +15,9 @@ export async function createStation(db: Pool, schemaName: string, name: string, 
     }
     
     const tenantId = tenantRes.rows[0].id;
+    
+    // Call beforeCreateStation with the tenant UUID
+    await beforeCreateStation(client, tenantId);
     
     const res = await client.query<{ id: string }>(
       `INSERT INTO ${schemaName}.stations (tenant_id, name, address) VALUES ($1,$2,$3) RETURNING id`,

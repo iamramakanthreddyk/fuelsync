@@ -4,9 +4,7 @@ import { beforeCreatePump } from '../middleware/planEnforcement';
 export async function createPump(db: Pool, schemaName: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
   const client = await db.connect();
   try {
-    await beforeCreatePump(client, schemaName, stationId);
-    
-    // Get actual tenant UUID from schema name
+    // Get actual tenant UUID from schema name FIRST
     const tenantRes = await client.query(
       'SELECT id FROM public.tenants WHERE schema_name = $1',
       [schemaName]
@@ -17,6 +15,9 @@ export async function createPump(db: Pool, schemaName: string, stationId: string
     }
     
     const tenantId = tenantRes.rows[0].id;
+    
+    // Pass schema name to beforeCreatePump (it uses schema for table queries)
+    await beforeCreatePump(client, schemaName, stationId);
     
     const res = await client.query<{ id: string }>(
       `INSERT INTO ${schemaName}.pumps (tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4) RETURNING id`,

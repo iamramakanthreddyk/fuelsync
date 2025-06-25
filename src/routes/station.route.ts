@@ -13,14 +13,12 @@ export function createStationRouter(db: Pool) {
 
   router.post('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), checkStationLimit(db), handlers.create);
   router.get('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
-  router.get('/compare', authenticateJWT, requireRole([UserRole.Owner]), handlers.compare);
-  router.get('/ranking', authenticateJWT, requireRole([UserRole.Owner]), handlers.ranking);
-  router.get('/:id/metrics', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.metrics);
-  router.get('/:id/performance', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.performance);
-  router.put('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
-  router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
-  router.get('/:id/metrics', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.metrics);
-  router.get('/:id/performance', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.performance);
+  router.get('/compare', authenticateJWT, setTenantContext, requireRole([UserRole.Owner]), handlers.compare);
+  router.get('/ranking', authenticateJWT, setTenantContext, requireRole([UserRole.Owner]), handlers.ranking);
+  router.get('/:id/metrics', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.metrics);
+  router.get('/:id/performance', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.performance);
+  router.put('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
+  router.delete('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 
   return router;
 }
