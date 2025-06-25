@@ -430,6 +430,78 @@ const swaggerSpec = {
         }
       }
     },
+    '/v1/fuel-prices/{id}': {
+      put: {
+        tags: ['Fuel Prices'],
+        summary: 'Update fuel price entry',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } },
+          { name: 'id', in: 'path', required: true, schema: { type: 'string' } }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['stationId', 'fuelType', 'price'],
+                properties: {
+                  stationId: { type: 'string', format: 'uuid' },
+                  fuelType: { type: 'string', enum: ['petrol', 'diesel'] },
+                  price: { type: 'number', minimum: 0 },
+                  effectiveFrom: { type: 'string', format: 'date-time' }
+                }
+              }
+            }
+          }
+        },
+        responses: { 200: { description: 'Price updated' } }
+      }
+    },
+    '/v1/alerts': {
+      get: {
+        tags: ['Alerts'],
+        summary: 'List alerts',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } }
+        ],
+        responses: { 200: { description: 'List of alerts' } }
+      }
+    },
+    '/v1/alerts/{id}/read': {
+      patch: {
+        tags: ['Alerts'],
+        summary: 'Mark alert as read',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } },
+          { name: 'id', in: 'path', required: true, schema: { type: 'string' } }
+        ],
+        responses: { 200: { description: 'Alert marked as read' } }
+      }
+    },
+    '/v1/analytics/station-comparison': {
+      get: {
+        tags: ['Analytics'],
+        summary: 'Compare stations',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } },
+          { name: 'stationIds', in: 'query', required: true, schema: { type: 'string' } },
+          { name: 'period', in: 'query', schema: { type: 'string' } }
+        ],
+        responses: { 200: { description: 'Comparison data' } }
+      }
+    },
+    '/v1/reports/sales': {
+      post: {
+        tags: ['Reports'],
+        summary: 'Export sales data',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } }
+        ],
+        requestBody: { required: false },
+        responses: { 200: { description: 'Sales export' } }
+      }
+    },
     '/v1/creditors': {
       get: {
         tags: ['Creditors'],

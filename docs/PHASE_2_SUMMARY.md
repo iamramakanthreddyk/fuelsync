@@ -436,3 +436,15 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Tenant creation supports custom owner credentials.
 * Tenant status updates via PATCH.
 
+
+### 🛠️ Step 2.20 – API Alignment Endpoints
+
+**Status:** ✅ Done
+**Files:** `src/services/inventory.service.ts`, `src/controllers/alerts.controller.ts`, `src/routes/alerts.route.ts`, `src/controllers/analytics.controller.ts`, `src/routes/analytics.route.ts`, `src/services/fuelPrice.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `src/controllers/reports.controller.ts`, `src/routes/reports.route.ts`, `src/app.ts`, `docs/openapi.yaml`, `src/docs/swagger.ts`
+
+**Overview:**
+* Added global alerts listing and mark-read endpoints.
+* Added station comparison alias under `/analytics/station-comparison`.
+* Fuel price records can now be updated via `PUT`.
+* Sales reports available via `POST /reports/sales`.
+* OpenAPI docs and Swagger spec updated.

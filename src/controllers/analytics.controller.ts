@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { getStationComparison } from '../services/station.service';
 
 export function createAnalyticsHandlers(db: Pool) {
   return {
@@ -183,6 +184,21 @@ export function createAnalyticsHandlers(db: Pool) {
             sales: salesCount
           }
         });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    stationComparison: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const idsParam = req.query.stationIds as string;
+        if (!idsParam) return errorResponse(res, 400, 'stationIds required');
+        const stationIds = idsParam.split(',');
+        const period = (req.query.period as string) || 'monthly';
+        const data = await getStationComparison(db, tenantId, stationIds, period);
+        res.json(data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
