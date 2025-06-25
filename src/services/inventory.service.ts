@@ -119,5 +119,5 @@ export async function markAlertRead(db: Pool, tenantId: string, alertId: string)
     `UPDATE ${tenantId}.alerts SET is_read = TRUE WHERE id = $1 RETURNING id`,
     [alertId]
   );
-  return result.rowCount > 0;
+  return (result.rowCount ?? 0) > 0;
 }
