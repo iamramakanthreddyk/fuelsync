@@ -95,3 +95,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-12 | Remove Legacy Seeders | ✅ Done | `src/app.ts`, `scripts/setup-database.js`, removed scripts | `docs/STEP_fix_20250712.md` |
 | fix | 2025-07-13 | Document Frontend API Contract | ✅ Done | `frontend/docs/openapi-v1.yaml`, `frontend/docs/api-diff.md` | `docs/STEP_fix_20250713.md` |
 | fix | 2025-07-14 | Reports Controller Compile Fix | ✅ Done | `src/controllers/reports.controller.ts` | `docs/STEP_fix_20250714.md` |
+| fix | 2025-07-15 | Plan Enforcement Schema Lookup | ✅ Done | `src/middleware/planEnforcement.ts` | `docs/STEP_fix_20250715.md` |
