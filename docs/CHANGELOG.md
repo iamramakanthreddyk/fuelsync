@@ -1631,6 +1631,21 @@ Each entry is tied to a step from the implementation index.
 * `db_brain.md`
 * `docs/STEP_fix_20250811.md`
 
+## [Fix - 2025-08-13] – Response and Query Cleanups
+
+### 🟥 Fixes
+* Removed duplicated response object in the creditor controller.
+* Corrected missing semicolons and braces in updated files.
+* Rewrote analytics queries using `Prisma.sql` and separated execution.
+* Updated table references to the unified `sales` name.
+* Added optional `costPrice` validation for fuel prices.
+
+### Files
+* `src/controllers/creditor.controller.ts`
+* `src/services/analytics.service.ts`
+* `src/validators/fuelPrice.validator.ts`
+* `docs/STEP_fix_20250813.md`
+
 ## [Feature - 2025-06-26] – Unified Schema Setup Scripts
 
 ### 🟩 Features

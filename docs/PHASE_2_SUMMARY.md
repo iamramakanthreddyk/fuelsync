@@ -615,3 +615,14 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Error responses documented as `{ success: false, message }`.
 * Added query parameter docs for pump, nozzle and nozzle reading endpoints.
 
+### 🛠️ Fix 2025-08-13 – Response and Query Cleanups
+**Status:** ✅ Done
+**Files:** `src/controllers/creditor.controller.ts`, `src/services/analytics.service.ts`, `src/validators/fuelPrice.validator.ts`, `docs/STEP_fix_20250813.md`
+
+**Overview:**
+* Removed a redundant success response in the creditor controller.
+* Fixed missing semicolons and braces after merge.
+* Converted raw SQL strings in analytics service to `Prisma.sql` and executed via `$queryRaw`.
+* Updated all query table references to the unified `sales` name.
+* Added `costPrice` support to fuel price validation.
+
