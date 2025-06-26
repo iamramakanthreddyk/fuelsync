@@ -119,3 +119,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.35 | Response wrapper alignment | ✅ Done | `docs/openapi.yaml`, `src/app.ts` | `docs/STEP_2_35_COMMAND.md` |
 | fix | 2025-08-11 | Consolidate Migration Scripts | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250811.md` |
 | fix | 2025-08-12 | Enum Constraint Updates | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250812.md` |
+| fix | 2025-06-26 | Unified Schema Setup Scripts | ✅ Done | `scripts/*.js`, `UNIFIED_DB_SETUP.md` | `docs/STEP_fix_20250627.md` |

@@ -1630,3 +1630,17 @@ Each entry is tied to a step from the implementation index.
 * `migrations/schema/003_unified_schema.sql`
 * `db_brain.md`
 * `docs/STEP_fix_20250811.md`
+
+## [Feature - 2025-06-26] – Unified Schema Setup Scripts
+
+### 🟩 Features
+* Added scripts to apply the new `004_complete_unified_schema.sql` migration, verify structure and seed data via Prisma.
+* Created `setup-unified-db.js` for one-click environment bootstrap.
+* Documented migration and seeding steps in `UNIFIED_SCHEMA_MIGRATION.md`, `UNIFIED_DB_SETUP.md` and `SEED_DATA_GUIDE.md`.
+* Added npm aliases `db:fix-constraints`, `db:unified-schema`, `db:verify-schema` and `db:seed-data`.
+
+### Files
+* `scripts/apply-unified-schema.js`, `scripts/verify-schema.js`, `scripts/seed-data.js`, `scripts/setup-unified-db.js`, `scripts/fix-constraints.js`
+* `UNIFIED_SCHEMA_MIGRATION.md`, `UNIFIED_DB_SETUP.md`, `SEED_DATA_GUIDE.md`
+* `package.json`
+* `docs/STEP_fix_20250627.md`
