@@ -2240,8 +2240,6 @@ components:
           type: string
         name:
           type: string
-        schemaName:
-          type: string
         planId:
           type: string
         planName:
@@ -2261,8 +2259,6 @@ components:
       required: [name, planId]
       properties:
         name:
-          type: string
-        schemaName:
           type: string
         planId:
           type: string

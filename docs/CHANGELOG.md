@@ -1656,6 +1656,22 @@ Each entry is tied to a step from the implementation index.
 * `src/services/auth.service.ts`
 * `docs/STEP_fix_20250814.md`
 
+## [Fix - 2025-08-15] – Tenant Service Unified Schema
+
+### 🟥 Fixes
+* Removed schema creation logic from tenant service.
+* Controllers and validators now work with tenant IDs.
+* Tests and documentation dropped `schemaName` fields.
+
+### Files
+* `src/services/tenant.service.ts`
+* `src/controllers/tenant.controller.ts`
+* `src/validators/tenant.validator.ts`
+* `tests/utils/testTenant.ts`
+* `docs/openapi.yaml`
+* `docs/TENANT_MANAGEMENT_GUIDE.md`
+* `docs/STEP_2_36_COMMAND.md`
+
 ## [Feature - 2025-06-26] – Unified Schema Setup Scripts
 
 ### 🟩 Features

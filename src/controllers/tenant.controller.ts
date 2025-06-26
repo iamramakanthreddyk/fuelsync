@@ -14,8 +14,8 @@ export function createTenantHandlers(db: Pool) {
     create: async (req: Request, res: Response) => {
       try {
         console.log('Tenant creation request:', req.body);
-        const { name, planId, schemaName } = validateTenantInput(req.body);
-        console.log('Validated tenant input:', { name, planId, schemaName });
+        const { name, planId } = validateTenantInput(req.body);
+        console.log('Validated tenant input:', { name, planId });
         
         // Get plan ID from name if needed
         let actualPlanId = planId;
@@ -36,14 +36,13 @@ export function createTenantHandlers(db: Pool) {
           }
         }
         
-        const result = await createTenant(db, { name, planId: actualPlanId, schemaName });
+        const result = await createTenant(db, { name, planId: actualPlanId });
         console.log('Tenant created:', result);
         
         successResponse(res, {
           tenant: {
             id: result.tenant.id,
             name: result.tenant.name,
-            schemaName: result.tenant.schemaName,
             status: result.tenant.status
           },
           owner: {
