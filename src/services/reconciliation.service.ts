@@ -113,3 +113,20 @@ export async function getReconciliation(
   );
   return res.rows[0];
 }
+
+export async function listReconciliations(
+  db: Pool,
+  tenantId: string,
+  stationId?: string
+) {
+  const params: any[] = [];
+  let query = `SELECT id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized
+               FROM ${tenantId}.day_reconciliations`;
+  if (stationId) {
+    query += ' WHERE station_id = $1';
+    params.push(stationId);
+  }
+  query += ' ORDER BY date DESC';
+  const res = await db.query(query, params);
+  return res.rows;
+}

@@ -71,24 +71,17 @@ export function createReportsHandlers(db: Pool) {
         }
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
-      }
     }
+  }
 
-  return {
-    exportSales: runExportSales,
-    exportSalesPost: async (req: Request, res: Response) => {
-      req.query = { ...req.body } as any;
-      await runExportSales(req, res);
-    },
-
-    exportFinancial: async (req: Request, res: Response) => {
+  async function runExportFinancial(req: Request, res: Response) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        
+
         const stationId = req.query.stationId as string | undefined;
         const period = req.query.period as string || 'monthly';
-        
+
         let dateFilter = '';
         switch (period) {
           case 'daily':
@@ -104,12 +97,12 @@ export function createReportsHandlers(db: Pool) {
             dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '1 year'";
             break;
         }
-        
+
         const stationFilter = stationId ? 'AND s.station_id = $1' : '';
         const params = stationId ? [stationId] : [];
-        
+
         const query = `
-          SELECT 
+          SELECT
             st.name as station_name,
             s.fuel_type,
             SUM(s.volume) as total_volume,
@@ -124,9 +117,9 @@ export function createReportsHandlers(db: Pool) {
           GROUP BY st.name, s.fuel_type
           ORDER BY st.name, total_revenue DESC
         `;
-        
+
         const result = await db.query(query, params);
-        
+
         res.json({
           period,
           data: result.rows.map(row => ({
@@ -143,7 +136,62 @@ export function createReportsHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
-    }
+  }
+
+  return {
+    exportSales: runExportSales,
+    exportSalesPost: async (req: Request, res: Response) => {
+      req.query = { ...req.body } as any;
+      await runExportSales(req, res);
+    },
+
+    getSales: async (req: Request, res: Response) => {
+      await runExportSales(req, res);
+    },
+
+    exportGeneric: async (req: Request, res: Response) => {
+      try {
+        const { type, format, stationId, dateRange } = req.body || {};
+        if (!type) return errorResponse(res, 400, 'type required');
+
+        if (type === 'sales') {
+          req.query = {
+            stationId,
+            dateFrom: dateRange?.from,
+            dateTo: dateRange?.to,
+            format,
+          } as any;
+          await runExportSales(req, res);
+        } else if (type === 'financial') {
+          req.query = { stationId, period: 'monthly' } as any;
+          await runExportFinancial(req, res);
+        } else {
+          return errorResponse(res, 400, 'Unsupported report type');
+        }
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    scheduleReport: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const { type, stationId, frequency } = req.body || {};
+        if (!type || !frequency) {
+          return errorResponse(res, 400, 'type and frequency required');
+        }
+        const result = await db.query(
+          `INSERT INTO public.report_schedules (tenant_id, station_id, type, frequency) VALUES ($1,$2,$3,$4) RETURNING id`,
+          [tenantId, stationId || null, type, frequency]
+        );
+        res.status(201).json({ data: { id: result.rows[0].id } });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    exportFinancial: runExportFinancial
   };
 }
 

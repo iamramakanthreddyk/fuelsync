@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import {
   runReconciliation,
   getReconciliation,
+  listReconciliations,
 } from '../services/reconciliation.service';
 import { errorResponse } from '../utils/errorResponse';
 
@@ -24,6 +25,19 @@ export function createReconciliationHandlers(db: Pool) {
         }
         const summary = await runReconciliation(db, user.tenantId, stationId, date);
         res.status(201).json({ summary });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    list: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const { stationId } = req.query as { stationId?: string };
+        const history = await listReconciliations(db, user.tenantId, stationId);
+        res.json({ data: history });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
