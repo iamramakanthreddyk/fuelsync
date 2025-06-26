@@ -1577,3 +1577,10 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/station.controller.ts`
 * `backend_brain.md`
 * `docs/STEP_2_32_COMMAND.md`
+
+## [Enhancement - 2025-08-03] – Reusable response components
+### 🟦 Enhancements
+* Added shared `Success` and `Error` response objects in the OpenAPI spec.
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_2_33_COMMAND.md`

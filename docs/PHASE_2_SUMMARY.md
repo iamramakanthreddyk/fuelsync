@@ -591,3 +591,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Renamed user and station path parameters to `userId` and `stationId`.
 * Synced OpenAPI documentation and backend brain entries.
+
+### 🛠️ Step 2.33 – Reusable response components
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`
+
+**Overview:**
+* Added shared `Success` and `Error` response objects under `components.responses`.

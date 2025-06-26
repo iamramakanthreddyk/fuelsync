@@ -114,3 +114,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-31 | OpenAPI Schema Details | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20250731.md` |
 | 2     | 2.31 | Analytics & GET endpoints | ✅ Done | `src/controllers/analytics.controller.ts`, `src/services/analytics.service.ts`, `src/controllers/alerts.controller.ts`, `src/services/alert.service.ts`, `src/controllers/creditor.controller.ts`, `prisma/schema.prisma`, `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_31_COMMAND.md` |
 | 2     | 2.32 | Parameter naming alignment | ✅ Done | `src/routes/user.route.ts`, `src/routes/station.route.ts`, `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_32_COMMAND.md` |
+| 2     | 2.33 | Reusable response components | ✅ Done | `docs/openapi.yaml` | `docs/STEP_2_33_COMMAND.md` |
