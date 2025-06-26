@@ -1,7 +1,5 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const path = require('path');
 
 async function setupDatabase() {
   console.log('Starting complete database setup...');
@@ -36,10 +34,6 @@ async function setupDatabase() {
     
     // Drop existing schemas if needed
     console.log('Dropping existing schemas and tables...');
-    await pool.query('DROP SCHEMA IF EXISTS production_tenant CASCADE');
-    await pool.query('DROP SCHEMA IF EXISTS test_tenant_1 CASCADE');
-    await pool.query('DROP SCHEMA IF EXISTS test_tenant_2 CASCADE');
-    await pool.query('DROP SCHEMA IF EXISTS test_tenant_3 CASCADE');
     await pool.query('DROP TABLE IF EXISTS public.tenants CASCADE');
     await pool.query('DROP TABLE IF EXISTS public.plans CASCADE');
     await pool.query('DROP TABLE IF EXISTS public.admin_users CASCADE');
@@ -71,7 +65,6 @@ async function setupDatabase() {
       CREATE TABLE public.tenants (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name TEXT NOT NULL,
-        schema_name TEXT NOT NULL UNIQUE,
         plan_id UUID REFERENCES public.plans(id),
         status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'suspended', 'cancelled')),
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -141,89 +134,58 @@ async function setupDatabase() {
     `, [adminHash]);
     console.log('Created Admin: support@fuelsync.com');
     
-    // STEP 4: Create tenants with schemas
-    console.log('\n=== STEP 4: Creating tenants with schemas ===');
+    // STEP 4: Create tenants
+    console.log("\n=== STEP 4: Creating tenants ===");
     
-    // Function to create tenant schema and tables
-    async function createTenantSchema(schemaName) {
-      console.log(`Creating schema: ${schemaName}`);
-      await pool.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
-      
-      // Read template SQL
-      const templatePath = path.join(__dirname, '../migrations/schema/002_tenant_schema_template.sql');
-      let templateSql = fs.readFileSync(templatePath, 'utf8');
-      
-      // Replace schema name placeholder
-      const schemaSql = templateSql.replace(/\{\{schema_name\}\}/g, schemaName);
-      
-      // Execute each statement separately
-      const statements = schemaSql.split(';').filter(stmt => stmt.trim().length > 0);
-      console.log(`Executing ${statements.length} SQL statements for schema ${schemaName}...`);
-      
-      for (const stmt of statements) {
-        try {
-          await pool.query(stmt);
-        } catch (err) {
-          console.error(`Error executing statement: ${err.message}`);
-          console.error('Statement:', stmt);
-        }
-      }
-      
-      console.log(`Schema ${schemaName} created successfully`);
-    }
     
     // Create Production Tenant
     const productionTenantResult = await pool.query(`
-      INSERT INTO public.tenants (name, schema_name, plan_id, status)
-      VALUES ('FuelSync Production', 'production_tenant', $1, 'active')
+      INSERT INTO public.tenants (name, plan_id, status)
+      VALUES ('FuelSync Production', $1, 'active')
       RETURNING id
     `, [enterprisePlanId]);
     const productionTenantId = productionTenantResult.rows[0].id;
     console.log('Created Production Tenant:', productionTenantId);
     
-    await createTenantSchema('production_tenant');
     
     // Create Test Tenant 1
     const testTenant1Result = await pool.query(`
-      INSERT INTO public.tenants (name, schema_name, plan_id, status)
-      VALUES ('Test Tenant 1', 'test_tenant_1', $1, 'active')
+      INSERT INTO public.tenants (name, plan_id, status)
+      VALUES ('Test Tenant 1', $1, 'active')
       RETURNING id
     `, [basicPlanId]);
     const testTenant1Id = testTenant1Result.rows[0].id;
     console.log('Created Test Tenant 1:', testTenant1Id);
     
-    await createTenantSchema('test_tenant_1');
     
     // Create Test Tenant 2
     const testTenant2Result = await pool.query(`
-      INSERT INTO public.tenants (name, schema_name, plan_id, status)
-      VALUES ('Test Tenant 2', 'test_tenant_2', $1, 'active')
+      INSERT INTO public.tenants (name, plan_id, status)
+      VALUES ('Test Tenant 2', $1, 'active')
       RETURNING id
     `, [proPlanId]);
     const testTenant2Id = testTenant2Result.rows[0].id;
     console.log('Created Test Tenant 2:', testTenant2Id);
     
-    await createTenantSchema('test_tenant_2');
     
     // Create Test Tenant 3 (suspended)
     const testTenant3Result = await pool.query(`
-      INSERT INTO public.tenants (name, schema_name, plan_id, status)
-      VALUES ('Test Tenant 3', 'test_tenant_3', $1, 'suspended')
+      INSERT INTO public.tenants (name, plan_id, status)
+      VALUES ('Test Tenant 3', $1, 'suspended')
       RETURNING id
     `, [enterprisePlanId]);
     const testTenant3Id = testTenant3Result.rows[0].id;
     console.log('Created Test Tenant 3:', testTenant3Id);
     
-    await createTenantSchema('test_tenant_3');
     
     // STEP 5: Create tenant users and data
     console.log('\n=== STEP 5: Creating tenant users and data ===');
     
     const tenants = [
-      { id: productionTenantId, schema: 'production_tenant', name: 'FuelSync Production' },
-      { id: testTenant1Id, schema: 'test_tenant_1', name: 'Test Tenant 1' },
-      { id: testTenant2Id, schema: 'test_tenant_2', name: 'Test Tenant 2' },
-      { id: testTenant3Id, schema: 'test_tenant_3', name: 'Test Tenant 3' }
+      { id: productionTenantId, slug: "production-tenant", name: "FuelSync Production" },
+      { id: testTenant1Id, slug: "test-tenant-1", name: "Test Tenant 1" },
+      { id: testTenant2Id, slug: "test-tenant-2", name: "Test Tenant 2" },
+      { id: testTenant3Id, slug: "test-tenant-3", name: "Test Tenant 3" }
     ];
     
     for (const tenant of tenants) {
@@ -233,44 +195,44 @@ async function setupDatabase() {
       const userHash = await bcrypt.hash('admin123', 10);
       
       // Create owner with domain-friendly email
-      const emailPrefix = tenant.schema.replace(/_/g, '-');
+      const emailPrefix = tenant.slug;
       await pool.query(`
-        INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
+        INSERT INTO public.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'owner')
       `, [tenant.id, `owner@${emailPrefix}.com`, userHash, `${tenant.name} Owner`]);
       console.log(`Created Owner: owner@${emailPrefix}.com`);
       
       // Create manager with domain-friendly email
       await pool.query(`
-        INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
+        INSERT INTO public.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'manager')
       `, [tenant.id, `manager@${emailPrefix}.com`, userHash, `${tenant.name} Manager`]);
       console.log(`Created Manager: manager@${emailPrefix}.com`);
       
       // Create attendant with domain-friendly email
       await pool.query(`
-        INSERT INTO ${tenant.schema}.users (tenant_id, email, password_hash, name, role)
+        INSERT INTO public.users (tenant_id, email, password_hash, name, role)
         VALUES ($1, $2, $3, $4, 'attendant')
       `, [tenant.id, `attendant@${emailPrefix}.com`, userHash, `${tenant.name} Attendant`]);
       console.log(`Created Attendant: attendant@${emailPrefix}.com`);
       
       // Create stations
       const station1Result = await pool.query(`
-        INSERT INTO ${tenant.schema}.stations (tenant_id, name, address, status)
+        INSERT INTO public.stations (tenant_id, name, address, status)
         VALUES ($1, 'Main Station', '123 Main St, Downtown', 'active')
         RETURNING id
       `, [tenant.id]);
       const station1Id = station1Result.rows[0].id;
       
       const station2Result = await pool.query(`
-        INSERT INTO ${tenant.schema}.stations (tenant_id, name, address, status)
+        INSERT INTO public.stations (tenant_id, name, address, status)
         VALUES ($1, 'North Branch', '456 North Ave, Uptown', 'active')
         RETURNING id
       `, [tenant.id]);
       const station2Id = station2Result.rows[0].id;
       
       const station3Result = await pool.query(`
-        INSERT INTO ${tenant.schema}.stations (tenant_id, name, address, status)
+        INSERT INTO public.stations (tenant_id, name, address, status)
         VALUES ($1, 'East Plaza', '789 East Blvd, Eastside', 'active')
         RETURNING id
       `, [tenant.id]);
@@ -284,7 +246,7 @@ async function setupDatabase() {
       // Main Station - 4 pumps
       for (let i = 1; i <= 4; i++) {
         const pumpResult = await pool.query(`
-          INSERT INTO ${tenant.schema}.pumps (tenant_id, station_id, label, serial_number, status)
+          INSERT INTO public.pumps (tenant_id, station_id, label, serial_number, status)
           VALUES ($1, $2, $3, $4, 'active')
           RETURNING id
         `, [tenant.id, station1Id, `Pump ${i}`, `MS-P${i.toString().padStart(3, '0')}-2024`]);
@@ -294,7 +256,7 @@ async function setupDatabase() {
       // North Branch - 3 pumps
       for (let i = 1; i <= 3; i++) {
         const pumpResult = await pool.query(`
-          INSERT INTO ${tenant.schema}.pumps (tenant_id, station_id, label, serial_number, status)
+          INSERT INTO public.pumps (tenant_id, station_id, label, serial_number, status)
           VALUES ($1, $2, $3, $4, 'active')
           RETURNING id
         `, [tenant.id, station2Id, `Pump ${i}`, `NB-P${i.toString().padStart(3, '0')}-2024`]);
@@ -304,7 +266,7 @@ async function setupDatabase() {
       // East Plaza - 3 pumps
       for (let i = 1; i <= 3; i++) {
         const pumpResult = await pool.query(`
-          INSERT INTO ${tenant.schema}.pumps (tenant_id, station_id, label, serial_number, status)
+          INSERT INTO public.pumps (tenant_id, station_id, label, serial_number, status)
           VALUES ($1, $2, $3, $4, 'active')
           RETURNING id
         `, [tenant.id, station3Id, `Pump ${i}`, `EP-P${i.toString().padStart(3, '0')}-2024`]);
@@ -320,14 +282,14 @@ async function setupDatabase() {
       for (const pump of pumps) {
         // Each pump gets 2 nozzles
         const nozzle1Result = await pool.query(`
-          INSERT INTO ${tenant.schema}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type, status)
+          INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type, status)
           VALUES ($1, $2, 1, $3, 'active')
           RETURNING id
         `, [tenant.id, pump.id, fuelTypes[0]]);
         nozzles.push({ id: nozzle1Result.rows[0].id, pump: pump.id, station: pump.station, fuel: fuelTypes[0] });
         
         const nozzle2Result = await pool.query(`
-          INSERT INTO ${tenant.schema}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type, status)
+          INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type, status)
           VALUES ($1, $2, 2, $3, 'active')
           RETURNING id
         `, [tenant.id, pump.id, fuelTypes[Math.floor(Math.random() * 3)]]);
@@ -346,33 +308,33 @@ async function setupDatabase() {
       
       for (let i = 0; i < stations.length; i++) {
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
+          INSERT INTO public.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'petrol', prices.petrol.sell[i], prices.petrol.cost[i]]);
         
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
+          INSERT INTO public.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'diesel', prices.diesel.sell[i], prices.diesel.cost[i]]);
         
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
+          INSERT INTO public.fuel_prices (tenant_id, station_id, fuel_type, price, cost_price)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'premium', prices.premium.sell[i], prices.premium.cost[i]]);
         
         // Create inventory
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
+          INSERT INTO public.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'petrol', 5000 + Math.random() * 3000, 1000]);
         
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
+          INSERT INTO public.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'diesel', 4000 + Math.random() * 2000, 800]);
         
         await pool.query(`
-          INSERT INTO ${tenant.schema}.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
+          INSERT INTO public.fuel_inventory (tenant_id, station_id, fuel_type, current_stock, minimum_level)
           VALUES ($1, $2, $3, $4, $5)
         `, [tenant.id, stations[i], 'premium', 2000 + Math.random() * 1000, 500]);
       }
@@ -380,7 +342,7 @@ async function setupDatabase() {
       console.log(`Created fuel prices and inventory for tenant: ${tenant.name}`);
       
       // Only create sales data for production tenant
-      if (tenant.schema === 'production_tenant') {
+      if (tenant.slug === 'production-tenant') {
         console.log('Creating sales data for production tenant...');
         
         // Create creditors
@@ -388,14 +350,14 @@ async function setupDatabase() {
         
         // Main Station creditors
         const creditor1Result = await pool.query(`
-          INSERT INTO ${tenant.schema}.creditors (tenant_id, station_id, party_name, contact_number, credit_limit)
+          INSERT INTO public.creditors (tenant_id, station_id, party_name, contact_number, credit_limit)
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id
         `, [tenant.id, station1Id, 'ABC Transport Co.', '+1234567890', 50000]);
         creditors.push(creditor1Result.rows[0].id);
         
         const creditor2Result = await pool.query(`
-          INSERT INTO ${tenant.schema}.creditors (tenant_id, station_id, party_name, contact_number, credit_limit)
+          INSERT INTO public.creditors (tenant_id, station_id, party_name, contact_number, credit_limit)
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id
         `, [tenant.id, station1Id, 'Downtown Delivery', '+1111222233', 30000]);
@@ -403,7 +365,7 @@ async function setupDatabase() {
         
         // Create sales data
         const ownerResult = await pool.query(`
-          SELECT id FROM ${tenant.schema}.users WHERE role = 'owner' LIMIT 1
+          SELECT id FROM public.users WHERE role = 'owner' LIMIT 1
         `);
         const ownerId = ownerResult.rows[0].id;
         
@@ -423,7 +385,7 @@ async function setupDatabase() {
             const creditorId = paymentMethod === 'credit' ? creditors[Math.floor(Math.random() * creditors.length)] : null;
             
             await pool.query(`
-              INSERT INTO ${tenant.schema}.sales (
+              INSERT INTO public.sales (
                 tenant_id, nozzle_id, station_id, volume, fuel_type, 
                 fuel_price, cost_price, amount, profit, payment_method, 
                 creditor_id, created_by, status, recorded_at

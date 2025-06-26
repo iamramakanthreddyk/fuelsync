@@ -1,8 +1,6 @@
 import { Client } from 'pg';
-import fs from 'fs';
-import path from 'path';
 
-/** Create a tenant and apply the schema template. Returns tenant id. */
+/** Create a tenant record. Returns tenant id. */
 export async function createTenant(
   client: Client,
   data: { name: string; planId: string }
