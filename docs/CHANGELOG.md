@@ -1646,6 +1646,16 @@ Each entry is tied to a step from the implementation index.
 * `src/validators/fuelPrice.validator.ts`
 * `docs/STEP_fix_20250813.md`
 
+## [Fix - 2025-08-14] – Update Login Queries for Unified Schema
+
+### 🟥 Fixes
+* Updated login logic to use tenant UUIDs instead of `schema_name`.
+
+### Files
+* `src/controllers/auth.controller.ts`
+* `src/services/auth.service.ts`
+* `docs/STEP_fix_20250814.md`
+
 ## [Feature - 2025-06-26] – Unified Schema Setup Scripts
 
 ### 🟩 Features
