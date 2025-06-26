@@ -31,6 +31,7 @@ model User {
   tenant      Tenant   @relation(fields: [tenant_id], references: [id])
   @@unique([tenant_id, email])
   stations    UserStation[]
+  sales       Sale[]
 }
 
 model Station {
@@ -44,6 +45,9 @@ model Station {
   tenant    Tenant   @relation(fields: [tenant_id], references: [id])
   pumps     Pump[]
   users     UserStation[]
+  creditors Creditor[]
+  sales     Sale[]
+  fuel_prices FuelPrice[]
 }
 
 model Pump {
@@ -56,7 +60,6 @@ model Pump {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   station   Station  @relation(fields: [station_id], references: [id])
-  tenant    Tenant   @relation(fields: [tenant_id], references: [id])
   nozzles   Nozzle[]
 }
 
@@ -70,8 +73,8 @@ model Nozzle {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   pump      Pump     @relation(fields: [pump_id], references: [id])
-  tenant    Tenant   @relation(fields: [tenant_id], references: [id])
   readings  NozzleReading[]
+  sales     Sale[]
 }
 
 model NozzleReading {
@@ -84,7 +87,6 @@ model NozzleReading {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   nozzle    Nozzle   @relation(fields: [nozzle_id], references: [id])
-  tenant    Tenant   @relation(fields: [tenant_id], references: [id])
 }
 
 model FuelPrice {
@@ -98,7 +100,6 @@ model FuelPrice {
   effective_to DateTime?
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
-  tenant       Tenant   @relation(fields: [tenant_id], references: [id])
   station      Station  @relation(fields: [station_id], references: [id])
 }
 
@@ -110,4 +111,44 @@ model UserStation {
   user       User     @relation(fields: [user_id], references: [id])
   station    Station  @relation(fields: [station_id], references: [id])
   @@id([user_id, station_id])
+}
+
+model Creditor {
+  id           String   @id @default(uuid())
+  tenant_id    String
+  station_id   String?
+  party_name   String
+  contact_number String?
+  address      String?
+  credit_limit Decimal  @default(0)
+  status       String   @default("active")
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  station      Station? @relation(fields: [station_id], references: [id])
+  sales        Sale[]
+}
+
+model Sale {
+  id           String   @id @default(uuid())
+  tenant_id    String
+  nozzle_id    String
+  reading_id   String?
+  station_id   String
+  volume       Decimal
+  fuel_type    String
+  fuel_price   Decimal
+  cost_price   Decimal  @default(0)
+  amount       Decimal
+  profit       Decimal  @default(0)
+  payment_method String
+  creditor_id  String?
+  created_by   String?
+  status       String   @default("posted")
+  recorded_at  DateTime
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  nozzle       Nozzle   @relation(fields: [nozzle_id], references: [id])
+  station      Station  @relation(fields: [station_id], references: [id])
+  creditor     Creditor? @relation(fields: [creditor_id], references: [id])
+  creator      User?    @relation(fields: [created_by], references: [id])
 }

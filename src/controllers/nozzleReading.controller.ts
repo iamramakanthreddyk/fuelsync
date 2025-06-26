@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
-import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
+import { validateCreateNozzleReading, parseReadingQuery, ReadingQueryParsed } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
 
 export function createNozzleReadingHandlers(db: Pool) {

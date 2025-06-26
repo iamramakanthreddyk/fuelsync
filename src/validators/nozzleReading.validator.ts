@@ -43,22 +43,32 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   return result;
 }
 
-export function parseReadingQuery(query: any): ReadingQuery {
-  const { stationId, nozzleId, from, to } = query || {};
-  const result: ReadingQuery = {};
-  if (stationId && typeof stationId === 'string') {
-    result.stationId = stationId;
-  }
+export interface ReadingQueryParsed {
+  nozzleId?: string;
+  startDate?: Date;
+  endDate?: Date;
+}
+
+export function parseReadingQuery(query: any): ReadingQueryParsed {
+  const { nozzleId, startDate, endDate, from, to } = query || {};
+  const result: ReadingQueryParsed = {};
+  
   if (nozzleId && typeof nozzleId === 'string') {
     result.nozzleId = nozzleId;
   }
-  if (from) {
-    const d = new Date(from);
-    if (!isNaN(d.getTime())) result.from = d;
+  
+  // Handle both startDate/endDate and from/to formats
+  const start = startDate || from;
+  const end = endDate || to;
+  
+  if (start) {
+    const d = new Date(start);
+    if (!isNaN(d.getTime())) result.startDate = d;
   }
-  if (to) {
-    const d = new Date(to);
-    if (!isNaN(d.getTime())) result.to = d;
+  if (end) {
+    const d = new Date(end);
+    if (!isNaN(d.getTime())) result.endDate = d;
   }
+  
   return result;
 }
