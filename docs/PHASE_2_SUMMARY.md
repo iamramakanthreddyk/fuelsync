@@ -463,7 +463,7 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/middleware/planEnforcement.ts`
 
 **Overview:**
-* Plan enforcement now resolves tenant plan by `schema_name` instead of UUID, preventing `invalid input syntax for type uuid` errors during station creation.
+* [Deprecated] Initial implementation resolved tenant plan by `schema_name`. Unified schema now uses `tenant_id` lookups.
 
 ### 🛠️ Step 2.21 – CRUD Completion Endpoints
 
@@ -631,7 +631,7 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/STEP_fix_20250814.md`
 
 **Overview:**
-* Adjusted login logic to query tenants by UUID instead of `schema_name`.
+* Adjusted login logic to query tenants by UUID instead of the deprecated `schema_name`.
 * Ensures compatibility with the unified schema.
 
 ### 🛠️ Fix 2025-08-15 – Tenant Service Unified Schema
@@ -708,3 +708,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Test tenant utility inserts rows into `public.tenants` and `public.users`.
 * Fixtures and helpers rely solely on `tenant_id` fields.
+
+### 🛠️ Fix 2025-08-24 – Documentation Cleanup for Unified Schema
+**Status:** ✅ Done
+**Files:** `docs/ANALYTICS_API.md`, `docs/SUPERADMIN_FRONTEND_GUIDE.md`, `TENANT_UUID_FIX_SUMMARY.md`, `docs/BACKEND_HIERARCHY_API.md`, `docs/STEP_fix_20250824.md`
+
+**Overview:**
+* Removed remaining `schema_name` mentions in documentation and marked the field as deprecated.

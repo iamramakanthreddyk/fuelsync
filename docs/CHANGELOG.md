@@ -1788,3 +1788,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `tests/utils/testTenant.ts`
 * `docs/STEP_fix_20250823.md`
+
+## [Fix - 2025-08-24] – Documentation Cleanup for Unified Schema
+
+### 🟥 Fixes
+* Removed or deprecated all `schema_name` references in public docs.
+
+### Files
+* `docs/ANALYTICS_API.md`
+* `docs/SUPERADMIN_FRONTEND_GUIDE.md`
+* `TENANT_UUID_FIX_SUMMARY.md`
+* `docs/BACKEND_HIERARCHY_API.md`
+* `docs/STEP_fix_20250824.md`

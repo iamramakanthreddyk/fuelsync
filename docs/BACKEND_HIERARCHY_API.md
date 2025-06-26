@@ -154,11 +154,11 @@ export async function getTenant(db: Pool, id: string): Promise<any | null> {
   // Get tenant basic info
   const tenant = await getTenantBasicInfo(db, id);
   
-  // Get users ordered by role hierarchy
-  const users = await getUsersByTenant(db, tenant.schema_name);
+  // Get users ordered by role hierarchy (schema_name deprecated)
+  const users = await getUsersByTenant(db, tenant.id);
   
   // Get stations with nested pumps and nozzles
-  const stations = await getStationsWithHierarchy(db, tenant.schema_name);
+  const stations = await getStationsWithHierarchy(db, tenant.id);
   
   return {
     ...tenant,

@@ -21,7 +21,7 @@ GET /api/v1/analytics/superadmin
     {
       "id": "uuid",
       "name": "Test Tenant",
-      "schema_name": "test_tenant",
+      // "schema_name": "test_tenant", -- deprecated
       "status": "active",
       "created_at": "2023-01-01T00:00:00Z"
     }
@@ -55,7 +55,7 @@ GET /api/v1/analytics/tenant/:id
   "tenant": {
     "id": "uuid",
     "name": "Test Tenant",
-    "schema_name": "test_tenant",
+    // "schema_name": "test_tenant", -- deprecated
     "status": "active",
     "created_at": "2023-01-01T00:00:00Z",
     "plan_name": "Enterprise Plan"
@@ -120,7 +120,6 @@ function DashboardMetrics() {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Schema</th>
                 <th>Status</th>
                 <th>Created</th>
               </tr>
@@ -129,7 +128,6 @@ function DashboardMetrics() {
               {metrics?.recentTenants?.map(tenant => (
                 <tr key={tenant.id}>
                   <td>{tenant.name}</td>
-                  <td>{tenant.schema_name}</td>
                   <td>
                     <StatusBadge status={tenant.status} />
                   </td>
@@ -196,10 +194,6 @@ function TenantAnalytics({ tenantId }) {
             <div>
               <p className="text-sm text-gray-500">Status</p>
               <StatusBadge status={analytics?.tenant?.status} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Schema Name</p>
-              <p className="font-medium">{analytics?.tenant?.schema_name}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Created</p>
