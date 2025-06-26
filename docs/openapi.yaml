@@ -1,76 +1,264 @@
 openapi: 3.0.0
 info:
   title: FuelSync Hub API
-  version: "1.0.0"
+  version: 1.0.0
 servers:
-  - url: /api/v1
+- url: /api/v1
 paths:
-  /admin/users:
-    post:
-      summary: Create super admin user
-    get:
-      summary: List super admin users
   /api/v1/auth/login:
     post:
       summary: User login and JWT issuance
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/auth/logout:
     post:
       summary: User logout
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/auth/refresh:
     post:
       summary: Refresh JWT token
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/users:
     post:
       summary: Create tenant user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List tenant users
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/users/{id}:
     put:
       summary: Update tenant user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete tenant user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/users/{id}/change-password:
     post:
       summary: Change user password
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/users/{id}/reset-password:
     post:
       summary: Reset user password
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/stations:
     post:
       summary: Create station
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List stations
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/stations/{id}:
     put:
       summary: Update station
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete station
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/stations/{id}/metrics:
     get:
       summary: Station metrics summary
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/stations/{id}/performance:
     get:
       summary: Station performance comparison
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/pumps:
     post:
       summary: Create pump
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List pumps
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/pumps/{id}:
     put:
       summary: Update pump
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete pump
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/nozzles:
     post:
       summary: Create nozzle
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List nozzles
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/nozzles/{id}:
     put:
       summary: Update nozzle
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete nozzle
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/nozzle-readings:
     post:
       summary: Record nozzle reading and generate sale
@@ -93,103 +281,706 @@ paths:
                   nullable: true
                 paymentMethod:
                   type: string
-                  enum: [cash, card, upi, credit]
-                  description: |
-                    Optional. Currently the API infers 'cash' or 'credit' based on
+                  enum:
+                  - cash
+                  - card
+                  - upi
+                  - credit
+                  description: 'Optional. Currently the API infers ''cash'' or ''credit''
+                    based on
+
                     `creditorId`. Support for `card` and `upi` is planned.
+
+                    '
               required:
-                - nozzleId
-                - reading
-                - recordedAt
+              - nozzleId
+              - reading
+              - recordedAt
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
     get:
       summary: List nozzle readings
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/fuel-prices:
     post:
       summary: Create fuel price entry
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List fuel prices
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/fuel-prices/{id}:
     put:
       summary: Update fuel price
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete fuel price
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/alerts:
     get:
       summary: List alerts
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/alerts/{id}/read:
     patch:
       summary: Mark alert read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/analytics/station-comparison:
     get:
       summary: Station comparison metrics
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/reports/sales:
     post:
       summary: Export sales report
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/creditors:
     post:
       summary: Create creditor
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List creditors
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/creditors/{id}:
     put:
       summary: Update creditor
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     delete:
       summary: Delete creditor
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/credit-payments:
     post:
       summary: Record credit payment
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List credit payments
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/fuel-deliveries:
     post:
       summary: Record fuel delivery
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
     get:
       summary: List fuel deliveries
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/sales:
     get:
       summary: List sales records
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/sales/analytics:
     get:
       summary: Sales aggregation metrics
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/reconciliation:
     post:
       summary: Run daily reconciliation
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /api/v1/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/reconciliation/daily-summary:
     get:
       summary: Daily nozzle reading summary
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/sales-summary:
     get:
       summary: Dashboard sales summary
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/payment-methods:
     get:
       summary: Dashboard payment method breakdown
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/fuel-breakdown:
     get:
       summary: Dashboard fuel breakdown
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/top-creditors:
     get:
       summary: Dashboard top creditors
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/sales-trend:
     get:
       summary: Dashboard sales trend
-  /admin/tenants/summary:
-    get:
-      summary: Get tenant metrics summary
-  /admin/tenants:
-    get:
-      summary: List tenants
-    post:
-      summary: Create tenant
-  /admin/analytics:
-    get:
-      summary: Super admin analytics
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/tenants:
     get:
       summary: List tenants
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
     post:
       summary: Create tenant
-
-# TODO: Define component schemas for all routes
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/admin/dashboard:
+    get:
+      summary: Retrieve admin dashboard metrics
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/plans:
+    post:
+      summary: Create subscription plan
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    get:
+      summary: List subscription plans
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/plans/{id}:
+    get:
+      summary: Get plan info
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update plan
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete plan
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/users/{id}:
+    get:
+      summary: Get admin user
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update admin user
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete admin user
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/users/{id}/reset-password:
+    post:
+      summary: Reset admin password
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/admin/tenants/{id}:
+    get:
+      summary: Get tenant info
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete tenant
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/tenants/{id}/status:
+    patch:
+      summary: Update tenant status
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/analytics/dashboard:
+    get:
+      summary: Tenant dashboard metrics
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/analytics/superadmin:
+    get:
+      summary: Super admin analytics dashboard
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/analytics/tenant/{id}:
+    get:
+      summary: Analytics for specific tenant
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/auth/test:
+    get:
+      summary: Verify auth token validity
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/fuel-deliveries/inventory:
+    get:
+      summary: Fuel stock after deliveries
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/fuel-inventory:
+    get:
+      summary: List current fuel inventory
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/inventory:
+    get:
+      summary: Current part inventory
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/inventory/alerts:
+    get:
+      summary: Low stock alerts
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/inventory/update:
+    post:
+      summary: Update inventory counts
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/reports/financial/export:
+    get:
+      summary: Export financial report
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/reports/sales/export:
+    get:
+      summary: Export sales report
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/settings:
+    get:
+      summary: Retrieve tenant settings
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Update tenant settings
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/stations/compare:
+    get:
+      summary: Compare station performance
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/stations/ranking:
+    get:
+      summary: Station ranking report
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/docs/swagger.json:
+    get:
+      summary: Serve raw OpenAPI spec
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /test:
+    get:
+      summary: Echo test endpoint
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Echo test POST
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /test-login:
+    post:
+      summary: Login helper for tests
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /schemas:
+    get:
+      summary: List tenant schemas
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/users:
+    post:
+      summary: Create super admin user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    get:
+      summary: List super admin users
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/tenants:
+    get:
+      summary: List tenants
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create tenant
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/admin/tenants/summary:
+    get:
+      summary: Get tenant metrics summary
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/admin/analytics:
+    get:
+      summary: Super admin analytics
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Success:
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: object
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string

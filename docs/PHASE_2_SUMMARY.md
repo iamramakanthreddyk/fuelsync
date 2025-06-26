@@ -483,3 +483,75 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added service, controller and route to remove fuel price records.
 * Documented DELETE `/fuel-prices/{id}` in OpenAPI spec.
+
+### 🛠️ Step 2.23 – Prisma ORM Migration
+
+**Status:** ✅ Done
+**Files:** `src/controllers/user.controller.ts`, `prisma/schema.prisma`, `backend_brain.md`
+
+**Overview:**
+* Documented all existing endpoints in `backend_brain.md` and noted OpenAPI mismatches.
+* Added Prisma ORM with a schema for the unified database and helper client.
+* Refactored user controller methods (`list`, `get`, `create`, `update`) to query via Prisma and enforce `tenant_id` filtering.
+
+### 🛠️ Step 2.24 – Additional Prisma Controllers
+
+**Status:** ✅ Done
+**Files:** `src/controllers/station.controller.ts`, `src/controllers/pump.controller.ts`, `src/controllers/nozzle.controller.ts`, `src/controllers/nozzleReading.controller.ts`, `src/controllers/fuelPrice.controller.ts`, `prisma/schema.prisma`, `backend_brain.md`
+
+**Overview:**
+* Extended Prisma schema with `FuelPrice` and `UserStation` models.
+* Updated station, pump, nozzle, nozzle reading and fuel price controllers to use Prisma for CRUD operations.
+* Controllers still rely on raw SQL for advanced analytics routes, to be migrated later.
+
+### 🛠️ Step 2.25 – Endpoint Inventory and Spec Refresh
+
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `backend_brain.md`
+
+**Overview:**
+* Enumerated every active backend endpoint and noted which controllers use Prisma.
+* Generated a new `openapi.yaml` automatically from the route definitions.
+* Updated `backend_brain.md` with a migration status table and documented contract drift.
+
+### 🛠️ Step 2.26 – OpenAPI Audit
+
+**Status:** ✅ Done
+**Files:** `backend_brain.md`, `docs/STEP_2_26_COMMAND.md`
+
+**Overview:**
+* Parsed all Express routes and compared them to `openapi.yaml`.
+* Confirmed the spec includes every path (97 total).
+* Added an audit note to `backend_brain.md` for future reference.
+* Normalised the OpenAPI document and recorded contract drift notes.
+
+### 🛠️ Step 2.27 – Spec Normalisation & Drift Notes
+
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `backend_brain.md`, `docs/STEP_2_27_COMMAND.md`
+
+**Overview:**
+* Aligned path parameters and added missing admin and utility endpoints.
+* Logged contract drift vs old spec in `backend_brain.md`.
+
+
+### 🛠️ Step 2.28 – Complete OpenAPI Schemas
+
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `backend_brain.md`, `docs/STEP_2_28_COMMAND.md`
+
+**Overview:**
+* Added generic request and response definitions for every route.
+* Introduced an `ErrorResponse` schema and noted mismatch with implementation.
+* Normalised admin paths under `/api/v1`.
+
+
+### 🛠️ Step 2.29 – API Doc Sync Script
+
+**Status:** ✅ Done
+**Files:** `merge-api-docs.js`, `backend_brain.md`, `docs/STEP_2_29_COMMAND.md`
+
+**Overview:**
+* Added a Node.js script to compare endpoints in `backend_brain.md` and `docs/openapi.yaml`.
+* Documented best practices for evolving the API contract and how to run the script.
+

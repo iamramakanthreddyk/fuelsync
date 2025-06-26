@@ -103,3 +103,10 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-18 | Schema Alignment with Business Rules | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250718.md` |
 | fix | 2025-07-19 | Final Schema Adjustments | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250719.md` |
 | fix | 2025-07-20 | Remove Legacy DB Files | ✅ Done | scripts updated, old migrations removed | `docs/STEP_fix_20250720.md` |
+| 2     | 2.23 | Prisma ORM Migration | ✅ Done | `src/controllers/user.controller.ts`, `prisma/schema.prisma`, `backend_brain.md` | `docs/STEP_2_23_COMMAND.md` |
+| 2     | 2.24 | Additional Prisma Controllers | ✅ Done | `src/controllers/station.controller.ts`, `src/controllers/pump.controller.ts`, `src/controllers/nozzle.controller.ts`, `src/controllers/nozzleReading.controller.ts`, `src/controllers/fuelPrice.controller.ts`, `prisma/schema.prisma`, `backend_brain.md` | `docs/STEP_2_24_COMMAND.md` |
+| 2     | 2.25 | Endpoint Inventory & Spec Refresh | ✅ Done | `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_25_COMMAND.md` |
+| 2     | 2.26 | OpenAPI Audit | ✅ Done | `backend_brain.md` | `docs/STEP_2_26_COMMAND.md` |
+| 2     | 2.27 | Spec Normalisation & Drift Notes | ✅ Done | `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_27_COMMAND.md` |
+| 2     | 2.28 | Complete OpenAPI Schemas | ✅ Done | `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_28_COMMAND.md` |
+| 2     | 2.29 | API Doc Sync Script | ✅ Done | `merge-api-docs.js`, `backend_brain.md` | `docs/STEP_2_29_COMMAND.md` |
