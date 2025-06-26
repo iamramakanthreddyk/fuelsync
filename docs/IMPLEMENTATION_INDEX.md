@@ -132,3 +132,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-22 | Update Setup Database | ✅ Done | `scripts/setup-database.js`, `src/utils/seedHelpers.ts` | `docs/STEP_fix_20250822.md` |
 | fix | 2025-08-23 | Test Helpers Public Schema | ✅ Done | `tests/utils/testTenant.ts` | `docs/STEP_fix_20250823.md` |
 | fix | 2025-08-24 | Docs Cleanup for Unified Schema | ✅ Done | `docs/ANALYTICS_API.md`, `docs/SUPERADMIN_FRONTEND_GUIDE.md` | `docs/STEP_fix_20250824.md` |
+| fix | 2025-08-25 | Node typings dev dependency | ✅ Done | `package.json` | `docs/STEP_fix_20250825.md` |
