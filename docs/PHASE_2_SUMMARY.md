@@ -555,3 +555,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Added a Node.js script to compare endpoints in `backend_brain.md` and `docs/openapi.yaml`.
 * Documented best practices for evolving the API contract and how to run the script.
 
+
+### 🛠️ Step 2.30 – Pump nozzle count
+
+**Status:** ✅ Done
+**Files:** `src/controllers/pump.controller.ts`, `docs/openapi.yaml`, `backend_brain.md`
+
+**Overview:**
+* Updated pump listing to include `nozzleCount` using Prisma relation counts.
+* Documented the wrapped success response in OpenAPI and backend brain.
