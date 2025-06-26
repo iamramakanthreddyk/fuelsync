@@ -38,10 +38,12 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.11.0",
-    "prisma": "^6.10.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "prisma": "^6.10.1"
   }
 }
