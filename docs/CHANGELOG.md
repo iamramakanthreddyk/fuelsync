@@ -1606,3 +1606,27 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/STEP_2_35_COMMAND.md`
 
+
+## [Fix - 2025-08-11] – Consolidated Migration Scripts
+
+### 🟥 Fixes
+* Combined all remaining SQL migrations into `003_unified_schema.sql`.
+* Added indexes and columns for yearly pricing, soft deletes and admin names.
+* Introduced `report_schedules` table directly in the unified script.
+* Removed outdated migration templates and incremental files.
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+
+## [Fix - 2025-08-12] – Enum Constraint Updates
+
+### 🟥 Fixes
+* Added fuel type checks to `sales`, `fuel_inventory` and `fuel_deliveries` tables.
+* Constrained `credit_payments.payment_method` to allowed values.
+* Documented enum rules in `db_brain.md`.
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `db_brain.md`
+* `docs/STEP_fix_20250811.md`

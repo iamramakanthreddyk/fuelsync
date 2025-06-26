@@ -21,7 +21,6 @@ export function createAuthController(db: Pool) {
         // If no tenant ID is provided, try to find the tenant for this email
         if (!tenantId) {
           console.log(`[AUTH] No tenant ID provided, checking admin users first`);
-          // First check if it's an admin user
           const adminCheck = await db.query(
             'SELECT id, email, role FROM public.admin_users WHERE email = $1',
             [email]
@@ -42,49 +41,38 @@ export function createAuthController(db: Pool) {
             // Not an admin user, try to find in tenant schemas
             console.log(`[AUTH] User not found in public schema, checking tenant schemas for: ${email}`);
             
-            // Get all tenant schemas
-            const { rows: tenants } = await db.query('SELECT schema_name FROM public.tenants');
-            console.log(`[AUTH] Found ${tenants.length} tenant schemas:`, tenants.map(t => t.schema_name));
-            
-            // Check each tenant schema for the user
-            for (const tenant of tenants) {
-              const schema = tenant.schema_name;
-              try {
-                const userCheck = await db.query(
-                  `SELECT id FROM ${schema}.users WHERE email = $1`,
-                  [email]
-                );
-                
-                if (userCheck.rows.length > 0) {
-                  userExists = true;
-                  userSchema = schema;
-                  foundTenantId = schema;
-                  console.log(`[AUTH] Found user in tenant schema: ${schema}`);
-                  break;
-                }
-              } catch (err: any) {
-                console.error(`[AUTH] Error checking schema ${schema}:`, err?.message);
-              }
+            const res = await db.query(
+              `SELECT t.schema_name FROM public.users u JOIN public.tenants t ON u.tenant_id = t.id WHERE u.email = $1`,
+              [email]
+            );
+            if (res.rows.length === 1) {
+              userExists = true;
+              userSchema = res.rows[0].schema_name;
+              foundTenantId = userSchema;
+              console.log(`[AUTH] Found user in tenant: ${userSchema}`);
+            } else if (res.rows.length > 1) {
+              console.log('[AUTH] Multiple tenants found for user, tenant header required');
             }
           }
         } else {
           // Tenant ID was provided, check if it exists
           const tenantCheck = await db.query(
-            'SELECT name FROM public.tenants WHERE schema_name = $1',
+            'SELECT id, name FROM public.tenants WHERE schema_name = $1',
             [tenantId]
           );
-          
+
           if (tenantCheck.rows.length === 0) {
             console.log(`[AUTH] Tenant not found: ${tenantId}`);
             return errorResponse(res, 401, 'Tenant not found');
           }
-          
+
           // Check if user exists in tenant schema
+          const tenantUuid = tenantCheck.rows[0].id;
           const userCheck = await db.query(
-            `SELECT id FROM ${tenantId}.users WHERE email = $1`,
-            [email]
+            'SELECT id FROM public.users WHERE tenant_id = $1 AND email = $2',
+            [tenantUuid, email]
           );
-          
+
           userExists = userCheck.rows.length > 0;
           userSchema = tenantId;
         }

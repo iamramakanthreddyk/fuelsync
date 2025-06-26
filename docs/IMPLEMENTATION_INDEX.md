@@ -117,3 +117,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.33 | Reusable response components | ✅ Done | `docs/openapi.yaml` | `docs/STEP_2_33_COMMAND.md` |
 | 2     | 2.34 | OpenAPI request schemas | ✅ Done | `docs/openapi.yaml` | `docs/STEP_2_34_COMMAND.md` |
 | 2     | 2.35 | Response wrapper alignment | ✅ Done | `docs/openapi.yaml`, `src/app.ts` | `docs/STEP_2_35_COMMAND.md` |
+| fix | 2025-08-11 | Consolidate Migration Scripts | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250811.md` |
+| fix | 2025-08-12 | Enum Constraint Updates | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250812.md` |
