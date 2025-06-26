@@ -191,6 +191,7 @@ paths:
               type: object
     get:
       summary: List pumps
+      description: Returns pumps with `nozzleCount` per pump.
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -969,6 +970,10 @@ components:
         application/json:
           schema:
             type: object
+            properties:
+              data:
+                description: Success payload
+                type: object
     Error:
       description: Error response
       content:

@@ -261,3 +261,4 @@ The spec now defines request bodies and success/error responses for every endpoi
 3. Run `node merge-api-docs.js` to check for drift.
 4. Address any missing or extra endpoints reported by the script.
 5. Commit code and docs together so the spec and knowledge base never diverge.
+\n### 2025-07-30 Pump Response Update\n- Pump listing now includes `nozzleCount` using Prisma \_count.\n- Successful responses are wrapped in `{ data }`.

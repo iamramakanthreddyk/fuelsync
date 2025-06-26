@@ -1524,3 +1524,14 @@ Each entry is tied to a step from the implementation index.
 * `merge-api-docs.js`
 * `backend_brain.md`
 * `docs/STEP_2_29_COMMAND.md`
+
+## [Enhancement - 2025-07-30] – Pump nozzle count
+
+### 🟦 Enhancements
+* `/api/v1/pumps` now returns `nozzleCount` for each pump and responses use `{ data }`.
+
+### Files
+* `src/controllers/pump.controller.ts`
+* `docs/openapi.yaml`
+* `backend_brain.md`
+* `docs/STEP_2_30_COMMAND.md`
