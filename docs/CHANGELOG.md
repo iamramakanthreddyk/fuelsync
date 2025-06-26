@@ -1754,3 +1754,16 @@ Each entry is tied to a step from the implementation index.
 * `jest.setup.js`, `jest.globalSetup.ts`, `tests/utils/db-utils.ts`
 * `docs/AGENTS.md`
 * `docs/STEP_fix_20250820.md`
+
+## [Fix - 2025-08-21] – Remove schemaUtils and Update Analytics
+
+### 🟥 Fixes
+* Deleted obsolete `schemaUtils.ts`.
+* Admin and general analytics now aggregate using `tenant_id` filters.
+* Price lookup utility queries unified tables.
+
+### Files
+* `src/utils/priceUtils.ts`
+* `src/controllers/adminAnalytics.controller.ts`
+* `src/controllers/analytics.controller.ts`
+* `docs/STEP_fix_20250821.md`

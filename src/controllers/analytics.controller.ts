@@ -37,46 +37,23 @@ export function createAnalyticsHandlers(db: Pool) {
         const adminCount = parseInt(adminResult.rows[0].count);
         
         // Get total users across all tenants
-        const userCountResult = await db.query(`
-          SELECT COUNT(*) FROM (
-            SELECT schema_name FROM information_schema.schemata 
-            WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast', 'public')
-          ) schemas, 
-          LATERAL (
-            SELECT COUNT(*) as user_count 
-            FROM pg_catalog.pg_tables 
-            WHERE schemaname = schemas.schema_name AND tablename = 'users'
-          ) tables
-          WHERE tables.user_count > 0
-        `);
-        const userCount = parseInt(userCountResult.rows[0].count || '0');
+        const userCountResult = await db.query('SELECT COUNT(*) FROM public.users');
+        const userCount = parseInt(userCountResult.rows[0].count);
         
         // Get total stations across all tenants
-        const stationCountResult = await db.query(`
-          SELECT COUNT(*) FROM (
-            SELECT schema_name FROM information_schema.schemata 
-            WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast', 'public')
-          ) schemas, 
-          LATERAL (
-            SELECT COUNT(*) as station_count 
-            FROM pg_catalog.pg_tables 
-            WHERE schemaname = schemas.schema_name AND tablename = 'stations'
-          ) tables
-          WHERE tables.station_count > 0
-        `);
-        const stationCount = parseInt(stationCountResult.rows[0].count || '0');
+        const stationCountResult = await db.query('SELECT COUNT(*) FROM public.stations');
+        const stationCount = parseInt(stationCountResult.rows[0].count);
         
         // Get recent tenants with formatted dates
         const recentTenantsResult = await db.query(`
-          SELECT 
-            id, 
-            name, 
-            schema_name, 
-            status, 
+          SELECT
+            id,
+            name,
+            status,
             created_at,
             TO_CHAR(created_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at_iso
-          FROM public.tenants 
-          ORDER BY created_at DESC 
+          FROM public.tenants
+          ORDER BY created_at DESC
           LIMIT 5
         `);
         
@@ -136,39 +113,31 @@ export function createAnalyticsHandlers(db: Pool) {
         }
         
         const tenant = tenantResult.rows[0];
-        const schemaName = tenant.schema_name;
-        
-        // Get user count
-        const userCountResult = await db.query(`
-          SELECT COUNT(*) FROM ${schemaName}.users
-        `);
+
+        const userCountResult = await db.query(
+          'SELECT COUNT(*) FROM public.users WHERE tenant_id = $1',
+          [tenantId]
+        );
         const userCount = parseInt(userCountResult.rows[0].count);
-        
-        // Get station count
-        const stationCountResult = await db.query(`
-          SELECT COUNT(*) FROM ${schemaName}.stations
-        `);
+
+        const stationCountResult = await db.query(
+          'SELECT COUNT(*) FROM public.stations WHERE tenant_id = $1',
+          [tenantId]
+        );
         const stationCount = parseInt(stationCountResult.rows[0].count);
-        
-        // Get pump count
-        const pumpCountResult = await db.query(`
-          SELECT COUNT(*) FROM ${schemaName}.pumps
-        `);
+
+        const pumpCountResult = await db.query(
+          'SELECT COUNT(*) FROM public.pumps WHERE tenant_id = $1',
+          [tenantId]
+        );
         const pumpCount = parseInt(pumpCountResult.rows[0].count);
-        
-        // Get sales count
-        let salesCount = 0;
-        let totalSales = 0;
-        try {
-          const salesResult = await db.query(`
-            SELECT COUNT(*), COALESCE(SUM(amount), 0) as total_amount FROM ${schemaName}.sales
-          `);
-          salesCount = parseInt(salesResult.rows[0].count);
-          totalSales = parseFloat(salesResult.rows[0].total_amount);
-        } catch (e) {
-          // Table might not exist
-          console.log('Sales table not found for tenant:', schemaName);
-        }
+
+        const salesResult = await db.query(
+          'SELECT COUNT(*), COALESCE(SUM(amount), 0) as total_amount FROM public.sales WHERE tenant_id = $1',
+          [tenantId]
+        );
+        const salesCount = parseInt(salesResult.rows[0].count);
+        const totalSales = parseFloat(salesResult.rows[0].total_amount);
         
         // Format tenant date for frontend
         const formattedTenant = {
