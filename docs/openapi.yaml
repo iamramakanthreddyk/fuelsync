@@ -1145,6 +1145,28 @@ components:
       in: header
       name: x-tenant-id
 
+  responses:
+    Success:
+      description: Success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+
   schemas:
     LoginRequest:
       type: object
