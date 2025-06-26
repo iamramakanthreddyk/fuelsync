@@ -1767,3 +1767,14 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/adminAnalytics.controller.ts`
 * `src/controllers/analytics.controller.ts`
 * `docs/STEP_fix_20250821.md`
+
+## [Fix - 2025-08-22] – Update Setup Database for Unified Schema
+
+### 🟥 Fixes
+* Removed tenant schema creation logic from `setup-database.js`.
+* Seed helpers no longer reference schema templates.
+
+### Files
+* `scripts/setup-database.js`
+* `src/utils/seedHelpers.ts`
+* `docs/STEP_fix_20250822.md`

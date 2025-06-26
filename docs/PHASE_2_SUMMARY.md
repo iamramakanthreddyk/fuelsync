@@ -692,3 +692,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Deleted unused schema utilities.
 * Analytics endpoints now compute metrics from shared tables using `tenant_id`.
+
+### 🛠️ Fix 2025-08-22 – Update Setup Database for Unified Schema
+**Status:** ✅ Done
+**Files:** `scripts/setup-database.js`, `src/utils/seedHelpers.ts`, `docs/STEP_fix_20250822.md`
+
+**Overview:**
+* Database setup script no longer creates per-tenant schemas.
+* Seed helpers simplified to insert tenants directly into `public.tenants`.
