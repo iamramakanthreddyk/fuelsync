@@ -1800,3 +1800,12 @@ Each entry is tied to a step from the implementation index.
 * `TENANT_UUID_FIX_SUMMARY.md`
 * `docs/BACKEND_HIERARCHY_API.md`
 * `docs/STEP_fix_20250824.md`
+
+## [Fix - 2025-08-25] – Node typings moved back to dev deps
+
+### 🟥 Fixes
+* Moved `@types/node` from regular dependencies to `devDependencies`.
+
+### Files
+* `package.json`
+* `docs/STEP_fix_20250825.md`

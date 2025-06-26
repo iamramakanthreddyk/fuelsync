@@ -715,3 +715,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Removed remaining `schema_name` mentions in documentation and marked the field as deprecated.
+
+### 🛠️ Fix 2025-08-25 – Node typings dev dependency
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/STEP_fix_20250825.md`
+
+**Overview:**
+* Moved `@types/node` back to `devDependencies` now that the build installs dev packages.
