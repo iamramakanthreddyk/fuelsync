@@ -1594,3 +1594,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/openapi.yaml`
 * `docs/STEP_2_34_COMMAND.md`
+## [Enhancement - 2025-08-05] – Response wrapping and parameter docs
+
+### 🟦 Enhancements
+* Unified all endpoints to return `{ data: ... }`.
+* Documented query parameters for pump, nozzle and nozzle reading lists.
+* Standardised error responses and updated utility routes.
+
+### Files
+* `docs/openapi.yaml`
+* `src/app.ts`
+* `docs/STEP_2_35_COMMAND.md`
+
