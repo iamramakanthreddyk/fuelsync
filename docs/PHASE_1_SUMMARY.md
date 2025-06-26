@@ -519,3 +519,16 @@ Each step includes:
 
 **Validations Performed:**
 * `npm test` executed after migration update.
+
+### 🛠 Fix 2025-06-26 – Unified Schema Setup Scripts
+
+**Status:** ✅ Done
+**Files:** `scripts/apply-unified-schema.js`, `scripts/verify-schema.js`, `scripts/seed-data.js`, `scripts/setup-unified-db.js`, `UNIFIED_SCHEMA_MIGRATION.md`, `UNIFIED_DB_SETUP.md`, `SEED_DATA_GUIDE.md`, `package.json`
+
+**Overview:**
+* Created comprehensive migration and seeding scripts using Prisma.
+* Documented how to apply the unified schema, generate the Prisma client and populate demo data.
+* Provided npm aliases (`db:fix-constraints`, `db:unified-schema`, `db:verify-schema`, `db:seed-data`) for repeatable setup.
+
+**Validations Performed:**
+* Manual execution of `npm run setup-unified-db` on a clean database.
