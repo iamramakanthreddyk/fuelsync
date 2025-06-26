@@ -9,7 +9,6 @@ export function debugRequest(req: Request, _res: Response, next: NextFunction) {
   console.log('Method:', req.method);
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
   console.log('Tenant ID:', req.headers['x-tenant-id']);
-  console.log('Schema Name:', (req as any).schemaName);
   console.log('==== END DEBUG ====');
   next();
 }

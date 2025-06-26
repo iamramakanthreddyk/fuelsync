@@ -117,7 +117,7 @@ export function createApp() {
     }
   });
   
-  // Debug schemas and tables endpoint with reset option
+  // Debug tables endpoint with reset option
   app.get('/schemas', async (req, res) => {
     try {
       const reset = req.query.reset;
@@ -134,15 +134,8 @@ export function createApp() {
         return successResponse(res, { status: 'Database reset complete' });
       }
       
-      const schemas = await pool.query("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast')");
-      
-      const tablesInfo: Record<string, string[]> = {};
-      for (const schema of schemas.rows) {
-        const tables = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = $1", [schema.schema_name]);
-        tablesInfo[schema.schema_name] = tables.rows.map(t => t.table_name);
-      }
-      
-      successResponse(res, { schemas: schemas.rows, tables: tablesInfo });
+      const tablesResult = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
+      successResponse(res, { tables: tablesResult.rows.map(t => t.table_name) });
     } catch (err: any) {
       errorResponse(res, 500, err.message);
     }

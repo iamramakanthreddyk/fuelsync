@@ -1809,3 +1809,21 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `package.json`
 * `docs/STEP_fix_20250825.md`
+
+## [Fix - 2025-08-26] – Unified Schema Cleanup
+
+### 🟥 Fixes
+* Consolidated migrations into `005_master_unified_schema.sql`.
+* Removed deprecated `schemaName` usage across the codebase.
+* Updated OpenAPI spec to match unified schema.
+
+### Files
+* `migrations/schema/005_master_unified_schema.sql`
+* `scripts/apply-unified-schema.js`
+* `src/app.ts`
+* `src/controllers/admin.controller.ts`
+* `src/controllers/analytics.controller.ts`
+* `src/middlewares/*.ts`
+* `src/types/auth.d.ts`
+* `frontend/docs/openapi-v1.yaml`
+* `docs/STEP_fix_20250826.md`

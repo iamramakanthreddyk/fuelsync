@@ -30,7 +30,7 @@ async function applyMigration() {
     console.log('✅ Ensured schema_migrations table exists');
     
     // Read the migration file
-    const migrationPath = path.join(__dirname, '../migrations/schema/004_complete_unified_schema.sql');
+    const migrationPath = path.join(__dirname, '../migrations/schema/005_master_unified_schema.sql');
     const migrationSql = fs.readFileSync(migrationPath, 'utf8');
     
     // Execute the migration
@@ -41,7 +41,7 @@ async function applyMigration() {
     // Record the migration
     await pool.query(`
       INSERT INTO public.schema_migrations (version, description)
-      VALUES ('004', 'Complete unified schema migration aligned with db_brain.md')
+      VALUES ('005', 'Master unified schema for fresh setups')
       ON CONFLICT (version) DO NOTHING;
     `);
     

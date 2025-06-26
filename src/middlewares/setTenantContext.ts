@@ -17,10 +17,7 @@ export function setTenantContext(req: Request, res: Response, next: NextFunction
     return next();
   }
   
-  const user = req.user as AuthPayload;
-  
-  // Unified schema uses public namespace; keep property for backward compatibility
-  (req as any).schemaName = 'public';
+  const _user = req.user as AuthPayload;
   
   next();
 }

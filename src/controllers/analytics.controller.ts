@@ -102,7 +102,7 @@ export function createAnalyticsHandlers(db: Pool) {
         
         // Get tenant details
         const tenantResult = await db.query(`
-          SELECT t.id, t.name, t.schema_name, t.status, t.created_at, p.name as plan_name
+          SELECT t.id, t.name, t.status, t.created_at, p.name as plan_name
           FROM public.tenants t
           JOIN public.plans p ON t.plan_id = p.id
           WHERE t.id = $1
