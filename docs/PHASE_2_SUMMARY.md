@@ -643,3 +643,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Tenant APIs now operate solely on unified tables via `tenant_id`.
 * Documentation and tests updated accordingly.
 
+
+### 🛠️ Fix 2025-08-16 – Plan Enforcement Tenant Queries
+**Status:** ✅ Done
+**Files:** `src/middleware/planEnforcement.ts`, `src/services/station.service.ts`, `src/services/pump.service.ts`, `src/services/nozzle.service.ts`, `src/services/user.service.ts`, `docs/STEP_fix_20250816.md`
+
+**Overview:**
+* Plan limit checks now query unified tables with `tenant_id` filters.
+* Service layers pass tenant IDs instead of schema names.

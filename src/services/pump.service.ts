@@ -16,8 +16,8 @@ export async function createPump(db: Pool, schemaName: string, stationId: string
     
     const tenantId = tenantRes.rows[0].id;
     
-    // Pass schema name to beforeCreatePump (it uses schema for table queries)
-    await beforeCreatePump(client, schemaName, stationId);
+    // Enforce plan limits using tenant id
+    await beforeCreatePump(client, tenantId, stationId);
     
     const res = await client.query<{ id: string }>(
       `INSERT INTO ${schemaName}.pumps (tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4) RETURNING id`,

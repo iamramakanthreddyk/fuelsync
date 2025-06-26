@@ -1685,3 +1685,17 @@ Each entry is tied to a step from the implementation index.
 * `UNIFIED_SCHEMA_MIGRATION.md`, `UNIFIED_DB_SETUP.md`, `SEED_DATA_GUIDE.md`
 * `package.json`
 * `docs/STEP_fix_20250627.md`
+
+## [Fix - 2025-08-16] – Plan Enforcement Tenant Queries
+
+### 🟥 Fixes
+* Plan limit middleware now queries unified tables using `tenant_id`.
+* Services pass tenant IDs instead of schema names.
+
+### Files
+* `src/middleware/planEnforcement.ts`
+* `src/services/station.service.ts`
+* `src/services/pump.service.ts`
+* `src/services/nozzle.service.ts`
+* `src/services/user.service.ts`
+* `docs/STEP_fix_20250816.md`

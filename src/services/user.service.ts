@@ -25,7 +25,7 @@ export async function createUser(
     
     const tenantId = tenantRes.rows[0].id;
     
-    await beforeCreateUser(client, schemaName);
+    await beforeCreateUser(client, tenantId);
     const hash = await bcrypt.hash(password, 10);
     const res = await client.query(
       `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5) RETURNING id`,
