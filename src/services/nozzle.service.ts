@@ -1,24 +1,12 @@
 import { Pool } from 'pg';
 import { beforeCreateNozzle } from '../middleware/planEnforcement';
 
-export async function createNozzle(db: Pool, schemaName: string, pumpId: string, nozzleNumber: number, fuelType: string): Promise<string> {
+export async function createNozzle(db: Pool, tenantId: string, pumpId: string, nozzleNumber: number, fuelType: string): Promise<string> {
   const client = await db.connect();
   try {
-    // Get actual tenant UUID from schema name
-    const tenantRes = await client.query(
-      'SELECT id FROM public.tenants WHERE schema_name = $1',
-      [schemaName]
-    );
-    
-    if (tenantRes.rows.length === 0) {
-      throw new Error(`Tenant not found for schema: ${schemaName}`);
-    }
-    
-    const tenantId = tenantRes.rows[0].id;
-    
     await beforeCreateNozzle(client, tenantId, pumpId);
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${schemaName}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4) RETURNING id`,
+      'INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4) RETURNING id',
       [tenantId, pumpId, nozzleNumber, fuelType]
     );
     return res.rows[0].id;
@@ -27,7 +15,7 @@ export async function createNozzle(db: Pool, schemaName: string, pumpId: string,
   }
 }
 
-export async function updateNozzle(db: Pool, schemaName: string, nozzleId: string, fuelType?: string, status?: string): Promise<void> {
+export async function updateNozzle(db: Pool, tenantId: string, nozzleId: string, fuelType?: string, status?: string): Promise<void> {
   const client = await db.connect();
   try {
     const updates = [];
@@ -49,28 +37,28 @@ export async function updateNozzle(db: Pool, schemaName: string, nozzleId: strin
     }
     
     await client.query(
-      `UPDATE ${schemaName}.nozzles SET ${updates.join(', ')} WHERE id = $1`,
-      params
+      `UPDATE public.nozzles SET ${updates.join(', ')} WHERE id = $1 AND tenant_id = $2`,
+      [...params, tenantId]
     );
   } finally {
     client.release();
   }
 }
 
-export async function listNozzles(db: Pool, schemaName: string, pumpId?: string) {
+export async function listNozzles(db: Pool, tenantId: string, pumpId?: string) {
   const where = pumpId ? 'WHERE pump_id = $1' : '';
-  const params = pumpId ? [pumpId] : [];
+  const params = pumpId ? [pumpId, tenantId] : [tenantId];
   const res = await db.query(
-    `SELECT id, pump_id, nozzle_number, fuel_type, status, created_at FROM ${schemaName}.nozzles ${where} ORDER BY nozzle_number`,
+    `SELECT id, pump_id, nozzle_number, fuel_type, status, created_at FROM public.nozzles ${where} ${where ? 'AND tenant_id = $2' : 'WHERE tenant_id = $1'} ORDER BY nozzle_number`,
     params
   );
   return res.rows;
 }
 
-export async function deleteNozzle(db: Pool, schemaName: string, nozzleId: string) {
-  const count = await db.query(`SELECT COUNT(*) FROM ${schemaName}.sales WHERE nozzle_id = $1`, [nozzleId]);
+export async function deleteNozzle(db: Pool, tenantId: string, nozzleId: string) {
+  const count = await db.query('SELECT COUNT(*) FROM public.sales WHERE nozzle_id = $1 AND tenant_id = $2', [nozzleId, tenantId]);
   if (Number(count.rows[0].count) > 0) {
     throw new Error('Cannot delete nozzle with sales history');
   }
-  await db.query(`DELETE FROM ${schemaName}.nozzles WHERE id = $1`, [nozzleId]);
+  await db.query('DELETE FROM public.nozzles WHERE id = $1 AND tenant_id = $2', [nozzleId, tenantId]);
 }

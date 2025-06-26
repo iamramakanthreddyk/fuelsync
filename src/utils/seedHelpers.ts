@@ -5,33 +5,25 @@ import path from 'path';
 /** Create a tenant and apply the schema template. Returns tenant id. */
 export async function createTenant(
   client: Client,
-  data: { name: string; schemaName: string; planId: string }
+  data: { name: string; planId: string }
 ): Promise<string> {
   const { rows } = await client.query<{ id: string }>(
-    `INSERT INTO public.tenants (name, schema_name, plan_id)
-     VALUES ($1, $2, $3)
-     ON CONFLICT (schema_name) DO UPDATE SET name=EXCLUDED.name
+    `INSERT INTO public.tenants (name, plan_id)
+     VALUES ($1, $2)
      RETURNING id`,
-    [data.name, data.schemaName, data.planId]
+    [data.name, data.planId]
   );
-  const tenantId = rows[0].id;
-
-  const templatePath = path.join(process.cwd(), 'migrations/tenant_schema_template.sql');
-  const templateSql = fs.readFileSync(templatePath, 'utf8').replace(/{{schema_name}}/g, data.schemaName);
-  await client.query(templateSql);
-
-  return tenantId;
+  return rows[0].id;
 }
 
 /** Create a station within a tenant schema. Returns station id. */
 export async function createStation(
   client: Client,
-  schema: string,
   tenantId: string,
   data: { name: string }
 ): Promise<string> {
   const { rows } = await client.query<{ id: string }>(
-    `INSERT INTO ${schema}.stations (tenant_id, name)
+    `INSERT INTO public.stations (tenant_id, name)
      VALUES ($1, $2)
      ON CONFLICT (tenant_id, name) DO UPDATE SET name=EXCLUDED.name
      RETURNING id`,
@@ -43,13 +35,12 @@ export async function createStation(
 /** Create a pump within a station. Returns pump id. */
 export async function createPump(
   client: Client,
-  schema: string,
   stationId: string,
   tenantId: string,
   data: { name: string }
 ): Promise<string> {
   const { rows } = await client.query<{ id: string }>(
-    `INSERT INTO ${schema}.pumps (tenant_id, station_id, name)
+    `INSERT INTO public.pumps (tenant_id, station_id, name)
      VALUES ($1, $2, $3)
      ON CONFLICT (station_id, name) DO UPDATE SET name=EXCLUDED.name
      RETURNING id`,
@@ -61,14 +52,13 @@ export async function createPump(
 /** Create multiple nozzles for a pump. */
 export async function createNozzles(
   client: Client,
-  schema: string,
   pumpId: string,
   tenantId: string,
   data: { nozzleNumber: number; fuelType: string }[]
 ): Promise<void> {
   for (const nozzle of data) {
     await client.query(
-      `INSERT INTO ${schema}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type)
+      `INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (pump_id, nozzle_number) DO NOTHING`,
       [tenantId, pumpId, nozzle.nozzleNumber, nozzle.fuelType]
@@ -79,15 +69,16 @@ export async function createNozzles(
 /** Fetch the latest reading for a nozzle. */
 export async function getLatestReading(
   client: Client,
-  schema: string,
-  nozzleId: string
+  nozzleId: string,
+  tenantId: string
 ): Promise<any | null> {
   const { rows } = await client.query(
-    `SELECT * FROM ${schema}.nozzle_readings
+    `SELECT * FROM public.nozzle_readings
      WHERE nozzle_id = $1
+       AND tenant_id = $2
      ORDER BY recorded_at DESC
      LIMIT 1`,
-    [nozzleId]
+    [nozzleId, tenantId]
   );
   return rows[0] || null;
 }
@@ -95,19 +86,20 @@ export async function getLatestReading(
 /** Get the active fuel price for a station and fuel type at a given time. */
 export async function getCurrentFuelPrice(
   client: Client,
-  schema: string,
   stationId: string,
   fuelType: string,
+  tenantId: string,
   atTime: Date = new Date()
 ): Promise<number | null> {
   const { rows } = await client.query<{ price: number }>(
-    `SELECT price FROM ${schema}.fuel_prices
+    `SELECT price FROM public.fuel_prices
      WHERE station_id = $1
        AND fuel_type = $2
-       AND effective_from <= $3
+       AND tenant_id = $3
+       AND effective_from <= $4
      ORDER BY effective_from DESC
      LIMIT 1`,
-    [stationId, fuelType, atTime]
+    [stationId, fuelType, tenantId, atTime]
   );
   return rows[0]?.price ?? null;
 }

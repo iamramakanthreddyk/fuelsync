@@ -124,3 +124,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-15 | Tenant Service Unified Schema | ✅ Done | `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`, `src/validators/tenant.validator.ts`, `tests/utils/testTenant.ts`, `docs/openapi.yaml`, `docs/TENANT_MANAGEMENT_GUIDE.md` | `docs/STEP_2_36_COMMAND.md` |
 | fix | 2025-06-26 | Unified Schema Setup Scripts | ✅ Done | `scripts/*.js`, `UNIFIED_DB_SETUP.md` | `docs/STEP_fix_20250627.md` |
 | fix | 2025-08-16 | Plan Enforcement Tenant Queries | ✅ Done | `src/middleware/planEnforcement.ts`, `src/services/station.service.ts`, `src/services/pump.service.ts`, `src/services/nozzle.service.ts`, `src/services/user.service.ts` | `docs/STEP_fix_20250816.md` |
+| fix | 2025-08-17 | Service Schema Cleanup | ✅ Done | `src/services/*.ts`, `src/controllers/*`, `src/utils/seedHelpers.ts` | `docs/STEP_fix_20250817.md` |

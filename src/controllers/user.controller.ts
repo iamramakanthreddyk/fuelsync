@@ -174,8 +174,8 @@ export function createUserHandlers(db: Pool) {
     // Change password
     changePassword: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
@@ -189,8 +189,8 @@ export function createUserHandlers(db: Pool) {
         
         // Get user
         const userResult = await db.query(
-          `SELECT password_hash FROM ${schemaName}.users WHERE id = $1`,
-          [userId]
+          'SELECT password_hash FROM public.users WHERE id = $1 AND tenant_id = $2',
+          [userId, tenantId]
         );
         
         if (userResult.rows.length === 0) {
@@ -210,8 +210,8 @@ export function createUserHandlers(db: Pool) {
         
         // Update password
         await db.query(
-          `UPDATE ${schemaName}.users SET password_hash = $1 WHERE id = $2`,
-          [newPasswordHash, userId]
+          'UPDATE public.users SET password_hash = $1 WHERE id = $2 AND tenant_id = $3',
+          [newPasswordHash, userId, tenantId]
         );
         
         successResponse(res, { message: 'Password changed successfully', success: true });
@@ -223,8 +223,8 @@ export function createUserHandlers(db: Pool) {
     // Reset password (for admin/owner)
     resetPassword: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
@@ -238,8 +238,8 @@ export function createUserHandlers(db: Pool) {
         
         // Check if user exists
         const userResult = await db.query(
-          `SELECT id FROM ${schemaName}.users WHERE id = $1`,
-          [userId]
+          'SELECT id FROM public.users WHERE id = $1 AND tenant_id = $2',
+          [userId, tenantId]
         );
         
         if (userResult.rows.length === 0) {
@@ -251,8 +251,8 @@ export function createUserHandlers(db: Pool) {
         
         // Update password
         await db.query(
-          `UPDATE ${schemaName}.users SET password_hash = $1 WHERE id = $2`,
-          [newPasswordHash, userId]
+          'UPDATE public.users SET password_hash = $1 WHERE id = $2 AND tenant_id = $3',
+          [newPasswordHash, userId, tenantId]
         );
         
         successResponse(res, { message: 'Password reset successfully', success: true });
@@ -264,8 +264,8 @@ export function createUserHandlers(db: Pool) {
     // Delete user
     delete: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
@@ -273,7 +273,8 @@ export function createUserHandlers(db: Pool) {
         
         // Check if user is the last owner
         const ownerResult = await db.query(
-          `SELECT COUNT(*) FROM ${schemaName}.users WHERE role = 'owner'`
+          "SELECT COUNT(*) FROM public.users WHERE role = 'owner' AND tenant_id = $1",
+          [tenantId]
         );
         
         const ownerCount = parseInt(ownerResult.rows[0].count);
@@ -281,8 +282,8 @@ export function createUserHandlers(db: Pool) {
         if (ownerCount <= 1) {
           // Check if this user is an owner
           const isOwnerResult = await db.query(
-            `SELECT role FROM ${schemaName}.users WHERE id = $1`,
-            [userId]
+            'SELECT role FROM public.users WHERE id = $1 AND tenant_id = $2',
+            [userId, tenantId]
           );
           
           if (isOwnerResult.rows.length > 0 && isOwnerResult.rows[0].role === 'owner') {
@@ -292,8 +293,8 @@ export function createUserHandlers(db: Pool) {
         
         // Delete user
         const result = await db.query(
-          `DELETE FROM ${schemaName}.users WHERE id = $1 RETURNING id`,
-          [userId]
+          'DELETE FROM public.users WHERE id = $1 AND tenant_id = $2 RETURNING id',
+          [userId, tenantId]
         );
         
         if (result.rows.length === 0) {

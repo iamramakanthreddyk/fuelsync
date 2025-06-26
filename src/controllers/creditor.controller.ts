@@ -25,12 +25,12 @@ export function createCreditorHandlers(db: Pool) {
   return {
     create: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateCreditor(req.body);
-        const id = await createCreditor(db, schemaName, data);
+        const id = await createCreditor(db, tenantId, data);
         successResponse(res, { id }, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {
@@ -40,11 +40,11 @@ export function createCreditorHandlers(db: Pool) {
       }
     },
     list: async (req: Request, res: Response) => {
-      const schemaName = (req as any).schemaName;
-      if (!schemaName) {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
-      const creditors = await listCreditors(db, schemaName);
+      const creditors = await listCreditors(db, tenantId);
       successResponse(res, { creditors });
     },
 
@@ -77,12 +77,12 @@ export function createCreditorHandlers(db: Pool) {
     },
     update: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateUpdateCreditor(req.body);
-        await updateCreditor(db, schemaName, req.params.id, data);
+        await updateCreditor(db, tenantId, req.params.id, data);
         successResponse(res, { status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {
@@ -93,11 +93,11 @@ export function createCreditorHandlers(db: Pool) {
     },
     remove: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        await markCreditorInactive(db, schemaName, req.params.id);
+        await markCreditorInactive(db, tenantId, req.params.id);
         successResponse(res, { status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {

@@ -1699,3 +1699,16 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzle.service.ts`
 * `src/services/user.service.ts`
 * `docs/STEP_fix_20250816.md`
+
+## [Fix - 2025-08-17] – Service Schema Cleanup
+
+### 🟥 Fixes
+* Removed remaining `schema_name` references in services.
+* Queries now use public tables with `tenant_id` filters.
+* Controllers and seeding helpers updated accordingly.
+
+### Files
+* `src/services/*`
+* `src/controllers/*`
+* `src/utils/seedHelpers.ts`
+* `docs/STEP_fix_20250817.md`
