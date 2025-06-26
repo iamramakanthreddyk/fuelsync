@@ -722,3 +722,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Moved `@types/node` back to `devDependencies` now that the build installs dev packages.
+
+### 🛠️ Fix 2025-08-26 – Unified Schema Cleanup
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `src/controllers/admin.controller.ts`, `src/controllers/analytics.controller.ts`, `src/middlewares/*`, `src/types/auth.d.ts`, `migrations/schema/005_master_unified_schema.sql`, `scripts/apply-unified-schema.js`, `frontend/docs/openapi-v1.yaml`, `docs/STEP_fix_20250826.md`
+
+**Overview:**
+* Removed deprecated `schemaName` logic from codebase.
+* Single migration file simplifies new environment setup.
+* API definitions updated for tenant-based schema.

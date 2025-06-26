@@ -8,12 +8,6 @@ export function defaultTenant(req: Request, _res: Response, next: NextFunction) 
   if (req.path.startsWith('/api/v1/admin') || req.path.startsWith('/api/v1/auth')) {
     return next();
   }
-  
-  // If tenant ID not set, default to production_tenant
-  if (!(req as any).schemaName) {
-    console.log('Setting default tenant: production_tenant');
-    (req as any).schemaName = 'production_tenant';
-  }
-  
+
   next();
 }
