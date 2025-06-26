@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { getFuelInventory, createFuelInventoryTable, seedFuelInventory } from '../services/fuelInventory.service';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createFuelInventoryHandlers(db: Pool) {
   return {
@@ -23,10 +24,10 @@ export function createFuelInventoryHandlers(db: Pool) {
           await seedFuelInventory(db, tenantId);
           // Get the seeded data
           const seededInventory = await getFuelInventory(db, tenantId);
-          return res.json(seededInventory);
+          return successResponse(res, seededInventory);
         }
         
-        return res.json(inventory);
+        return successResponse(res, inventory);
       } catch (err: any) {
         console.error('Error in fuel inventory list:', err);
         return errorResponse(res, 500, err.message || 'Internal server error');

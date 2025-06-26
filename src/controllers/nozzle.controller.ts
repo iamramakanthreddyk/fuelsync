@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { validateCreateNozzle } from '../validators/nozzle.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createNozzleHandlers(db: Pool) {
   return {
@@ -22,7 +23,7 @@ export function createNozzleHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        res.status(201).json({ id: nozzle.id });
+        successResponse(res, { id: nozzle.id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -40,7 +41,7 @@ export function createNozzleHandlers(db: Pool) {
         },
         orderBy: { nozzle_number: 'asc' }
       });
-      res.json({ nozzles });
+      successResponse(res, { nozzles });
     },
     get: async (req: Request, res: Response) => {
       try {
@@ -54,7 +55,7 @@ export function createNozzleHandlers(db: Pool) {
         if (!nozzle) {
           return errorResponse(res, 404, 'Nozzle not found');
         }
-        res.json(nozzle);
+        successResponse(res, nozzle);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -69,7 +70,7 @@ export function createNozzleHandlers(db: Pool) {
           where: { id: req.params.id, tenant_id: tenantId }
         });
         if (!deleted.count) return errorResponse(res, 404, 'Nozzle not found');
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -90,7 +91,7 @@ export function createNozzleHandlers(db: Pool) {
         });
         if (!updated.count) return errorResponse(res, 404, 'Nozzle not found');
         const nozzle = await prisma.nozzle.findUnique({ where: { id: req.params.id } });
-        res.json(nozzle);
+        successResponse(res, nozzle);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

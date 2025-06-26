@@ -6,6 +6,7 @@ import {
   listReconciliations,
 } from '../services/reconciliation.service';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createReconciliationHandlers(db: Pool) {
   return {
@@ -24,7 +25,7 @@ export function createReconciliationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Invalid reconciliationDate');
         }
         const summary = await runReconciliation(db, user.tenantId, stationId, date);
-        res.status(201).json({ summary });
+        successResponse(res, { summary }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -37,7 +38,7 @@ export function createReconciliationHandlers(db: Pool) {
         }
         const { stationId } = req.query as { stationId?: string };
         const history = await listReconciliations(db, user.tenantId, stationId);
-        res.json({ data: history });
+        successResponse(res, history);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -61,7 +62,7 @@ export function createReconciliationHandlers(db: Pool) {
         if (!summary) {
           return errorResponse(res, 404, 'Not found');
         }
-        res.json({ summary });
+        successResponse(res, { summary });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -125,7 +126,7 @@ export function createReconciliationHandlers(db: Pool) {
           fuelType: row.fuel_type,
         }));
 
-        res.json(summary);
+        successResponse(res, summary);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

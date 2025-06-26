@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { parseSalesQuery } from '../validators/sales.validator';
 import { listSales, salesAnalytics } from '../services/sales.service';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createSalesHandlers(db: Pool) {
   return {
@@ -23,7 +24,7 @@ export function createSalesHandlers(db: Pool) {
           }
         }
         const sales = await listSales(db, user.tenantId, query);
-        res.json({ sales });
+        successResponse(res, { sales });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -47,7 +48,7 @@ export function createSalesHandlers(db: Pool) {
           }
         }
         const data = await salesAnalytics(db, user.tenantId, stationId, groupBy);
-        res.json({ analytics: data });
+        successResponse(res, { analytics: data });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

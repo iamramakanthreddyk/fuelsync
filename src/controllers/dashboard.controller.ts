@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createDashboardHandlers(db: Pool) {
   return {
@@ -42,7 +43,7 @@ export function createDashboardHandlers(db: Pool) {
         const result = await db.query(query, stationId ? [stationId] : []);
         const row = result.rows[0];
 
-        res.json({
+        successResponse(res, {
           totalSales: parseFloat(row.total_sales),
           totalProfit: parseFloat(row.total_profit),
           profitMargin: parseFloat(row.profit_margin),
@@ -101,7 +102,7 @@ export function createDashboardHandlers(db: Pool) {
           percentage: totalAmount > 0 ? (parseFloat(row.amount) / totalAmount) * 100 : 0
         }));
 
-        res.json(breakdown);
+        successResponse(res, breakdown);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -151,7 +152,7 @@ export function createDashboardHandlers(db: Pool) {
           amount: parseFloat(row.amount)
         }));
 
-        res.json(breakdown);
+        successResponse(res, breakdown);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -191,7 +192,7 @@ export function createDashboardHandlers(db: Pool) {
           creditLimit: row.credit_limit ? parseFloat(row.credit_limit) : null
         }));
 
-        res.json(topCreditors);
+        successResponse(res, topCreditors);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -224,7 +225,7 @@ export function createDashboardHandlers(db: Pool) {
           volume: parseFloat(row.volume)
         }));
 
-        res.json(trend);
+        successResponse(res, trend);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { getTenantSettings, upsertTenantSettings } from '../services/settings.service';
 import { validateUpdateSettings } from '../validators/settings.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createSettingsHandlers(db: Pool) {
   return {
@@ -12,7 +13,7 @@ export function createSettingsHandlers(db: Pool) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const settings = await getTenantSettings(db, tenantId);
-      res.json({ settings });
+      successResponse(res, { settings });
     },
     update: async (req: Request, res: Response) => {
       try {
@@ -22,7 +23,7 @@ export function createSettingsHandlers(db: Pool) {
         }
         const input = validateUpdateSettings(req.body);
         await upsertTenantSettings(db, tenantId, input);
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

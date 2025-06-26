@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 import * as tenantService from '../services/tenant.service';
 import * as planService from '../services/plan.service';
 import * as adminService from '../services/admin.service';
@@ -24,7 +25,7 @@ export function createAdminApiHandlers(db: Pool) {
           ownerEmail,
           ownerPassword
         });
-        res.status(201).json(tenant);
+        successResponse(res, tenant, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -33,7 +34,7 @@ export function createAdminApiHandlers(db: Pool) {
     listTenants: async (req: Request, res: Response) => {
       try {
         const tenants = await tenantService.listTenants(db);
-        res.json(tenants);
+        successResponse(res, tenants);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -47,7 +48,7 @@ export function createAdminApiHandlers(db: Pool) {
           return errorResponse(res, 404, 'Tenant not found');
         }
         
-        res.json(tenant);
+        successResponse(res, tenant);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -62,7 +63,7 @@ export function createAdminApiHandlers(db: Pool) {
         }
         
         await tenantService.updateTenantStatus(db, req.params.id, status);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -71,7 +72,7 @@ export function createAdminApiHandlers(db: Pool) {
     deleteTenant: async (req: Request, res: Response) => {
       try {
         await tenantService.deleteTenant(db, req.params.id);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -95,8 +96,7 @@ export function createAdminApiHandlers(db: Pool) {
           priceYearly,
           features
         });
-        
-        res.status(201).json(plan);
+        successResponse(res, plan, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -105,7 +105,7 @@ export function createAdminApiHandlers(db: Pool) {
     listPlans: async (req: Request, res: Response) => {
       try {
         const plans = await planService.listPlans(db);
-        res.json(plans);
+        successResponse(res, plans);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -119,7 +119,7 @@ export function createAdminApiHandlers(db: Pool) {
           return errorResponse(res, 404, 'Plan not found');
         }
         
-        res.json(plan);
+        successResponse(res, plan);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -138,8 +138,7 @@ export function createAdminApiHandlers(db: Pool) {
           priceYearly,
           features
         });
-        
-        res.json(plan);
+        successResponse(res, plan);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -148,7 +147,7 @@ export function createAdminApiHandlers(db: Pool) {
     deletePlan: async (req: Request, res: Response) => {
       try {
         await planService.deletePlan(db, req.params.id);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -164,7 +163,7 @@ export function createAdminApiHandlers(db: Pool) {
         }
         
         const adminUser = await adminService.createAdminUser(db, { email, name, password, role });
-        res.status(201).json(adminUser);
+        successResponse(res, adminUser, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -173,7 +172,7 @@ export function createAdminApiHandlers(db: Pool) {
     listAdminUsers: async (req: Request, res: Response) => {
       try {
         const adminUsers = await adminService.listAdminUsers(db);
-        res.json(adminUsers);
+        successResponse(res, adminUsers);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -187,7 +186,7 @@ export function createAdminApiHandlers(db: Pool) {
           return errorResponse(res, 404, 'Admin user not found');
         }
         
-        res.json(adminUser);
+        successResponse(res, adminUser);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -198,7 +197,7 @@ export function createAdminApiHandlers(db: Pool) {
         const { email, name, role } = req.body;
         
         const adminUser = await adminService.updateAdminUser(db, req.params.id, { email, name, role });
-        res.json(adminUser);
+        successResponse(res, adminUser);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -207,7 +206,7 @@ export function createAdminApiHandlers(db: Pool) {
     deleteAdminUser: async (req: Request, res: Response) => {
       try {
         await adminService.deleteAdminUser(db, req.params.id);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -222,7 +221,7 @@ export function createAdminApiHandlers(db: Pool) {
         }
         
         await adminService.resetAdminPassword(db, req.params.id, password);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -247,7 +246,7 @@ export function createAdminApiHandlers(db: Pool) {
         const adminResult = await db.query('SELECT COUNT(*) FROM public.admin_users');
         const adminCount = parseInt(adminResult.rows[0].count);
         
-        res.json({
+        successResponse(res, {
           tenantCount,
           activeTenantCount,
           planCount,

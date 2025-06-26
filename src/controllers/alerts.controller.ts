@@ -5,6 +5,7 @@ import { deleteAlert } from '../services/alert.service';
 
 // Controller supporting alert management endpoints used by the frontend
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createAlertsHandlers(db: Pool) {
   return {
@@ -16,7 +17,7 @@ export function createAlertsHandlers(db: Pool) {
         const stationId = req.query.stationId as string | undefined;
         const unreadOnly = req.query.unreadOnly === 'true';
         const alerts = await getAlerts(db, tenantId, stationId, unreadOnly);
-        res.json(alerts);
+        successResponse(res, alerts);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -30,7 +31,7 @@ export function createAlertsHandlers(db: Pool) {
         const { id } = req.params;
         const updated = await markAlertRead(db, tenantId, id);
         if (!updated) return errorResponse(res, 404, 'Alert not found');
-        res.json({ status: 'read' });
+        successResponse(res, { status: 'read' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -43,7 +44,7 @@ export function createAlertsHandlers(db: Pool) {
 
         const deleted = await deleteAlert(tenantId, req.params.id);
         if (!deleted) return errorResponse(res, 404, 'Alert not found');
-        res.json({ data: true });
+        successResponse(res, true);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

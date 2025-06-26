@@ -3,12 +3,13 @@ import { Pool } from 'pg';
 import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createTenantHandlers(db: Pool) {
   return {
     list: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
-      res.json({ tenants });
+      successResponse(res, { tenants });
     },
     create: async (req: Request, res: Response) => {
       try {
@@ -38,7 +39,7 @@ export function createTenantHandlers(db: Pool) {
         const result = await createTenant(db, { name, planId: actualPlanId, schemaName });
         console.log('Tenant created:', result);
         
-        res.status(201).json({ 
+        successResponse(res, {
           tenant: {
             id: result.tenant.id,
             name: result.tenant.name,
@@ -50,7 +51,7 @@ export function createTenantHandlers(db: Pool) {
             password: result.owner.password,
             name: result.owner.name
           }
-        });
+        }, 201);
       } catch (err: any) {
         console.error('Error creating tenant:', err);
         return errorResponse(res, 400, err.message);
@@ -65,7 +66,7 @@ export function createAdminTenantHandlers(db: Pool) {
     ...base,
     summary: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
-      res.json({ tenantCount: tenants.length });
+      successResponse(res, { tenantCount: tenants.length });
     },
     updateStatus: async (req: Request, res: Response) => {
       try {
@@ -83,7 +84,7 @@ export function createAdminTenantHandlers(db: Pool) {
           return errorResponse(res, 404, 'Tenant not found');
         }
         
-        res.json(tenant);
+        successResponse(res, tenant);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -92,7 +93,7 @@ export function createAdminTenantHandlers(db: Pool) {
       try {
         const { id } = req.params;
         await deleteTenant(db, id);
-        res.json({ message: 'Tenant deleted successfully' });
+        successResponse(res, { message: 'Tenant deleted successfully' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

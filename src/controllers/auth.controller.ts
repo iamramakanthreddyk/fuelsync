@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { login } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createAuthController(db: Pool) {
   return {
@@ -104,7 +105,7 @@ export function createAuthController(db: Pool) {
         }
         
         console.log(`[AUTH] Login successful for user: ${result.user.id}, role: ${result.user.role}`);
-        return res.json(result);
+        return successResponse(res, result);
       } catch (error: any) {
         console.error(`[AUTH] Login error:`, error);
         return errorResponse(res, 500, `Login error: ${error?.message || 'Unknown error'}`);
@@ -112,7 +113,7 @@ export function createAuthController(db: Pool) {
     },
     logout: async (_req: Request, res: Response) => {
       try {
-        res.json({ message: 'Logged out successfully' });
+        successResponse(res, { message: 'Logged out successfully' });
       } catch (error: any) {
         return errorResponse(res, 500, error.message);
       }
@@ -134,7 +135,7 @@ export function createAuthController(db: Pool) {
           { expiresIn: '24h' }
         );
 
-        res.json({ token, user });
+        successResponse(res, { token, user });
       } catch (error: any) {
         return errorResponse(res, 500, error.message);
       }
