@@ -15,7 +15,6 @@ export function createAuthController(db: Pool) {
       try {
         // Check if user exists before attempting login
         let userExists = false;
-        let userSchema = '';
         let foundTenantId = tenantId;
         
         // If no tenant ID is provided, try to find the tenant for this email
@@ -35,21 +34,19 @@ export function createAuthController(db: Pool) {
           if (adminCheck.rows.length > 0) {
             console.log(`[AUTH] Found admin user: ${email}`);
             userExists = true;
-            userSchema = 'public';
             foundTenantId = undefined; // Admin users don't have tenant ID
           } else {
             // Not an admin user, try to find in tenant schemas
             console.log(`[AUTH] User not found in public schema, checking tenant schemas for: ${email}`);
             
             const res = await db.query(
-              `SELECT t.schema_name FROM public.users u JOIN public.tenants t ON u.tenant_id = t.id WHERE u.email = $1`,
+              `SELECT u.tenant_id, t.name FROM public.users u JOIN public.tenants t ON u.tenant_id = t.id WHERE u.email = $1`,
               [email]
             );
             if (res.rows.length === 1) {
               userExists = true;
-              userSchema = res.rows[0].schema_name;
-              foundTenantId = userSchema;
-              console.log(`[AUTH] Found user in tenant: ${userSchema}`);
+              foundTenantId = res.rows[0].tenant_id;
+              console.log(`[AUTH] Found user in tenant: ${foundTenantId}`);
             } else if (res.rows.length > 1) {
               console.log('[AUTH] Multiple tenants found for user, tenant header required');
             }
@@ -57,7 +54,7 @@ export function createAuthController(db: Pool) {
         } else {
           // Tenant ID was provided, check if it exists
           const tenantCheck = await db.query(
-            'SELECT id, name FROM public.tenants WHERE schema_name = $1',
+            'SELECT id, name FROM public.tenants WHERE id = $1',
             [tenantId]
           );
 
@@ -74,11 +71,10 @@ export function createAuthController(db: Pool) {
           );
 
           userExists = userCheck.rows.length > 0;
-          userSchema = tenantId;
         }
-        
+
         if (!userExists) {
-          console.log(`[AUTH] User not found: ${email} in schema: ${userSchema}`);
+          console.log(`[AUTH] User not found: ${email} for tenant: ${foundTenantId}`);
           return errorResponse(res, 401, `User not found: ${email}`);
         }
         

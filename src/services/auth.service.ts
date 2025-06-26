@@ -22,7 +22,7 @@ export async function login(db: Pool, email: string, password: string, tenantId?
 
     // Get tenant id and name
     const tenantRes = await db.query(
-      'SELECT id, name FROM public.tenants WHERE schema_name = $1',
+      'SELECT id, name FROM public.tenants WHERE id = $1',
       [tenantId]
     );
     const tenantRow = tenantRes.rows[0];

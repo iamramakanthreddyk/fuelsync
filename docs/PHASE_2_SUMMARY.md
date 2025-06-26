@@ -626,3 +626,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Updated all query table references to the unified `sales` name.
 * Added `costPrice` support to fuel price validation.
 
+### 🛠️ Fix 2025-08-14 – Login Query Updates
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/STEP_fix_20250814.md`
+
+**Overview:**
+* Adjusted login logic to query tenants by UUID instead of `schema_name`.
+* Ensures compatibility with the unified schema.
+
