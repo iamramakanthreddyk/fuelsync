@@ -1827,3 +1827,14 @@ Each entry is tied to a step from the implementation index.
 * `src/types/auth.d.ts`
 * `frontend/docs/openapi-v1.yaml`
 * `docs/STEP_fix_20250826.md`
+
+## [Fix - 2025-08-27] – SQL String Literal Fixes
+
+### 🟥 Fixes
+* Replaced invalid multi-line single-quoted SQL strings with template strings.
+* Build now succeeds without syntax errors.
+
+### Files
+* `src/services/creditor.service.ts`
+* `src/services/fuelPrice.service.ts`
+* `docs/STEP_fix_20250827.md`

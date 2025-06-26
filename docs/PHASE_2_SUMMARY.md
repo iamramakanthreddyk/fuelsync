@@ -731,3 +731,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Removed deprecated `schemaName` logic from codebase.
 * Single migration file simplifies new environment setup.
 * API definitions updated for tenant-based schema.
+
+### 🛠️ Fix 2025-08-27 – SQL String Literal Fixes
+**Status:** ✅ Done
+**Files:** `src/services/creditor.service.ts`, `src/services/fuelPrice.service.ts`, `docs/STEP_fix_20250827.md`
+
+**Overview:**
+* Multi-line SQL queries now use template strings instead of single quotes.
+* `npm run build` compiles without errors.
