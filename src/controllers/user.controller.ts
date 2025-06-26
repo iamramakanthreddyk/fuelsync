@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
+import prisma from '../utils/prisma';
 import { errorResponse } from '../utils/errorResponse';
 
 export function createUserHandlers(db: Pool) {
@@ -8,16 +9,24 @@ export function createUserHandlers(db: Pool) {
     // List users for the current tenant
     list: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const user = req.user;
+        if (!user?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
-        
-        const result = await db.query(
-          `SELECT id, email, name, role, created_at FROM ${schemaName}.users ORDER BY created_at DESC`
-        );
-        
-        res.json({ users: result.rows });
+
+        const users = await prisma.user.findMany({
+          where: { tenant_id: user.tenantId },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            created_at: true
+          },
+          orderBy: { created_at: 'desc' }
+        });
+
+        res.json({ users });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -26,22 +35,28 @@ export function createUserHandlers(db: Pool) {
     // Get user by ID
     get: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const auth = req.user;
+        if (!auth?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
-        
+
         const userId = req.params.id;
-        const result = await db.query(
-          `SELECT id, email, name, role, created_at FROM ${schemaName}.users WHERE id = $1`,
-          [userId]
-        );
-        
-        if (result.rows.length === 0) {
+        const userRecord = await prisma.user.findFirst({
+          where: { id: userId, tenant_id: auth.tenantId },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            created_at: true
+          }
+        });
+
+        if (!userRecord) {
           return errorResponse(res, 404, 'User not found');
         }
-        
-        res.json(result.rows[0]);
+
+        res.json(userRecord);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -50,8 +65,8 @@ export function createUserHandlers(db: Pool) {
     // Create a new user
     create: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const auth = req.user;
+        if (!auth?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
@@ -68,38 +83,38 @@ export function createUserHandlers(db: Pool) {
         }
         
         // Check if email already exists
-        const existingUser = await db.query(
-          `SELECT id FROM ${schemaName}.users WHERE email = $1`,
-          [email]
-        );
-        
-        if (existingUser.rows.length > 0) {
+        const existingUser = await prisma.user.findFirst({
+          where: { tenant_id: auth.tenantId, email }
+        });
+
+        if (existingUser) {
           return errorResponse(res, 400, 'Email already in use');
         }
-        
-        // Get tenant ID
-        const tenantResult = await db.query(
-          'SELECT id FROM public.tenants WHERE schema_name = $1',
-          [schemaName]
-        );
-        
-        if (tenantResult.rows.length === 0) {
-          return errorResponse(res, 400, 'Tenant not found');
-        }
-        
-        const tenantId = tenantResult.rows[0].id;
+
+        const tenantId = auth.tenantId;
         
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
         
         // Create user
-        const result = await db.query(
-          `INSERT INTO ${schemaName}.users (tenant_id, email, password_hash, name, role) 
-           VALUES ($1, $2, $3, $4, $5) RETURNING id, email, name, role, created_at`,
-          [tenantId, email, passwordHash, name, role]
-        );
-        
-        res.status(201).json(result.rows[0]);
+        const newUser = await prisma.user.create({
+          data: {
+            tenant_id: tenantId,
+            email,
+            password_hash: passwordHash,
+            name,
+            role
+          },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            created_at: true
+          }
+        });
+
+        res.status(201).json(newUser);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -108,8 +123,8 @@ export function createUserHandlers(db: Pool) {
     // Update user
     update: async (req: Request, res: Response) => {
       try {
-        const schemaName = (req as any).schemaName;
-        if (!schemaName) {
+        const auth = req.user;
+        if (!auth?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
@@ -126,31 +141,30 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Role must be owner, manager, or attendant');
         }
         
-        // Build update query
-        let query = `UPDATE ${schemaName}.users SET `;
-        const params: any[] = [];
-        const updates: string[] = [];
-        
-        if (name) {
-          params.push(name);
-          updates.push(`name = $${params.length}`);
-        }
-        
-        if (role) {
-          params.push(role);
-          updates.push(`role = $${params.length}`);
-        }
-        
-        params.push(userId);
-        query += updates.join(', ') + ` WHERE id = $${params.length} RETURNING id, email, name, role, created_at`;
-        
-        const result = await db.query(query, params);
-        
-        if (result.rows.length === 0) {
+        const updated = await prisma.user.updateMany({
+          where: { id: userId, tenant_id: auth.tenantId },
+          data: {
+            ...(name ? { name } : {}),
+            ...(role ? { role } : {})
+          }
+        });
+
+        if (!updated.count) {
           return errorResponse(res, 404, 'User not found');
         }
-        
-        res.json(result.rows[0]);
+
+        const userRecord = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            created_at: true
+          }
+        });
+
+        res.json(userRecord);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
