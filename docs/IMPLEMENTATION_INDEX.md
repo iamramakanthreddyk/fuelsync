@@ -130,3 +130,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-20 | Remove Tenant Schema Artifacts | ✅ Done | `package.json`, `scripts/migrate.js`, `scripts/init-test-db.js`, `scripts/reset-passwords.ts`, `jest.setup.js`, `jest.globalSetup.ts`, `tests/utils/db-utils.ts`, `docs/AGENTS.md` | `docs/STEP_fix_20250820.md` |
 | fix | 2025-08-21 | Remove schemaUtils and Update Analytics | ✅ Done | `src/utils/priceUtils.ts`, `src/controllers/adminAnalytics.controller.ts`, `src/controllers/analytics.controller.ts` | `docs/STEP_fix_20250821.md` |
 | fix | 2025-08-22 | Update Setup Database | ✅ Done | `scripts/setup-database.js`, `src/utils/seedHelpers.ts` | `docs/STEP_fix_20250822.md` |
+| fix | 2025-08-23 | Test Helpers Public Schema | ✅ Done | `tests/utils/testTenant.ts` | `docs/STEP_fix_20250823.md` |

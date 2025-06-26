@@ -700,3 +700,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Database setup script no longer creates per-tenant schemas.
 * Seed helpers simplified to insert tenants directly into `public.tenants`.
+
+### 🛠️ Fix 2025-08-23 – Test Helpers Use Public Schema
+**Status:** ✅ Done
+**Files:** `tests/utils/testTenant.ts`, `docs/STEP_fix_20250823.md`
+
+**Overview:**
+* Test tenant utility inserts rows into `public.tenants` and `public.users`.
+* Fixtures and helpers rely solely on `tenant_id` fields.

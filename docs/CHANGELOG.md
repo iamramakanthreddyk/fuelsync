@@ -1778,3 +1778,13 @@ Each entry is tied to a step from the implementation index.
 * `scripts/setup-database.js`
 * `src/utils/seedHelpers.ts`
 * `docs/STEP_fix_20250822.md`
+
+## [Fix - 2025-08-23] – Test Helpers Use Public Schema
+
+### 🟥 Fixes
+* Rewrote test tenant utility to insert tenants and users directly into public tables.
+* Confirmed all fixtures rely on `tenant_id` columns only.
+
+### Files
+* `tests/utils/testTenant.ts`
+* `docs/STEP_fix_20250823.md`
