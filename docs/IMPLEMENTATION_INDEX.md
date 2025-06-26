@@ -111,3 +111,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.28 | Complete OpenAPI Schemas | ✅ Done | `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_28_COMMAND.md` |
 | 2     | 2.29 | API Doc Sync Script | ✅ Done | `merge-api-docs.js`, `backend_brain.md` | `docs/STEP_2_29_COMMAND.md` |
 | 2     | 2.30 | Pump nozzle count | ✅ Done | `src/controllers/pump.controller.ts`, `docs/openapi.yaml` | `docs/STEP_2_30_COMMAND.md` |
+| fix | 2025-07-31 | OpenAPI Schema Details | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20250731.md` |
