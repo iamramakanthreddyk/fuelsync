@@ -1729,3 +1729,13 @@ Each entry is tied to a step from the implementation index.
 * `docs/TENANT_MANAGEMENT.md`
 * `docs/BACKEND_HIERARCHY_API.md`
 * `docs/STEP_fix_20250818.md`
+
+## [Fix - 2025-08-19] – Auth Logging Cleanup
+
+### 🟥 Fixes
+* Removed query that listed all admin users during login.
+* Reduced console output to only login attempts and error conditions.
+
+### Files
+* `src/controllers/auth.controller.ts`
+* `docs/STEP_fix_20250819.md`
