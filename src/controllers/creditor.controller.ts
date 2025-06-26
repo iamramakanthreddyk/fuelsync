@@ -66,17 +66,8 @@ export function createCreditorHandlers(db: Pool) {
           address: creditor.address,
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
-          createdAt: creditor.created_at,
+          createdAt: creditor.created_at
         });
-          id: creditor.id,
-          name: creditor.party_name,
-          partyName: creditor.party_name,
-          contactNumber: creditor.contact_number,
-          address: creditor.address,
-          status: creditor.status,
-          creditLimit: Number(creditor.credit_limit),
-          createdAt: creditor.created_at,
-        }});
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -147,5 +138,5 @@ export function createCreditorHandlers(db: Pool) {
         return errorResponse(res, 400, err.message);
       }
     },
-  };
+  }
 }
