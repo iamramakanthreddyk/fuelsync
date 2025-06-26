@@ -606,3 +606,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Connected login, refresh, user and station endpoints to detailed schemas.
 * Introduced `CreateStationRequest` and `UpdateStationRequest` components.
+### 🛠️ Step 2.35 – Response wrapper alignment
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `src/app.ts`, `docs/STEP_2_35_COMMAND.md`
+
+**Overview:**
+* All endpoints now return data under a `data` property.
+* Error responses documented as `{ success: false, message }`.
+* Added query parameter docs for pump, nozzle and nozzle reading endpoints.
+

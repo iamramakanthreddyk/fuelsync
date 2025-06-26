@@ -24,6 +24,8 @@ import { createAnalyticsRouter } from './routes/analytics.route';
 import { createAlertsRouter } from './routes/alerts.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
+import { successResponse } from './utils/successResponse';
+import { errorResponse } from './utils/errorResponse';
 
 import { debugRequest } from './middlewares/debugRequest';
 
@@ -81,25 +83,25 @@ export function createApp() {
 
   // Simple test endpoint
   app.get('/test', (req, res) => {
-    res.json({ message: 'API is working', method: req.method });
+    successResponse(res, { message: 'API is working', method: req.method });
   });
-  
+
   app.post('/test', (req, res) => {
-    res.json({ message: 'POST working', body: req.body });
+    successResponse(res, { message: 'POST working', body: req.body });
   });
-  
+
   // Simple auth test
   app.post('/test-login', (req, res) => {
-    res.json({ message: 'Login endpoint working', body: req.body });
+    successResponse(res, { message: 'Login endpoint working', body: req.body });
   });
   
   // Health check endpoint
-  app.get('/health', async (req, res) => {
+  app.get('/health', async (_req, res) => {
     try {
       const { testConnection } = await import('./utils/db');
       const dbResult = await testConnection();
-      res.json({ 
-        status: 'ok', 
+      successResponse(res, {
+        status: 'ok',
         database: dbResult.success ? 'connected' : 'failed',
         dbDetails: dbResult,
         env: process.env.NODE_ENV,
@@ -111,7 +113,7 @@ export function createApp() {
         timestamp: new Date().toISOString()
       });
     } catch (err: any) {
-      res.status(500).json({ status: 'error', message: err.message });
+      errorResponse(res, 500, err.message);
     }
   });
   
@@ -129,7 +131,7 @@ export function createApp() {
         await pool.query('DROP TABLE IF EXISTS public.admin_activity_logs CASCADE');
         await pool.query('DROP TABLE IF EXISTS public.migrations CASCADE');
         
-        return res.json({ status: 'Database reset complete' });
+        return successResponse(res, { status: 'Database reset complete' });
       }
       
       const schemas = await pool.query("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast')");
@@ -140,9 +142,9 @@ export function createApp() {
         tablesInfo[schema.schema_name] = tables.rows.map(t => t.table_name);
       }
       
-      res.json({ schemas: schemas.rows, tables: tablesInfo });
+      successResponse(res, { schemas: schemas.rows, tables: tablesInfo });
     } catch (err: any) {
-      res.status(500).json({ status: 'error', message: err.message });
+      errorResponse(res, 500, err.message);
     }
   });
   

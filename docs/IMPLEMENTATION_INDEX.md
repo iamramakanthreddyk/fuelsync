@@ -116,3 +116,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.32 | Parameter naming alignment | ✅ Done | `src/routes/user.route.ts`, `src/routes/station.route.ts`, `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_32_COMMAND.md` |
 | 2     | 2.33 | Reusable response components | ✅ Done | `docs/openapi.yaml` | `docs/STEP_2_33_COMMAND.md` |
 | 2     | 2.34 | OpenAPI request schemas | ✅ Done | `docs/openapi.yaml` | `docs/STEP_2_34_COMMAND.md` |
+| 2     | 2.35 | Response wrapper alignment | ✅ Done | `docs/openapi.yaml`, `src/app.ts` | `docs/STEP_2_35_COMMAND.md` |
