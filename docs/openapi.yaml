@@ -536,6 +536,37 @@ paths:
                     items:
                       $ref: '#/components/schemas/FuelPerformanceMetric'
   /api/v1/reports/sales:
+    get:
+      summary: Get sales report
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Sales data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SalesReportData'
+                  summary:
+                    $ref: '#/components/schemas/SalesReportSummary'
     post:
       summary: Export sales report
       responses:
@@ -548,7 +579,43 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ExportReportRequest'
+  /api/v1/reports/export:
+    post:
+      summary: Export report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportReportRequest'
+      responses:
+        '200':
+          description: Report file
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/reports/schedule:
+    post:
+      summary: Schedule report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleReportRequest'
+      responses:
+        '200':
+          description: Report scheduled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
   /api/v1/creditors:
     post:
       summary: Create creditor
@@ -668,6 +735,26 @@ paths:
         default:
           $ref: '#/components/responses/Error'
   /api/v1/reconciliation:
+    get:
+      summary: Get reconciliation history
+      parameters:
+        - name: stationId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReconciliationRecord'
     post:
       summary: Run daily reconciliation
       responses:
@@ -680,10 +767,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateReconciliationRequest'
   /api/v1/reconciliation/{stationId}:
     get:
       summary: Get reconciliation summary
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/Success'

@@ -166,3 +166,18 @@ model Sale {
   creditor     Creditor? @relation(fields: [creditor_id], references: [id])
   creator      User?    @relation(fields: [created_by], references: [id])
 }
+
+model ReportSchedule {
+  id         String   @id @default(uuid())
+  tenant_id  String
+  station_id String?
+  type       String
+  frequency  String
+  next_run   DateTime?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  station    Station? @relation(fields: [station_id], references: [id])
+
+  @@index([tenant_id], name: "idx_report_schedules_tenant")
+}

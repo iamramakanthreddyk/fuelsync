@@ -29,6 +29,7 @@ This document records the reasoning and structure for migrating FuelSync Hub fro
 | `nozzle_readings` | `id`, `tenant_id`, `nozzle_id`, `reading`, `recorded_at`, `payment_method`, `created_at`, `updated_at` |
 | `credit_payments` | `id`, `tenant_id`, `creditor_id`, `amount`, `payment_method`, `reference_number`, `notes`, `received_at`, `created_at`, `updated_at` |
 | `day_reconciliations` | `id`, `tenant_id`, `station_id`, `date`, `total_sales`, `cash_total`, `card_total`, `upi_total`, `credit_total`, `finalized`, `created_at`, `updated_at` |
+| `report_schedules` | `id`, `tenant_id`, `station_id`, `type`, `frequency`, `next_run`, `created_at`, `updated_at` |
 | `audit_logs` | `id`, `tenant_id`, `user_id`, `action`, `entity_type`, `entity_id`, `details`, `created_at`, `updated_at` |
 | `user_activity_logs` | `id`, `tenant_id`, `user_id`, `ip_address`, `user_agent`, `event`, `recorded_at`, `updated_at` |
 | `validation_issues` | `id`, `tenant_id`, `entity_type`, `entity_id`, `message`, `created_at` |

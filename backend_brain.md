@@ -50,6 +50,7 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/fuel-deliveries | List fuel deliveries |
 | GET | /api/v1/reconciliation/:stationId | Get reconciliation summary |
 | POST | /api/v1/reconciliation | Run daily reconciliation |
+| GET | /api/v1/reconciliation | Reconciliation history |
 | GET | /api/v1/reconciliation/daily-summary | Daily nozzle reading summary |
 | GET | /api/v1/sales | List sales records |
 | GET | /api/v1/sales/analytics | Sales analytics |
@@ -71,7 +72,11 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/inventory/alerts | Inventory alerts |
 | GET | /api/v1/reports/sales/export | Export sales report |
 | POST | /api/v1/reports/sales | Export sales via POST |
+| GET | /api/v1/reports/sales | Get sales report |
+| POST | /api/v1/reports/export | Export generic report |
+| POST | /api/v1/reports/schedule | Schedule report |
 | GET | /api/v1/reports/financial/export | Export financial report |
+| GET | /api/v1/reconciliation | Reconciliation history |
 | GET | /api/v1/analytics/dashboard | Super admin dashboard analytics |
 | GET | /api/v1/analytics/superadmin | Alias to dashboard analytics |
 | GET | /api/v1/analytics/tenant/:id | Tenant analytics summary |
@@ -134,6 +139,9 @@ const users = await prisma.user.findMany({ where: { tenant_id } });
 | GET | /api/v1/analytics/station-comparison | analytics.controller.ts | no |
 | GET | /api/v1/reports/sales/export | reports.controller.ts | no |
 | POST | /api/v1/reports/sales | reports.controller.ts | no |
+| GET | /api/v1/reports/sales | reports.controller.ts | no |
+| POST | /api/v1/reports/export | reports.controller.ts | no |
+| POST | /api/v1/reports/schedule | reports.controller.ts | no |
 | GET | /api/v1/reports/financial/export | reports.controller.ts | no |
 | GET | /api/v1/alerts/ | alerts.controller.ts | no |
 | PATCH | /api/v1/alerts/:id/read | alerts.controller.ts | no |
@@ -150,6 +158,7 @@ const users = await prisma.user.findMany({ where: { tenant_id } });
 | POST | /api/v1/inventory/update | inventory.controller.ts | no |
 | GET | /api/v1/inventory/alerts | inventory.controller.ts | no |
 | POST | /api/v1/reconciliation/ | reconciliation.controller.ts | no |
+| GET | /api/v1/reconciliation | reconciliation.controller.ts | no |
 | GET | /api/v1/reconciliation/daily-summary | reconciliation.controller.ts | no |
 | GET | /api/v1/reconciliation/:stationId | reconciliation.controller.ts | no |
 | GET | /api/v1/dashboard/sales-summary | dashboard.controller.ts | no |
