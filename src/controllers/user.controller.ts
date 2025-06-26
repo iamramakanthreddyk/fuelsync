@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import prisma from '../utils/prisma';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createUserHandlers(db: Pool) {
   return {
@@ -26,7 +27,7 @@ export function createUserHandlers(db: Pool) {
           orderBy: { created_at: 'desc' }
         });
 
-        res.json({ users });
+        successResponse(res, { users });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -56,7 +57,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 404, 'User not found');
         }
 
-        res.json({ data: userRecord });
+        successResponse(res, userRecord);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -164,7 +165,7 @@ export function createUserHandlers(db: Pool) {
           }
         });
 
-        res.json({ data: userRecord });
+        successResponse(res, userRecord);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -213,7 +214,7 @@ export function createUserHandlers(db: Pool) {
           [newPasswordHash, userId]
         );
         
-        res.json({ success: true, message: 'Password changed successfully' });
+        successResponse(res, { message: 'Password changed successfully', success: true });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -254,7 +255,7 @@ export function createUserHandlers(db: Pool) {
           [newPasswordHash, userId]
         );
         
-        res.json({ success: true, message: 'Password reset successfully' });
+        successResponse(res, { message: 'Password reset successfully', success: true });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -299,7 +300,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 404, 'User not found');
         }
         
-        res.json({ success: true, message: 'User deleted successfully' });
+        successResponse(res, { message: 'User deleted successfully', success: true });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

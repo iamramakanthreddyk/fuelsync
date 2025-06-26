@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { validateCreatePump } from '../validators/pump.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createPumpHandlers(db: Pool) {
   return {
@@ -22,7 +23,7 @@ export function createPumpHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        res.status(201).json({ id: pump.id });
+        successResponse(res, { id: pump.id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -41,10 +42,12 @@ export function createPumpHandlers(db: Pool) {
         orderBy: { label: 'asc' },
         include: { _count: { select: { nozzles: true } } }
       });
-      res.json({ pumps: pumps.map(p => ({
-        ...p,
-        nozzleCount: p._count.nozzles
-      })) });
+      successResponse(res, {
+        pumps: pumps.map(p => ({
+          ...p,
+          nozzleCount: p._count.nozzles
+        }))
+      });
     },
     get: async (req: Request, res: Response) => {
       try {
@@ -58,7 +61,7 @@ export function createPumpHandlers(db: Pool) {
         if (!pump) {
           return errorResponse(res, 404, 'Pump not found');
         }
-        res.json(pump);
+        successResponse(res, pump);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -76,7 +79,7 @@ export function createPumpHandlers(db: Pool) {
         }
         const deleted = await prisma.pump.deleteMany({ where: { id: pumpId, tenant_id: tenantId } });
         if (!deleted.count) return errorResponse(res, 404, 'Pump not found');
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -97,7 +100,7 @@ export function createPumpHandlers(db: Pool) {
         });
         if (!updated.count) return errorResponse(res, 404, 'Pump not found');
         const pump = await prisma.pump.findUnique({ where: { id: req.params.id } });
-        res.json(pump);
+        successResponse(res, pump);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

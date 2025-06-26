@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createReportsHandlers(db: Pool) {
   async function runExportSales(req: Request, res: Response) {
@@ -60,7 +61,7 @@ export function createReportsHandlers(db: Pool) {
           res.setHeader('Content-Disposition', 'attachment; filename=sales-report.csv');
           res.send(csv);
         } else {
-          res.json({
+          successResponse(res, {
             data: result.rows,
             summary: {
               totalRecords: result.rows.length,
@@ -120,7 +121,7 @@ export function createReportsHandlers(db: Pool) {
 
         const result = await db.query(query, params);
 
-        res.json({
+        successResponse(res, {
           period,
           data: result.rows.map(row => ({
             stationName: row.station_name,
@@ -185,7 +186,7 @@ export function createReportsHandlers(db: Pool) {
           `INSERT INTO public.report_schedules (tenant_id, station_id, type, frequency) VALUES ($1,$2,$3,$4) RETURNING id`,
           [tenantId, stationId || null, type, frequency]
         );
-        res.status(201).json({ data: { id: result.rows[0].id } });
+        successResponse(res, { id: result.rows[0].id }, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

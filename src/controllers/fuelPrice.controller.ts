@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { validateCreateFuelPrice, parseFuelPriceQuery } from '../validators/fuelPrice.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createFuelPriceHandlers(db: Pool) {
   return {
@@ -24,7 +25,7 @@ export function createFuelPriceHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        res.status(201).json({ id: price.id });
+        successResponse(res, { id: price.id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -42,7 +43,7 @@ export function createFuelPriceHandlers(db: Pool) {
         where: filters,
         orderBy: { valid_from: 'desc' }
       });
-      res.json({ prices });
+      successResponse(res, { prices });
     },
 
     update: async (req: Request, res: Response) => {
@@ -63,7 +64,7 @@ export function createFuelPriceHandlers(db: Pool) {
           }
         });
         if (!updated.count) return errorResponse(res, 404, 'Price not found');
-        res.json({ status: 'updated' });
+        successResponse(res, { status: 'updated' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -79,7 +80,7 @@ export function createFuelPriceHandlers(db: Pool) {
           where: { id: req.params.id, tenant_id: tenantId }
         });
         if (!deleted.count) return errorResponse(res, 404, 'Price not found');
-        res.json({ status: 'deleted' });
+        successResponse(res, { status: 'deleted' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

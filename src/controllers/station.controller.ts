@@ -4,6 +4,7 @@ import prisma from '../utils/prisma';
 import { getStationMetrics, getStationPerformance, getStationComparison, getStationRanking } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createStationHandlers(db: Pool) {
   return {
@@ -22,7 +23,7 @@ export function createStationHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        res.status(201).json({ id: station.id });
+        successResponse(res, { id: station.id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -55,7 +56,7 @@ export function createStationHandlers(db: Pool) {
         );
         await Promise.all(metricsPromises);
       }
-      res.json(stations);
+      successResponse(res, stations);
     },
     get: async (req: Request, res: Response) => {
       try {
@@ -82,7 +83,7 @@ export function createStationHandlers(db: Pool) {
         if (includeMetrics) {
           result.metrics = await getStationMetrics(db, tenantId, station.id, 'today');
         }
-        res.json({ data: result });
+        successResponse(res, result);
       } catch (err: any) {
         return errorResponse(res, 404, err.message);
       }
@@ -103,7 +104,7 @@ export function createStationHandlers(db: Pool) {
           where: { id: req.params.stationId },
           select: { id: true, name: true, status: true, address: true, created_at: true }
         });
-        res.json(station);
+        successResponse(res, station);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -118,7 +119,7 @@ export function createStationHandlers(db: Pool) {
           where: { id: req.params.stationId, tenant_id: tenantId }
         });
         if (!deleted.count) return errorResponse(res, 404, 'Station not found');
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -129,7 +130,7 @@ export function createStationHandlers(db: Pool) {
         const schemaName = (req as any).schemaName;
         if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
         const metrics = await getStationMetrics(db, schemaName, req.params.stationId, req.query.period as string || 'today');
-        res.json(metrics);
+        successResponse(res, metrics);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -140,7 +141,7 @@ export function createStationHandlers(db: Pool) {
         const schemaName = (req as any).schemaName;
         if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
         const perf = await getStationPerformance(db, schemaName, req.params.stationId, req.query.range as string || 'monthly');
-        res.json(perf);
+        successResponse(res, perf);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -153,7 +154,7 @@ export function createStationHandlers(db: Pool) {
         const stationIds = (req.query.stationIds as string)?.split(',') || [];
         if (stationIds.length === 0) return errorResponse(res, 400, 'Station IDs required');
         const comparison = await getStationComparison(db, schemaName, stationIds, req.query.period as string || 'monthly');
-        res.json(comparison);
+        successResponse(res, comparison);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -164,7 +165,7 @@ export function createStationHandlers(db: Pool) {
         const schemaName = (req as any).schemaName;
         if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
         const ranking = await getStationRanking(db, schemaName, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
-        res.json(ranking);
+        successResponse(res, ranking);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

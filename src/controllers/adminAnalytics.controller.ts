@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 import { getSafeSchema } from '../utils/schemaUtils';
 
 export function createAdminAnalyticsHandlers(db: Pool) {
@@ -21,7 +22,7 @@ export function createAdminAnalyticsHandlers(db: Pool) {
           salesVolume += parseFloat(salesRes.rows[0].volume);
           totalRevenue += parseFloat(salesRes.rows[0].revenue);
         }
-        res.json({ totalTenants, activeTenants, totalStations, salesVolume, totalRevenue });
+        successResponse(res, { totalTenants, activeTenants, totalStations, salesVolume, totalRevenue });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

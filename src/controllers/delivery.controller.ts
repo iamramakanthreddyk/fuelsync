@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { createFuelDelivery, listFuelDeliveries } from '../services/delivery.service';
 import { validateCreateDelivery, parseDeliveryQuery } from '../validators/delivery.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createDeliveryHandlers(db: Pool) {
   return {
@@ -14,7 +15,7 @@ export function createDeliveryHandlers(db: Pool) {
         }
         const data = validateCreateDelivery(req.body);
         const id = await createFuelDelivery(db, tenantId, data);
-        res.status(201).json({ id });
+        successResponse(res, { id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -26,7 +27,7 @@ export function createDeliveryHandlers(db: Pool) {
       }
       const query = parseDeliveryQuery(req.query);
       const deliveries = await listFuelDeliveries(db, tenantId, query);
-      res.json({ deliveries });
+      successResponse(res, { deliveries });
     },
     inventory: async (req: Request, res: Response) => {
       const tenantId = req.user?.tenantId;
@@ -50,7 +51,7 @@ export function createDeliveryHandlers(db: Pool) {
         
         const { rows } = await client.query(query, params);
         client.release();
-        res.json({ inventory: rows });
+        successResponse(res, { inventory: rows });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { validateCreateNozzleReading, parseReadingQuery, ReadingQueryParsed } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createNozzleReadingHandlers(db: Pool) {
   return {
@@ -23,7 +24,7 @@ export function createNozzleReadingHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        res.status(201).json({ id: reading.id });
+        successResponse(res, { id: reading.id }, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -43,7 +44,7 @@ export function createNozzleReadingHandlers(db: Pool) {
           where: filters,
           orderBy: { recorded_at: 'desc' }
         });
-        res.json({ readings });
+        successResponse(res, { readings });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

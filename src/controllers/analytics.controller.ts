@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 import { getStationComparison } from '../services/station.service';
 // Frontend analytics endpoints handler
 import {
@@ -102,7 +103,7 @@ export function createAnalyticsHandlers(db: Pool) {
           status: tenant.status
         }));
 
-        res.json({
+        successResponse(res, {
           totalTenants: tenantCount,
           activeTenants: activeTenantCount,
           totalPlans: planCount,
@@ -175,7 +176,7 @@ export function createAnalyticsHandlers(db: Pool) {
           created_at: new Date(tenant.created_at).toISOString()
         };
         
-        res.json({
+        successResponse(res, {
           tenant: formattedTenant,
           userCount,
           stationCount,
@@ -204,7 +205,7 @@ export function createAnalyticsHandlers(db: Pool) {
         const stationIds = idsParam.split(',');
         const period = (req.query.period as string) || 'monthly';
         const data = await getStationComparison(db, tenantId, stationIds, period);
-        res.json(data);
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -224,7 +225,7 @@ export function createAnalyticsHandlers(db: Pool) {
           new Date(dateFrom),
           new Date(dateTo)
         );
-        res.json({ data });
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -237,7 +238,7 @@ export function createAnalyticsHandlers(db: Pool) {
         const stationId = req.query.stationId as string;
         if (!stationId) return errorResponse(res, 400, 'stationId required');
         const data = await getPeakHours(tenantId, stationId);
-        res.json({ data });
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -257,7 +258,7 @@ export function createAnalyticsHandlers(db: Pool) {
           new Date(dateFrom),
           new Date(dateTo)
         );
-        res.json({ data });
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

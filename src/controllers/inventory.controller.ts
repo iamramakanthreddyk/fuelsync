@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { getInventory, updateInventory, getAlerts } from '../services/inventory.service';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createInventoryHandlers(db: Pool) {
   return {
@@ -12,7 +13,7 @@ export function createInventoryHandlers(db: Pool) {
         
         const stationId = req.query.stationId as string | undefined;
         const inventory = await getInventory(db, tenantId, stationId);
-        res.json(inventory);
+        successResponse(res, inventory);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -29,7 +30,7 @@ export function createInventoryHandlers(db: Pool) {
         }
         
         await updateInventory(db, tenantId, stationId, fuelType, newStock);
-        res.json({ status: 'success' });
+        successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -43,7 +44,7 @@ export function createInventoryHandlers(db: Pool) {
         const stationId = req.query.stationId as string | undefined;
         const unreadOnly = req.query.unreadOnly === 'true';
         const alerts = await getAlerts(db, tenantId, stationId, unreadOnly);
-        res.json(alerts);
+        successResponse(res, alerts);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

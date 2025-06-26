@@ -246,6 +246,19 @@ paths:
         default:
           $ref: '#/components/responses/Error'
   /api/v1/pumps/{id}:
+    get:
+      summary: Get pump details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
     put:
       summary: Update pump
       responses:
@@ -288,6 +301,19 @@ paths:
         default:
           $ref: '#/components/responses/Error'
   /api/v1/nozzles/{id}:
+    get:
+      summary: Get nozzle details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
     put:
       summary: Update nozzle
       responses:
@@ -861,7 +887,7 @@ paths:
       summary: Retrieve admin dashboard metrics
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/plans:
@@ -869,7 +895,7 @@ paths:
       summary: Create subscription plan
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -882,7 +908,7 @@ paths:
       summary: List subscription plans
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/plans/{id}:
@@ -890,14 +916,14 @@ paths:
       summary: Get plan info
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     put:
       summary: Update plan
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -910,7 +936,7 @@ paths:
       summary: Delete plan
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/users/{id}:
@@ -918,14 +944,14 @@ paths:
       summary: Get admin user
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     put:
       summary: Update admin user
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -938,7 +964,7 @@ paths:
       summary: Delete admin user
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/users/{id}/reset-password:
@@ -946,7 +972,7 @@ paths:
       summary: Reset admin password
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -960,14 +986,14 @@ paths:
       summary: Get tenant info
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     delete:
       summary: Delete tenant
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/tenants/{id}/status:
@@ -975,7 +1001,7 @@ paths:
       summary: Update tenant status
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -989,7 +1015,7 @@ paths:
       summary: Tenant dashboard metrics
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/analytics/superadmin:
@@ -997,7 +1023,7 @@ paths:
       summary: Super admin analytics dashboard
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/analytics/tenant/{id}:
@@ -1005,7 +1031,7 @@ paths:
       summary: Analytics for specific tenant
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/auth/test:
@@ -1013,7 +1039,7 @@ paths:
       summary: Verify auth token validity
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/fuel-deliveries/inventory:
@@ -1021,7 +1047,7 @@ paths:
       summary: Fuel stock after deliveries
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/fuel-inventory:
@@ -1029,7 +1055,7 @@ paths:
       summary: List current fuel inventory
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/inventory:
@@ -1037,7 +1063,7 @@ paths:
       summary: Current part inventory
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/inventory/alerts:
@@ -1045,7 +1071,7 @@ paths:
       summary: Low stock alerts
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/inventory/update:
@@ -1053,7 +1079,7 @@ paths:
       summary: Update inventory counts
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -1067,7 +1093,7 @@ paths:
       summary: Export financial report
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/reports/sales/export:
@@ -1075,7 +1101,7 @@ paths:
       summary: Export sales report
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/settings:
@@ -1083,14 +1109,14 @@ paths:
       summary: Retrieve tenant settings
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     post:
       summary: Update tenant settings
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -1104,7 +1130,7 @@ paths:
       summary: Compare station performance
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/stations/ranking:
@@ -1112,7 +1138,7 @@ paths:
       summary: Station ranking report
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/docs/swagger.json:
@@ -1120,7 +1146,7 @@ paths:
       summary: Serve raw OpenAPI spec
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /test:
@@ -1128,14 +1154,14 @@ paths:
       summary: Echo test endpoint
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     post:
       summary: Echo test POST
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -1149,7 +1175,7 @@ paths:
       summary: Login helper for tests
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -1163,7 +1189,7 @@ paths:
       summary: Health check
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /schemas:
@@ -1171,7 +1197,7 @@ paths:
       summary: List tenant schemas
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/admin/users:

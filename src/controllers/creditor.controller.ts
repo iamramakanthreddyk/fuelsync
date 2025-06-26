@@ -19,6 +19,7 @@ import {
   parsePaymentQuery,
 } from '../validators/creditor.validator';
 import { errorResponse } from '../utils/errorResponse';
+import { successResponse } from '../utils/successResponse';
 
 export function createCreditorHandlers(db: Pool) {
   return {
@@ -30,7 +31,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const data = validateCreateCreditor(req.body);
         const id = await createCreditor(db, schemaName, data);
-        res.status(201).json({ id });
+        successResponse(res, { id }, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -44,7 +45,7 @@ export function createCreditorHandlers(db: Pool) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const creditors = await listCreditors(db, schemaName);
-      res.json({ creditors });
+      successResponse(res, { creditors });
     },
 
     get: async (req: Request, res: Response) => {
@@ -57,7 +58,16 @@ export function createCreditorHandlers(db: Pool) {
           where: { id: req.params.id, tenant_id: tenantId }
         });
         if (!creditor) return errorResponse(res, 404, 'Creditor not found');
-        res.json({ data: {
+        successResponse(res, {
+          id: creditor.id,
+          name: creditor.party_name,
+          partyName: creditor.party_name,
+          contactNumber: creditor.contact_number,
+          address: creditor.address,
+          status: creditor.status,
+          creditLimit: Number(creditor.credit_limit),
+          createdAt: creditor.created_at,
+        });
           id: creditor.id,
           name: creditor.party_name,
           partyName: creditor.party_name,
@@ -82,7 +92,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const data = validateUpdateCreditor(req.body);
         await updateCreditor(db, schemaName, req.params.id, data);
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -97,7 +107,7 @@ export function createCreditorHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         await markCreditorInactive(db, schemaName, req.params.id);
-        res.json({ status: 'ok' });
+        successResponse(res, { status: 'ok' });
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -113,7 +123,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const data = validateCreatePayment(req.body);
         const id = await createCreditPayment(db, user.tenantId, data, user.userId);
-        res.status(201).json({ id });
+        successResponse(res, { id }, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -129,7 +139,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const query = parsePaymentQuery(req.query);
         const payments = await listCreditPayments(db, tenantId, query);
-        res.json({ payments });
+        successResponse(res, { payments });
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
