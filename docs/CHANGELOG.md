@@ -1739,3 +1739,18 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/auth.controller.ts`
 * `docs/STEP_fix_20250819.md`
+
+## [Fix - 2025-08-20] – Remove Tenant Schema Artifacts
+
+### 🟥 Fixes
+* Deleted tenant schema creation commands and template references.
+* Updated test and seed scripts to work with unified tables.
+
+### Files
+* `package.json`
+* `scripts/migrate.js`
+* `scripts/init-test-db.js`
+* `scripts/reset-passwords.ts`
+* `jest.setup.js`, `jest.globalSetup.ts`, `tests/utils/db-utils.ts`
+* `docs/AGENTS.md`
+* `docs/STEP_fix_20250820.md`

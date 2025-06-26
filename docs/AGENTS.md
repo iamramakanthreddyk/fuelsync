@@ -155,7 +155,7 @@ Prompt writers **must store** the prompt as a `STEP_X_Y_COMMAND.md` file so futu
 migrations/
 ├── schema/
 │   ├── 001_initial_schema.sql
-│   └── 002_tenant_schema_template.sql
+│   └── 003_unified_schema.sql
 ├── seeds/
 │   └── production_seed.sql
 └── rollbacks/
@@ -166,9 +166,6 @@ migrations/
 ```bash
 # Run migrations
 node scripts/migrate.js up
-
-# Create tenant schema
-node scripts/migrate.js create-tenant production_tenant
 
 # Check status
 node scripts/migrate.js status

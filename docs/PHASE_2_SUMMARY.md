@@ -676,3 +676,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Removed debug query listing all admin users.
 * Reduced auth controller logs to attempts and errors only.
+
+### 🛠️ Fix 2025-08-20 – Remove Tenant Schema Artifacts
+**Status:** ✅ Done
+**Files:** `package.json`, `scripts/migrate.js`, `scripts/init-test-db.js`, `scripts/reset-passwords.ts`, `jest.setup.js`, `jest.globalSetup.ts`, `tests/utils/db-utils.ts`, `docs/AGENTS.md`, `docs/STEP_fix_20250820.md`
+
+**Overview:**
+* Dropped obsolete tenant schema creation logic.
+* Test helpers now operate solely on unified tables.

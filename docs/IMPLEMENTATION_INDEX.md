@@ -127,3 +127,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-17 | Service Schema Cleanup | ✅ Done | `src/services/*.ts`, `src/controllers/*`, `src/utils/seedHelpers.ts` | `docs/STEP_fix_20250817.md` |
 | fix | 2025-08-18 | Remove schemaName from docs | ✅ Done | `docs/openapi.yaml`, docs updated | `docs/STEP_fix_20250818.md` |
 | fix | 2025-08-19 | Auth Logging Cleanup | ✅ Done | `src/controllers/auth.controller.ts` | `docs/STEP_fix_20250819.md` |
+| fix | 2025-08-20 | Remove Tenant Schema Artifacts | ✅ Done | `package.json`, `scripts/migrate.js`, `scripts/init-test-db.js`, `scripts/reset-passwords.ts`, `jest.setup.js`, `jest.globalSetup.ts`, `tests/utils/db-utils.ts`, `docs/AGENTS.md` | `docs/STEP_fix_20250820.md` |

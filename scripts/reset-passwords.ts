@@ -24,35 +24,34 @@ async function resetPasswords() {
       console.log(`❌ Admin user not found: ${adminEmail}`);
     }
     
-    // Get all tenant schemas
+    // Get all tenants
     const { rows: tenants } = await client.query(
-      'SELECT schema_name FROM public.tenants'
+      'SELECT id FROM public.tenants'
     );
-    
+
     for (const tenant of tenants) {
-      const schemaName = tenant.schema_name;
-      console.log(`\nResetting passwords for users in schema: ${schemaName}`);
-      
-      // Reset all user passwords in this schema
+      console.log(`\nResetting passwords for users of tenant: ${tenant.id}`);
+
       try {
         const password = 'password';
         const passwordHash = await bcrypt.hash(password, 10);
-        
+
         const { rows: users } = await client.query(
-          `SELECT id, email FROM ${schemaName}.users`
+          'SELECT id, email FROM public.users WHERE tenant_id = $1',
+          [tenant.id]
         );
-        
+
         for (const user of users) {
           await client.query(
-            `UPDATE ${schemaName}.users SET password_hash = $1 WHERE id = $2`,
+            'UPDATE public.users SET password_hash = $1 WHERE id = $2',
             [passwordHash, user.id]
           );
           console.log(`✅ Reset password for ${user.email}`);
         }
-        
-        console.log(`Reset ${users.length} passwords in schema ${schemaName}`);
+
+        console.log(`Reset ${users.length} passwords for tenant ${tenant.id}`);
       } catch (error: any) {
-        console.error(`Error resetting passwords in schema ${schemaName}:`, error?.message || 'Unknown error');
+        console.error(`Error resetting passwords for tenant ${tenant.id}:`, error?.message || 'Unknown error');
       }
     }
     
