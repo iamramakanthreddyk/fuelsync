@@ -320,7 +320,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateTenantRequest'
     get:
       summary: List pumps
       description: Returns pumps with `nozzleCount` per pump.
@@ -362,7 +362,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateTenantRequest'
     delete:
       summary: Delete pump
       responses:

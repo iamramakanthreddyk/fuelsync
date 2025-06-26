@@ -107,7 +107,6 @@ export function useTenants() {
 export interface TenantOutput {
   id: string;
   name: string;
-  schemaName: string;
   planId: string;
   planName?: string;
   status: string;
@@ -118,7 +117,6 @@ export interface TenantOutput {
 interface Tenant {
   id: string;
   name: string;
-  schemaName: string;
   planId: string;
   planName: string;
   status: 'active' | 'suspended' | 'cancelled';

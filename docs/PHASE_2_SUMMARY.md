@@ -660,3 +660,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Converted all remaining schema-based queries to unified table access.
 * Controllers now rely solely on `tenant_id` for filtering.
 * Seeding helpers create data directly in shared tables.
+
+### 🛠️ Fix 2025-08-18 – Remove schemaName from docs
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, various documentation files, `docs/STEP_fix_20250818.md`
+
+**Overview:**
+* Purged `schemaName` references from all guides and examples.
+* OpenAPI tenant models only use `planId` and contact fields.

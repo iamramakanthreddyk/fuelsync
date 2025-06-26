@@ -105,7 +105,6 @@ export default function TenantsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Schema</TableHead>
                 <TableHead>Plan</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
@@ -116,7 +115,6 @@ export default function TenantsPage() {
               {tenants?.map((tenant) => (
                 <TableRow key={tenant.id}>
                   <TableCell>{tenant.name}</TableCell>
-                  <TableCell>{tenant.schemaName}</TableCell>
                   <TableCell>{tenant.planName}</TableCell>
                   <TableCell>
                     <StatusBadge status={tenant.status} />

@@ -29,7 +29,6 @@ CREATE TABLE public.plans (
 CREATE TABLE public.tenants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  schema_name TEXT NOT NULL UNIQUE,
   plan_id UUID REFERENCES public.plans(id),
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'suspended', 'cancelled')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -50,11 +49,11 @@ CREATE TABLE public.admin_users (
 ### Services
 
 1. **Tenant Service** (`src/services/tenant.service.ts`)
-   - `createTenant(db, input)` - Creates tenant with schema
+   - `createTenant(db, input)` - Creates tenant and default users
    - `listTenants(db)` - Lists all tenants
    - `getTenant(db, id)` - Gets tenant by ID
    - `updateTenantStatus(db, id, status)` - Updates tenant status
-   - `deleteTenant(db, id)` - Deletes tenant and schema
+   - `deleteTenant(db, id)` - Deletes tenant and related data
 
 2. **Plan Service** (`src/services/plan.service.ts`)
    - `createPlan(db, input)` - Creates subscription plan
@@ -217,7 +216,7 @@ POST /api/v1/admin/users/:id/reset-password
 
 ### Backend
 
-1. ✅ Create tenant service with schema creation
+1. ✅ Create tenant service with default user setup
 2. ✅ Create plan service
 3. ✅ Create admin user service
 4. ✅ Create admin controller
@@ -261,7 +260,6 @@ curl -X GET http://localhost:3003/api/v1/admin/tenants \
 1. Login as SuperAdmin
 2. Navigate to Tenants page
 3. Create a new tenant
-4. Verify tenant schema is created
-5. Verify tenant appears in list
-6. Test tenant status update
-7. Test tenant deletion
+4. Verify tenant appears in list
+5. Test tenant status update
+6. Test tenant deletion
