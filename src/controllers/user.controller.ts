@@ -40,7 +40,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
 
-        const userId = req.params.id;
+        const userId = req.params.userId;
         const userRecord = await prisma.user.findFirst({
           where: { id: userId, tenant_id: auth.tenantId },
           select: {
@@ -56,7 +56,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 404, 'User not found');
         }
 
-        res.json(userRecord);
+        res.json({ data: userRecord });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -128,7 +128,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
-        const userId = req.params.id;
+        const userId = req.params.userId;
         const { name, role } = req.body;
         
         // Validate input
@@ -164,7 +164,7 @@ export function createUserHandlers(db: Pool) {
           }
         });
 
-        res.json(userRecord);
+        res.json({ data: userRecord });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -178,7 +178,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
-        const userId = req.params.id;
+        const userId = req.params.userId;
         const { currentPassword, newPassword } = req.body;
         
         // Validate input
@@ -227,7 +227,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
-        const userId = req.params.id;
+        const userId = req.params.userId;
         const { newPassword } = req.body;
         
         // Validate input
@@ -268,7 +268,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
         
-        const userId = req.params.id;
+        const userId = req.params.userId;
         
         // Check if user is the last owner
         const ownerResult = await db.query(

@@ -65,7 +65,7 @@ export function createStationHandlers(db: Pool) {
         }
         const includeMetrics = req.query.includeMetrics === 'true';
         const station = await prisma.station.findFirst({
-          where: { id: req.params.id, tenant_id: tenantId },
+          where: { id: req.params.stationId, tenant_id: tenantId },
           include: { _count: { select: { pumps: true } } }
         });
         if (!station) return errorResponse(res, 404, 'Station not found');
@@ -82,7 +82,7 @@ export function createStationHandlers(db: Pool) {
         if (includeMetrics) {
           result.metrics = await getStationMetrics(db, tenantId, station.id, 'today');
         }
-        res.json(result);
+        res.json({ data: result });
       } catch (err: any) {
         return errorResponse(res, 404, err.message);
       }
@@ -95,12 +95,12 @@ export function createStationHandlers(db: Pool) {
         }
         const data = validateUpdateStation(req.body);
         const updated = await prisma.station.updateMany({
-          where: { id: req.params.id, tenant_id: tenantId },
+          where: { id: req.params.stationId, tenant_id: tenantId },
           data: { name: data.name || undefined }
         });
         if (!updated.count) return errorResponse(res, 404, 'Station not found');
         const station = await prisma.station.findUnique({
-          where: { id: req.params.id },
+          where: { id: req.params.stationId },
           select: { id: true, name: true, status: true, address: true, created_at: true }
         });
         res.json(station);
@@ -115,7 +115,7 @@ export function createStationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const deleted = await prisma.station.deleteMany({
-          where: { id: req.params.id, tenant_id: tenantId }
+          where: { id: req.params.stationId, tenant_id: tenantId }
         });
         if (!deleted.count) return errorResponse(res, 404, 'Station not found');
         res.json({ status: 'ok' });
@@ -128,7 +128,7 @@ export function createStationHandlers(db: Pool) {
       try {
         const schemaName = (req as any).schemaName;
         if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
-        const metrics = await getStationMetrics(db, schemaName, req.params.id, req.query.period as string || 'today');
+        const metrics = await getStationMetrics(db, schemaName, req.params.stationId, req.query.period as string || 'today');
         res.json(metrics);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -139,7 +139,7 @@ export function createStationHandlers(db: Pool) {
       try {
         const schemaName = (req as any).schemaName;
         if (!schemaName) return errorResponse(res, 400, 'Missing tenant context');
-        const perf = await getStationPerformance(db, schemaName, req.params.id, req.query.range as string || 'monthly');
+        const perf = await getStationPerformance(db, schemaName, req.params.stationId, req.query.range as string || 'monthly');
         res.json(perf);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

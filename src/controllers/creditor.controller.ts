@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { ServiceError } from '../errors/ServiceError';
+import prisma from '../utils/prisma';
+
+// Handles creditor CRUD endpoints for the frontend
 import {
   createCreditor,
   listCreditors,
@@ -42,6 +45,34 @@ export function createCreditorHandlers(db: Pool) {
       }
       const creditors = await listCreditors(db, schemaName);
       res.json({ creditors });
+    },
+
+    get: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const creditor = await prisma.creditor.findFirst({
+          where: { id: req.params.id, tenant_id: tenantId }
+        });
+        if (!creditor) return errorResponse(res, 404, 'Creditor not found');
+        res.json({ data: {
+          id: creditor.id,
+          name: creditor.party_name,
+          partyName: creditor.party_name,
+          contactNumber: creditor.contact_number,
+          address: creditor.address,
+          status: creditor.status,
+          creditLimit: Number(creditor.credit_limit),
+          createdAt: creditor.created_at,
+        }});
+      } catch (err: any) {
+        if (err instanceof ServiceError) {
+          return errorResponse(res, err.code, err.message);
+        }
+        return errorResponse(res, 400, err.message);
+      }
     },
     update: async (req: Request, res: Response) => {
       try {

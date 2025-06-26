@@ -21,6 +21,10 @@ export function createAnalyticsRouter(db: Pool) {
 
   // Station comparison for owners
   router.get('/station-comparison', authenticateJWT, requireRole([UserRole.Owner]), handlers.stationComparison);
+
+  router.get('/hourly-sales', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.hourlySales);
+  router.get('/peak-hours', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.peakHours);
+  router.get('/fuel-performance', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.fuelPerformance);
   
   return router;
 }

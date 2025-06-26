@@ -573,3 +573,21 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Replaced generic object schemas with detailed definitions.
 * Imported components from the frontend spec so API docs include fields, formats and examples.
+
+### 🛠️ Step 2.31 – Analytics & lookup endpoints
+
+**Status:** ✅ Done
+**Files:** `src/controllers/analytics.controller.ts`, `src/services/analytics.service.ts`, `src/controllers/alerts.controller.ts`, `src/services/alert.service.ts`, `src/controllers/creditor.controller.ts`, `prisma/schema.prisma`, `docs/openapi.yaml`, `backend_brain.md`
+
+**Overview:**
+* Added delete endpoint for alerts and new analytics queries using Prisma.
+* Enabled GET endpoints for creditors, stations and users returning `{ data }`.
+* Extended OpenAPI documentation with schemas and parameters.
+
+### 🛠️ Step 2.32 – Parameter naming alignment
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `src/routes/user.route.ts`, `src/routes/station.route.ts`, `src/controllers/user.controller.ts`, `src/controllers/station.controller.ts`, `backend_brain.md`
+
+**Overview:**
+* Renamed user and station path parameters to `userId` and `stationId`.
+* Synced OpenAPI documentation and backend brain entries.

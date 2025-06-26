@@ -11,19 +11,19 @@ This document tracks the current API surface and backend best practices. It is u
 | POST | /api/v1/auth/refresh | Refresh JWT token |
 | GET | /api/v1/auth/test | Auth route test |
 | GET | /api/v1/users | List tenant users |
-| GET | /api/v1/users/:id | Get single user |
+| GET | /api/v1/users/:userId | Get single user |
 | POST | /api/v1/users | Create user |
-| PUT | /api/v1/users/:id | Update user |
-| POST | /api/v1/users/:id/change-password | Change password |
-| POST | /api/v1/users/:id/reset-password | Reset user password |
-| DELETE | /api/v1/users/:id | Remove user |
+| PUT | /api/v1/users/:userId | Update user |
+| POST | /api/v1/users/:userId/change-password | Change password |
+| POST | /api/v1/users/:userId/reset-password | Reset user password |
+| DELETE | /api/v1/users/:userId | Remove user |
 | GET | /api/v1/stations | List stations |
 | POST | /api/v1/stations | Create station |
 | GET | /api/v1/stations/compare | Station comparison metrics |
 | GET | /api/v1/stations/ranking | Station ranking metrics |
-| GET | /api/v1/stations/:id | Get station |
-| PUT | /api/v1/stations/:id | Update station |
-| DELETE | /api/v1/stations/:id | Delete station |
+| GET | /api/v1/stations/:stationId | Get station |
+| PUT | /api/v1/stations/:stationId | Update station |
+| DELETE | /api/v1/stations/:stationId | Delete station |
 | GET | /api/v1/pumps | List pumps |
 | POST | /api/v1/pumps | Create pump |
 | GET | /api/v1/pumps/:id | Get pump |
@@ -58,6 +58,7 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/fuel-inventory | View fuel inventory |
 | GET | /api/v1/alerts | List alerts |
 | PATCH | /api/v1/alerts/:id/read | Mark alert read |
+| DELETE | /api/v1/alerts/:id | Delete alert |
 | GET | /api/v1/tenants | List tenants |
 | POST | /api/v1/tenants | Create tenant |
 | GET | /api/v1/dashboard/sales-summary | Dashboard sales summary |
@@ -75,6 +76,9 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/analytics/superadmin | Alias to dashboard analytics |
 | GET | /api/v1/analytics/tenant/:id | Tenant analytics summary |
 | GET | /api/v1/analytics/station-comparison | Owner station comparison |
+| GET | /api/v1/analytics/hourly-sales | Hourly sales metrics |
+| GET | /api/v1/analytics/peak-hours | Peak sales hours |
+| GET | /api/v1/analytics/fuel-performance | Fuel performance metrics |
 
 ## Business Logic Notes
 
@@ -137,11 +141,11 @@ const users = await prisma.user.findMany({ where: { tenant_id } });
 | GET | /api/v1/stations/ | station.controller.ts | yes |
 | GET | /api/v1/stations/compare | station.controller.ts | yes |
 | GET | /api/v1/stations/ranking | station.controller.ts | yes |
-| GET | /api/v1/stations/:id | station.controller.ts | yes |
-| GET | /api/v1/stations/:id/metrics | station.controller.ts | yes |
-| GET | /api/v1/stations/:id/performance | station.controller.ts | yes |
-| PUT | /api/v1/stations/:id | station.controller.ts | yes |
-| DELETE | /api/v1/stations/:id | station.controller.ts | yes |
+| GET | /api/v1/stations/:stationId | station.controller.ts | yes |
+| GET | /api/v1/stations/:stationId/metrics | station.controller.ts | yes |
+| GET | /api/v1/stations/:stationId/performance | station.controller.ts | yes |
+| PUT | /api/v1/stations/:stationId | station.controller.ts | yes |
+| DELETE | /api/v1/stations/:stationId | station.controller.ts | yes |
 | GET | /api/v1/inventory/ | inventory.controller.ts | no |
 | POST | /api/v1/inventory/update | inventory.controller.ts | no |
 | GET | /api/v1/inventory/alerts | inventory.controller.ts | no |
@@ -155,12 +159,12 @@ const users = await prisma.user.findMany({ where: { tenant_id } });
 | GET | /api/v1/dashboard/sales-trend | dashboard.controller.ts | no |
 | GET | /api/v1/fuel-inventory/ | fuelInventory.controller.ts | no |
 | GET | /api/v1/users/ | user.controller.ts | yes |
-| GET | /api/v1/users/:id | user.controller.ts | yes |
+| GET | /api/v1/users/:userId | user.controller.ts | yes |
 | POST | /api/v1/users/ | user.controller.ts | yes |
-| PUT | /api/v1/users/:id | user.controller.ts | yes |
-| POST | /api/v1/users/:id/change-password | user.controller.ts | yes |
-| POST | /api/v1/users/:id/reset-password | user.controller.ts | yes |
-| DELETE | /api/v1/users/:id | user.controller.ts | yes |
+| PUT | /api/v1/users/:userId | user.controller.ts | yes |
+| POST | /api/v1/users/:userId/change-password | user.controller.ts | yes |
+| POST | /api/v1/users/:userId/reset-password | user.controller.ts | yes |
+| DELETE | /api/v1/users/:userId | user.controller.ts | yes |
 | GET | /api/v1/admin/analytics/ | adminAnalytics.controller.ts | no |
 | POST | /api/v1/pumps/ | pump.controller.ts | yes |
 | GET | /api/v1/pumps/ | pump.controller.ts | yes |

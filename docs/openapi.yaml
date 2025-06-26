@@ -68,7 +68,25 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/users/{id}:
+  /api/v1/users/{userId}:
+    get:
+      summary: Get user details
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
     put:
       summary: Update tenant user
       responses:
@@ -89,7 +107,7 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/users/{id}/change-password:
+  /api/v1/users/{userId}/change-password:
     post:
       summary: Change user password
       responses:
@@ -103,7 +121,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/users/{id}/reset-password:
+  /api/v1/users/{userId}/reset-password:
     post:
       summary: Reset user password
       responses:
@@ -138,7 +156,25 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/stations/{id}:
+  /api/v1/stations/{stationId}:
+    get:
+      summary: Get details for a single station
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Station details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Station'
     put:
       summary: Update station
       responses:
@@ -159,17 +195,29 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/stations/{id}/metrics:
+  /api/v1/stations/{stationId}/metrics:
     get:
       summary: Station metrics summary
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/stations/{id}/performance:
+  /api/v1/stations/{stationId}/performance:
     get:
       summary: Station performance comparison
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -359,6 +407,25 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/alerts/{alertId}:
+    delete:
+      summary: Delete an alert by ID
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alert deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: boolean
   /api/v1/alerts/{id}/read:
     patch:
       summary: Mark alert read
@@ -381,6 +448,93 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/analytics/hourly-sales:
+    get:
+      summary: Get hourly sales metrics for a station
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Hourly sales data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HourlySalesMetric'
+  /api/v1/analytics/peak-hours:
+    get:
+      summary: Get peak sales hours for a station
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Peak hours
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PeakHourMetric'
+  /api/v1/analytics/fuel-performance:
+    get:
+      summary: Get fuel performance for a station
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Fuel performance data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FuelPerformanceMetric'
   /api/v1/reports/sales:
     post:
       summary: Export sales report
@@ -417,6 +571,24 @@ paths:
         default:
           $ref: '#/components/responses/Error'
   /api/v1/creditors/{id}:
+    get:
+      summary: Get creditor details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Creditor details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Creditor'
     put:
       summary: Update creditor
       responses:
@@ -1874,3 +2046,29 @@ components:
       properties:
         newPassword:
           type: string
+    HourlySalesMetric:
+      type: object
+      properties:
+        hour:
+          type: string
+          format: date-time
+        salesVolume:
+          type: number
+        salesAmount:
+          type: number
+    PeakHourMetric:
+      type: object
+      properties:
+        hour:
+          type: string
+        salesVolume:
+          type: number
+    FuelPerformanceMetric:
+      type: object
+      properties:
+        fuelType:
+          type: string
+        totalSalesVolume:
+          type: number
+        totalSalesAmount:
+          type: number

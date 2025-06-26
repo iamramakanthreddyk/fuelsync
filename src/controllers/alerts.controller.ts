@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { getAlerts, markAlertRead } from '../services/inventory.service';
+import { deleteAlert } from '../services/alert.service';
+
+// Controller supporting alert management endpoints used by the frontend
 import { errorResponse } from '../utils/errorResponse';
 
 export function createAlertsHandlers(db: Pool) {
@@ -28,6 +31,19 @@ export function createAlertsHandlers(db: Pool) {
         const updated = await markAlertRead(db, tenantId, id);
         if (!updated) return errorResponse(res, 404, 'Alert not found');
         res.json({ status: 'read' });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    delete: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+
+        const deleted = await deleteAlert(tenantId, req.params.id);
+        if (!deleted) return errorResponse(res, 404, 'Alert not found');
+        res.json({ data: true });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

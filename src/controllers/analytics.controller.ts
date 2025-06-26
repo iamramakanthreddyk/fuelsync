@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { getStationComparison } from '../services/station.service';
+// Frontend analytics endpoints handler
+import {
+  getHourlySales,
+  getPeakHours,
+  getFuelPerformance,
+} from '../services/analytics.service';
 
 export function createAnalyticsHandlers(db: Pool) {
   return {
@@ -199,6 +205,59 @@ export function createAnalyticsHandlers(db: Pool) {
         const period = (req.query.period as string) || 'monthly';
         const data = await getStationComparison(db, tenantId, stationIds, period);
         res.json(data);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    hourlySales: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const { stationId, dateFrom, dateTo } = req.query as any;
+        if (!stationId || !dateFrom || !dateTo) {
+          return errorResponse(res, 400, 'stationId, dateFrom and dateTo required');
+        }
+        const data = await getHourlySales(
+          tenantId,
+          stationId,
+          new Date(dateFrom),
+          new Date(dateTo)
+        );
+        res.json({ data });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    peakHours: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const stationId = req.query.stationId as string;
+        if (!stationId) return errorResponse(res, 400, 'stationId required');
+        const data = await getPeakHours(tenantId, stationId);
+        res.json({ data });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    fuelPerformance: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const { stationId, dateFrom, dateTo } = req.query as any;
+        if (!stationId || !dateFrom || !dateTo) {
+          return errorResponse(res, 400, 'stationId, dateFrom and dateTo required');
+        }
+        const data = await getFuelPerformance(
+          tenantId,
+          stationId,
+          new Date(dateFrom),
+          new Date(dateTo)
+        );
+        res.json({ data });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
