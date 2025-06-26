@@ -598,3 +598,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added shared `Success` and `Error` response objects under `components.responses`.
+
+### 🛠️ Step 2.34 – OpenAPI request schemas
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_2_34_COMMAND.md`
+
+**Overview:**
+* Connected login, refresh, user and station endpoints to detailed schemas.
+* Introduced `CreateStationRequest` and `UpdateStationRequest` components.

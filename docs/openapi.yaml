@@ -8,64 +8,92 @@ paths:
   /api/v1/auth/login:
     post:
       summary: User login and JWT issuance
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/LoginResponse'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/auth/logout:
     post:
       summary: User logout
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
         default:
           $ref: '#/components/responses/Error'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
   /api/v1/auth/refresh:
     post:
       summary: Refresh JWT token
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/LoginResponse'
         default:
           $ref: '#/components/responses/Error'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
   /api/v1/users:
     post:
       summary: Create tenant user
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Error'
     get:
       summary: List tenant users
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/users/{userId}:
@@ -89,17 +117,24 @@ paths:
                     $ref: '#/components/schemas/User'
     put:
       summary: Update tenant user
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Error'
     delete:
       summary: Delete tenant user
       responses:
@@ -110,50 +145,89 @@ paths:
   /api/v1/users/{userId}/change-password:
     post:
       summary: Change user password
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/users/{userId}/reset-password:
     post:
       summary: Reset user password
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/stations:
     post:
       summary: Create station
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateStationRequest'
+      responses:
+        '201':
+          description: Station created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+        default:
+          $ref: '#/components/responses/Error'
     get:
       summary: List stations
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: List of stations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Station'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/stations/{stationId}:
@@ -177,17 +251,24 @@ paths:
                     $ref: '#/components/schemas/Station'
     put:
       summary: Update station
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        default:
-          $ref: '#/components/responses/Error'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/UpdateStationRequest'
+      responses:
+        '200':
+          description: Station updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Station'
+        default:
+          $ref: '#/components/responses/Error'
     delete:
       summary: Delete station
       responses:
@@ -1981,6 +2062,19 @@ components:
         createdAt:
           type: string
           format: date-time
+    CreateStationRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+    UpdateStationRequest:
+      type: object
+      properties:
+        name:
+          type: string
     SuperAdminSummary:
       type: object
       properties:

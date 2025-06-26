@@ -1584,3 +1584,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/openapi.yaml`
 * `docs/STEP_2_33_COMMAND.md`
+
+## [Fix - 2025-08-04] – Detailed request schemas
+
+### 🟥 Fixes
+* Wired authentication, user and station endpoints to explicit schemas.
+* Added `CreateStationRequest` and `UpdateStationRequest` components.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_2_34_COMMAND.md`
