@@ -16,7 +16,7 @@ export async function createNozzle(db: Pool, schemaName: string, pumpId: string,
     
     const tenantId = tenantRes.rows[0].id;
     
-    await beforeCreateNozzle(client, schemaName, pumpId);
+    await beforeCreateNozzle(client, tenantId, pumpId);
     const res = await client.query<{ id: string }>(
       `INSERT INTO ${schemaName}.nozzles (tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4) RETURNING id`,
       [tenantId, pumpId, nozzleNumber, fuelType]

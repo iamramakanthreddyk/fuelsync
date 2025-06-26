@@ -105,6 +105,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
   } finally {
     client.release();
   }
+  // end createTenant
+}
 
 /**
  * List all tenants
