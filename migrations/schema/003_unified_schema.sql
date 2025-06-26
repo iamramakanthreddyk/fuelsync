@@ -5,12 +5,20 @@
 
 -- =========================================
 -- WARNING: This migration DROPS ALL schemas except "public".
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 -- Ensure no production data exists before running.
 -- =========================================
 
 BEGIN;
 
+-- Apply consolidated alterations
+ALTER TABLE public.plans
+  ADD COLUMN IF NOT EXISTS price_yearly DECIMAL(10,2) NOT NULL DEFAULT 0;
+ALTER TABLE public.tenants
+  ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ NULL;
+CREATE INDEX IF NOT EXISTS idx_tenants_status_deleted_at ON public.tenants(status, deleted_at);
+ALTER TABLE public.admin_users
+  ADD COLUMN IF NOT EXISTS name TEXT;
+UPDATE public.admin_users SET name = SPLIT_PART(email, '@', 1) WHERE name IS NULL;
 -- Ensure migration and admin tables exist in case previous migrations were not executed
 CREATE TABLE IF NOT EXISTS public.schema_migrations (
     id SERIAL PRIMARY KEY,
@@ -115,6 +123,7 @@ CREATE TABLE IF NOT EXISTS public.pumps (
     UNIQUE (tenant_id, station_id, label)
 );
 CREATE INDEX IF NOT EXISTS idx_pumps_tenant ON public.pumps(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_pumps_station_id ON public.pumps(station_id);
 
 COMMENT ON TABLE public.pumps IS 'Fuel pumps within a station';
 CREATE TABLE IF NOT EXISTS public.nozzles (
@@ -158,6 +167,7 @@ CREATE TABLE IF NOT EXISTS public.fuel_prices (
 CREATE INDEX IF NOT EXISTS idx_fuel_prices_tenant ON public.fuel_prices(tenant_id);
 COMMENT ON TABLE public.fuel_prices IS 'Historical fuel pricing per station';
 
+CREATE INDEX IF NOT EXISTS idx_fuel_prices_station_id ON public.fuel_prices(station_id);
 CREATE TABLE IF NOT EXISTS public.creditors (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
@@ -180,7 +190,7 @@ CREATE TABLE IF NOT EXISTS public.sales (
     reading_id UUID REFERENCES public.nozzle_readings(id),
     station_id UUID NOT NULL REFERENCES public.stations(id),
     volume DECIMAL(10,3) NOT NULL CHECK (volume >= 0),
-    fuel_type TEXT NOT NULL,
+    fuel_type TEXT NOT NULL CHECK (fuel_type IN ('petrol','diesel','premium')),
     fuel_price DECIMAL(10,2) NOT NULL,
     cost_price DECIMAL(10,2) DEFAULT 0,
     amount DECIMAL(10,2) NOT NULL,
@@ -195,12 +205,14 @@ CREATE TABLE IF NOT EXISTS public.sales (
 );
 COMMENT ON TABLE public.sales IS 'Sales transactions derived from nozzle readings';
 CREATE INDEX IF NOT EXISTS idx_sales_tenant ON public.sales(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_sales_nozzle_id ON public.sales(nozzle_id);
+CREATE INDEX IF NOT EXISTS idx_sales_created_at ON public.sales(created_at);
 
 CREATE TABLE IF NOT EXISTS public.fuel_inventory (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
     station_id UUID NOT NULL REFERENCES public.stations(id),
-    fuel_type TEXT NOT NULL,
+    fuel_type TEXT NOT NULL CHECK (fuel_type IN ('petrol','diesel','premium')),
     current_stock DECIMAL(10,3) NOT NULL DEFAULT 0,
     minimum_level DECIMAL(10,3) NOT NULL DEFAULT 1000,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -228,7 +240,7 @@ CREATE TABLE IF NOT EXISTS public.fuel_deliveries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
     station_id UUID NOT NULL REFERENCES public.stations(id),
-    fuel_type TEXT NOT NULL,
+    fuel_type TEXT NOT NULL CHECK (fuel_type IN ('petrol','diesel','premium')),
     volume DECIMAL(10,3) NOT NULL CHECK (volume > 0),
     delivered_by TEXT,
     delivery_date DATE NOT NULL,
@@ -244,7 +256,7 @@ CREATE TABLE IF NOT EXISTS public.credit_payments (
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
     creditor_id UUID NOT NULL REFERENCES public.creditors(id),
     amount DECIMAL(10,2) NOT NULL CHECK (amount >= 0),
-    payment_method TEXT,
+    payment_method TEXT CHECK (payment_method IN ('cash','card','upi','credit')),
     reference_number TEXT,
     notes TEXT,
     received_at TIMESTAMPTZ NOT NULL,
@@ -252,6 +264,7 @@ CREATE TABLE IF NOT EXISTS public.credit_payments (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_credit_payments_tenant ON public.credit_payments(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_credit_payments_creditor_id ON public.credit_payments(creditor_id);
 COMMENT ON TABLE public.credit_payments IS 'Payments received for creditor balances';
 
 CREATE TABLE IF NOT EXISTS public.day_reconciliations (
@@ -271,6 +284,19 @@ CREATE TABLE IF NOT EXISTS public.day_reconciliations (
 );
 CREATE INDEX IF NOT EXISTS idx_day_reconciliations_tenant ON public.day_reconciliations(tenant_id);
 COMMENT ON TABLE public.day_reconciliations IS 'Daily station reconciliation totals';
+
+CREATE TABLE IF NOT EXISTS public.report_schedules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id),
+    station_id UUID REFERENCES public.stations(id),
+    type TEXT NOT NULL,
+    frequency TEXT NOT NULL,
+    next_run TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_report_schedules_tenant ON public.report_schedules(tenant_id);
+COMMENT ON TABLE public.report_schedules IS 'Scheduled report configuration';
 
 CREATE TABLE IF NOT EXISTS public.audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

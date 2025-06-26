@@ -19,14 +19,8 @@ export function setTenantContext(req: Request, res: Response, next: NextFunction
   
   const user = req.user as AuthPayload;
   
-  if (user && user.tenantId) {
-    // Set schema name from JWT payload (shared by all users in same tenant)
-    (req as any).schemaName = user.tenantId;
-    // Role is available in req.user.role for authorization checks
-  } else {
-    // Default tenant for non-authenticated requests
-    (req as any).schemaName = 'production_tenant';
-  }
+  // Unified schema uses public namespace; keep property for backward compatibility
+  (req as any).schemaName = 'public';
   
   next();
 }

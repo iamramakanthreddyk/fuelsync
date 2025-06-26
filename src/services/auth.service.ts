@@ -18,23 +18,26 @@ interface LoginResponse {
 
 export async function login(db: Pool, email: string, password: string, tenantId?: string): Promise<LoginResponse | null> {
   if (tenantId) {
-    console.log(`[AUTH-SERVICE] Tenant login attempt for email: ${email}, schema: ${tenantId}`);
-    
-    // Get tenant name
+    console.log(`[AUTH-SERVICE] Tenant login attempt for email: ${email}, tenant: ${tenantId}`);
+
+    // Get tenant id and name
     const tenantRes = await db.query(
-      'SELECT name FROM public.tenants WHERE schema_name = $1',
+      'SELECT id, name FROM public.tenants WHERE schema_name = $1',
       [tenantId]
     );
-    const tenantName = tenantRes.rows[0]?.name;
-    
-    if (!tenantName) {
+    const tenantRow = tenantRes.rows[0];
+
+    if (!tenantRow) {
       console.log(`[AUTH-SERVICE] Tenant not found for schema: ${tenantId}`);
+      return null;
     }
+    const tenantUuid = tenantRow.id;
+    const tenantName = tenantRow.name;
 
     // Get user details
     const res = await db.query(
-      `SELECT id, email, password_hash, role FROM ${tenantId}.users WHERE email = $1`,
-      [email]
+      `SELECT id, email, password_hash, role FROM public.users WHERE tenant_id = $1 AND email = $2`,
+      [tenantUuid, email]
     );
     const user = res.rows[0];
     if (!user) {

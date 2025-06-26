@@ -64,6 +64,8 @@ Foreign keys cascade on delete to maintain integrity.
 - Index names use `idx_<table>_tenant` or `idx_<table>_<column>` format.
 - Foreign key constraints include `ON DELETE CASCADE` for child records.
 - New tables should follow the same pattern: `id` UUID primary key, `tenant_id` UUID NOT NULL, timestamps with defaults.
+- `fuel_type` columns are constrained to `'petrol'`, `'diesel'`, `'premium'`. Add new types by altering the CHECK constraint in all tables.
+- `payment_method` columns for sales and credit payments share the enum `'cash'`, `'card'`, `'upi'`, `'credit'`.
 
 ## Further Architectural Decisions
 - Evaluate table partitioning for very large tenants.
@@ -83,6 +85,6 @@ To reset an environment using the new unified schema:
    psql -U <user> -d <db> -f migrations/schema/003_unified_schema.sql
    ```
    This drops any old tenant schemas and recreates all tenant tables in `public`.
-3. **Run incremental migrations** (if any) such as `005_add_price_yearly_to_plans.sql`.
 
+The unified migration also includes all pricing columns, soft-delete fields, and reporting tables so no additional SQL is required.
 Use `npm run migrate` or `node scripts/run-migration.ts` as a wrapper if preferred.

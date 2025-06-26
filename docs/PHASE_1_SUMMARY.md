@@ -492,3 +492,30 @@ Each step includes:
 
 **Validations Performed:**
 * Manual run of `ts-node scripts/run-migration.ts` on a clean DB
+
+### 🛠 Fix 2025-08-11 – Consolidate Migration Scripts
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Merged all incremental SQL into the unified migration.
+* Added yearly pricing, tenant soft deletes, admin user names and report scheduling table.
+* Removed obsolete migration files and templates for clarity.
+
+**Validations Performed:**
+* Manual review of the consolidated SQL file.
+* `npm test` executed to ensure project scripts run.
+
+### 🛠 Fix 2025-08-12 – Enum Constraints Alignment
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`, `db_brain.md`
+
+**Overview:**
+* Added CHECK constraints for `fuel_type` columns across sales, inventory and deliveries.
+* Enforced `payment_method` constraint on `credit_payments`.
+* Documented enum requirements in `db_brain.md`.
+
+**Validations Performed:**
+* `npm test` executed after migration update.

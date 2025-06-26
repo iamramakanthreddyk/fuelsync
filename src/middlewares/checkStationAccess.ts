@@ -9,8 +9,8 @@ export function checkStationAccess(db: Pool) {
       return res.status(403).json({ status: 'error', code: 'FORBIDDEN', message: 'Station access denied' });
     }
     const result = await db.query(
-      `SELECT 1 FROM ${user.tenantId}.user_stations WHERE user_id = $1 AND station_id = $2`,
-      [user.userId, stationId]
+      `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+      [user.userId, stationId, user.tenantId]
     );
     if (!result.rowCount) {
       return res.status(403).json({ status: 'error', code: 'FORBIDDEN', message: 'Station access denied' });
