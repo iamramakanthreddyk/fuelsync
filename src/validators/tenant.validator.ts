@@ -1,11 +1,10 @@
 export interface TenantInput {
   name: string;
   planId: string;
-  schemaName?: string;
 }
 
 export function validateTenantInput(data: any): TenantInput {
-  const { name, planId, planType, schema, schemaName } = data || {};
+  const { name, planId, planType } = data || {};
   
   if (!name || typeof name !== 'string') {
     throw new Error('Invalid tenant name');
@@ -26,13 +25,5 @@ export function validateTenantInput(data: any): TenantInput {
     throw new Error('Invalid plan ID or type');
   }
   
-  // Handle schema name (frontend uses schema)
-  const finalSchemaName = schemaName || schema || name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-  
-  // Validate schema name format
-  if (!/^[a-z0-9_]+$/.test(finalSchemaName)) {
-    throw new Error('Schema name must be lowercase letters, numbers, and underscores only');
-  }
-  
-  return { name, planId: finalPlanId, schemaName: finalSchemaName };
+  return { name, planId: finalPlanId };
 }

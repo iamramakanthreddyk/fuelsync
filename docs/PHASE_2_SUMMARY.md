@@ -634,3 +634,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Adjusted login logic to query tenants by UUID instead of `schema_name`.
 * Ensures compatibility with the unified schema.
 
+### 🛠️ Fix 2025-08-15 – Tenant Service Unified Schema
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`, `src/validators/tenant.validator.ts`, `tests/utils/testTenant.ts`, `docs/openapi.yaml`, `docs/TENANT_MANAGEMENT_GUIDE.md`, `docs/STEP_2_36_COMMAND.md`
+
+**Overview:**
+* Removed all schema references from tenant service and related modules.
+* Tenant APIs now operate solely on unified tables via `tenant_id`.
+* Documentation and tests updated accordingly.
+

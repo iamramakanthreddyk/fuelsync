@@ -121,4 +121,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-12 | Enum Constraint Updates | ✅ Done | `migrations/schema/003_unified_schema.sql`, `db_brain.md` | `docs/STEP_fix_20250812.md` |
 | fix | 2025-08-13 | Response and Query Cleanups | ✅ Done | `src/controllers/creditor.controller.ts`, `src/services/analytics.service.ts`, `src/validators/fuelPrice.validator.ts` | `docs/STEP_fix_20250813.md` |
 | fix | 2025-08-14 | Login Query Updates | ✅ Done | `src/controllers/auth.controller.ts`, `src/services/auth.service.ts` | `docs/STEP_fix_20250814.md` |
+| fix | 2025-08-15 | Tenant Service Unified Schema | ✅ Done | `src/services/tenant.service.ts`, `src/controllers/tenant.controller.ts`, `src/validators/tenant.validator.ts`, `tests/utils/testTenant.ts`, `docs/openapi.yaml`, `docs/TENANT_MANAGEMENT_GUIDE.md` | `docs/STEP_2_36_COMMAND.md` |
 | fix | 2025-06-26 | Unified Schema Setup Scripts | ✅ Done | `scripts/*.js`, `UNIFIED_DB_SETUP.md` | `docs/STEP_fix_20250627.md` |
