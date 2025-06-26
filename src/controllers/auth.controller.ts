@@ -19,25 +19,16 @@ export function createAuthController(db: Pool) {
         
         // If no tenant ID is provided, try to find the tenant for this email
         if (!tenantId) {
-          console.log(`[AUTH] No tenant ID provided, checking admin users first`);
-          const adminCheck = await db.query(
-            'SELECT id, email, role FROM public.admin_users WHERE email = $1',
-            [email]
-          );
-          
-          console.log(`[AUTH] Admin check result: ${adminCheck.rows.length} rows`, adminCheck.rows);
-          
-          // Also log all admin users for debugging
-          const allAdmins = await db.query('SELECT email, role FROM public.admin_users');
-          console.log(`[AUTH] All admin users in DB:`, allAdmins.rows);
+      const adminCheck = await db.query(
+        'SELECT id, email, role FROM public.admin_users WHERE email = $1',
+        [email]
+      );
           
           if (adminCheck.rows.length > 0) {
-            console.log(`[AUTH] Found admin user: ${email}`);
             userExists = true;
             foundTenantId = undefined; // Admin users don't have tenant ID
           } else {
             // Not an admin user, try to find in tenant schemas
-            console.log(`[AUTH] User not found in public schema, checking tenant schemas for: ${email}`);
             
             const res = await db.query(
               `SELECT u.tenant_id, t.name FROM public.users u JOIN public.tenants t ON u.tenant_id = t.id WHERE u.email = $1`,
@@ -46,7 +37,6 @@ export function createAuthController(db: Pool) {
             if (res.rows.length === 1) {
               userExists = true;
               foundTenantId = res.rows[0].tenant_id;
-              console.log(`[AUTH] Found user in tenant: ${foundTenantId}`);
             } else if (res.rows.length > 1) {
               console.log('[AUTH] Multiple tenants found for user, tenant header required');
             }
@@ -88,7 +78,6 @@ export function createAuthController(db: Pool) {
           return errorResponse(res, 401, 'Invalid password');
         }
         
-        console.log(`[AUTH] Login successful for user: ${result.user.id}, role: ${result.user.role}`);
         return successResponse(res, result);
       } catch (error: any) {
         console.error(`[AUTH] Login error:`, error);

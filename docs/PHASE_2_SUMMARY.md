@@ -668,3 +668,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Purged `schemaName` references from all guides and examples.
 * OpenAPI tenant models only use `planId` and contact fields.
+
+### 🛠️ Fix 2025-08-19 – Auth Logging Cleanup
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `docs/STEP_fix_20250819.md`
+
+**Overview:**
+* Removed debug query listing all admin users.
+* Reduced auth controller logs to attempts and errors only.
