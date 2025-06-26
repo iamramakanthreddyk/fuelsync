@@ -1,26 +1,14 @@
 import { Pool } from 'pg';
 import { beforeCreatePump } from '../middleware/planEnforcement';
 
-export async function createPump(db: Pool, schemaName: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
+export async function createPump(db: Pool, tenantId: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
   const client = await db.connect();
   try {
-    // Get actual tenant UUID from schema name FIRST
-    const tenantRes = await client.query(
-      'SELECT id FROM public.tenants WHERE schema_name = $1',
-      [schemaName]
-    );
-    
-    if (tenantRes.rows.length === 0) {
-      throw new Error(`Tenant not found for schema: ${schemaName}`);
-    }
-    
-    const tenantId = tenantRes.rows[0].id;
-    
     // Enforce plan limits using tenant id
     await beforeCreatePump(client, tenantId, stationId);
-    
+
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${schemaName}.pumps (tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4) RETURNING id`,
+      'INSERT INTO public.pumps (tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4) RETURNING id',
       [tenantId, stationId, label, serialNumber || null]
     );
     return res.rows[0].id;
@@ -29,13 +17,13 @@ export async function createPump(db: Pool, schemaName: string, stationId: string
   }
 }
 
-export async function listPumps(db: Pool, schemaName: string, stationId?: string) {
+export async function listPumps(db: Pool, tenantId: string, stationId?: string) {
   const where = stationId ? 'WHERE p.station_id = $1' : '';
-  const params = stationId ? [stationId] : [];
+  const params = stationId ? [stationId, tenantId] : [tenantId];
   const res = await db.query(
     `SELECT p.id, p.station_id, p.label, p.serial_number, p.status, p.created_at,
-     (SELECT COUNT(*) FROM ${schemaName}.nozzles n WHERE n.pump_id = p.id) as nozzle_count
-     FROM ${schemaName}.pumps p ${where} ORDER BY p.label`,
+     (SELECT COUNT(*) FROM public.nozzles n WHERE n.pump_id = p.id) as nozzle_count
+     FROM public.pumps p WHERE p.tenant_id = $${stationId ? 2 : 1} ${where ? 'AND ' + where : ''} ORDER BY p.label`,
     params
   );
   return res.rows.map(row => ({
@@ -44,23 +32,23 @@ export async function listPumps(db: Pool, schemaName: string, stationId?: string
   }));
 }
 
-export async function deletePump(db: Pool, schemaName: string, pumpId: string) {
-  const count = await db.query(`SELECT COUNT(*) FROM ${schemaName}.nozzles WHERE pump_id = $1`, [pumpId]);
+export async function deletePump(db: Pool, tenantId: string, pumpId: string) {
+  const count = await db.query('SELECT COUNT(*) FROM public.nozzles WHERE pump_id = $1 AND tenant_id = $2', [pumpId, tenantId]);
   if (Number(count.rows[0].count) > 0) {
     throw new Error('Cannot delete pump with nozzles');
   }
-  await db.query(`DELETE FROM ${schemaName}.pumps WHERE id = $1`, [pumpId]);
+  await db.query('DELETE FROM public.pumps WHERE id = $1 AND tenant_id = $2', [pumpId, tenantId]);
 }
 
 export async function updatePump(
   db: Pool,
-  schemaName: string,
+  tenantId: string,
   pumpId: string,
   label?: string,
   serialNumber?: string
 ) {
   const updates = [] as string[];
-  const params = [pumpId];
+  const params = [pumpId, tenantId];
   let idx = 2;
 
   if (label !== undefined) {
@@ -78,7 +66,7 @@ export async function updatePump(
   if (updates.length === 0) return;
 
   await db.query(
-    `UPDATE ${schemaName}.pumps SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $1`,
+    `UPDATE public.pumps SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $1 AND tenant_id = $2`,
     params
   );
 }

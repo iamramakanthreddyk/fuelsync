@@ -651,3 +651,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Plan limit checks now query unified tables with `tenant_id` filters.
 * Service layers pass tenant IDs instead of schema names.
+
+### 🛠️ Fix 2025-08-17 – Service Schema Cleanup
+**Status:** ✅ Done
+**Files:** `src/services/*`, `src/controllers/*`, `src/utils/seedHelpers.ts`, `docs/STEP_fix_20250817.md`
+
+**Overview:**
+* Converted all remaining schema-based queries to unified table access.
+* Controllers now rely solely on `tenant_id` for filtering.
+* Seeding helpers create data directly in shared tables.
