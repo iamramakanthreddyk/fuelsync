@@ -564,3 +564,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Updated pump listing to include `nozzleCount` using Prisma relation counts.
 * Documented the wrapped success response in OpenAPI and backend brain.
+
+### 🛠️ Fix 2025-07-31 – OpenAPI Schema Details
+
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20250731.md`
+
+**Overview:**
+* Replaced generic object schemas with detailed definitions.
+* Imported components from the frontend spec so API docs include fields, formats and examples.

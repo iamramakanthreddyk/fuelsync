@@ -1535,3 +1535,13 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `backend_brain.md`
 * `docs/STEP_2_30_COMMAND.md`
+
+## [Fix - 2025-07-31] – OpenAPI Schema Details
+
+### 🟥 Fixes
+* Replaced minimal schema definitions with detailed properties and examples.
+* Imported component definitions from `frontend/docs/openapi-v1.yaml`.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250731.md`
