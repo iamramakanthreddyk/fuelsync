@@ -226,7 +226,6 @@ function DashboardMetrics() {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Schema</th>
                 <th>Status</th>
                 <th>Created</th>
               </tr>
@@ -235,7 +234,6 @@ function DashboardMetrics() {
               {metrics?.recentTenants?.map(tenant => (
                 <tr key={tenant.id}>
                   <td>{tenant.name}</td>
-                  <td>{tenant.schema_name}</td>
                   <td>
                     <StatusBadge status={tenant.status} />
                   </td>

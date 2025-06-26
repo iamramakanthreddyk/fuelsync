@@ -48,7 +48,7 @@ Each step includes:
 
 * All tables use UUID PKs
 * Foreign key integrity enforced
-* Unique constraint on tenant `schema_name`
+* Unique constraint on tenant `schema_name` _(deprecated in unified schema)_
 
 **Notes:**
 

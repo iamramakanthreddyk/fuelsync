@@ -26,7 +26,7 @@ export async function createStation(db: Pool, tenantId: string, name: string) {
 export async function createStation(db: Pool, schemaName: string, name: string) {
   // Get actual tenant UUID from schema name
   const tenantRes = await client.query(
-    'SELECT id FROM public.tenants WHERE schema_name = $1',
+    'SELECT id FROM public.tenants WHERE schema_name = $1', // deprecated lookup
     [schemaName]
   );
   const tenantId = tenantRes.rows[0].id; // ✅ Actual UUID
@@ -71,7 +71,7 @@ const tenantId = req.user?.tenantId || req.headers['x-tenant-id'] as string; // 
 ```sql
 id          UUID PRIMARY KEY     -- This is what tenant_id columns reference
 name        TEXT                 -- Display name
-schema_name TEXT                 -- Schema identifier (production_tenant, etc.)
+schema_name TEXT                 -- Schema identifier (deprecated)
 ```
 
 ### Tenant Schema Tables ({schema}.stations, {schema}.pumps, etc.)
