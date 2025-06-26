@@ -38,9 +38,13 @@ export function createPumpHandlers(db: Pool) {
           tenant_id: tenantId,
           ...(stationId ? { station_id: stationId } : {})
         },
-        orderBy: { label: 'asc' }
+        orderBy: { label: 'asc' },
+        include: { _count: { select: { nozzles: true } } }
       });
-      res.json({ pumps });
+      res.json({ pumps: pumps.map(p => ({
+        ...p,
+        nozzleCount: p._count.nozzles
+      })) });
     },
     get: async (req: Request, res: Response) => {
       try {
