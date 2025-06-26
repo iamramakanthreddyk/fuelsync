@@ -11,6 +11,7 @@ export function createAlertsRouter(db: Pool) {
 
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.patch('/:id/read', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.markRead);
+  router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.delete);
 
   return router;
 }

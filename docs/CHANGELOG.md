@@ -1545,3 +1545,35 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250731.md`
+
+## [Feature - 2025-08-01] – Analytics and lookup endpoints
+
+### 🟩 Features
+* Added DELETE `/api/v1/alerts/{alertId}`.
+* Added analytics endpoints for hourly sales, peak hours and fuel performance.
+* Added GET endpoints for creditors, stations and users with `{ data }` wrapper.
+* Updated Prisma schema with `Alert` model.
+
+### Files
+* `src/controllers/analytics.controller.ts`
+* `src/services/analytics.service.ts`
+* `src/controllers/alerts.controller.ts`
+* `src/services/alert.service.ts`
+* `src/controllers/creditor.controller.ts`
+* `prisma/schema.prisma`
+* `docs/openapi.yaml`
+* `backend_brain.md`
+* `docs/STEP_2_31_COMMAND.md`
+
+## [Fix - 2025-08-02] – Parameter naming alignment
+### 🛠 Fixes
+* Updated station and user routes to use `stationId` and `userId` path parameters.
+* Synced OpenAPI spec and backend brain to match.
+### Files
+* `docs/openapi.yaml`
+* `src/routes/user.route.ts`
+* `src/routes/station.route.ts`
+* `src/controllers/user.controller.ts`
+* `src/controllers/station.controller.ts`
+* `backend_brain.md`
+* `docs/STEP_2_32_COMMAND.md`

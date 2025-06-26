@@ -89,6 +89,20 @@ model NozzleReading {
   nozzle    Nozzle   @relation(fields: [nozzle_id], references: [id])
 }
 
+model Alert {
+  id         String   @id @default(uuid())
+  tenant_id  String
+  station_id String?
+  alert_type String
+  message    String
+  severity   String   @default("info")
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  station    Station? @relation(fields: [station_id], references: [id])
+  tenant     Tenant   @relation(fields: [tenant_id], references: [id])
+}
+
 model FuelPrice {
   id           String   @id @default(uuid())
   tenant_id    String
