@@ -14,8 +14,5 @@ module.exports = async () => {
     database: process.env.DB_NAME || process.env.PGDATABASE,
   });
   await client.connect();
-  const schema = process.env.TEST_SCHEMA || 'test_schema';
-  await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`).catch(() => {});
-  await client.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
   await client.end();
 };

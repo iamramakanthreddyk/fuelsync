@@ -57,26 +57,6 @@ class MigrationRunner {
     }
   }
 
-  async createTenantSchema(schemaName) {
-    const templatePath = path.join(__dirname, '../migrations/schema/002_tenant_schema_template.sql');
-    const template = fs.readFileSync(templatePath, 'utf8');
-    const sql = template.replace(/\{\{schema_name\}\}/g, schemaName);
-    
-    const client = await this.pool.connect();
-    try {
-      await client.query('BEGIN');
-      await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
-      await client.query(sql);
-      await client.query('COMMIT');
-      console.log(`✅ Created tenant schema: ${schemaName}`);
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error(`❌ Failed to create tenant schema ${schemaName}:`, error.message);
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
 
   async runAllMigrations() {
     await this.ensureMigrationTable();
@@ -165,13 +145,8 @@ async function main() {
       case 'status':
         await runner.status();
         break;
-      case 'create-tenant':
-        const schemaName = process.argv[3];
-        if (!schemaName) throw new Error('Schema name required');
-        await runner.createTenantSchema(schemaName);
-        break;
       default:
-        console.log('Usage: node migrate.js [up|down|status|create-tenant] [args]');
+        console.log('Usage: node migrate.js [up|down|status] [args]');
     }
   } catch (error) {
     console.error('Migration failed:', error.message);

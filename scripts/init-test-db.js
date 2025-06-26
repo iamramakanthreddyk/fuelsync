@@ -32,14 +32,17 @@ async function initTestDb() {
   const { rows: planRows } = await client.query(`SELECT id FROM public.plans WHERE name='basic' LIMIT 1`);
   const planId = planRows[0].id;
 
-  const schema = 'test_tenant';
-  await client.query(`INSERT INTO public.tenants (name, schema_name, plan_id) VALUES ($1,$2,$3) ON CONFLICT (schema_name) DO NOTHING`, ['Test Tenant', schema, planId]);
-
-  const template = fs.readFileSync(path.join(__dirname, '../migrations/tenant_schema_template.sql'), 'utf8').replace(/{{schema_name}}/g, schema);
-  await client.query(template);
+  const tenantRes = await client.query(
+    `INSERT INTO public.tenants (name, plan_id, status) VALUES ($1,$2,'active') RETURNING id`,
+    ['Test Tenant', planId]
+  );
+  const tenantId = tenantRes.rows[0].id;
 
   const hash = await bcrypt.hash('password', 1);
-  await client.query(`INSERT INTO ${schema}.users (tenant_id, email, password_hash, role) SELECT id, 'owner@${schema}.com', $1, 'owner' FROM public.tenants WHERE schema_name=$2 ON CONFLICT (email) DO NOTHING`, [hash, schema]);
+  await client.query(
+    `INSERT INTO public.users (tenant_id, email, password_hash, role) VALUES ($1,$2,$3,'owner')`,
+    [tenantId, `owner@test.com`, hash]
+  );
 
   await client.end();
 }

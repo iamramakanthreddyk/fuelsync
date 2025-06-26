@@ -12,19 +12,9 @@ export const pool = new Pool({
 });
 
 export async function createTestSchema() {
-  const schema = process.env.TEST_SCHEMA || 'test_schema';
-  try {
-    await pool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-  } catch (err: any) {
-    console.warn('Skipping schema creation:', err.message);
-  }
+  // Unified schema - no dedicated test schema required
 }
 
 export async function dropTestSchema() {
-  const schema = process.env.TEST_SCHEMA || 'test_schema';
-  try {
-    await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
-  } catch (err: any) {
-    console.warn('Skipping schema drop:', err.message);
-  }
+  // Unified schema - nothing to drop
 }
