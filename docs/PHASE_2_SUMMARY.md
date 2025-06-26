@@ -684,3 +684,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Dropped obsolete tenant schema creation logic.
 * Test helpers now operate solely on unified tables.
+
+### 🛠️ Fix 2025-08-21 – Remove schemaUtils and Update Analytics
+**Status:** ✅ Done
+**Files:** `src/utils/priceUtils.ts`, `src/controllers/adminAnalytics.controller.ts`, `src/controllers/analytics.controller.ts`, `docs/STEP_fix_20250821.md`
+
+**Overview:**
+* Deleted unused schema utilities.
+* Analytics endpoints now compute metrics from shared tables using `tenant_id`.
