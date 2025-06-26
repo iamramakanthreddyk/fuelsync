@@ -141,7 +141,6 @@ When creating a tenant, the system:
 function CreateTenantForm() {
   const [formData, setFormData] = useState({
     name: '',
-    schemaName: '',
     planId: ''
   });
   
@@ -162,18 +161,6 @@ function CreateTenantForm() {
         />
       </div>
       
-      <div>
-        <label>Schema Name</label>
-        <input 
-          type="text" 
-          value={formData.schemaName}
-          onChange={(e) => setFormData({...formData, schemaName: e.target.value})}
-          pattern="^[a-z0-9_]+$"
-          title="Lowercase letters, numbers, and underscores only"
-          required
-        />
-        <small>Lowercase letters, numbers, and underscores only</small>
-      </div>
       
       <div>
         <label>Subscription Plan</label>

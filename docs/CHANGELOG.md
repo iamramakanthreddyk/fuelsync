@@ -1712,3 +1712,20 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/*`
 * `src/utils/seedHelpers.ts`
 * `docs/STEP_fix_20250817.md`
+
+## [Fix - 2025-08-18] – Remove schemaName from docs
+
+### 🟥 Fixes
+* Updated all documentation to use unified tenant schema without `schemaName`.
+* OpenAPI spec references `CreateTenantRequest` without schema fields.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/TENANT_CREATION_API.md`
+* `docs/SUPERADMIN_IMPLEMENTATION.md`
+* `docs/FRONTEND_SUPERADMIN.md`
+* `docs/SUPERADMIN_FRONTEND_BACKEND_ALIGNMENT.md`
+* `docs/SUPERADMIN_FRONTEND_GUIDE.md`
+* `docs/TENANT_MANAGEMENT.md`
+* `docs/BACKEND_HIERARCHY_API.md`
+* `docs/STEP_fix_20250818.md`
