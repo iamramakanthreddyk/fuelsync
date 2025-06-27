@@ -778,3 +778,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added a catch-all route that returns JSON `Route not found` errors.
 * OpenAPI spec now documents the `NotFound` response component.
+
+### 🛠️ Fix 2025-09-01 – Secure schemas route
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20250901.md`
+
+**Overview:**
+* `/schemas` endpoint now only executes in non-production environments.
+* In production it requires authentication and always responds 403 without touching tables.

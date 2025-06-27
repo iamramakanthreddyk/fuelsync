@@ -27,6 +27,7 @@ import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 import { successResponse } from './utils/successResponse';
 import { errorResponse } from './utils/errorResponse';
+import { authenticateJWT } from './middlewares/authenticateJWT';
 
 import { debugRequest } from './middlewares/debugRequest';
 
@@ -119,10 +120,10 @@ export function createApp() {
   });
   
   // Debug tables endpoint with reset option
-  app.get('/schemas', async (req, res) => {
+  const schemasHandler = async (req: any, res: any) => {
     try {
       const reset = req.query.reset;
-      
+
       if (reset === 'true') {
         // Reset database
         await pool.query('DROP SCHEMA IF EXISTS demo_tenant_001 CASCADE');
@@ -131,16 +132,24 @@ export function createApp() {
         await pool.query('DROP TABLE IF EXISTS public.admin_users CASCADE');
         await pool.query('DROP TABLE IF EXISTS public.admin_activity_logs CASCADE');
         await pool.query('DROP TABLE IF EXISTS public.migrations CASCADE');
-        
+
         return successResponse(res, { status: 'Database reset complete' });
       }
-      
+
       const tablesResult = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
       successResponse(res, { tables: tablesResult.rows.map(t => t.table_name) });
     } catch (err: any) {
       errorResponse(res, 500, err.message);
     }
-  });
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    app.get('/schemas', schemasHandler);
+  } else {
+    app.get('/schemas', authenticateJWT, (_req, res) => {
+      errorResponse(res, 403, 'Disabled in production');
+    });
+  }
   
   
 

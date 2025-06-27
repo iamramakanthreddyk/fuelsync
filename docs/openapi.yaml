@@ -1342,7 +1342,11 @@ paths:
           $ref: '#/components/responses/Error'
   /schemas:
     get:
-      summary: List tenant schemas
+      summary: List tenant schemas (non-production)
+      description: |
+        Development utility for viewing or resetting demo tables.
+        When `NODE_ENV` is `production` the endpoint is authenticated and
+        returns a 403 response without touching the database.
       responses:
         '200':
           $ref: '#/components/responses/Success'
