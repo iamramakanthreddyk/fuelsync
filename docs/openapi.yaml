@@ -1427,17 +1427,28 @@ components:
             properties:
               data:
                 type: object
-  Error:
-    description: Error response
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
-            message:
-              type: string
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+    NotFound:
+      description: Route not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
 
   schemas:
     LoginRequest:

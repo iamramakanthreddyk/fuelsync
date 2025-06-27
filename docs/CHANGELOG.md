@@ -1900,4 +1900,12 @@ Each entry is tied to a step from the implementation index.
 * `jest.globalSetup.ts`
 * `jest.globalTeardown.ts`
 * `tests/utils/db-utils.ts`
+## [Fix - 2025-08-31] – Default 404 Handler
+
+### 🟥 Fixes
+* Unmatched routes now return JSON `{ success: false, message: 'Route not found' }` instead of HTML.
+
+### Files
+* `src/app.ts`
+* `docs/openapi.yaml`
 * `docs/STEP_fix_20250831.md`

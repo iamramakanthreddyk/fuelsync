@@ -771,3 +771,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Standardised on `DB_PASSWORD` for all environment configurations.
 * Updated Jest helpers to reference the new variable.
+### 🛠️ Fix 2025-08-31 – Default 404 handler
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20250831.md`
+
+**Overview:**
+* Added a catch-all route that returns JSON `Route not found` errors.
+* OpenAPI spec now documents the `NotFound` response component.

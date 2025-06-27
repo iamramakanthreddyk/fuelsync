@@ -177,6 +177,10 @@ export function createApp() {
   app.use(`${API_PREFIX}/reports`, createReportsRouter(pool));
   app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter(pool));
 
+  app.use('*', (_req, res) => {
+    return errorResponse(res, 404, 'Route not found');
+  });
+
   app.use(errorHandler);
   return app;
 }
