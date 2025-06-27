@@ -4,6 +4,7 @@ import pool from './utils/db';
 import { createAuthRouter } from './routes/auth.route';
 import { createAdminAuthRouter } from './routes/adminAuth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
+import { createAdminAnalyticsRouter } from './routes/adminAnalytics.route';
 import { createUserRouter } from './routes/user.route';
 import { createStationRouter } from './routes/station.route';
 import { createPumpRouter } from './routes/pump.route';
@@ -157,6 +158,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/auth`, createAuthRouter(pool));
   app.use(`${API_PREFIX}/admin/auth`, createAdminAuthRouter(pool));
   app.use(`${API_PREFIX}/admin`, createAdminApiRouter(pool));
+  app.use(`${API_PREFIX}/admin/analytics`, createAdminAnalyticsRouter(pool));
   app.use(`${API_PREFIX}/users`, createUserRouter(pool));
   app.use(`${API_PREFIX}/stations`, createStationRouter(pool));
   app.use(`${API_PREFIX}/pumps`, createPumpRouter(pool));

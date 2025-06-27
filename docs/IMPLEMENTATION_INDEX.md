@@ -138,3 +138,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-28 | Backend UUID Generation | ✅ Done | `src/services/tenant.service.ts`, `src/services/admin.service.ts`, `src/services/plan.service.ts` | `docs/STEP_fix_20250828.md` |
 | fix | 2025-08-29 | Comprehensive UUID Insertion | ✅ Done | `src/services/*` | `docs/STEP_fix_20250829.md` |
 | fix | 2025-08-30 | Admin login route | ✅ Done | `src/routes/adminAuth.route.ts`, `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `src/app.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20250830.md` |
+| fix | 2025-08-31 | Admin routes completion | ✅ Done | `src/app.ts`, `src/routes/adminApi.router.ts`, `src/controllers/admin.controller.ts`, `src/services/tenant.service.ts` | `docs/STEP_fix_20250831.md` |

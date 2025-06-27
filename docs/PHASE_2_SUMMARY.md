@@ -763,3 +763,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added dedicated `/api/v1/admin/auth/login` endpoint for SuperAdmin authentication.
 * Ensures admin logins fail fast when credentials do not match an admin user.
+
+### 🛠️ Fix 2025-08-31 – Admin routes completion
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `src/routes/adminApi.router.ts`, `src/controllers/admin.controller.ts`, `src/services/tenant.service.ts`, `docs/STEP_fix_20250831.md`
+
+**Overview:**
+* Mounted SuperAdmin analytics router.
+* Added missing tenant summary endpoint.
+* Explicit timestamps during tenant creation avoid Azure null errors.

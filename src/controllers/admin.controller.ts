@@ -210,6 +210,23 @@ export function createAdminApiHandlers(db: Pool) {
         return errorResponse(res, 500, err.message);
       }
     },
+
+    // Tenant Summary Metrics
+    getTenantSummary: async (_req: Request, res: Response) => {
+      try {
+        const tenantCountRes = await db.query('SELECT COUNT(*) FROM public.tenants');
+        const stationCountRes = await db.query('SELECT COUNT(*) FROM public.stations');
+        const userCountRes = await db.query('SELECT COUNT(*) FROM public.users');
+
+        successResponse(res, {
+          totalTenants: parseInt(tenantCountRes.rows[0].count),
+          totalStations: parseInt(stationCountRes.rows[0].count),
+          totalUsers: parseInt(userCountRes.rows[0].count)
+        });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
     
     resetAdminPassword: async (req: Request, res: Response) => {
       try {

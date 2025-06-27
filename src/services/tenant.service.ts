@@ -47,7 +47,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const tenantId = randomUUID();
     const result = await client.query(
-      'INSERT INTO public.tenants (id, name, plan_id, status) VALUES ($1, $2, $3, $4) RETURNING id, name, plan_id, status, created_at',
+      'INSERT INTO public.tenants (id, name, plan_id, status, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, name, plan_id, status, created_at',
       [tenantId, input.name, input.planId, 'active']
     );
 

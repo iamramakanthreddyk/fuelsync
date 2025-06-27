@@ -1885,3 +1885,17 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250830.md`
+
+## [Fix - 2025-08-31] – Admin Routes Completion
+
+### 🟥 Fixes
+* Mounted SuperAdmin analytics router at `/api/v1/admin/analytics`.
+* Added tenant summary endpoint `/api/v1/admin/tenants/summary`.
+* Tenant creation now sets `created_at` and `updated_at` explicitly.
+
+### Files
+* `src/app.ts`
+* `src/routes/adminApi.router.ts`
+* `src/controllers/admin.controller.ts`
+* `src/services/tenant.service.ts`
+* `docs/STEP_fix_20250831.md`
