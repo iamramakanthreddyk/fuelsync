@@ -147,4 +147,3 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-05 | Tenant creation updated_at bug | ✅ Done | `src/services/tenant.service.ts` | `docs/STEP_fix_20250905.md` |
 | fix | 2025-09-06 | User creation updated_at bug | ✅ Done | `src/services/user.service.ts`, `src/services/tenant.service.ts` | `docs/STEP_fix_20250906.md` |
 | fix | 2025-09-06 | Credential consistency | ✅ Done | `src/services/admin.service.ts`, `scripts/setup-database.js`, docs | `docs/STEP_fix_20250906.md` |
-| fix | 2025-06-28 | Login tests & schema patch | ✅ Done | `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql` | `docs/STEP_fix_20250628.md` |

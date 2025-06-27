@@ -1982,15 +1982,3 @@ Each entry is tied to a step from the implementation index.
 * `scripts/setup-database.js`
 * Various documentation files
 * `docs/STEP_fix_20250906.md`
-
-## [Fix - 2025-06-28] – Login test updates and schema fixes
-
-### 🟥 Fixes
-* Login test script now uses seeded credentials and supports custom port.
-* Unified schema migrations run cleanly on fresh databases.
-
-### Files
-* `scripts/simple-login-test.js`
-* `migrations/schema/003_unified_schema.sql`
-* `migrations/schema/005_master_unified_schema.sql`
-* `docs/STEP_fix_20250628.md`

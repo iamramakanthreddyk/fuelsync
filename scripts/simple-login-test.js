@@ -34,8 +34,10 @@ function checkServer(host, port) {
 
 // Test credentials
 const testUsers = [
-  { role: 'superadmin', email: 'admin@fuelsync.com', password: 'Admin@123' },
-  { role: 'owner', email: 'owner@demofuels.com', password: 'Owner@123' }
+  { role: 'superadmin', email: 'admin@fuelsync.dev', password: 'password' },
+  { role: 'owner', email: 'owner@demo.com', password: 'password' },
+  { role: 'manager', email: 'manager@demo.com', password: 'password' },
+  { role: 'attendant', email: 'attendant@demo.com', password: 'password' }
 ];
 
 // API URL
@@ -60,14 +62,14 @@ async function testLogin(email, password) {
     console.log('Response headers:', response.headers);
     console.log('Response data:', response.data);
     
-    if (response.status === 200 && response.data && response.data.data && response.data.data.token) {
+    if (response.status === 200 && response.data.token) {
       console.log('Login successful!');
-      console.log('Token:', response.data.data.token ? '✓ Present' : '✗ Missing');
-      console.log('User:', response.data.data.user ? '✓ Present' : '✗ Missing');
-      if (response.data.data.user) {
-        console.log('User ID:', response.data.data.user.id);
-        console.log('User Role:', response.data.data.user.role);
-        console.log('Tenant ID:', response.data.data.user.tenantId || 'N/A');
+      console.log('Token:', response.data.token ? '✓ Present' : '✗ Missing');
+      console.log('User:', response.data.user ? '✓ Present' : '✗ Missing');
+      if (response.data.user) {
+        console.log('User ID:', response.data.user.id);
+        console.log('User Role:', response.data.user.role);
+        console.log('Tenant ID:', response.data.user.tenantId || 'N/A');
       }
       return true;
     } else {
@@ -90,8 +92,7 @@ async function testLogin(email, password) {
 async function runTests() {
   try {
     // Check if server is running
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-    const serverRunning = await checkServer('localhost', port);
+    const serverRunning = await checkServer('localhost', 3000);
     if (!serverRunning) {
       console.error('\n⚠️ Server is not running! Please start the server with: npm start');
       return;
