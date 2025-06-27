@@ -820,3 +820,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * All documentation and setup scripts now reference `Admin@123` as the default password, resolving login issues caused by outdated credentials.
+
+### 🛠️ Fix 2025-06-28 – Login tests & schema migration
+**Status:** ✅ Done
+**Files:** `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql`, `docs/STEP_fix_20250628.md`
+
+**Overview:**
+* Updated login test script to match seeded user credentials and configurable port.
+* Unified schema SQL adjusted for clean initialization.
