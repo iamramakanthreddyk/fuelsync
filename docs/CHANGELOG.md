@@ -1909,3 +1909,13 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250831.md`
+
+## [Fix - 2025-09-01] – Secure schemas route
+
+### 🟥 Fixes
+* `/schemas` endpoint now disabled in production and requires authentication.
+
+### Files
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250901.md`
