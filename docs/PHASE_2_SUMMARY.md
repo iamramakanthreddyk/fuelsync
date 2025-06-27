@@ -821,6 +821,21 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * All documentation and setup scripts now reference `Admin@123` as the default password, resolving login issues caused by outdated credentials.
 
+### 🛠️ Fix 2025-09-07 – DB migration docs cleanup
+**Status:** ✅ Done
+**Files:** `UNIFIED_DB_SETUP.md`, `docs/DATABASE_MANAGEMENT.md`, `db_brain.md`, `docs/STEP_fix_20250907.md`
+
+**Overview:**
+* Documented that `setup-unified-db` loads `005_master_unified_schema.sql`.
+* Added instructions for handling new SQL migration files.
+
+### 🛠️ Fix 2025-09-08 – Admin user updated_at bug
+**Status:** ✅ Done
+**Files:** `src/services/admin.service.ts`, `src/services/adminUser.service.ts`, `docs/STEP_fix_20250908.md`
+
+**Overview:**
+* Insert queries for new admin users now include `updated_at = NOW()` to prevent null constraint violations when creating superadmins.
+
 ### 🛠️ Fix 2025-06-28 – Login tests & schema migration
 **Status:** ✅ Done
 **Files:** `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql`, `docs/STEP_fix_20250628.md`

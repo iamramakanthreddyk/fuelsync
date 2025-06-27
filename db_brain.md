@@ -74,17 +74,13 @@ Foreign keys cascade on delete to maintain integrity.
 
 ## Migrating to the Unified Schema
 
-To reset an environment using the new unified schema:
+To reset an environment using the unified schema:
 
-1. **Create base tables**
+1. Run the helper command which applies `migrations/schema/005_master_unified_schema.sql`:
    ```bash
-   psql -U <user> -d <db> -f migrations/schema/001_initial_schema.sql
+   npm run setup-unified-db
    ```
-2. **Apply the unified migration**
-   ```bash
-   psql -U <user> -d <db> -f migrations/schema/003_unified_schema.sql
-   ```
-   This drops any old tenant schemas and recreates all tenant tables in `public`.
+   This script removes existing tables, runs the master migration and seeds demo data.
 
-The unified migration also includes all pricing columns, soft-delete fields, and reporting tables so no additional SQL is required.
-Use `npm run migrate` or `node scripts/run-migration.ts` as a wrapper if preferred.
+The `005_master_unified_schema.sql` file defines the full schema so no extra SQL is required for a fresh setup. For subsequent schema changes create a new file under `migrations/schema` and run `node scripts/migrate.js up`.
+

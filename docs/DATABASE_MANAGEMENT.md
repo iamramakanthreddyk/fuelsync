@@ -151,6 +151,26 @@ npm run migrate:create -- --name="add_new_feature"
 - Backup before major schema changes
 - Test rollback procedures
 
+## Handling New Migration Files
+
+When a schema change is required—for example adding a new column—create a new
+SQL file in `migrations/schema` using the next version number. Example:
+
+```sql
+-- 006_add_opening_date.sql
+ALTER TABLE public.stations
+  ADD COLUMN opening_date DATE;
+```
+
+Run pending migrations with:
+
+```bash
+node scripts/migrate.js up
+```
+
+The migration runner records applied versions in `public.schema_migrations`.
+Never modify existing files—always create a new migration.
+
 ## Maintenance Procedures
 
 ### Daily
@@ -208,4 +228,4 @@ npm run migrate:create -- --name="add_new_feature"
 - Manages backup retention
 - Tests restore procedures
 
-This system ensures maintainable, trackable, and reliable database management for FuelSync Hub.
+This system ensures maintainable, trackable, and reliable database management for FuelSync Hub
