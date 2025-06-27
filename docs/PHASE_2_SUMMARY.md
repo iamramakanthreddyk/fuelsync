@@ -814,3 +814,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Insert queries for owners, managers, attendants and other users now set `updated_at = NOW()` to avoid null constraint errors.
+### 🛠️ Fix 2025-09-06 – Credential consistency
+**Status:** ✅ Done
+**Files:** `src/services/admin.service.ts`, `scripts/setup-database.js`, `docs/STEP_fix_20250906.md`
+
+**Overview:**
+* All documentation and setup scripts now reference `Admin@123` as the default password, resolving login issues caused by outdated credentials.

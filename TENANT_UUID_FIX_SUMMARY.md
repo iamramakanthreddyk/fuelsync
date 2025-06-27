@@ -87,7 +87,7 @@ tenant_id  UUID REFERENCES public.tenants(id)  -- Must be UUID, not schema name
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"owner@production-tenant.com","password":"admin123"}'
+  -d '{"email":"owner@production-tenant.com","password":"Admin@123"}'
 ```
 
 ### 2. Create Station (should work now)

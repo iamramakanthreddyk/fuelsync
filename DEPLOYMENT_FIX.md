@@ -34,10 +34,10 @@
 ## Testing the API
 
 ### Login Credentials
-- **SuperAdmin:** `admin@fuelsync.com / admin123`
-- **Owner:** `owner@fuelsync.com / admin123`
-- **Manager:** `manager@fuelsync.com / admin123`
-- **Attendant:** `attendant@fuelsync.com / admin123`
+- **SuperAdmin:** `admin@fuelsync.com / Admin@123`
+- **Owner:** `owner@fuelsync.com / Admin@123`
+- **Manager:** `manager@fuelsync.com / Admin@123`
+- **Attendant:** `attendant@fuelsync.com / Admin@123`
 
 ### Important Headers
 When making API requests, include:

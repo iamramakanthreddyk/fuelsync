@@ -104,14 +104,14 @@ Each tenant has its own schema with tables:
 
 ### User Credentials
 **Super Admin:**
-- `admin@fuelsync.com` / `admin123`
-- `admin2@fuelsync.com` / `admin123`
-- `support@fuelsync.com` / `admin123`
+- `admin@fuelsync.com` / `Admin@123`
+- `admin2@fuelsync.com` / `Admin@123`
+- `support@fuelsync.com` / `Admin@123`
 
 **Production Tenant:**
-- `owner@production-tenant.com` / `admin123`
-- `manager@production-tenant.com` / `admin123`
-- `attendant@production-tenant.com` / `admin123`
+- `owner@production-tenant.com` / `Admin@123`
+- `manager@production-tenant.com` / `Admin@123`
+- `attendant@production-tenant.com` / `Admin@123`
 
 ## Testing
 
@@ -119,14 +119,14 @@ Each tenant has its own schema with tables:
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@fuelsync.com","password":"admin123"}'
+  -d '{"email":"admin@fuelsync.com","password":"Admin@123"}'
 ```
 
 ### 2. Tenant Owner Login
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"owner@production-tenant.com","password":"admin123"}'
+  -d '{"email":"owner@production-tenant.com","password":"Admin@123"}'
 ```
 
 ### 3. Owner Create Station

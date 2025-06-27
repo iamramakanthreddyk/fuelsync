@@ -112,7 +112,7 @@ async function setupDatabase() {
     // STEP 3: Create admin users
     console.log('\n=== STEP 3: Creating admin users ===');
     
-    const adminHash = await bcrypt.hash('admin123', 10);
+    const adminHash = await bcrypt.hash('Admin@123', 10);
     
     // Create main admin
     await pool.query(`
@@ -192,7 +192,7 @@ async function setupDatabase() {
       console.log(`\nCreating data for tenant: ${tenant.name}`);
       
       // Create users
-      const userHash = await bcrypt.hash('admin123', 10);
+      const userHash = await bcrypt.hash('Admin@123', 10);
       
       // Create owner with domain-friendly email
       const emailPrefix = tenant.slug;
@@ -406,13 +406,13 @@ async function setupDatabase() {
     
     console.log('\n=== Database setup completed successfully ===');
     console.log('\nLogin credentials:');
-    console.log('SuperAdmin: admin@fuelsync.com / admin123');
-    console.log('SuperAdmin: admin2@fuelsync.com / admin123');
-    console.log('Admin: support@fuelsync.com / admin123');
+    console.log('SuperAdmin: admin@fuelsync.com / Admin@123');
+    console.log('SuperAdmin: admin2@fuelsync.com / Admin@123');
+    console.log('Admin: support@fuelsync.com / Admin@123');
     console.log('\nTenant credentials:');
-    console.log('Owner: owner@production-tenant.com / admin123');
-    console.log('Manager: manager@production-tenant.com / admin123');
-    console.log('Attendant: attendant@production-tenant.com / admin123');
+    console.log('Owner: owner@production-tenant.com / Admin@123');
+    console.log('Manager: manager@production-tenant.com / Admin@123');
+    console.log('Attendant: attendant@production-tenant.com / Admin@123');
     
   } catch (error) {
     console.error('Error setting up database:', error);

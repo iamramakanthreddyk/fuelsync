@@ -36,13 +36,13 @@
 ## Testing the Fix
 
 ### 1. SuperAdmin View
-- Login as SuperAdmin: `admin@fuelsync.com / admin123`
+- Login as SuperAdmin: `admin@fuelsync.com / Admin@123`
 - Navigate to Tenants page
 - Verify all tenants are visible
 - Click on a tenant to see its details
 
 ### 2. Owner View
-- Login as Owner: `owner@fuelsync.com / admin123`
+- Login as Owner: `owner@fuelsync.com / Admin@123`
 - Verify stations are visible
 - Navigate through stations → pumps → nozzles
 
