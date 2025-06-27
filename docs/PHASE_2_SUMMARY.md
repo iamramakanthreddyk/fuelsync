@@ -755,3 +755,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Remaining service-layer inserts now supply UUIDs explicitly.
 * Prevents `null value in column "id"` errors across all tables on Azure.
+
+### 🛠️ Fix 2025-08-30 – Admin login route
+**Status:** ✅ Done
+**Files:** `src/routes/adminAuth.route.ts`, `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `src/app.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20250830.md`
+
+**Overview:**
+* Added dedicated `/api/v1/admin/auth/login` endpoint for SuperAdmin authentication.
+* Ensures admin logins fail fast when credentials do not match an admin user.

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './utils/db';
 import { createAuthRouter } from './routes/auth.route';
+import { createAdminAuthRouter } from './routes/adminAuth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
 import { createUserRouter } from './routes/user.route';
 import { createStationRouter } from './routes/station.route';
@@ -154,6 +155,7 @@ export function createApp() {
   const API_PREFIX = '/api/v1';
 
   app.use(`${API_PREFIX}/auth`, createAuthRouter(pool));
+  app.use(`${API_PREFIX}/admin/auth`, createAdminAuthRouter(pool));
   app.use(`${API_PREFIX}/admin`, createAdminApiRouter(pool));
   app.use(`${API_PREFIX}/users`, createUserRouter(pool));
   app.use(`${API_PREFIX}/stations`, createStationRouter(pool));
