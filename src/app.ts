@@ -155,8 +155,10 @@ export function createApp() {
 
 
   
-  // Add debug middleware
-  app.use(debugRequest);
+  // Add debug middleware in non-production or when DEBUG_REQUESTS is enabled
+  if (process.env.NODE_ENV !== 'production' || process.env.DEBUG_REQUESTS === 'true') {
+    app.use(debugRequest);
+  }
   
   // API Documentation
   app.use('/api/docs', docsRouter);

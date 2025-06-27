@@ -62,6 +62,12 @@ npm run dev
 # Server runs on http://localhost:3001
 ```
 
+### Debug Request Logging
+
+The server includes middleware that logs each request when `DEBUG_REQUESTS=true`.
+This middleware runs automatically when `NODE_ENV` is not `production`.
+Set `DEBUG_REQUESTS=false` to disable verbose logging.
+
 ### Step 5: Test Local API
 ```bash
 # Test health endpoint
