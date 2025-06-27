@@ -59,7 +59,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
     const ownerResult = await client.query(
-      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
       [randomUUID(), tenant.id, ownerEmail, passwordHash, ownerName, 'owner']
     );
 
@@ -70,7 +70,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
 
     await client.query(
-      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6)',
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW())',
       [randomUUID(), tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
     );
 
@@ -79,7 +79,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
 
     await client.query(
-      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6)',
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW())',
       [randomUUID(), tenant.id, attendantEmail, attendantHash, `${input.name} Attendant`, 'attendant']
     );
 
@@ -233,7 +233,7 @@ export async function createTenantUser(db: Pool, tenantId: string, userData: {
   const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
   const userResult = await db.query(
-    'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+    'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
     [randomUUID(), tenantId, userData.email, passwordHash, userData.name, userData.role]
   );
   

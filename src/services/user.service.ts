@@ -17,7 +17,7 @@ export async function createUser(
     await beforeCreateUser(client, tenantId);
     const hash = await bcrypt.hash(password, 10);
     const res = await client.query(
-      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
       [randomUUID(), tenantId, email, hash, name, role]
     );
     return res.rows[0].id;
