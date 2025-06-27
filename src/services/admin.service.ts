@@ -32,7 +32,7 @@ export async function createAdminUser(db: Pool, input: AdminUserInput): Promise<
   }
   
   // Hash password
-  const passwordHash = await bcrypt.hash(input.password || 'admin123', 10);
+  const passwordHash = await bcrypt.hash(input.password || 'Admin@123', 10);
   
   const result = await db.query(
     'INSERT INTO public.admin_users (id, email, name, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, name, role, created_at',

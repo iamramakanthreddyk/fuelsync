@@ -1962,3 +1962,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/tenant.service.ts`
 * `docs/STEP_fix_20250905.md`
+
+## [Fix - 2025-09-06] – Credential consistency
+
+### 🟥 Fixes
+* Updated all docs and setup scripts to use `Admin@123` as the default password.
+* Seed scripts and service now hash `Admin@123` by default and logs display the correct credentials.
+
+### Files
+* `src/services/admin.service.ts`
+* `scripts/setup-database.js`
+* Various documentation files
+* `docs/STEP_fix_20250906.md`

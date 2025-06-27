@@ -65,14 +65,14 @@ Each tenant has its own schema with these tables:
 ## Login Credentials
 
 ### SuperAdmin Users
-- `admin@fuelsync.com / admin123`
-- `admin2@fuelsync.com / admin123`
-- `support@fuelsync.com / admin123` (Admin role)
+- `admin@fuelsync.com / Admin@123`
+- `admin2@fuelsync.com / Admin@123`
+- `support@fuelsync.com / Admin@123` (Admin role)
 
 ### Tenant Users
-- `owner@production-tenant.com / admin123`
-- `manager@production-tenant.com / admin123`
-- `attendant@production-tenant.com / admin123`
+- `owner@production-tenant.com / Admin@123`
+- `manager@production-tenant.com / Admin@123`
+- `attendant@production-tenant.com / Admin@123`
 
 ## Tenant Structure
 

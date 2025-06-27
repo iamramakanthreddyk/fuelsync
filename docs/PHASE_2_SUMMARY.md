@@ -807,3 +807,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Insert query now populates the `updated_at` column to prevent 500 errors when creating tenants.
+
+### 🛠️ Fix 2025-09-06 – Credential consistency
+**Status:** ✅ Done
+**Files:** `src/services/admin.service.ts`, `scripts/setup-database.js`, `docs/STEP_fix_20250906.md`
+
+**Overview:**
+* All documentation and setup scripts now reference `Admin@123` as the default password, resolving login issues caused by outdated credentials.
