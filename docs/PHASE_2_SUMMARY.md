@@ -800,3 +800,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Removed obsolete `logs/server.log` and added the directory to `.gitignore` to keep runtime logs out of version control.
+
+### 🛠️ Fix 2025-09-05 – Tenant creation updated_at bug
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `docs/STEP_fix_20250905.md`
+
+**Overview:**
+* Insert query now populates the `updated_at` column to prevent 500 errors when creating tenants.

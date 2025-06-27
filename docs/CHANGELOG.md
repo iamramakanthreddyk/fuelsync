@@ -1953,3 +1953,12 @@ Each entry is tied to a step from the implementation index.
 * `OWNER_ROLE_IMPLEMENTATION.md`
 * `docs/IMPLEMENTATION_INDEX.md`
 
+
+## [Fix - 2025-09-05] – Tenant creation updated_at bug
+
+### 🟥 Fixes
+* Insert query for new tenants now sets `updated_at` to `NOW()` to satisfy not-null constraint.
+
+### Files
+* `src/services/tenant.service.ts`
+* `docs/STEP_fix_20250905.md`
