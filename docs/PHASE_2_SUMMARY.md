@@ -763,3 +763,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added dedicated `/api/v1/admin/auth/login` endpoint for SuperAdmin authentication.
 * Ensures admin logins fail fast when credentials do not match an admin user.
+
+### 🛠️ Fix 2025-08-31 – Consistent DB Password Variable
+**Status:** ✅ Done
+**Files:** `.env.development`, `.env.test`, `docker-compose.yml`, `jest.setup.js`, `jest.globalSetup.ts`, `jest.globalTeardown.ts`, `tests/utils/db-utils.ts`, `docs/STEP_fix_20250831.md`
+
+**Overview:**
+* Standardised on `DB_PASSWORD` for all environment configurations.
+* Updated Jest helpers to reference the new variable.

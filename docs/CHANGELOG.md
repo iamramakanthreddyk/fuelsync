@@ -1885,3 +1885,19 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250830.md`
+
+## [Fix - 2025-08-31] – Consistent DB Password Variable
+
+### 🟥 Fixes
+* Renamed `DB_PASS` to `DB_PASSWORD` across environment files and test helpers.
+* Updated Docker Compose configuration to reference the new variable.
+
+### Files
+* `.env.development`
+* `.env.test`
+* `docker-compose.yml`
+* `jest.setup.js`
+* `jest.globalSetup.ts`
+* `jest.globalTeardown.ts`
+* `tests/utils/db-utils.ts`
+* `docs/STEP_fix_20250831.md`
