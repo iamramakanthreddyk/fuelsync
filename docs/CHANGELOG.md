@@ -2016,6 +2016,19 @@ Each entry is tied to a step from the implementation index.
 * `src/utils/prisma.ts`
 * `docs/STEP_fix_20250909.md`
 
+## [Fix - 2025-09-10] – Tenant email slug generation
+
+### 🟥 Fixes
+* Default Owner, Manager and Attendant emails now use a slug of the tenant name instead of the tenant UUID.
+
+### Files
+* `src/services/tenant.service.ts`
+* `src/utils/slugify.ts`
+* `docs/TENANT_USER_CREATION_PROCESS.md`
+* `docs/TENANT_CREATION_API.md`
+* `docs/TENANT_MANAGEMENT_GUIDE.md`
+* `docs/STEP_fix_20250910.md`
+
 ## [Fix - 2025-06-28] – Login test updates and schema fixes
 
 ### 🟥 Fixes
