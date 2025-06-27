@@ -124,6 +124,17 @@ CREATE TABLE IF NOT EXISTS public.creditors (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.nozzle_readings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  nozzle_id UUID NOT NULL REFERENCES public.nozzles(id) ON DELETE CASCADE,
+  reading DECIMAL(10,2) NOT NULL,
+  recorded_at TIMESTAMPTZ NOT NULL,
+  payment_method TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS public.sales (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
@@ -193,17 +204,6 @@ CREATE TABLE IF NOT EXISTS public.fuel_deliveries (
   volume DECIMAL(10,3) NOT NULL CHECK (volume > 0),
   delivered_by TEXT,
   delivery_date DATE NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.nozzle_readings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
-  nozzle_id UUID NOT NULL REFERENCES public.nozzles(id) ON DELETE CASCADE,
-  reading DECIMAL(10,2) NOT NULL,
-  recorded_at TIMESTAMPTZ NOT NULL,
-  payment_method TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
