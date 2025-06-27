@@ -1885,3 +1885,13 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250830.md`
+
+## [Fix - 2025-08-31] – Default 404 Handler
+
+### 🟥 Fixes
+* Unmatched routes now return JSON `{ success: false, message: 'Route not found' }` instead of HTML.
+
+### Files
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250831.md`
