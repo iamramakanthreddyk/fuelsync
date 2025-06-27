@@ -1943,3 +1943,13 @@ Each entry is tied to a step from the implementation index.
 * `.gitignore`
 * `logs/server.log` (deleted)
 * `docs/STEP_fix_20250903.md`
+
+## [Fix - 2025-09-04] – Owner role doc filename corrected
+
+### 🟥 Fixes
+* Renamed `OWNER_ROLE_IMPLEMETATION.md` to `OWNER_ROLE_IMPLEMENTATION.md` for consistency.
+
+### Files
+* `OWNER_ROLE_IMPLEMENTATION.md`
+* `docs/IMPLEMENTATION_INDEX.md`
+

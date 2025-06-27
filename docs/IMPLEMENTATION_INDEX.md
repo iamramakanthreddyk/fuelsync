@@ -143,3 +143,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-01 | Secure schemas route | ✅ Done | `src/app.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20250901.md` |
 | fix | 2025-09-02 | Debug middleware conditional | ✅ Done | `src/app.ts`, `.env.example`, `.env.development`, `DEV_GUIDE.md` | `docs/STEP_fix_20250902.md` |
 | fix | 2025-09-03 | Ignore runtime logs | ✅ Done | `.gitignore`, `logs/server.log` (deleted) | `docs/STEP_fix_20250903.md` |
+| fix | 2025-09-04 | Owner doc filename typo | ✅ Done | `OWNER_ROLE_IMPLEMENTATION.md` | `docs/STEP_fix_20250904.md` |
