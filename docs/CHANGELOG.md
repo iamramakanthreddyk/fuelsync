@@ -1962,3 +1962,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/tenant.service.ts`
 * `docs/STEP_fix_20250905.md`
+
+## [Fix - 2025-09-06] – User creation updated_at bug
+
+### 🟥 Fixes
+* All user insert queries now explicitly set `updated_at` to `NOW()` so databases without defaults do not fail.
+
+### Files
+* `src/services/user.service.ts`
+* `src/services/tenant.service.ts`
+* `docs/STEP_fix_20250906.md`

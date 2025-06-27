@@ -807,3 +807,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Insert query now populates the `updated_at` column to prevent 500 errors when creating tenants.
+
+### 🛠️ Fix 2025-09-06 – User creation updated_at bug
+**Status:** ✅ Done
+**Files:** `src/services/user.service.ts`, `src/services/tenant.service.ts`, `docs/STEP_fix_20250906.md`
+
+**Overview:**
+* Insert queries for owners, managers, attendants and other users now set `updated_at = NOW()` to avoid null constraint errors.
