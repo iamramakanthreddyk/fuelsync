@@ -763,3 +763,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added dedicated `/api/v1/admin/auth/login` endpoint for SuperAdmin authentication.
 * Ensures admin logins fail fast when credentials do not match an admin user.
+
+### 🛠️ Fix 2025-08-31 – Default 404 handler
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20250831.md`
+
+**Overview:**
+* Added a catch-all route that returns JSON `Route not found` errors.
+* OpenAPI spec now documents the `NotFound` response component.
