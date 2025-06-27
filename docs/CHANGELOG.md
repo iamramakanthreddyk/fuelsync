@@ -2006,7 +2006,15 @@ Each entry is tied to a step from the implementation index.
 * `src/services/admin.service.ts`
 * `src/services/adminUser.service.ts`
 * `docs/STEP_fix_20250908.md`
-* `docs/STEP_fix_20250907.md`
+
+## [Fix - 2025-09-09] – Prisma DB URL fallback
+
+### 🟥 Fixes
+* Prisma now derives `DATABASE_URL` from individual `DB_*` variables when the variable is not set.
+
+### Files
+* `src/utils/prisma.ts`
+* `docs/STEP_fix_20250909.md`
 
 ## [Fix - 2025-06-28] – Login test updates and schema fixes
 

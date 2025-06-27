@@ -149,5 +149,6 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-06 | Credential consistency | ✅ Done | `src/services/admin.service.ts`, `scripts/setup-database.js`, docs | `docs/STEP_fix_20250906.md` |
 | fix | 2025-09-07 | DB migration docs cleanup | ✅ Done | `UNIFIED_DB_SETUP.md`, `docs/DATABASE_MANAGEMENT.md`, `db_brain.md`, removed scripts | `docs/STEP_fix_20250907.md` |
 | fix | 2025-09-08 | Admin user updated_at bug | ✅ Done | `src/services/admin.service.ts`, `src/services/adminUser.service.ts` | `docs/STEP_fix_20250908.md` |
+| fix | 2025-09-09 | Prisma DB URL fallback | ✅ Done | `src/utils/prisma.ts` | `docs/STEP_fix_20250909.md` |
 | fix | 2025-06-28 | Login tests & schema patch | ✅ Done | `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql` | `docs/STEP_fix_20250628.md` |
 | fix | 2025-06-29 | Plan rule lookup by UUID | ✅ Done | `src/config/planConfig.ts`, `tests/planEnforcement.test.ts` | `docs/STEP_fix_20250629.md` |

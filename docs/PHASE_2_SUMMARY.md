@@ -836,6 +836,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Insert queries for new admin users now include `updated_at = NOW()` to prevent null constraint violations when creating superadmins.
 
+### 🛠️ Fix 2025-09-09 – Prisma DB URL fallback
+**Status:** ✅ Done
+**Files:** `src/utils/prisma.ts`, `docs/STEP_fix_20250909.md`
+
+**Overview:**
+* `src/utils/prisma.ts` now builds `DATABASE_URL` from `DB_*` variables when missing so deployments without the variable still connect.
+
 ### 🛠️ Fix 2025-06-28 – Login tests & schema migration
 **Status:** ✅ Done
 **Files:** `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql`, `docs/STEP_fix_20250628.md`
