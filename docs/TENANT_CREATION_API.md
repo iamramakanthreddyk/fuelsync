@@ -47,9 +47,9 @@ The API accepts the following formats:
 
 1. A new record is added to the `public.tenants` table
 2. Default users are created for the tenant:
-   - Owner (`owner@{tenantId}.com`)
-   - Manager (`manager@{tenantId}.com`)
-   - Attendant (`attendant@{tenantId}.com`)
+   - Owner (`owner@{tenant-slug}.com`)
+   - Manager (`manager@{tenant-slug}.com`)
+   - Attendant (`attendant@{tenant-slug}.com`)
 
 ## User Management After Tenant Creation
 

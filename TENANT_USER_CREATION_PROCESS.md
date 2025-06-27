@@ -16,19 +16,19 @@ When a new tenant is created, the system:
 ### 2. Automatic User Creation
 
 #### Owner User (Primary Admin)
-- **Email**: `owner@{schema-name}.com` (e.g., `owner@tenant-acme-corp.com`)
+- **Email**: `owner@{tenant-slug}.com` (e.g., `owner@acme-corp.com`)
 - **Password**: `{firstname}@{schema}123` (e.g., `acme@tenant123`)
 - **Role**: `owner` - Full system access
 - **Name**: `{Tenant Name} Owner` (e.g., `Acme Corp Owner`)
 
 #### Manager User (Operations Manager)
-- **Email**: `manager@{schema-name}.com`
+- **Email**: `manager@{tenant-slug}.com`
 - **Password**: `{firstname}@{schema}123`
 - **Role**: `manager` - Station management, reports, user management
 - **Name**: `{Tenant Name} Manager`
 
 #### Attendant User (Station Operator)
-- **Email**: `attendant@{schema-name}.com`
+- **Email**: `attendant@{tenant-slug}.com`
 - **Password**: `{firstname}@{schema}123`
 - **Role**: `attendant` - Basic operations, readings entry
 - **Name**: `{Tenant Name} Attendant`
@@ -55,17 +55,16 @@ When a new tenant is created, the system:
 
 ## Email Generation Logic
 
-### Domain Pattern: `{schema-name-with-hyphens}.com`
+### Domain Pattern: `{tenant-slug}.com`
 
-**Schema Transformation:**
-- `tenant_acme_corp_123456` → `tenant-acme-corp-123456.com`
-- Underscores replaced with hyphens
-- Timestamp suffix preserved
+**Slug Generation:**
+- "Acme Corp" → `acme-corp`
+- Whitespace and special characters become hyphens
 
 **Email Examples:**
-- `owner@tenant-acme-corp-123456.com`
-- `manager@tenant-acme-corp-123456.com`
-- `attendant@tenant-acme-corp-123456.com`
+- `owner@acme-corp.com`
+- `manager@acme-corp.com`
+- `attendant@acme-corp.com`
 
 ## Role Permissions
 

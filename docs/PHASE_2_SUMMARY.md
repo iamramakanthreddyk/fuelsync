@@ -843,6 +843,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * `src/utils/prisma.ts` now builds `DATABASE_URL` from `DB_*` variables when missing so deployments without the variable still connect.
 
+### 🛠️ Fix 2025-09-10 – Tenant email slug generation
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `src/utils/slugify.ts`, `docs/STEP_fix_20250910.md`
+
+**Overview:**
+* Default user emails use a slugified tenant name instead of the raw UUID.
+
 ### 🛠️ Fix 2025-06-28 – Login tests & schema migration
 **Status:** ✅ Done
 **Files:** `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql`, `docs/STEP_fix_20250628.md`

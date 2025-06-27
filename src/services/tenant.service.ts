@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import { slugify } from '../utils/slugify';
 
 export interface TenantInput {
   name: string;
@@ -53,8 +54,9 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const tenant = result.rows[0];
 
+    const tenantSlug = slugify(input.name);
     const ownerName = input.ownerName || `${input.name} Owner`;
-    const ownerEmail = input.ownerEmail || `owner@${tenant.id}.com`;
+    const ownerEmail = input.ownerEmail || `owner@${tenantSlug}.com`;
     const rawPassword = input.ownerPassword || generatePassword(input.name);
     const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
@@ -65,7 +67,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const ownerId = ownerResult.rows[0].id;
 
-    const managerEmail = `manager@${tenant.id}.com`;
+    const managerEmail = `manager@${tenantSlug}.com`;
     const managerPassword = generatePassword(`${input.name} Manager`);
     const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
 
@@ -74,7 +76,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
       [randomUUID(), tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
     );
 
-    const attendantEmail = `attendant@${tenant.id}.com`;
+    const attendantEmail = `attendant@${tenantSlug}.com`;
     const attendantPassword = generatePassword(`${input.name} Attendant`);
     const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
 
