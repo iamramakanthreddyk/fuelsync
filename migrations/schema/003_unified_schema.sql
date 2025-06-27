@@ -57,7 +57,7 @@ DECLARE
 BEGIN
     FOR r IN
         SELECT nspname FROM pg_namespace
-        WHERE nspname NOT IN ('public', 'pg_catalog', 'information_schema')
+        WHERE nspname NOT IN ('public', 'pg_catalog', 'information_schema', 'pg_toast')
     LOOP
         EXECUTE format('DROP SCHEMA IF EXISTS %I CASCADE;', r.nspname);
     END LOOP;
