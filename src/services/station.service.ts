@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 
 export async function createStation(db: Pool, tenantId: string, name: string, address?: string): Promise<string> {
@@ -8,8 +9,8 @@ export async function createStation(db: Pool, tenantId: string, name: string, ad
     await beforeCreateStation(client, tenantId);
 
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.stations (tenant_id, name, address) VALUES ($1,$2,$3) RETURNING id',
-      [tenantId, name, address || null]
+      'INSERT INTO public.stations (id, tenant_id, name, address) VALUES ($1,$2,$3,$4) RETURNING id',
+      [randomUUID(), tenantId, name, address || null]
     );
     return res.rows[0].id;
   } finally {

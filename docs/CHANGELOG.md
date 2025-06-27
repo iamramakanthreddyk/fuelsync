@@ -1838,3 +1838,36 @@ Each entry is tied to a step from the implementation index.
 * `src/services/creditor.service.ts`
 * `src/services/fuelPrice.service.ts`
 * `docs/STEP_fix_20250827.md`
+
+## [Fix - 2025-08-28] – Backend UUID Generation
+
+### 🟥 Fixes
+* Insert statements for tenants, admin users and plans now generate UUIDs in the application.
+* Resolves `null value in column "id"` errors on Azure Postgres.
+
+### Files
+* `src/services/tenant.service.ts`
+* `src/services/admin.service.ts`
+* `src/services/plan.service.ts`
+* `docs/STEP_fix_20250828.md`
+
+## [Fix - 2025-08-29] – Comprehensive UUID Insertion
+
+### 🟥 Fixes
+* All service insert statements now provide UUIDs via `crypto.randomUUID()`.
+* Eliminates reliance on database defaults across pumps, stations, users and domain tables.
+
+### Files
+* `src/services/pump.service.ts`
+* `src/services/nozzle.service.ts`
+* `src/services/user.service.ts`
+* `src/services/creditor.service.ts`
+* `src/services/delivery.service.ts`
+* `src/services/station.service.ts`
+* `src/services/reconciliation.service.ts`
+* `src/services/fuelPrice.service.ts`
+* `src/services/adminUser.service.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/services/inventory.service.ts`
+* `src/services/fuelInventory.service.ts`
+* `docs/STEP_fix_20250829.md`

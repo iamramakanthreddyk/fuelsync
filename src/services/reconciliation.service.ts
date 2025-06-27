@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from 'pg';
+import { randomUUID } from 'crypto';
 
 export interface ReconciliationTotals {
   totalSales: number;
@@ -79,9 +80,9 @@ export async function runReconciliation(
       );
     } else {
       await client.query(
-        `INSERT INTO ${tenantId}.day_reconciliations (station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,true)`,
-        [stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
+        `INSERT INTO ${tenantId}.day_reconciliations (id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true)`,
+        [randomUUID(), stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
       );
     }
     await client.query('COMMIT');

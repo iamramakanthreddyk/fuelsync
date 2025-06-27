@@ -739,3 +739,19 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Multi-line SQL queries now use template strings instead of single quotes.
 * `npm run build` compiles without errors.
+
+### 🛠️ Fix 2025-08-28 – Backend UUID Generation
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `src/services/admin.service.ts`, `src/services/plan.service.ts`, `docs/STEP_fix_20250828.md`
+
+**Overview:**
+* Services no longer rely on database defaults for primary keys.
+* UUIDs are generated via `crypto.randomUUID()` before insertion, ensuring compatibility with Azure.
+
+### 🛠️ Fix 2025-08-29 – Comprehensive UUID Insertion
+**Status:** ✅ Done
+**Files:** `src/services/*`, `docs/STEP_fix_20250829.md`
+
+**Overview:**
+* Remaining service-layer inserts now supply UUIDs explicitly.
+* Prevents `null value in column "id"` errors across all tables on Azure.

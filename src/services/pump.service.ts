@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { beforeCreatePump } from '../middleware/planEnforcement';
 
 export async function createPump(db: Pool, tenantId: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
@@ -8,8 +9,8 @@ export async function createPump(db: Pool, tenantId: string, stationId: string, 
     await beforeCreatePump(client, tenantId, stationId);
 
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.pumps (tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4) RETURNING id',
-      [tenantId, stationId, label, serialNumber || null]
+      'INSERT INTO public.pumps (id, tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4,$5) RETURNING id',
+      [randomUUID(), tenantId, stationId, label, serialNumber || null]
     );
     return res.rows[0].id;
   } finally {
