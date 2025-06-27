@@ -1983,6 +1983,31 @@ Each entry is tied to a step from the implementation index.
 * Various documentation files
 * `docs/STEP_fix_20250906.md`
 
+## [Fix - 2025-09-07] – DB migration docs cleanup
+
+### 🟥 Fixes
+* Clarified that `setup-unified-db` applies `005_master_unified_schema.sql`.
+* Documented workflow for new SQL migration files.
+* Removed deprecated scripts `setup-database.js` and `check-db-connection.ts`.
+
+### Files
+* `UNIFIED_DB_SETUP.md`
+* `docs/DATABASE_MANAGEMENT.md`
+* `db_brain.md`
+* `scripts/setup-database.js` (deleted)
+* `scripts/check-db-connection.ts` (deleted)
+
+## [Fix - 2025-09-08] – Admin user updated_at bug
+
+### 🟥 Fixes
+* Insert queries for new superadmins now set `updated_at` to `NOW()` so databases without defaults do not fail.
+
+### Files
+* `src/services/admin.service.ts`
+* `src/services/adminUser.service.ts`
+* `docs/STEP_fix_20250908.md`
+* `docs/STEP_fix_20250907.md`
+
 ## [Fix - 2025-06-28] – Login test updates and schema fixes
 
 ### 🟥 Fixes

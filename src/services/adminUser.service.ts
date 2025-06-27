@@ -11,7 +11,7 @@ export async function createAdminUser(
 ): Promise<void> {
   const hash = await bcrypt.hash(password, 10);
   await db.query(
-    'INSERT INTO public.admin_users (id, email, password_hash, role) VALUES ($1, $2, $3, $4)',
+    'INSERT INTO public.admin_users (id, email, password_hash, role, updated_at) VALUES ($1, $2, $3, $4, NOW())',
     [randomUUID(), email, hash, role]
   );
 }
