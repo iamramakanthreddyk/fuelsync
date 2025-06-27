@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
@@ -37,8 +38,8 @@ export async function createNozzleReading(
     }
 
     const readingRes = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.nozzle_readings (nozzle_id, reading, recorded_at) VALUES ($1,$2,$3) RETURNING id`,
-      [data.nozzleId, data.reading, data.recordedAt]
+      `INSERT INTO ${tenantId}.nozzle_readings (id, nozzle_id, reading, recorded_at) VALUES ($1,$2,$3,$4) RETURNING id`,
+      [randomUUID(), data.nozzleId, data.reading, data.recordedAt]
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
     const price = await getPriceAtTimestamp(client, tenantId, station_id, fuel_type, data.recordedAt);
@@ -54,8 +55,8 @@ export async function createNozzleReading(
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }
     await client.query(
-      `INSERT INTO ${tenantId}.sales (nozzle_id, station_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-      [data.nozzleId, station_id, userId, volumeSold, saleAmount, data.recordedAt, data.paymentMethod || (data.creditorId ? 'credit' : 'cash'), data.creditorId || null]
+      `INSERT INTO ${tenantId}.sales (id, nozzle_id, station_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [randomUUID(), data.nozzleId, station_id, userId, volumeSold, saleAmount, data.recordedAt, data.paymentMethod || (data.creditorId ? 'credit' : 'cash'), data.creditorId || null]
     );
     await client.query('COMMIT');
     return readingRes.rows[0].id;

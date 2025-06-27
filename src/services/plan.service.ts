@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 
 export interface PlanInput {
   name: string;
@@ -28,10 +29,11 @@ export interface PlanOutput {
 export async function createPlan(db: Pool, input: PlanInput): Promise<PlanOutput> {
   const result = await db.query(
     `INSERT INTO public.plans
-     (name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     (id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at`,
     [
+      randomUUID(),
       input.name,
       input.maxStations || 5,
       input.maxPumpsPerStation || 10,

@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { FuelPriceInput, FuelPriceQuery } from '../validators/fuelPrice.validator';
 
 export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPriceInput): Promise<string> {
@@ -6,9 +7,9 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
   try {
     await client.query('BEGIN');
     const res = await client.query<{ id: string }>(
-      `INSERT INTO public.fuel_prices (tenant_id, station_id, fuel_type, price, valid_from)
-       VALUES ($1,$2,$3,$4,$5) RETURNING id`,
-      [tenantId, input.stationId, input.fuelType, input.price, input.effectiveFrom || new Date()]
+      `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from)
+       VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+      [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, input.effectiveFrom || new Date()]
     );
     await client.query('COMMIT');
     return res.rows[0].id;

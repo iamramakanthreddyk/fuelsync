@@ -135,3 +135,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-25 | Node typings dev dependency | ✅ Done | `package.json` | `docs/STEP_fix_20250825.md` |
 | fix | 2025-08-26 | Unified Schema Cleanup | ✅ Done | `src/app.ts`, `src/controllers/admin.controller.ts`, `src/controllers/analytics.controller.ts`, `src/middlewares/*`, `src/types/auth.d.ts`, `migrations/schema/005_master_unified_schema.sql`, `scripts/apply-unified-schema.js`, `frontend/docs/openapi-v1.yaml` | `docs/STEP_fix_20250826.md` |
 | fix | 2025-08-27 | SQL String Literal Fixes | ✅ Done | `src/services/creditor.service.ts`, `src/services/fuelPrice.service.ts` | `docs/STEP_fix_20250827.md` |
+| fix | 2025-08-28 | Backend UUID Generation | ✅ Done | `src/services/tenant.service.ts`, `src/services/admin.service.ts`, `src/services/plan.service.ts` | `docs/STEP_fix_20250828.md` |
+| fix | 2025-08-29 | Comprehensive UUID Insertion | ✅ Done | `src/services/*` | `docs/STEP_fix_20250829.md` |

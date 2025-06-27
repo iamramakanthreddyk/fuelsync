@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from 'pg';
+import { randomUUID } from 'crypto';
 import { DeliveryInput, DeliveryQuery } from '../validators/delivery.validator';
 
 export async function createFuelDelivery(db: Pool, tenantId: string, input: DeliveryInput): Promise<string> {
@@ -6,9 +7,9 @@ export async function createFuelDelivery(db: Pool, tenantId: string, input: Deli
   try {
     await client.query('BEGIN');
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.fuel_deliveries (station_id, fuel_type, volume, delivered_by, delivery_date)
-       VALUES ($1,$2,$3,$4,$5) RETURNING id`,
-      [input.stationId, input.fuelType, input.volume, input.supplier || null, input.deliveryDate]
+      `INSERT INTO ${tenantId}.fuel_deliveries (id, station_id, fuel_type, volume, delivered_by, delivery_date)
+       VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+      [randomUUID(), input.stationId, input.fuelType, input.volume, input.supplier || null, input.deliveryDate]
     );
 
     const inv = await client.query<{ id: string }>(
@@ -24,9 +25,9 @@ export async function createFuelDelivery(db: Pool, tenantId: string, input: Deli
       );
     } else {
       await client.query(
-        `INSERT INTO ${tenantId}.fuel_inventory (station_id, fuel_type, current_volume)
-         VALUES ($1,$2,$3)`,
-        [input.stationId, input.fuelType, input.volume]
+        `INSERT INTO ${tenantId}.fuel_inventory (id, station_id, fuel_type, current_volume)
+         VALUES ($1,$2,$3,$4)`,
+        [randomUUID(), input.stationId, input.fuelType, input.volume]
       );
     }
     await client.query('COMMIT');

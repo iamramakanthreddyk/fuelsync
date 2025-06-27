@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 
 export interface AdminUserInput {
   email: string;
@@ -34,8 +35,8 @@ export async function createAdminUser(db: Pool, input: AdminUserInput): Promise<
   const passwordHash = await bcrypt.hash(input.password || 'admin123', 10);
   
   const result = await db.query(
-    'INSERT INTO public.admin_users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role, created_at',
-    [input.email, input.name || input.email.split('@')[0], passwordHash, input.role || 'superadmin']
+    'INSERT INTO public.admin_users (id, email, name, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, name, role, created_at',
+    [randomUUID(), input.email, input.name || input.email.split('@')[0], passwordHash, input.role || 'superadmin']
   );
   
   const user = result.rows[0];
