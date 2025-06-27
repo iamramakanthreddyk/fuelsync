@@ -794,3 +794,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * `debugRequest` middleware only loads when not in production or when `DEBUG_REQUESTS=true`.
 * Added `DEBUG_REQUESTS` environment variable and updated docs.
 
+### 🛠️ Fix 2025-09-03 – Log directory cleanup
+**Status:** ✅ Done
+**Files:** `.gitignore`, `docs/STEP_fix_20250903.md`
+
+**Overview:**
+* Removed obsolete `logs/server.log` and added the directory to `.gitignore` to keep runtime logs out of version control.

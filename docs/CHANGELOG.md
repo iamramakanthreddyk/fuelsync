@@ -1933,3 +1933,13 @@ Each entry is tied to a step from the implementation index.
 * `DEV_GUIDE.md`
 * `docs/STEP_fix_20250902.md`
 
+## [Fix - 2025-09-03] – Ignore tracked log files
+
+### 🟥 Fixes
+* Removed `logs/server.log` from version control and deleted the directory.
+* Added `logs/` to `.gitignore` so runtime logs stay local.
+
+### Files
+* `.gitignore`
+* `logs/server.log` (deleted)
+* `docs/STEP_fix_20250903.md`
