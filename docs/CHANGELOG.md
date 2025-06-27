@@ -2079,3 +2079,12 @@ Each entry is tied to a step from the implementation index.
 * `src/middlewares/setTenantContext.ts`
 * `docs/SECURITY_tenant_authorization.md`
 * `docs/STEP_fix_20250912.md`
+
+## [Fix - 2025-09-13] – Tenant list includes counts
+
+### 🟥 Fixes
+* `listTenants` now returns `stationCount` and `userCount` for each tenant.
+
+### Files
+* `src/services/tenant.service.ts`
+* `docs/STEP_fix_20250913.md`

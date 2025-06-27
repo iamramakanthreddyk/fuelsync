@@ -880,3 +880,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Middleware now populates tenant IDs from the `x-tenant-id` header when absent in the JWT and rejects requests missing any tenant context.
+
+### 🛠️ Fix 2025-09-13 – Tenant list counts
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `docs/STEP_fix_20250913.md`
+
+**Overview:**
+* `listTenants` now computes `stationCount` and `userCount` so the SuperAdmin dashboard receives these metrics.
