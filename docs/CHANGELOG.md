@@ -1871,3 +1871,17 @@ Each entry is tied to a step from the implementation index.
 * `src/services/inventory.service.ts`
 * `src/services/fuelInventory.service.ts`
 * `docs/STEP_fix_20250829.md`
+
+## [Fix - 2025-08-30] – Admin Login Route
+
+### 🟥 Fixes
+* Introduced dedicated SuperAdmin login endpoint `/api/v1/admin/auth/login`.
+* Added explicit service and controller logic to reject non-admin credentials.
+
+### Files
+* `src/routes/adminAuth.route.ts`
+* `src/controllers/auth.controller.ts`
+* `src/services/auth.service.ts`
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250830.md`

@@ -103,3 +103,38 @@ export async function login(db: Pool, email: string, password: string, tenantId?
     }
   };
 }
+
+export async function loginSuperAdmin(db: Pool, email: string, password: string): Promise<LoginResponse | null> {
+  console.log(`[AUTH-SERVICE] SuperAdmin login attempt for email: ${email}`);
+
+  const res = await db.query(
+    'SELECT id, email, password_hash, role FROM public.admin_users WHERE email = $1',
+    [email]
+  );
+  const user = res.rows[0];
+  if (!user) {
+    console.log(`[AUTH-SERVICE] Admin user not found: ${email}`);
+    return null;
+  }
+
+  const ok = await bcrypt.compare(password, user.password_hash);
+  if (!ok) {
+    console.log(`[AUTH-SERVICE] Password mismatch for admin user: ${email}`);
+    return null;
+  }
+
+  const payload: AuthPayload = { userId: user.id, role: user.role as UserRole, tenantId: null };
+  const token = generateToken(payload);
+
+  console.log(`[AUTH-SERVICE] SuperAdmin login successful for user: ${user.id}`);
+
+  return {
+    token,
+    user: {
+      id: user.id,
+      name: email.split('@')[0],
+      email: user.email,
+      role: user.role as UserRole
+    }
+  };
+}
