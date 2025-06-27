@@ -3,7 +3,7 @@ export interface FuelPriceInput {
   fuelType: string;
   price: number;
   costPrice?: number;
-  effectiveFrom: Date;
+  validFrom: Date;
 }
 
 export interface FuelPriceQuery {
@@ -12,7 +12,7 @@ export interface FuelPriceQuery {
 }
 
 export function validateCreateFuelPrice(data: any): FuelPriceInput {
-  const { stationId, fuelType, price, costPrice, effectiveFrom } = data || {};
+  const { stationId, fuelType, price, costPrice, validFrom } = data || {};
   if (!stationId || typeof stationId !== 'string') {
     throw new Error('stationId required');
   }
@@ -30,11 +30,11 @@ export function validateCreateFuelPrice(data: any): FuelPriceInput {
       throw new Error('costPrice must be >= 0');
     }
   }
-  const ts = new Date(effectiveFrom);
-  if (!effectiveFrom || isNaN(ts.getTime())) {
-    throw new Error('effectiveFrom invalid');
+  const ts = new Date(validFrom);
+  if (!validFrom || isNaN(ts.getTime())) {
+    throw new Error('validFrom invalid');
   }
-  return { stationId, fuelType, price: priceNum, costPrice: costPriceNum, effectiveFrom: ts };
+  return { stationId, fuelType, price: priceNum, costPrice: costPriceNum, validFrom: ts };
 }
 
 export function parseFuelPriceQuery(query: any): FuelPriceQuery {

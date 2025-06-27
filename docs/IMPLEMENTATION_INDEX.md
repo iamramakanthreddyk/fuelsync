@@ -153,3 +153,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-10 | Tenant email slug generation | ✅ Done | `src/services/tenant.service.ts`, `src/utils/slugify.ts`, docs updated | `docs/STEP_fix_20250910.md` |
 | fix | 2025-06-28 | Login tests & schema patch | ✅ Done | `scripts/simple-login-test.js`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql` | `docs/STEP_fix_20250628.md` |
 | fix | 2025-06-29 | Plan rule lookup by UUID | ✅ Done | `src/config/planConfig.ts`, `tests/planEnforcement.test.ts` | `docs/STEP_fix_20250629.md` |
+| fix | 2025-09-11 | Fuel price validFrom alignment | ✅ Done | `src/controllers/fuelPrice.controller.ts`, `src/services/fuelPrice.service.ts`, `src/utils/priceUtils.ts`, `src/utils/seedHelpers.ts`, `src/validators/fuelPrice.validator.ts`, `src/docs/swagger.ts`, `frontend/docs/integration-instructions.md` | `docs/STEP_fix_20250911.md` |
+| fix | 2025-09-12 | Tenant context middleware | ✅ Done | `src/middlewares/setTenantContext.ts`, `docs/SECURITY_tenant_authorization.md` | `docs/STEP_fix_20250912.md` |

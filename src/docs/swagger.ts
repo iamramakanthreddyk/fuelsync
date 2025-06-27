@@ -449,7 +449,7 @@ const swaggerSpec = {
                   stationId: { type: 'string', format: 'uuid' },
                   fuelType: { type: 'string', enum: ['petrol', 'diesel'] },
                   price: { type: 'number', minimum: 0 },
-                  effectiveFrom: { type: 'string', format: 'date-time' }
+                  validFrom: { type: 'string', format: 'date-time' }
                 }
               }
             }

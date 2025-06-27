@@ -21,7 +21,7 @@ export function createFuelPriceHandlers(db: Pool) {
             fuel_type: data.fuelType,
             price: data.price,
             cost_price: data.costPrice || null,
-            valid_from: data.effectiveFrom || new Date()
+            valid_from: data.validFrom || new Date()
           },
           select: { id: true }
         });
@@ -60,7 +60,7 @@ export function createFuelPriceHandlers(db: Pool) {
             fuel_type: data.fuelType,
             price: data.price,
             cost_price: data.costPrice || null,
-            valid_from: data.effectiveFrom || new Date()
+            valid_from: data.validFrom || new Date()
           }
         });
         if (!updated.count) return errorResponse(res, 404, 'Price not found');
