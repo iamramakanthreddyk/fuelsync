@@ -94,8 +94,8 @@ export async function getCurrentFuelPrice(
      WHERE station_id = $1
        AND fuel_type = $2
        AND tenant_id = $3
-       AND effective_from <= $4
-     ORDER BY effective_from DESC
+       AND valid_from <= $4
+     ORDER BY valid_from DESC
      LIMIT 1`,
     [stationId, fuelType, tenantId, atTime]
   );

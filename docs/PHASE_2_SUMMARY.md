@@ -866,3 +866,17 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * `getPlanRules` now resolves plan rules using the seeded plan UUIDs.
 * Added Jest tests covering pump limit enforcement.
 
+
+### 🛠️ Fix 2025-09-11 – Fuel price validFrom alignment
+**Status:** ✅ Done
+**Files:** `src/controllers/fuelPrice.controller.ts`, `src/services/fuelPrice.service.ts`, `src/validators/fuelPrice.validator.ts`, `src/utils/priceUtils.ts`, `src/utils/seedHelpers.ts`, `src/docs/swagger.ts`, `frontend/docs/integration-instructions.md`, `docs/STEP_fix_20250911.md`
+
+**Overview:**
+* All price CRUD endpoints now expect `validFrom`. Utility helpers and swagger docs updated to match the database column `valid_from`.
+
+### 🛠️ Fix 2025-09-12 – Tenant context middleware
+**Status:** ✅ Done
+**Files:** `src/middlewares/setTenantContext.ts`, `docs/SECURITY_tenant_authorization.md`, `docs/STEP_fix_20250912.md`
+
+**Overview:**
+* Middleware now populates tenant IDs from the `x-tenant-id` header when absent in the JWT and rejects requests missing any tenant context.

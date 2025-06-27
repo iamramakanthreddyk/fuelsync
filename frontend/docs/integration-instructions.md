@@ -25,7 +25,7 @@ The backend now exposes additional endpoints under `/api/v1`. Implement the foll
   ```
 
 ## Fuel Price Update
-- **PUT `/api/v1/fuel-prices/{id}`** – body `{ stationId, fuelType, price, effectiveFrom }`
+- **PUT `/api/v1/fuel-prices/{id}`** – body `{ stationId, fuelType, price, validFrom }`
   ```ts
   export function useUpdateFuelPrice(id: string)
   ```

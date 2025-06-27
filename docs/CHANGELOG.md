@@ -2051,3 +2051,31 @@ Each entry is tied to a step from the implementation index.
 * `src/config/planConfig.ts`
 * `tests/planEnforcement.test.ts`
 * `docs/STEP_fix_20250629.md`
+
+## [Fix - 2025-09-11] – Fuel price validFrom alignment
+
+### 🟥 Fixes
+* Backend validators and services now expect `validFrom` instead of `effectiveFrom`.
+* Helper utilities and swagger docs updated accordingly.
+* Integration instructions updated for the new field.
+
+### Files
+* `src/controllers/fuelPrice.controller.ts`
+* `src/services/fuelPrice.service.ts`
+* `src/validators/fuelPrice.validator.ts`
+* `src/utils/priceUtils.ts`
+* `src/utils/seedHelpers.ts`
+* `src/docs/swagger.ts`
+* `frontend/docs/integration-instructions.md`
+* `docs/STEP_fix_20250911.md`
+
+## [Fix - 2025-09-12] – Tenant context middleware
+
+### 🟥 Fixes
+* `setTenantContext` now resolves the tenant ID from the `x-tenant-id` header when missing in the JWT.
+* Requests without any tenant context return a `TENANT_REQUIRED` error.
+
+### Files
+* `src/middlewares/setTenantContext.ts`
+* `docs/SECURITY_tenant_authorization.md`
+* `docs/STEP_fix_20250912.md`

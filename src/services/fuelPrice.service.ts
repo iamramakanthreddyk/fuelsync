@@ -9,7 +9,7 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
     const res = await client.query<{ id: string }>(
       `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from)
        VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
-      [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, input.effectiveFrom || new Date()]
+      [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, input.validFrom || new Date()]
     );
     await client.query('COMMIT');
     return res.rows[0].id;
@@ -23,8 +23,8 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
 
 export async function updateFuelPrice(db: Pool, tenantId: string, id: string, input: FuelPriceInput): Promise<void> {
   await db.query(
-    'UPDATE public.fuel_prices SET station_id = $2, fuel_type = $3, price = $4, effective_from = $5 WHERE id = $1 AND tenant_id = $6',
-    [id, input.stationId, input.fuelType, input.price, input.effectiveFrom, tenantId]
+    'UPDATE public.fuel_prices SET station_id = $2, fuel_type = $3, price = $4, valid_from = $5 WHERE id = $1 AND tenant_id = $6',
+    [id, input.stationId, input.fuelType, input.price, input.validFrom, tenantId]
   );
 }
 
@@ -59,10 +59,10 @@ export async function getPriceAt(db: Pool, tenantId: string, stationId: string, 
   const res = await db.query<{ price: number }>(
     `SELECT price FROM public.fuel_prices
      WHERE station_id = $1 AND fuel_type = $2
-       AND effective_from <= $3
+       AND valid_from <= $3
        AND (effective_to IS NULL OR effective_to >= $3)
       AND tenant_id = $4
-     ORDER BY effective_from DESC
+     ORDER BY valid_from DESC
      LIMIT 1`,
     [stationId, fuelType, at, tenantId]
   );

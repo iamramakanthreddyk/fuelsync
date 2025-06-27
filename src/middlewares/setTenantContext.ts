@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../constants/auth';
+import { UserRole, TENANT_HEADER } from '../constants/auth';
 
 export interface AuthPayload {
   userId: string;
@@ -16,8 +16,26 @@ export function setTenantContext(req: Request, res: Response, next: NextFunction
   if (req.path.startsWith('/api/v1/admin')) {
     return next();
   }
-  
-  const _user = req.user as AuthPayload;
-  
-  next();
+
+  const user = req.user as AuthPayload | undefined;
+  const headerTenant = req.headers[TENANT_HEADER] as string | undefined;
+
+  if (user) {
+    if (!user.tenantId && headerTenant) {
+      user.tenantId = headerTenant;
+    }
+    if (user.tenantId) {
+      req.user = user;
+      return next();
+    }
+  }
+
+  if (headerTenant) {
+    (req as any).tenantId = headerTenant;
+    return next();
+  }
+
+  return res
+    .status(400)
+    .json({ status: 'error', code: 'TENANT_REQUIRED', message: 'Missing tenant context' });
 }

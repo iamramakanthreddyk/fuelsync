@@ -27,7 +27,7 @@ interface AuthPayload {
 ```
 1. User Login → JWT Generated with (userId, tenantId, role)
 2. Request → authenticateJWT → setTenantContext → requireRole
-3. setTenantContext: Sets schema for data isolation
+3. setTenantContext: verifies tenantId from JWT or header
 4. requireRole: Checks user role for permission control
 ```
 
@@ -57,7 +57,7 @@ interface AuthPayload {
 // SECURE PATTERN
 router.post('/', 
   authenticateJWT,           // Verify JWT and extract user
-  setTenantContext,          // Set schema from tenantId
+  setTenantContext,          // Ensure tenantId context
   requireRole([Owner, Manager]), // Check role permissions
   handlers.create
 );
