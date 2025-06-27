@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import { UserRole } from '../constants/auth';
 
@@ -10,8 +11,8 @@ export async function createAdminUser(
 ): Promise<void> {
   const hash = await bcrypt.hash(password, 10);
   await db.query(
-    'INSERT INTO public.admin_users (email, password_hash, role) VALUES ($1, $2, $3)',
-    [email, hash, role]
+    'INSERT INTO public.admin_users (id, email, password_hash, role) VALUES ($1, $2, $3, $4)',
+    [randomUUID(), email, hash, role]
   );
 }
 

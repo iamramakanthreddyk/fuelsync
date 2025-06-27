@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 
 export interface FuelInventory {
   id: string;
@@ -77,10 +78,10 @@ export async function seedFuelInventory(db: Pool, tenantId: string): Promise<voi
       const currentVolume = Math.floor(Math.random() * capacity); // Random current volume
       
       await db.query(`
-        INSERT INTO ${tenantId}.fuel_inventory 
-        (station_id, fuel_type, current_volume, capacity) 
-        VALUES ($1, $2, $3, $4)
-      `, [station.id, fuelType, currentVolume, capacity]);
+        INSERT INTO ${tenantId}.fuel_inventory
+        (id, station_id, fuel_type, current_volume, capacity)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [randomUUID(), station.id, fuelType, currentVolume, capacity]);
     }
   }
 }

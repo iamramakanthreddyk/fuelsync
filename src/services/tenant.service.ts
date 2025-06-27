@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 
 export interface TenantInput {
   name: string;
@@ -44,9 +45,10 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
   try {
     await client.query('BEGIN');
 
+    const tenantId = randomUUID();
     const result = await client.query(
-      'INSERT INTO public.tenants (name, plan_id, status) VALUES ($1, $2, $3) RETURNING id, name, plan_id, status, created_at',
-      [input.name, input.planId, 'active']
+      'INSERT INTO public.tenants (id, name, plan_id, status) VALUES ($1, $2, $3, $4) RETURNING id, name, plan_id, status, created_at',
+      [tenantId, input.name, input.planId, 'active']
     );
 
     const tenant = result.rows[0];
@@ -57,8 +59,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
     const ownerResult = await client.query(
-      'INSERT INTO public.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5) RETURNING id',
-      [tenant.id, ownerEmail, passwordHash, ownerName, 'owner']
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+      [randomUUID(), tenant.id, ownerEmail, passwordHash, ownerName, 'owner']
     );
 
     const ownerId = ownerResult.rows[0].id;
@@ -68,8 +70,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
 
     await client.query(
-      'INSERT INTO public.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5)',
-      [tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6)',
+      [randomUUID(), tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
     );
 
     const attendantEmail = `attendant@${tenant.id}.com`;
@@ -77,8 +79,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
 
     await client.query(
-      'INSERT INTO public.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5)',
-      [tenant.id, attendantEmail, attendantHash, `${input.name} Attendant`, 'attendant']
+      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6)',
+      [randomUUID(), tenant.id, attendantEmail, attendantHash, `${input.name} Attendant`, 'attendant']
     );
 
     await client.query('COMMIT');
@@ -231,8 +233,8 @@ export async function createTenantUser(db: Pool, tenantId: string, userData: {
   const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
   const userResult = await db.query(
-    'INSERT INTO public.users (tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5) RETURNING id',
-    [tenantId, userData.email, passwordHash, userData.name, userData.role]
+    'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+    [randomUUID(), tenantId, userData.email, passwordHash, userData.name, userData.role]
   );
   
   return {

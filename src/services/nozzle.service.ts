@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { beforeCreateNozzle } from '../middleware/planEnforcement';
 
 export async function createNozzle(db: Pool, tenantId: string, pumpId: string, nozzleNumber: number, fuelType: string): Promise<string> {
@@ -6,8 +7,8 @@ export async function createNozzle(db: Pool, tenantId: string, pumpId: string, n
   try {
     await beforeCreateNozzle(client, tenantId, pumpId);
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4) RETURNING id',
-      [tenantId, pumpId, nozzleNumber, fuelType]
+      'INSERT INTO public.nozzles (id, tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4,$5) RETURNING id',
+      [randomUUID(), tenantId, pumpId, nozzleNumber, fuelType]
     );
     return res.rows[0].id;
   } finally {
