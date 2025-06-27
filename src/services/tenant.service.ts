@@ -27,6 +27,8 @@ export interface TenantOutput {
   planName?: string;
   status: string;
   createdAt: Date;
+  userCount?: number;
+  stationCount?: number;
 }
 
 /**
@@ -118,7 +120,9 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 export async function listTenants(db: Pool, includeDeleted = false): Promise<TenantOutput[]> {
   const whereClause = includeDeleted ? '' : "WHERE t.status != 'deleted'";
   const result = await db.query(
-    `SELECT t.id, t.name, t.plan_id, t.status, t.created_at, p.name as plan_name
+    `SELECT t.id, t.name, t.plan_id, t.status, t.created_at, p.name as plan_name,
+       (SELECT COUNT(*) FROM public.users u WHERE u.tenant_id = t.id) as user_count,
+       (SELECT COUNT(*) FROM public.stations s WHERE s.tenant_id = t.id) as station_count
      FROM public.tenants t
      LEFT JOIN public.plans p ON t.plan_id = p.id
      ${whereClause}
@@ -131,7 +135,9 @@ export async function listTenants(db: Pool, includeDeleted = false): Promise<Ten
     planId: row.plan_id,
     planName: row.plan_name,
     status: row.status,
-    createdAt: row.created_at
+    createdAt: row.created_at,
+    userCount: parseInt(row.user_count),
+    stationCount: parseInt(row.station_count)
   }));
 }
 
