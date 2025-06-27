@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { login } from '../services/auth.service';
+import { login, loginSuperAdmin } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 
@@ -81,6 +81,23 @@ export function createAuthController(db: Pool) {
         return successResponse(res, result);
       } catch (error: any) {
         console.error(`[AUTH] Login error:`, error);
+        return errorResponse(res, 500, `Login error: ${error?.message || 'Unknown error'}`);
+      }
+    },
+    adminLogin: async (req: Request, res: Response) => {
+      const { email, password } = req.body as { email: string; password: string };
+      console.log(`[AUTH] Admin login attempt for email: ${email}`);
+
+      try {
+        const result = await loginSuperAdmin(db, email, password);
+        if (!result) {
+          console.log(`[AUTH] Admin login failed for email: ${email}`);
+          return errorResponse(res, 401, 'Invalid admin credentials');
+        }
+
+        return successResponse(res, result);
+      } catch (error: any) {
+        console.error(`[AUTH] Admin login error:`, error);
         return errorResponse(res, 500, `Login error: ${error?.message || 'Unknown error'}`);
       }
     },
