@@ -33,3 +33,5 @@ Service tests mock database calls while integration tests create and drop a dedi
 Sample coverage includes authentication, nozzle readings, creditors and reconciliation logic. E2E tests verify the login flow and protected routes.
 
 Creditor service tests validate balance logic in `tests/creditor.service.test.ts`.
+Plan enforcement logic is covered in `tests/planEnforcement.test.ts`, which mocks database calls to verify pump creation limits.
+
