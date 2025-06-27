@@ -8,6 +8,7 @@ export interface PlanRules {
   enableApiAccess: boolean;
 }
 
+// Built-in rule presets
 export const planConfig: Record<string, PlanRules> = {
   starter: {
     maxStations: 1,
@@ -38,6 +39,14 @@ export const planConfig: Record<string, PlanRules> = {
   },
 };
 
+// Map seeded UUIDs to rule presets
+const planIdMap: Record<string, keyof typeof planConfig> = {
+  '00000000-0000-0000-0000-000000000001': 'starter',
+  '00000000-0000-0000-0000-000000000002': 'pro',
+  '00000000-0000-0000-0000-000000000003': 'enterprise',
+};
+
 export function getPlanRules(planId: string): PlanRules {
-  return planConfig[planId] || planConfig.starter;
+  const key = planIdMap[planId] || planId;
+  return planConfig[key] || planConfig.starter;
 }

@@ -828,3 +828,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Updated login test script to match seeded user credentials and configurable port.
 * Unified schema SQL adjusted for clean initialization.
+
+### 🛠️ Fix 2025-06-29 – Plan rule lookup by UUID
+**Status:** ✅ Done
+**Files:** `src/config/planConfig.ts`, `tests/planEnforcement.test.ts`, `docs/STEP_fix_20250629.md`
+
+**Overview:**
+* `getPlanRules` now resolves plan rules using the seeded plan UUIDs.
+* Added Jest tests covering pump limit enforcement.
+
