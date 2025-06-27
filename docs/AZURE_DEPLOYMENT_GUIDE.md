@@ -39,13 +39,13 @@ npm run update-azure-seed # Add SuperAdmin test data
 ### Login Credentials
 
 ```
-SuperAdmin: admin@fuelsync.com / admin123
-SuperAdmin: admin2@fuelsync.com / admin123
-Admin: support@fuelsync.com / admin123
+SuperAdmin: admin@fuelsync.com / Admin@123
+SuperAdmin: admin2@fuelsync.com / Admin@123
+Admin: support@fuelsync.com / Admin@123
 
-Owner: owner@fuelsync.com / admin123
-Manager: manager@fuelsync.com / admin123
-Attendant: attendant@fuelsync.com / admin123
+Owner: owner@fuelsync.com / Admin@123
+Manager: manager@fuelsync.com / Admin@123
+Attendant: attendant@fuelsync.com / Admin@123
 ```
 
 ### Test API Endpoints

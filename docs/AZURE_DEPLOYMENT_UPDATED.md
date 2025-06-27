@@ -40,7 +40,7 @@ npm run setup-db
 Login as SuperAdmin:
 - URL: https://fuelsync-frontend.azurewebsites.net/login
 - Email: `admin@fuelsync.com`
-- Password: `admin123`
+- Password: `Admin@123`
 
 You should see:
 - Dashboard with tenant metrics
@@ -53,7 +53,7 @@ You should see:
 Login as Owner:
 - URL: https://fuelsync-frontend.azurewebsites.net/login
 - Email: `owner@production-tenant.com`
-- Password: `admin123`
+- Password: `Admin@123`
 
 You should see:
 - Dashboard with station metrics
