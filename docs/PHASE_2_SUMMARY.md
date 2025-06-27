@@ -786,3 +786,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * `/schemas` endpoint now only executes in non-production environments.
 * In production it requires authentication and always responds 403 without touching tables.
+### 🛠️ Fix 2025-09-02 – Debug middleware conditional
+**Status:** ✅ Done
+**Files:** `src/app.ts`, `.env.example`, `.env.development`, `DEV_GUIDE.md`, `docs/STEP_fix_20250902.md`
+
+**Overview:**
+* `debugRequest` middleware only loads when not in production or when `DEBUG_REQUESTS=true`.
+* Added `DEBUG_REQUESTS` environment variable and updated docs.
+

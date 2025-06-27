@@ -1919,3 +1919,17 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250901.md`
+## [Fix - 2025-09-02] – Debug middleware conditional
+
+### 🟥 Fixes
+* `debugRequest` middleware now runs only when not in production or when `DEBUG_REQUESTS=true`.
+* Added `DEBUG_REQUESTS` variable to example and development env files.
+* Documented request logging in development guide.
+
+### Files
+* `src/app.ts`
+* `.env.example`
+* `.env.development`
+* `DEV_GUIDE.md`
+* `docs/STEP_fix_20250902.md`
+
