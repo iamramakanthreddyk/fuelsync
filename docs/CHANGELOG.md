@@ -2180,3 +2180,35 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/reconciliation.controller.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20250920.md`
+
+## [Feature - 2025-09-23] – Attendant resource access and cash reports
+
+### 🟩 Features
+* Added `cash_reports` table to record attendant cash and credit totals.
+* New attendant API to list assigned stations, pumps, nozzles and creditors.
+* Endpoint to submit daily cash reports.
+
+### Files
+* `migrations/schema/007_create_cash_reports.sql`
+* `src/services/attendant.service.ts`
+* `src/controllers/attendant.controller.ts`
+* `src/routes/attendant.route.ts`
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_37_COMMAND.md`
+
+## [Feature - 2025-09-23] – Attendant resource access and cash reports
+
+### 🟩 Features
+* Added `cash_reports` table to record attendant cash and credit totals.
+* New attendant API to list assigned stations, pumps, nozzles and creditors.
+* Endpoint to submit daily cash reports.
+
+### Files
+* `migrations/schema/007_create_cash_reports.sql`
+* `src/services/attendant.service.ts`
+* `src/controllers/attendant.controller.ts`
+* `src/routes/attendant.route.ts`
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_37_COMMAND.md`

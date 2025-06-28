@@ -951,3 +951,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Daily summary now selects the correct fuel price based on each reading's timestamp via a lateral join and shows entries even when only one reading exists.
+
+### 🛠️ Step 2.37 – Attendant access & cash reports
+**Status:** ✅ Done
+**Files:** `migrations/schema/007_create_cash_reports.sql`, `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `src/routes/attendant.route.ts`, `src/app.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added attendant endpoints to list assigned stations, pumps, nozzles and creditors.
+* Introduced `cash_reports` table and API for attendants to submit daily cash and credit totals.

@@ -1429,6 +1429,77 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/attendant/stations:
+    get:
+      summary: List stations for attendant
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/pumps:
+    get:
+      summary: List pumps for attendant
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/nozzles:
+    get:
+      summary: List nozzles for attendant
+      parameters:
+        - name: pumpId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/creditors:
+    get:
+      summary: List creditors for attendant
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/cash-report:
+    post:
+      summary: Submit cash and credit totals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stationId:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                cashAmount:
+                  type: number
+                creditAmount:
+                  type: number
+              required:
+                - stationId
+                - date
+      responses:
+        '201':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
 components:
   securitySchemes:
     bearerAuth:
