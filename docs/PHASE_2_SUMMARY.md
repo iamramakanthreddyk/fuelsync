@@ -959,3 +959,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added attendant endpoints to list assigned stations, pumps, nozzles and creditors.
 * Introduced `cash_reports` table and API for attendants to submit daily cash and credit totals.
+
+### 🛠️ Step 2.38 – Attendant cash reports & alerts
+**Status:** ✅ Done
+**Files:** `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `src/routes/attendant.route.ts`, `docs/openapi.yaml`, `backend_brain.md`
+
+**Overview:**
+* Added endpoint to list attendant cash reports.
+* Exposed attendant alerts API with acknowledge action.
