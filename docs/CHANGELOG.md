@@ -2170,3 +2170,13 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `docs/missing/IMPLEMENTATION_GUIDE.md`
 * `docs/STEP_fix_20250921.md`
+
+## [Fix - 2025-09-22] – Daily summary price lookup
+
+### 🟥 Fixes
+* Updated `getDailySummary` to join fuel prices using a lateral query and to include entries with a single reading.
+
+### Files
+* `src/controllers/reconciliation.controller.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20250920.md`

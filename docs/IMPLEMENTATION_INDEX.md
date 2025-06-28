@@ -164,3 +164,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-19 | TypeScript generic constraint | ✅ Done | `src/utils/parseDb.ts` | `docs/STEP_fix_20250919.md` |
 | fix | 2025-09-20 | Tenant_id column migration | ✅ Done | `migrations/schema/006_add_tenant_id_columns.sql` | `docs/STEP_fix_20250920.md` |
 | fix | 2025-09-21 | Daily summary previous-day readings | ✅ Done | `src/controllers/reconciliation.controller.ts` | `docs/STEP_fix_20250921.md` |
+| fix | 2025-09-22 | Daily summary price lookup | ✅ Done | `src/controllers/reconciliation.controller.ts` | `docs/STEP_fix_20250920.md` |

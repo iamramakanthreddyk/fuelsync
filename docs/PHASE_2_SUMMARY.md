@@ -944,3 +944,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Reworked `getDailySummary` query so readings are filtered after lagging, allowing nozzles with a single reading to use the prior day's value.
+
+### 🛠️ Fix 2025-09-22 – Daily summary price lookup
+**Status:** ✅ Done
+**Files:** `src/controllers/reconciliation.controller.ts`, `docs/STEP_fix_20250920.md`
+
+**Overview:**
+* Daily summary now selects the correct fuel price based on each reading's timestamp via a lateral join and shows entries even when only one reading exists.

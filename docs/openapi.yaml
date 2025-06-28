@@ -967,17 +967,25 @@ paths:
       parameters:
         - name: stationId
           in: query
+          description: Station identifier
           required: true
           schema:
             type: string
         - name: date
           in: query
+          description: ISO date (YYYY-MM-DD) to summarise
           required: true
           schema:
             type: string
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyReadingSummary'
         default:
           $ref: '#/components/responses/Error'
   /api/v1/dashboard/sales-summary:
