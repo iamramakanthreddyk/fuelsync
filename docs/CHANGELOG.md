@@ -2111,3 +2111,12 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/dashboard.controller.ts`
 * `src/controllers/reports.controller.ts`
 * `docs/STEP_fix_20250915.md`
+
+## [Fix - 2025-09-16] – Nozzle reading service wiring
+
+### 🟥 Fixes
+* `/api/v1/nozzle-readings` now uses the service layer so creating a reading also inserts a sales record.
+
+### Files
+* `src/controllers/nozzleReading.controller.ts`
+* `docs/STEP_fix_20250916.md`
