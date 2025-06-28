@@ -964,6 +964,17 @@ paths:
   /api/v1/reconciliation/daily-summary:
     get:
       summary: Daily nozzle reading summary
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/Success'

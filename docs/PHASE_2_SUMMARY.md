@@ -937,3 +937,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added conditional migration to add `tenant_id` foreign keys when missing so older deployments match the unified schema.
+
+### 🛠️ Fix 2025-09-21 – Daily summary previous-day readings
+**Status:** ✅ Done
+**Files:** `src/controllers/reconciliation.controller.ts`, `docs/STEP_fix_20250921.md`
+
+**Overview:**
+* Reworked `getDailySummary` query so readings are filtered after lagging, allowing nozzles with a single reading to use the prior day's value.
