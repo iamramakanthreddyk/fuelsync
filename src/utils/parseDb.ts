@@ -20,6 +20,6 @@ export function parseRow<T extends Record<string, any>>(row: T): T {
   return parsed;
 }
 
-export function parseRows<T>(rows: T[]): T[] {
+export function parseRows<T extends Record<string, any>>(rows: T[]): T[] {
   return rows.map(r => parseRow(r));
 }

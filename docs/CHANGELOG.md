@@ -2140,3 +2140,12 @@ Each entry is tied to a step from the implementation index.
 * `src/utils/parseDb.ts`
 * `src/services/*`
 * `docs/STEP_fix_20250918.md`
+
+## [Fix - 2025-09-19] – Generic constraint for parseRows
+
+### 🟥 Fixes
+* Added an explicit `extends Record<string, any>` constraint to `parseRows` to satisfy TypeScript type checks.
+
+### Files
+* `src/utils/parseDb.ts`
+* `docs/STEP_fix_20250919.md`
