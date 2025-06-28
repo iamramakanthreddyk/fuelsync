@@ -23,6 +23,7 @@ import { createInventoryRouter } from './routes/inventory.route';
 import { createReportsRouter } from './routes/reports.route';
 import { createAnalyticsRouter } from './routes/analytics.route';
 import { createAlertsRouter } from './routes/alerts.route';
+import { createAttendantRouter } from "./routes/attendant.route";
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 import { successResponse } from './utils/successResponse';
@@ -187,6 +188,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/inventory`, createInventoryRouter(pool));
   app.use(`${API_PREFIX}/reports`, createReportsRouter(pool));
   app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter(pool));
+  app.use(`${API_PREFIX}/attendant`, createAttendantRouter(pool));
 
   app.use('*', (_req, res) => {
     return errorResponse(res, 404, 'Route not found');
