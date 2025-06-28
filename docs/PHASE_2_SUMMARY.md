@@ -996,3 +996,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added service functions that generate alerts for missing readings, prices, credit limits, inactivity and cash reports.
+
+### 🛠️ Step 2.43 – Price validation on readings
+**Status:** ✅ Done
+**Files:** `src/utils/priceUtils.ts`, `src/services/nozzleReading.service.ts`, `tests/sales.service.test.ts`
+
+**Overview:**
+* Nozzle readings now fail if fuel price is missing or older than seven days.
+* Credit sales trigger a warning alert when above 90% of the limit.
