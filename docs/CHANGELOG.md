@@ -2149,3 +2149,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/utils/parseDb.ts`
 * `docs/STEP_fix_20250919.md`
+
+## [Fix - 2025-09-20] – Tenant_id column migration
+
+### 🟥 Fixes
+* Added migration to ensure all tenant tables include a `tenant_id` column.
+* Legacy databases created before the unified schema are automatically updated.
+
+### Files
+* `migrations/schema/006_add_tenant_id_columns.sql`
+* `docs/STEP_fix_20250920.md`

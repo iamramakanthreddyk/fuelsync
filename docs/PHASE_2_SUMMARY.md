@@ -930,3 +930,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added an explicit record constraint to `parseRows` so TypeScript build passes.
+
+### 🛠️ Fix 2025-09-20 – Tenant_id column migration
+**Status:** ✅ Done
+**Files:** `migrations/schema/006_add_tenant_id_columns.sql`, `docs/STEP_fix_20250920.md`
+
+**Overview:**
+* Added conditional migration to add `tenant_id` foreign keys when missing so older deployments match the unified schema.
