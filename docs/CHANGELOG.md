@@ -2276,3 +2276,15 @@ Each entry is tied to a step from the implementation index.
 * `src/services/alertRules.service.ts`
 * `docs/BUSINESS_RULES.md`
 * `docs/STEP_2_42_COMMAND.md`
+
+## [Fix - 2025-09-29] – Price and credit limit validation
+
+### 🟥 Fixes
+* Throw error when fuel price is missing or older than seven days on reading creation.
+* Warn when creditor balance exceeds 90% of the credit limit.
+
+### Files
+* `src/utils/priceUtils.ts`
+* `src/services/nozzleReading.service.ts`
+* `tests/sales.service.test.ts`
+* `docs/STEP_2_43_COMMAND.md`
