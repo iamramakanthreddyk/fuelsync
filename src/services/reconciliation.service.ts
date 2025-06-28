@@ -1,5 +1,6 @@
 import { Pool, PoolClient } from 'pg';
 import { randomUUID } from 'crypto';
+import { parseRows, parseRow } from '../utils/parseDb';
 
 export interface ReconciliationTotals {
   totalSales: number;
@@ -112,7 +113,7 @@ export async function getReconciliation(
      FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
     [stationId, date, tenantId]
   );
-  return res.rows[0];
+  return parseRow(res.rows[0]);
 }
 
 export async function listReconciliations(
@@ -130,5 +131,5 @@ export async function listReconciliations(
   }
   query += ' ORDER BY date DESC';
   const res = await db.query(query, params);
-  return res.rows;
+  return parseRows(res.rows);
 }

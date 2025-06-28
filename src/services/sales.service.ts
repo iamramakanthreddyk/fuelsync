@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { SalesQuery } from '../validators/sales.validator';
+import { parseRows } from '../utils/parseDb';
 
 export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
   const params: any[] = [tenantId];
@@ -33,7 +34,13 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
                LIMIT $${idx++} OFFSET $${idx++}`;
   params.push(limit, offset);
   const res = await db.query(sql, params);
-  return res.rows;
+  return parseRows(
+    res.rows.map(r => ({
+      ...r,
+      volume: parseFloat(r.volume),
+      amount: parseFloat(r.amount)
+    }))
+  );
 }
 
 export async function salesAnalytics(db: Pool, tenantId: string, stationId?: string, groupBy: string = 'station') {
@@ -53,5 +60,7 @@ export async function salesAnalytics(db: Pool, tenantId: string, stationId?: str
                GROUP BY ${groupColumn}
                ORDER BY amount DESC`;
   const res = await db.query(sql, params);
-  return res.rows.map(r => ({ key: r.key, volume: parseFloat(r.volume), amount: parseFloat(r.amount) }));
+  return parseRows(
+    res.rows.map(r => ({ key: r.key, volume: parseFloat(r.volume), amount: parseFloat(r.amount) }))
+  );
 }

@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
+import { parseRow, parseRows } from '../utils/parseDb';
 
 export interface AdminUserInput {
   email: string;
@@ -39,14 +40,7 @@ export async function createAdminUser(db: Pool, input: AdminUserInput): Promise<
     [randomUUID(), input.email, input.name || input.email.split('@')[0], passwordHash, input.role || 'superadmin']
   );
   
-  const user = result.rows[0];
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    createdAt: user.created_at
-  };
+  return parseRow(result.rows[0]);
 }
 
 /**
@@ -57,13 +51,7 @@ export async function listAdminUsers(db: Pool): Promise<AdminUserOutput[]> {
     'SELECT id, email, name, role, created_at FROM public.admin_users ORDER BY created_at DESC'
   );
   
-  return result.rows.map(user => ({
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    createdAt: user.created_at
-  }));
+  return parseRows(result.rows);
 }
 
 /**
@@ -79,14 +67,7 @@ export async function getAdminUser(db: Pool, id: string): Promise<AdminUserOutpu
     return null;
   }
   
-  const user = result.rows[0];
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    createdAt: user.created_at
-  };
+  return parseRow(result.rows[0]);
 }
 
 /**
@@ -131,14 +112,7 @@ export async function updateAdminUser(db: Pool, id: string, input: AdminUserInpu
     throw new Error('Admin user not found');
   }
   
-  const user = result.rows[0];
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    createdAt: user.created_at
-  };
+  return parseRow(result.rows[0]);
 }
 
 /**

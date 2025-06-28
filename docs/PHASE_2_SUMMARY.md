@@ -909,3 +909,17 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * The nozzle reading API now calls the service layer so each reading also creates a sales row in `public.sales`.
+
+### 🛠️ Fix 2025-09-17 – Sales listing numeric values
+**Status:** ✅ Done
+**Files:** `src/services/sales.service.ts`, `docs/STEP_fix_20250917.md`
+
+**Overview:**
+* `listSales` now converts `volume` and `amount` with `parseFloat` so API responses use numeric types.
+
+### 🛠️ Fix 2025-09-18 – Numeric and date parsing
+**Status:** ✅ Done
+**Files:** `src/utils/parseDb.ts`, `src/services/*`, `docs/STEP_fix_20250918.md`
+
+**Overview:**
+* Introduced a shared parser so all service methods return numbers and `Date` objects rather than strings.

@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import { UserRole } from '../constants/auth';
+import { parseRows } from '../utils/parseDb';
 
 export async function createAdminUser(
   db: Pool,
@@ -20,5 +21,5 @@ export async function listAdminUsers(db: Pool) {
   const res = await db.query(
     'SELECT id, email, role, created_at FROM public.admin_users ORDER BY email'
   );
-  return res.rows;
+  return parseRows(res.rows);
 }

@@ -2,6 +2,7 @@ import { Pool, PoolClient } from 'pg';
 import { randomUUID } from 'crypto';
 import { CreditorInput, CreditPaymentInput, PaymentQuery } from '../validators/creditor.validator';
 import { isDateFinalized } from './reconciliation.service';
+import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
   const res = await db.query<{ id: string }>(
@@ -17,7 +18,7 @@ export async function listCreditors(db: Pool, tenantId: string) {
     'SELECT id, party_name, contact_number, address, credit_limit, status, created_at FROM public.creditors WHERE tenant_id = $1 ORDER BY party_name',
     [tenantId]
   );
-  return res.rows;
+  return parseRows(res.rows);
 }
 
 export async function updateCreditor(db: Pool, tenantId: string, id: string, input: CreditorInput) {
@@ -41,7 +42,7 @@ export async function getCreditorById(db: Pool | PoolClient, tenantId: string, i
     'SELECT id, credit_limit, balance FROM public.creditors WHERE id = $1 AND tenant_id = $2',
     [id, tenantId]
   );
-  return res.rows[0];
+  return parseRow(res.rows[0]);
 }
 
 export async function incrementCreditorBalance(db: Pool | PoolClient, tenantId: string, id: string, amount: number) {
@@ -102,5 +103,5 @@ export async function listCreditPayments(db: Pool, tenantId: string, query: Paym
      ORDER BY received_at DESC`,
     params
   );
-  return res.rows;
+  return parseRows(res.rows);
 }

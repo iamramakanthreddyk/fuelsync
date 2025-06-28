@@ -2120,3 +2120,23 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/nozzleReading.controller.ts`
 * `docs/STEP_fix_20250916.md`
+
+## [Fix - 2025-09-17] – Sales listing numeric values
+
+### 🟥 Fixes
+* `listSales` now parses `volume` and `amount` as numbers to match the `Sale` schema.
+
+### Files
+* `src/services/sales.service.ts`
+* `docs/STEP_fix_20250917.md`
+
+## [Fix - 2025-09-18] – Numeric and date parsing
+
+### 🟥 Fixes
+* Added `parseDb` helper to convert numeric and timestamp strings across services.
+* All service listings now return numbers and `Date` objects instead of strings.
+
+### Files
+* `src/utils/parseDb.ts`
+* `src/services/*`
+* `docs/STEP_fix_20250918.md`
