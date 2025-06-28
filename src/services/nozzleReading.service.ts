@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
+import { createAlert } from './alert.service';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
 import { isDayFinalized } from './reconciliation.service';
@@ -43,15 +44,40 @@ export async function createNozzleReading(
       [randomUUID(), tenantId, data.nozzleId, data.reading, data.recordedAt]
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
-    const price = await getPriceAtTimestamp(client, tenantId, station_id, fuel_type, data.recordedAt);
-    const saleAmount = price ? parseFloat((volumeSold * price).toFixed(2)) : 0;
+    const priceRecord = await getPriceAtTimestamp(
+      client,
+      tenantId,
+      station_id,
+      fuel_type,
+      data.recordedAt
+    );
+    if (!priceRecord) {
+      throw new Error('Fuel price not found');
+    }
+    const { price, validFrom } = priceRecord;
+    const threshold = new Date(data.recordedAt);
+    threshold.setDate(threshold.getDate() - 7);
+    if (validFrom < threshold) {
+      throw new Error('Fuel price outdated');
+    }
+    const saleAmount = parseFloat((volumeSold * price).toFixed(2));
     if (data.creditorId) {
       const creditor = await getCreditorById(client, tenantId, data.creditorId);
       if (!creditor) {
         throw new Error('Invalid creditor');
       }
-      if (saleAmount > Number(creditor.credit_limit) - Number(creditor.balance)) {
+      const newBalance = Number(creditor.balance) + saleAmount;
+      if (newBalance > Number(creditor.credit_limit)) {
         throw new Error('Credit limit exceeded');
+      }
+      if (newBalance >= Number(creditor.credit_limit) * 0.9) {
+        await createAlert(
+          tenantId,
+          station_id,
+          'credit_near_limit',
+          'Creditor above 90% of credit limit',
+          'warning'
+        );
       }
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }

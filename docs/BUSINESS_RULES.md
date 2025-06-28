@@ -104,6 +104,7 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 | Price must be > 0                    | Enforced with `CHECK(price > 0)` |
 | Stored per station & fuel type       | Track via `effective_from`/`effective_to` |
 | Historical lookup allowed            | Used in sales delta logic     |
+| Stale price blocked                  | Price older than 7 days cannot be used |
 | No overlapping ranges | API ensures ranges do not overlap and closes open range |
 
 ---
