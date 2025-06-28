@@ -902,3 +902,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Sales rows are now inserted into `public.sales` and queried consistently using `tenant_id`.
 * Dashboard analytics, reconciliation and reports all reference the unified tables.
+
+### 🛠️ Fix 2025-09-16 – Nozzle reading service wiring
+**Status:** ✅ Done
+**Files:** `src/controllers/nozzleReading.controller.ts`, `docs/STEP_fix_20250916.md`
+
+**Overview:**
+* The nozzle reading API now calls the service layer so each reading also creates a sales row in `public.sales`.
