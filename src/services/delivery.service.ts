@@ -7,8 +7,8 @@ export async function createFuelDelivery(db: Pool, tenantId: string, input: Deli
   try {
     await client.query('BEGIN');
     const res = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.fuel_deliveries (id, station_id, fuel_type, volume, delivered_by, delivery_date)
-       VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+      `INSERT INTO ${tenantId}.fuel_deliveries (id, station_id, fuel_type, volume, delivered_by, delivery_date, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id`,
       [randomUUID(), input.stationId, input.fuelType, input.volume, input.supplier || null, input.deliveryDate]
     );
 
@@ -25,8 +25,8 @@ export async function createFuelDelivery(db: Pool, tenantId: string, input: Deli
       );
     } else {
       await client.query(
-        `INSERT INTO ${tenantId}.fuel_inventory (id, station_id, fuel_type, current_volume)
-         VALUES ($1,$2,$3,$4)`,
+        `INSERT INTO ${tenantId}.fuel_inventory (id, station_id, fuel_type, current_volume, updated_at)
+         VALUES ($1,$2,$3,$4,NOW())`,
         [randomUUID(), input.stationId, input.fuelType, input.volume]
       );
     }

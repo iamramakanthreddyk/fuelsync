@@ -63,8 +63,8 @@ export async function updateInventory(db: Pool, tenantId: string, stationId: str
 
 export async function createAlert(db: Pool, tenantId: string, stationId: string, alertType: string, message: string, severity: string = 'info') {
   const query = `
-    INSERT INTO ${tenantId}.alerts (id, tenant_id, station_id, alert_type, message, severity)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO ${tenantId}.alerts (id, tenant_id, station_id, alert_type, message, severity, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, NOW())
   `;
   await db.query(query, [randomUUID(), tenantId, stationId, alertType, message, severity]);
 }

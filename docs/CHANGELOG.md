@@ -2088,3 +2088,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/tenant.service.ts`
 * `docs/STEP_fix_20250913.md`
+
+## [Fix - 2025-09-14] – Explicit updated_at on inserts
+
+### 🟥 Fixes
+* All create operations now specify `updated_at = NOW()` to avoid not-null violations.
+
+### Files
+* Multiple service files under `src/services/*`
+* `docs/STEP_fix_20250914.md`

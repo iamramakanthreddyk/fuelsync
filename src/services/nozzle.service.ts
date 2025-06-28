@@ -7,7 +7,7 @@ export async function createNozzle(db: Pool, tenantId: string, pumpId: string, n
   try {
     await beforeCreateNozzle(client, tenantId, pumpId);
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzles (id, tenant_id, pump_id, nozzle_number, fuel_type) VALUES ($1,$2,$3,$4,$5) RETURNING id',
+      'INSERT INTO public.nozzles (id, tenant_id, pump_id, nozzle_number, fuel_type, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
       [randomUUID(), tenantId, pumpId, nozzleNumber, fuelType]
     );
     return res.rows[0].id;

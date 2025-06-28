@@ -9,7 +9,7 @@ export async function createStation(db: Pool, tenantId: string, name: string, ad
     await beforeCreateStation(client, tenantId);
 
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.stations (id, tenant_id, name, address) VALUES ($1,$2,$3,$4) RETURNING id',
+      'INSERT INTO public.stations (id, tenant_id, name, address, updated_at) VALUES ($1,$2,$3,$4,NOW()) RETURNING id',
       [randomUUID(), tenantId, name, address || null]
     );
     return res.rows[0].id;
