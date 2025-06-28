@@ -2288,3 +2288,15 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzleReading.service.ts`
 * `tests/sales.service.test.ts`
 * `docs/STEP_2_43_COMMAND.md`
+
+## [Doc - Step 2.44] – Role Journey Documentation
+
+### 🟦 Enhancements
+* Added comprehensive API journey docs for all roles under `docs/journeys/`.
+
+### Files
+* `docs/journeys/SUPERADMIN.md`
+* `docs/journeys/OWNER.md`
+* `docs/journeys/MANAGER.md`
+* `docs/journeys/ATTENDANT.md`
+* `docs/STEP_2_44_COMMAND.md`
