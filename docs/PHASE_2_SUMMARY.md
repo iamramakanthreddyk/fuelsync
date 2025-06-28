@@ -989,3 +989,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added API to create alerts and fetch unread counts grouped by severity.
+
+### 🛠️ Step 2.42 – Automated alert rules
+**Status:** ✅ Done
+**Files:** `src/services/alertRules.service.ts`, `docs/BUSINESS_RULES.md`
+
+**Overview:**
+* Added service functions that generate alerts for missing readings, prices, credit limits, inactivity and cash reports.

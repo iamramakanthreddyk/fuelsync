@@ -2265,3 +2265,14 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/alerts.route.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_41_COMMAND.md`
+
+## [Feature - 2025-09-28] – Scheduled alert checks
+
+### 🟩 Features
+* Automated services evaluate missing readings, prices and reports.
+* Alerts raised for creditor limits, inactivity and reading anomalies.
+
+### Files
+* `src/services/alertRules.service.ts`
+* `docs/BUSINESS_RULES.md`
+* `docs/STEP_2_42_COMMAND.md`
