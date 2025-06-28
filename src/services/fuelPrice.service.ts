@@ -7,8 +7,8 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
   try {
     await client.query('BEGIN');
     const res = await client.query<{ id: string }>(
-      `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from)
-       VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+      `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id`,
       [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, input.validFrom || new Date()]
     );
     await client.query('COMMIT');

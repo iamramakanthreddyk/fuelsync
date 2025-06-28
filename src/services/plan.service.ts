@@ -29,8 +29,8 @@ export interface PlanOutput {
 export async function createPlan(db: Pool, input: PlanInput): Promise<PlanOutput> {
   const result = await db.query(
     `INSERT INTO public.plans
-     (id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     (id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, updated_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
      RETURNING id, name, max_stations, max_pumps_per_station, max_nozzles_per_pump, price_monthly, price_yearly, features, created_at`,
     [
       randomUUID(),

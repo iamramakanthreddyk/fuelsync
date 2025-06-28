@@ -5,8 +5,8 @@ import { isDateFinalized } from './reconciliation.service';
 
 export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
   const res = await db.query<{ id: string }>(
-    `INSERT INTO public.creditors (id, tenant_id, party_name, contact_number, address, credit_limit)
-     VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+    `INSERT INTO public.creditors (id, tenant_id, party_name, contact_number, address, credit_limit, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id`,
     [randomUUID(), tenantId, input.partyName, input.contactNumber || null, input.address || null, input.creditLimit || 0]
   );
   return res.rows[0].id;
@@ -71,8 +71,8 @@ export async function createCreditPayment(
       throw new Error('Invalid creditor');
     }
     const res = await client.query<{ id: string }>(
-      `INSERT INTO public.credit_payments (id, tenant_id, creditor_id, amount, payment_method, reference_number, received_by, received_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
+      `INSERT INTO public.credit_payments (id, tenant_id, creditor_id, amount, payment_method, reference_number, received_by, received_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW(),NOW()) RETURNING id`,
       [randomUUID(), tenantId, input.creditorId, input.amount, input.paymentMethod, input.referenceNumber || null, userId]
     );
     await decrementCreditorBalance(client, tenantId, input.creditorId, input.amount);

@@ -79,8 +79,8 @@ export async function seedFuelInventory(db: Pool, tenantId: string): Promise<voi
       
       await db.query(`
         INSERT INTO ${tenantId}.fuel_inventory
-        (id, station_id, fuel_type, current_volume, capacity)
-        VALUES ($1, $2, $3, $4, $5)
+        (id, station_id, fuel_type, current_volume, capacity, updated_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
       `, [randomUUID(), station.id, fuelType, currentVolume, capacity]);
     }
   }

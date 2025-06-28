@@ -9,7 +9,7 @@ export async function createPump(db: Pool, tenantId: string, stationId: string, 
     await beforeCreatePump(client, tenantId, stationId);
 
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.pumps (id, tenant_id, station_id, label, serial_number) VALUES ($1,$2,$3,$4,$5) RETURNING id',
+      'INSERT INTO public.pumps (id, tenant_id, station_id, label, serial_number, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
       [randomUUID(), tenantId, stationId, label, serialNumber || null]
     );
     return res.rows[0].id;

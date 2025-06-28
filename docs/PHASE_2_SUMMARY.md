@@ -887,3 +887,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * `listTenants` now computes `stationCount` and `userCount` so the SuperAdmin dashboard receives these metrics.
+
+### 🛠️ Fix 2025-09-14 – Explicit updated_at on inserts
+**Status:** ✅ Done
+**Files:** various `src/services/*.ts`, `docs/STEP_fix_20250914.md`
+
+**Overview:**
+* Insert queries now include `updated_at = NOW()` ensuring compatibility with strict schemas.
