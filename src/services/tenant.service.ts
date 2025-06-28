@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { slugify } from '../utils/slugify';
+import { parseRow, parseRows } from '../utils/parseDb';
 
 export interface TenantInput {
   name: string;
@@ -90,13 +91,13 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
     await client.query('COMMIT');
 
     return {
-      tenant: {
+      tenant: parseRow({
         id: tenant.id,
         name: tenant.name,
         planId: tenant.plan_id,
         status: tenant.status,
         createdAt: tenant.created_at
-      },
+      }),
       owner: {
         id: ownerId,
         email: ownerEmail,
@@ -129,16 +130,18 @@ export async function listTenants(db: Pool, includeDeleted = false): Promise<Ten
      ORDER BY t.created_at DESC`
   );
 
-  return result.rows.map(row => ({
-    id: row.id,
-    name: row.name,
-    planId: row.plan_id,
-    planName: row.plan_name,
-    status: row.status,
-    createdAt: row.created_at,
-    userCount: parseInt(row.user_count),
-    stationCount: parseInt(row.station_count)
-  }));
+  return parseRows(
+    result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      planId: row.plan_id,
+      planName: row.plan_name,
+      status: row.status,
+      createdAt: row.created_at,
+      userCount: parseInt(row.user_count),
+      stationCount: parseInt(row.station_count)
+    }))
+  );
 }
 
 /**
@@ -157,7 +160,7 @@ export async function getTenant(db: Pool, id: string): Promise<any | null> {
     return null;
   }
   
-  const row = result.rows[0];
+  const row = parseRow(result.rows[0]);
   
   // Get users
   const usersResult = await db.query(
@@ -174,29 +177,29 @@ export async function getTenant(db: Pool, id: string): Promise<any | null> {
     [id]
   );
   
-  const stations = [];
-  for (const station of stationsResult.rows) {
+  const stations = [] as any[];
+  for (const station of parseRows(stationsResult.rows)) {
     const pumpsResult = await db.query(
       `SELECT p.id, p.label, p.serial_number, p.status,
        (SELECT COUNT(*) FROM public.nozzles n WHERE n.pump_id = p.id) as nozzle_count
        FROM public.pumps p WHERE p.station_id = $1 ORDER BY p.label`,
       [station.id]
     );
-    
+
     const pumps = [];
-    for (const pump of pumpsResult.rows) {
+    for (const pump of parseRows(pumpsResult.rows)) {
       const nozzlesResult = await db.query(
         `SELECT id, nozzle_number, fuel_type, status FROM public.nozzles
          WHERE pump_id = $1 ORDER BY nozzle_number`,
         [pump.id]
       );
-      
+
       pumps.push({
         ...pump,
-        nozzles: nozzlesResult.rows
+        nozzles: parseRows(nozzlesResult.rows)
       });
     }
-    
+
     stations.push({
       ...station,
       pumps
@@ -210,7 +213,7 @@ export async function getTenant(db: Pool, id: string): Promise<any | null> {
     planName: row.plan_name,
     status: row.status,
     createdAt: row.created_at,
-    users: usersResult.rows,
+    users: parseRows(usersResult.rows),
     stations,
     userCount: usersResult.rows.length,
     stationCount: stations.length

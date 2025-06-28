@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import { UserRole } from '../constants/auth';
 import { beforeCreateUser } from '../middleware/planEnforcement';
+import { parseRows } from '../utils/parseDb';
 
 export async function createUser(
   db: Pool,
@@ -31,5 +32,5 @@ export async function listUsers(db: Pool, tenantId: string) {
     'SELECT id, email, name, role, created_at FROM public.users WHERE tenant_id = $1 ORDER BY email',
     [tenantId]
   );
-  return res.rows;
+  return parseRows(res.rows);
 }

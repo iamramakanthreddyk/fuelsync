@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { beforeCreatePump } from '../middleware/planEnforcement';
+import { parseRows } from '../utils/parseDb';
 
 export async function createPump(db: Pool, tenantId: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
   const client = await db.connect();
@@ -27,10 +28,12 @@ export async function listPumps(db: Pool, tenantId: string, stationId?: string) 
      FROM public.pumps p WHERE p.tenant_id = $${stationId ? 2 : 1} ${where ? 'AND ' + where : ''} ORDER BY p.label`,
     params
   );
-  return res.rows.map(row => ({
-    ...row,
-    nozzleCount: parseInt(row.nozzle_count)
-  }));
+  return parseRows(
+    res.rows.map(row => ({
+      ...row,
+      nozzleCount: parseInt(row.nozzle_count)
+    }))
+  );
 }
 
 export async function deletePump(db: Pool, tenantId: string, pumpId: string) {

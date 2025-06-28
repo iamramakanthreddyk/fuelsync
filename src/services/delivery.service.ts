@@ -1,6 +1,7 @@
 import { Pool, PoolClient } from 'pg';
 import { randomUUID } from 'crypto';
 import { DeliveryInput, DeliveryQuery } from '../validators/delivery.validator';
+import { parseRows } from '../utils/parseDb';
 
 export async function createFuelDelivery(db: Pool, tenantId: string, input: DeliveryInput): Promise<string> {
   const client = await db.connect();
@@ -52,5 +53,5 @@ export async function listFuelDeliveries(db: Pool, tenantId: string, query: Deli
                FROM ${tenantId}.fuel_deliveries ${where}
                ORDER BY delivery_date DESC`;
   const res = await db.query(sql, params);
-  return res.rows;
+  return parseRows(res.rows);
 }

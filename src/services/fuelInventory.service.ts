@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import { parseRows } from '../utils/parseDb';
 
 export interface FuelInventory {
   id: string;
@@ -31,7 +32,7 @@ export async function getFuelInventory(db: Pool, tenantId: string): Promise<Fuel
   
   try {
     const result = await db.query(query);
-    return result.rows;
+    return parseRows(result.rows);
   } catch (error) {
     console.error('Error fetching fuel inventory:', error);
     // If table doesn't exist yet, return empty array

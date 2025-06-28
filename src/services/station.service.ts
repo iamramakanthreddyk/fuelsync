@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { beforeCreateStation } from '../middleware/planEnforcement';
+import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function createStation(db: Pool, tenantId: string, name: string, address?: string): Promise<string> {
   const client = await db.connect();
@@ -40,7 +41,7 @@ export async function getStation(db: Pool, tenantId: string, stationId: string, 
     throw new Error(`Station not found: ${stationId}`);
   }
 
-  const station = res.rows[0];
+  const station = parseRow(res.rows[0]);
   
   if (includeMetrics) {
     station.metrics = await getStationMetrics(db, tenantId, stationId, 'today');
@@ -68,7 +69,7 @@ export async function listStations(db: Pool, tenantId: string, includeMetrics = 
     [tenantId]
   );
 
-  const stations = res.rows;
+  const stations = parseRows(res.rows);
   if (!includeMetrics) return stations;
 
   for (const st of stations) {
@@ -162,16 +163,18 @@ export async function getStationComparison(db: Pool, tenantId: string, stationId
     ORDER BY total_sales DESC
   `;
   const result = await db.query(query, [stationIds, tenantId]);
-  return result.rows.map(row => ({
-    id: row.id,
-    name: row.name,
-    totalSales: parseFloat(row.total_sales),
-    totalProfit: parseFloat(row.total_profit),
-    totalVolume: parseFloat(row.total_volume),
-    transactionCount: parseInt(row.transaction_count),
-    avgTransaction: parseFloat(row.avg_transaction),
-    profitMargin: parseFloat(row.profit_margin)
-  }));
+  return parseRows(
+    result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      totalSales: parseFloat(row.total_sales),
+      totalProfit: parseFloat(row.total_profit),
+      totalVolume: parseFloat(row.total_volume),
+      transactionCount: parseInt(row.transaction_count),
+      avgTransaction: parseFloat(row.avg_transaction),
+      profitMargin: parseFloat(row.profit_margin)
+    }))
+  );
 }
 
 export async function getStationRanking(db: Pool, tenantId: string, metric: string, period: string) {
@@ -194,13 +197,15 @@ export async function getStationRanking(db: Pool, tenantId: string, metric: stri
     ORDER BY ${orderBy} DESC
   `;
   const result = await db.query(query, [tenantId]);
-  return result.rows.map(row => ({
-    rank: parseInt(row.rank),
-    id: row.id,
-    name: row.name,
-    totalSales: parseFloat(row.total_sales),
-    totalProfit: parseFloat(row.total_profit),
-    totalVolume: parseFloat(row.total_volume),
-    transactionCount: parseInt(row.transaction_count)
-  }));
+  return parseRows(
+    result.rows.map(row => ({
+      rank: parseInt(row.rank),
+      id: row.id,
+      name: row.name,
+      totalSales: parseFloat(row.total_sales),
+      totalProfit: parseFloat(row.total_profit),
+      totalVolume: parseFloat(row.total_volume),
+      transactionCount: parseInt(row.transaction_count)
+    }))
+  );
 }

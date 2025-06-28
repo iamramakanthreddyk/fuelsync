@@ -1,12 +1,13 @@
 import { Pool } from 'pg';
 import { SettingsInput } from '../validators/settings.validator';
+import { parseRow } from '../utils/parseDb';
 
 export async function getTenantSettings(db: Pool, tenantId: string) {
   const res = await db.query(
     'SELECT receipt_template, fuel_rounding, branding_logo_url FROM public.tenant_settings WHERE tenant_id = $1',
     [tenantId]
   );
-  return res.rows[0] || {};
+  return parseRow(res.rows[0] || {});
 }
 
 export async function upsertTenantSettings(db: Pool, tenantId: string, input: SettingsInput) {

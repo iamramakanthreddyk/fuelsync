@@ -4,6 +4,7 @@ import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
 import { isDayFinalized } from './reconciliation.service';
+import { parseRows } from '../utils/parseDb';
 
 export async function createNozzleReading(
   db: Pool,
@@ -113,5 +114,5 @@ export async function listNozzleReadings(
     ${where}
     ORDER BY nr.recorded_at DESC`;
   const res = await db.query(sql, params);
-  return res.rows;
+  return parseRows(res.rows);
 }

@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function getInventory(db: Pool, tenantId: string, stationId?: string) {
   const stationFilter = stationId ? 'WHERE fi.station_id = $1' : '';
@@ -26,16 +27,18 @@ export async function getInventory(db: Pool, tenantId: string, stationId?: strin
   `;
   
   const result = await db.query(query, params);
-  return result.rows.map(row => ({
-    id: row.id,
-    stationId: row.station_id,
-    stationName: row.station_name,
-    fuelType: row.fuel_type,
-    currentStock: parseFloat(row.current_stock),
-    minimumLevel: parseFloat(row.minimum_level),
-    lastUpdated: row.last_updated,
-    stockStatus: row.stock_status
-  }));
+  return parseRows(
+    result.rows.map(row => ({
+      id: row.id,
+      stationId: row.station_id,
+      stationName: row.station_name,
+      fuelType: row.fuel_type,
+      currentStock: parseFloat(row.current_stock),
+      minimumLevel: parseFloat(row.minimum_level),
+      lastUpdated: row.last_updated,
+      stockStatus: row.stock_status
+    }))
+  );
 }
 
 export async function updateInventory(db: Pool, tenantId: string, stationId: string, fuelType: string, newStock: number) {
@@ -103,16 +106,18 @@ export async function getAlerts(db: Pool, tenantId: string, stationId?: string, 
   `;
   
   const result = await db.query(query, params);
-  return result.rows.map(row => ({
-    id: row.id,
-    stationId: row.station_id,
-    stationName: row.station_name,
-    alertType: row.alert_type,
-    message: row.message,
-    severity: row.severity,
-    isRead: row.is_read,
-    createdAt: row.created_at
-  }));
+  return parseRows(
+    result.rows.map(row => ({
+      id: row.id,
+      stationId: row.station_id,
+      stationName: row.station_name,
+      alertType: row.alert_type,
+      message: row.message,
+      severity: row.severity,
+      isRead: row.is_read,
+      createdAt: row.created_at
+    }))
+  );
 }
 
 export async function markAlertRead(db: Pool, tenantId: string, alertId: string): Promise<boolean> {

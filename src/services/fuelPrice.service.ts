@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { FuelPriceInput, FuelPriceQuery } from '../validators/fuelPrice.validator';
+import { parseRows } from '../utils/parseDb';
 
 export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPriceInput): Promise<string> {
   const client = await db.connect();
@@ -52,7 +53,7 @@ export async function listFuelPrices(db: Pool, tenantId: string, query: FuelPric
                ${where}
                ORDER BY valid_from DESC`;
   const res = await db.query(sql, params);
-  return res.rows;
+  return parseRows(res.rows);
 }
 
 export async function getPriceAt(db: Pool, tenantId: string, stationId: string, fuelType: string, at: Date): Promise<number | null> {

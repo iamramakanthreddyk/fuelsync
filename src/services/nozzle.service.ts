@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { beforeCreateNozzle } from '../middleware/planEnforcement';
+import { parseRows } from '../utils/parseDb';
 
 export async function createNozzle(db: Pool, tenantId: string, pumpId: string, nozzleNumber: number, fuelType: string): Promise<string> {
   const client = await db.connect();
@@ -53,7 +54,7 @@ export async function listNozzles(db: Pool, tenantId: string, pumpId?: string) {
     `SELECT id, pump_id, nozzle_number, fuel_type, status, created_at FROM public.nozzles ${where} ${where ? 'AND tenant_id = $2' : 'WHERE tenant_id = $1'} ORDER BY nozzle_number`,
     params
   );
-  return res.rows;
+  return parseRows(res.rows);
 }
 
 export async function deleteNozzle(db: Pool, tenantId: string, nozzleId: string) {
