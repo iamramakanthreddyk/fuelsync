@@ -2097,3 +2097,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * Multiple service files under `src/services/*`
 * `docs/STEP_fix_20250914.md`
+
+## [Fix - 2025-09-15] – Unified Sales Storage
+
+### 🟥 Fixes
+* Sales records now insert into `public.sales` when nozzle readings are recorded.
+* Dashboard, reconciliation and report queries updated to use unified tables.
+
+### Files
+* `src/services/nozzleReading.service.ts`
+* `src/services/reconciliation.service.ts`
+* `src/controllers/reconciliation.controller.ts`
+* `src/controllers/dashboard.controller.ts`
+* `src/controllers/reports.controller.ts`
+* `docs/STEP_fix_20250915.md`

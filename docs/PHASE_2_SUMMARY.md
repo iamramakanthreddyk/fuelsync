@@ -894,3 +894,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Insert queries now include `updated_at = NOW()` ensuring compatibility with strict schemas.
+
+### 🛠️ Fix 2025-09-15 – Unified sales storage
+**Status:** ✅ Done
+**Files:** `src/services/nozzleReading.service.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `src/controllers/dashboard.controller.ts`, `src/controllers/reports.controller.ts`, `docs/STEP_fix_20250915.md`
+
+**Overview:**
+* Sales rows are now inserted into `public.sales` and queried consistently using `tenant_id`.
+* Dashboard analytics, reconciliation and reports all reference the unified tables.

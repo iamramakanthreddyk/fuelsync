@@ -35,12 +35,13 @@ export function createDashboardHandlers(db: Pool) {
             COALESCE(SUM(s.volume), 0) as total_volume,
             COUNT(s.id) as transaction_count,
             CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-          WHERE 1=1 ${dateFilter} ${stationFilter}
+          FROM public.sales s
+          JOIN public.nozzles n ON s.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
         `;
-        const result = await db.query(query, stationId ? [stationId] : []);
+        const params = stationId ? [stationId, tenantId] : [tenantId];
+        const result = await db.query(query, params);
         const row = result.rows[0];
 
         successResponse(res, {
@@ -85,14 +86,16 @@ export function createDashboardHandlers(db: Pool) {
             s.payment_method,
             SUM(s.amount) as amount,
             COUNT(*) as count
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+          FROM public.sales s
+          JOIN public.nozzles n ON s.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
           ${where}
+          AND s.tenant_id = $${idx++}
           GROUP BY s.payment_method
           ORDER BY amount DESC
         `;
 
+        params.push(tenantId);
         const result = await db.query(query, params);
         const totalAmount = result.rows.reduce((sum, row) => sum + parseFloat(row.amount), 0);
 
@@ -136,15 +139,16 @@ export function createDashboardHandlers(db: Pool) {
             s.fuel_type,
             SUM(s.volume) as volume,
             SUM(s.amount) as amount
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-          WHERE 1=1 ${dateFilter} ${stationFilter}
+          FROM public.sales s
+          JOIN public.nozzles n ON s.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
           GROUP BY s.fuel_type
           ORDER BY amount DESC
         `;
 
-        const result = await db.query(query, stationId ? [stationId] : []);
+        const params2 = stationId ? [stationId, tenantId] : [tenantId];
+        const result = await db.query(query, params2);
 
         const breakdown = result.rows.map(row => ({
           fuelType: row.fuel_type,
@@ -170,19 +174,19 @@ export function createDashboardHandlers(db: Pool) {
             c.party_name,
             COALESCE(SUM(s.amount) - COALESCE(SUM(cp.amount), 0), 0) as outstanding_amount,
             c.credit_limit
-          FROM ${tenantId}.creditors c
-          LEFT JOIN ${tenantId}.sales s ON c.id = s.creditor_id AND s.payment_method = 'credit'
-          LEFT JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-          LEFT JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-          LEFT JOIN ${tenantId}.credit_payments cp ON c.id = cp.creditor_id
-          WHERE c.status = 'active' ${stationId ? 'AND p.station_id = $2' : ''}
+          FROM public.creditors c
+          LEFT JOIN public.sales s ON c.id = s.creditor_id AND s.payment_method = 'credit' AND s.tenant_id = $${stationId ? 3 : 2}
+          LEFT JOIN public.nozzles n ON s.nozzle_id = n.id
+          LEFT JOIN public.pumps p ON n.pump_id = p.id
+          LEFT JOIN public.credit_payments cp ON c.id = cp.creditor_id AND cp.tenant_id = $${stationId ? 3 : 2}
+          WHERE c.tenant_id = $1 AND c.status = 'active' ${stationId ? 'AND p.station_id = $2' : ''}
           GROUP BY c.id, c.party_name, c.credit_limit
           HAVING COALESCE(SUM(s.amount) - COALESCE(SUM(cp.amount), 0), 0) > 0
           ORDER BY outstanding_amount DESC
-          LIMIT $1
+          LIMIT $${stationId ? 4 : 3}
         `;
 
-        const params = stationId ? [limit, stationId] : [limit];
+        const params = stationId ? [tenantId, stationId, tenantId, limit] : [tenantId, tenantId, limit];
         const result = await db.query(query, params);
 
         const topCreditors = result.rows.map(row => ({
@@ -209,15 +213,16 @@ export function createDashboardHandlers(db: Pool) {
             DATE(s.recorded_at) as date,
             SUM(s.amount) as amount,
             SUM(s.volume) as volume
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-          JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days' ${stationId ? 'AND p.station_id = $1' : ''}
+          FROM public.sales s
+          JOIN public.nozzles n ON s.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days' ${stationId ? 'AND p.station_id = $1' : ''} AND s.tenant_id = $${stationId ? 2 : 1}
           GROUP BY DATE(s.recorded_at)
           ORDER BY date ASC
         `;
 
-        const result = await db.query(query, stationId ? [stationId] : []);
+        const params3 = stationId ? [stationId, tenantId] : [tenantId];
+        const result = await db.query(query, params3);
 
         const trend = result.rows.map(row => ({
           date: row.date,

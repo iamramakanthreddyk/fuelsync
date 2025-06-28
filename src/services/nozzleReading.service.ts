@@ -15,8 +15,8 @@ export async function createNozzleReading(
   try {
     await client.query('BEGIN');
     const lastRes = await client.query<{ reading: number }>(
-      `SELECT reading FROM ${tenantId}.nozzle_readings WHERE nozzle_id = $1 ORDER BY recorded_at DESC LIMIT 1`,
-      [data.nozzleId]
+      'SELECT reading FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 ORDER BY recorded_at DESC LIMIT 1',
+      [data.nozzleId, tenantId]
     );
     const lastReading = lastRes.rows[0]?.reading ?? 0;
     if (data.reading < Number(lastReading)) {
@@ -24,8 +24,8 @@ export async function createNozzleReading(
     }
 
     const nozzleInfo = await client.query<{ fuel_type: string; station_id: string }>(
-      `SELECT n.fuel_type, p.station_id FROM ${tenantId}.nozzles n JOIN ${tenantId}.pumps p ON n.pump_id = p.id WHERE n.id = $1`,
-      [data.nozzleId]
+      'SELECT n.fuel_type, p.station_id FROM public.nozzles n JOIN public.pumps p ON n.pump_id = p.id WHERE n.id = $1 AND n.tenant_id = $2',
+      [data.nozzleId, tenantId]
     );
     if (!nozzleInfo.rowCount) {
       throw new Error('Invalid nozzle');
@@ -38,8 +38,8 @@ export async function createNozzleReading(
     }
 
     const readingRes = await client.query<{ id: string }>(
-      `INSERT INTO ${tenantId}.nozzle_readings (id, nozzle_id, reading, recorded_at, updated_at) VALUES ($1,$2,$3,$4,NOW()) RETURNING id`,
-      [randomUUID(), data.nozzleId, data.reading, data.recordedAt]
+      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
+      [randomUUID(), tenantId, data.nozzleId, data.reading, data.recordedAt]
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
     const price = await getPriceAtTimestamp(client, tenantId, station_id, fuel_type, data.recordedAt);
@@ -55,8 +55,21 @@ export async function createNozzleReading(
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }
     await client.query(
-      `INSERT INTO ${tenantId}.sales (id, nozzle_id, station_id, user_id, volume_sold, sale_amount, sold_at, payment_method, creditor_id, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW())`,
-      [randomUUID(), data.nozzleId, station_id, userId, volumeSold, saleAmount, data.recordedAt, data.paymentMethod || (data.creditorId ? 'credit' : 'cash'), data.creditorId || null]
+      'INSERT INTO public.sales (id, tenant_id, nozzle_id, station_id, volume, fuel_type, fuel_price, amount, payment_method, creditor_id, created_by, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW())',
+      [
+        randomUUID(),
+        tenantId,
+        data.nozzleId,
+        station_id,
+        volumeSold,
+        fuel_type,
+        price || 0,
+        saleAmount,
+        data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+        data.creditorId || null,
+        userId,
+        data.recordedAt,
+      ]
     );
     await client.query('COMMIT');
     return readingRes.rows[0].id;
@@ -73,9 +86,9 @@ export async function listNozzleReadings(
   tenantId: string,
   query: ReadingQuery
 ) {
-  const params: any[] = [];
-  let idx = 1;
-  const conditions: string[] = [];
+  const params: any[] = [tenantId];
+  let idx = 2;
+  const conditions: string[] = ['nr.tenant_id = $1'];
   if (query.nozzleId) {
     conditions.push(`nr.nozzle_id = $${idx++}`);
     params.push(query.nozzleId);
@@ -92,11 +105,11 @@ export async function listNozzleReadings(
     conditions.push(`nr.recorded_at <= $${idx++}`);
     params.push(query.to);
   }
-  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const where = `WHERE ${conditions.join(' AND ')}`;
   const sql = `SELECT nr.id, nr.nozzle_id, nr.reading, nr.recorded_at
-    FROM ${tenantId}.nozzle_readings nr
-    JOIN ${tenantId}.nozzles n ON nr.nozzle_id = n.id
-    JOIN ${tenantId}.pumps p ON n.pump_id = p.id
+    FROM public.nozzle_readings nr
+    JOIN public.nozzles n ON nr.nozzle_id = n.id
+    JOIN public.pumps p ON n.pump_id = p.id
     ${where}
     ORDER BY nr.recorded_at DESC`;
   const res = await db.query(sql, params);
