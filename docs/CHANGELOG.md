@@ -2159,3 +2159,14 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `migrations/schema/006_add_tenant_id_columns.sql`
 * `docs/STEP_fix_20250920.md`
+
+## [Fix - 2025-09-21] – Daily summary previous-day readings
+
+### 🟥 Fixes
+* Modified `getDailySummary` query to pull previous day's reading so nozzles with a single reading are included.
+
+### Files
+* `src/controllers/reconciliation.controller.ts`
+* `docs/openapi.yaml`
+* `docs/missing/IMPLEMENTATION_GUIDE.md`
+* `docs/STEP_fix_20250921.md`

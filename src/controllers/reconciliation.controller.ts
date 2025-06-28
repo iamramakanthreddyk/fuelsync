@@ -79,7 +79,7 @@ export function createReconciliationHandlers(db: Pool) {
         }
 
         const query = `
-          WITH daily_readings AS (
+          WITH ordered_readings AS (
             SELECT
               nr.nozzle_id,
               n.nozzle_number,
@@ -87,6 +87,7 @@ export function createReconciliationHandlers(db: Pool) {
               nr.reading as current_reading,
               LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) as previous_reading,
               nr.payment_method,
+              nr.recorded_at,
               fp.price as price_per_litre
             FROM public.nozzle_readings nr
             JOIN public.nozzles n ON nr.nozzle_id = n.id
@@ -94,7 +95,6 @@ export function createReconciliationHandlers(db: Pool) {
             LEFT JOIN public.fuel_prices fp ON p.station_id = fp.station_id AND n.fuel_type = fp.fuel_type AND fp.tenant_id = $3
             WHERE p.station_id = $1
               AND nr.tenant_id = $3
-              AND DATE(nr.recorded_at) = $2
             ORDER BY nr.nozzle_id, nr.recorded_at
           )
           SELECT
@@ -108,8 +108,9 @@ export function createReconciliationHandlers(db: Pool) {
             GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) as sale_value,
             payment_method,
             CASE WHEN payment_method = 'cash' THEN GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) ELSE 0 END as cash_declared
-          FROM daily_readings
-          WHERE previous_reading IS NOT NULL
+          FROM ordered_readings
+          WHERE DATE(recorded_at) = $2
+            AND previous_reading IS NOT NULL
         `;
 
         const result = await db.query(query, [stationId, date, tenantId]);
