@@ -2239,3 +2239,16 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/fuelPrice.route.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_39_COMMAND.md`
+
+## [Feature - 2025-09-26] – Nozzle reading creation validation
+
+### 🟩 Features
+* Check if a nozzle reading can be created based on nozzle status and fuel price.
+
+### Files
+* `src/services/nozzleReading.service.ts`
+* `src/controllers/nozzleReading.controller.ts`
+* `src/routes/nozzleReading.route.ts`
+* `docs/openapi.yaml`
+* `src/docs/swagger.ts`
+* `docs/STEP_2_40_COMMAND.md`

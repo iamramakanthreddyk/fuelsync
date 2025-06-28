@@ -523,6 +523,20 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/nozzle-readings/can-create/{nozzleId}:
+    get:
+      summary: Check if a nozzle reading can be created
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/fuel-prices:
     post:
       summary: Create fuel price entry
