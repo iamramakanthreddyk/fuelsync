@@ -66,3 +66,48 @@ export async function createCashReport(
   );
   return res.rows[0].id;
 }
+
+export async function listCashReports(db: Pool, tenantId: string, userId: string) {
+  const res = await db.query(
+    `SELECT cr.id, cr.station_id, s.name AS station_name, cr.date, cr.cash_amount, cr.credit_amount
+       FROM public.cash_reports cr
+       JOIN public.stations s ON cr.station_id = s.id
+      WHERE cr.tenant_id = $1 AND cr.user_id = $2
+      ORDER BY cr.date DESC
+      LIMIT 30`,
+    [tenantId, userId]
+  );
+  return parseRows(res.rows);
+}
+
+export async function listAlerts(db: Pool, tenantId: string, stationId?: string, unreadOnly: boolean = false) {
+  const conditions = [] as string[];
+  const params: any[] = [];
+  let idx = 1;
+
+  if (stationId) {
+    conditions.push(`a.station_id = $${idx++}`);
+    params.push(stationId);
+  }
+  if (unreadOnly) {
+    conditions.push('a.is_read = false');
+  }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const query = `
+    SELECT a.id, a.station_id, st.name AS station_name, a.alert_type, a.message, a.severity, a.is_read, a.created_at
+      FROM ${tenantId}.alerts a
+      LEFT JOIN ${tenantId}.stations st ON a.station_id = st.id
+      ${where}
+      ORDER BY a.created_at DESC
+      LIMIT 50`;
+  const res = await db.query(query, params);
+  return parseRows(res.rows);
+}
+
+export async function acknowledgeAlert(db: Pool, tenantId: string, alertId: string): Promise<boolean> {
+  const res = await db.query(
+    `UPDATE ${tenantId}.alerts SET is_read = TRUE WHERE id = $1 RETURNING id`,
+    [alertId]
+  );
+  return (res.rowCount ?? 0) > 0;
+}

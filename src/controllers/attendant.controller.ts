@@ -6,6 +6,9 @@ import {
   listUserNozzles,
   listUserCreditors,
   createCashReport,
+  listCashReports,
+  listAlerts,
+  acknowledgeAlert,
 } from '../services/attendant.service';
 import { successResponse } from '../utils/successResponse';
 import { errorResponse } from '../utils/errorResponse';
@@ -70,6 +73,34 @@ export function createAttendantHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
+    },
+    cashReports: async (req: Request, res: Response) => {
+      const user = req.user;
+      if (!user?.tenantId || !user.userId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const reports = await listCashReports(db, user.tenantId, user.userId);
+      successResponse(res, { reports });
+    },
+    alerts: async (req: Request, res: Response) => {
+      const user = req.user;
+      if (!user?.tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const stationId = req.query.stationId as string | undefined;
+      const unreadOnly = req.query.unreadOnly === 'true';
+      const alerts = await listAlerts(db, user.tenantId, stationId, unreadOnly);
+      successResponse(res, { alerts });
+    },
+    acknowledgeAlert: async (req: Request, res: Response) => {
+      const user = req.user;
+      if (!user?.tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const { id } = req.params;
+      const ok = await acknowledgeAlert(db, user.tenantId, id);
+      if (!ok) return errorResponse(res, 404, 'Alert not found');
+      successResponse(res, { status: 'acknowledged' });
     },
   };
 }

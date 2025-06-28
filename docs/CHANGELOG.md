@@ -2212,3 +2212,17 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_37_COMMAND.md`
+
+## [Feature - 2025-09-24] – Attendant cash reports & alerts
+
+### 🟩 Features
+* List previous cash reports for attendants.
+* Expose attendant alerts API with acknowledge action.
+
+### Files
+* `src/services/attendant.service.ts`
+* `src/controllers/attendant.controller.ts`
+* `src/routes/attendant.route.ts`
+* `docs/openapi.yaml`
+* `backend_brain.md`
+* `docs/STEP_2_38_COMMAND.md`

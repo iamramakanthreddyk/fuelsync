@@ -1500,7 +1500,48 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-components:
+  /api/v1/attendant/cash-reports:
+    get:
+      summary: List cash reports
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/alerts:
+    get:
+      summary: List attendant alerts
+      parameters:
+        - name: stationId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: unreadOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/attendant/alerts/{id}/acknowledge:
+    put:
+      summary: Acknowledge alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  components:
   securitySchemes:
     bearerAuth:
       type: http
