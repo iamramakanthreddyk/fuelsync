@@ -2,6 +2,10 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { validateCreateFuelPrice, parseFuelPriceQuery } from '../validators/fuelPrice.validator';
+import {
+  validateStationPrices,
+  listStationsMissingPrices,
+} from '../services/fuelPriceValidation.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 
@@ -84,6 +88,25 @@ export function createFuelPriceHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
+    },
+
+    validate: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      const { stationId } = req.params as { stationId: string };
+      if (!tenantId || !stationId) {
+        return errorResponse(res, 400, 'stationId required');
+      }
+      const result = await validateStationPrices(db, tenantId, stationId);
+      successResponse(res, { validation: result });
+    },
+
+    missing: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const stations = await listStationsMissingPrices(db, tenantId);
+      successResponse(res, { stations });
     }
   };
 }

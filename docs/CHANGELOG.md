@@ -2226,3 +2226,16 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `backend_brain.md`
 * `docs/STEP_2_38_COMMAND.md`
+
+## [Feature - 2025-09-25] – Fuel price validation endpoints
+
+### 🟩 Features
+* Validate fuel prices per station and flag outdated entries.
+* Endpoint to list stations missing active prices.
+
+### Files
+* `src/services/fuelPriceValidation.service.ts`
+* `src/controllers/fuelPrice.controller.ts`
+* `src/routes/fuelPrice.route.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_39_COMMAND.md`
