@@ -1004,3 +1004,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Nozzle readings now fail if fuel price is missing or older than seven days.
 * Credit sales trigger a warning alert when above 90% of the limit.
+
+### 🛠️ Step 2.44 – Role journey documentation
+**Status:** ✅ Done
+**Files:** `docs/journeys/*.md`
+
+**Overview:**
+* Added dedicated API journey guides for SUPERADMIN, OWNER, MANAGER and ATTENDANT roles. These documents map login flows, endpoints and DB touch points for QA and future-proofing.
