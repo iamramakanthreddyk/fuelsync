@@ -88,12 +88,13 @@ export function createReconciliationHandlers(db: Pool) {
               LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) as previous_reading,
               nr.payment_method,
               fp.price as price_per_litre
-            FROM ${tenantId}.nozzle_readings nr
-            JOIN ${tenantId}.nozzles n ON nr.nozzle_id = n.id
-            JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-            LEFT JOIN ${tenantId}.fuel_prices fp ON p.station_id = fp.station_id AND n.fuel_type = fp.fuel_type
+            FROM public.nozzle_readings nr
+            JOIN public.nozzles n ON nr.nozzle_id = n.id
+            JOIN public.pumps p ON n.pump_id = p.id
+            LEFT JOIN public.fuel_prices fp ON p.station_id = fp.station_id AND n.fuel_type = fp.fuel_type AND fp.tenant_id = $3
             WHERE p.station_id = $1
-            AND DATE(nr.recorded_at) = $2
+              AND nr.tenant_id = $3
+              AND DATE(nr.recorded_at) = $2
             ORDER BY nr.nozzle_id, nr.recorded_at
           )
           SELECT
@@ -111,7 +112,7 @@ export function createReconciliationHandlers(db: Pool) {
           WHERE previous_reading IS NOT NULL
         `;
 
-        const result = await db.query(query, [stationId, date]);
+        const result = await db.query(query, [stationId, date, tenantId]);
 
         const summary = result.rows.map(row => ({
           nozzleId: row.nozzle_id,

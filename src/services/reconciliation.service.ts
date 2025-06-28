@@ -16,8 +16,8 @@ export async function isDayFinalized(
   date: Date
 ): Promise<boolean> {
   const res = await db.query(
-    `SELECT finalized FROM ${tenantId}.day_reconciliations WHERE station_id = $1 AND date = $2`,
-    [stationId, date]
+    'SELECT finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
+    [stationId, date, tenantId]
   );
   return res.rowCount ? res.rows[0].finalized : false;
 }
@@ -28,8 +28,8 @@ export async function isDateFinalized(
   date: Date
 ): Promise<boolean> {
   const res = await db.query(
-    `SELECT 1 FROM ${tenantId}.day_reconciliations WHERE date = $1 AND finalized = true LIMIT 1`,
-    [date]
+    'SELECT 1 FROM public.day_reconciliations WHERE date = $1 AND finalized = true AND tenant_id = $2 LIMIT 1',
+    [date, tenantId]
   );
   return !!res.rowCount;
 }
@@ -44,8 +44,8 @@ export async function runReconciliation(
   try {
     await client.query('BEGIN');
     const existing = await client.query<{ id: string; finalized: boolean }>(
-      `SELECT id, finalized FROM ${tenantId}.day_reconciliations WHERE station_id = $1 AND date = $2`,
-      [stationId, date]
+      'SELECT id, finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
+      [stationId, date, tenantId]
     );
     if (existing.rowCount && existing.rows[0].finalized) {
       throw new Error('Reconciliation already finalized');
@@ -59,30 +59,30 @@ export async function runReconciliation(
       credit_total: number;
     }>(
       `SELECT
-        COALESCE(SUM(s.sale_amount),0) AS total_sales,
-        COALESCE(SUM(CASE WHEN s.payment_method='cash' THEN s.sale_amount ELSE 0 END),0) AS cash_total,
-        COALESCE(SUM(CASE WHEN s.payment_method='card' THEN s.sale_amount ELSE 0 END),0) AS card_total,
-        COALESCE(SUM(CASE WHEN s.payment_method='upi' THEN s.sale_amount ELSE 0 END),0) AS upi_total,
-        COALESCE(SUM(CASE WHEN s.payment_method='credit' THEN s.sale_amount ELSE 0 END),0) AS credit_total
-       FROM ${tenantId}.sales s
-       JOIN ${tenantId}.nozzles n ON s.nozzle_id = n.id
-       JOIN ${tenantId}.pumps p ON n.pump_id = p.id
-       WHERE p.station_id = $1 AND DATE(s.sold_at) = $2`,
-      [stationId, date]
+        COALESCE(SUM(s.amount),0) AS total_sales,
+        COALESCE(SUM(CASE WHEN s.payment_method='cash' THEN s.amount ELSE 0 END),0) AS cash_total,
+        COALESCE(SUM(CASE WHEN s.payment_method='card' THEN s.amount ELSE 0 END),0) AS card_total,
+        COALESCE(SUM(CASE WHEN s.payment_method='upi' THEN s.amount ELSE 0 END),0) AS upi_total,
+        COALESCE(SUM(CASE WHEN s.payment_method='credit' THEN s.amount ELSE 0 END),0) AS credit_total
+       FROM public.sales s
+       JOIN public.nozzles n ON s.nozzle_id = n.id
+       JOIN public.pumps p ON n.pump_id = p.id
+       WHERE p.station_id = $1 AND DATE(s.recorded_at) = $2 AND s.tenant_id = $3`,
+      [stationId, date, tenantId]
     );
     const row = totals.rows[0];
     if (existing.rowCount) {
       await client.query(
-        `UPDATE ${tenantId}.day_reconciliations
+        `UPDATE public.day_reconciliations
            SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6, finalized=true, updated_at=NOW()
-         WHERE id=$1`,
-        [existing.rows[0].id, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
+         WHERE id=$1 AND tenant_id = $7`,
+        [existing.rows[0].id, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total, tenantId]
       );
     } else {
       await client.query(
-        `INSERT INTO ${tenantId}.day_reconciliations (id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true,NOW())`,
-        [randomUUID(), stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
+        `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,true,NOW())`,
+        [randomUUID(), tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
       );
     }
     await client.query('COMMIT');
@@ -109,8 +109,8 @@ export async function getReconciliation(
 ) {
   const res = await db.query(
     `SELECT station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized
-     FROM ${tenantId}.day_reconciliations WHERE station_id = $1 AND date = $2`,
-    [stationId, date]
+     FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
+    [stationId, date, tenantId]
   );
   return res.rows[0];
 }
@@ -120,11 +120,12 @@ export async function listReconciliations(
   tenantId: string,
   stationId?: string
 ) {
-  const params: any[] = [];
+  const params: any[] = [tenantId];
+  let idx = 2;
   let query = `SELECT id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized
-               FROM ${tenantId}.day_reconciliations`;
+               FROM public.day_reconciliations WHERE tenant_id = $1`;
   if (stationId) {
-    query += ' WHERE station_id = $1';
+    query += ` AND station_id = $${idx++}`;
     params.push(stationId);
   }
   query += ' ORDER BY date DESC';

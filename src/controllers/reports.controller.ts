@@ -31,7 +31,9 @@ export function createReportsHandlers(db: Pool) {
           params.push(dateTo);
         }
         
-        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+        conditions.push(`s.tenant_id = $${paramIndex++}`);
+        params.push(tenantId);
+        const whereClause = `WHERE ${conditions.join(' AND ')}`;
         
         const query = `
           SELECT 
@@ -46,9 +48,9 @@ export function createReportsHandlers(db: Pool) {
             s.payment_method,
             c.party_name as creditor_name,
             s.recorded_at
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.stations st ON s.station_id = st.id
-          LEFT JOIN ${tenantId}.creditors c ON s.creditor_id = c.id
+          FROM public.sales s
+          JOIN public.stations st ON s.station_id = st.id
+          LEFT JOIN public.creditors c ON s.creditor_id = c.id
           ${whereClause}
           ORDER BY s.recorded_at DESC
         `;
@@ -112,13 +114,14 @@ export function createReportsHandlers(db: Pool) {
             AVG(s.fuel_price) as avg_price,
             COUNT(*) as transaction_count,
             CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
-          FROM ${tenantId}.sales s
-          JOIN ${tenantId}.stations st ON s.station_id = st.id
-          WHERE 1=1 ${dateFilter} ${stationFilter}
+          FROM public.sales s
+          JOIN public.stations st ON s.station_id = st.id
+          WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
           GROUP BY st.name, s.fuel_type
           ORDER BY st.name, total_revenue DESC
         `;
 
+        params.push(tenantId);
         const result = await db.query(query, params);
 
         successResponse(res, {

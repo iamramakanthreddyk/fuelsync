@@ -157,3 +157,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-12 | Tenant context middleware | ✅ Done | `src/middlewares/setTenantContext.ts`, `docs/SECURITY_tenant_authorization.md` | `docs/STEP_fix_20250912.md` |
 | fix | 2025-09-13 | Tenant list counts | ✅ Done | `src/services/tenant.service.ts` | `docs/STEP_fix_20250913.md` |
 | fix | 2025-09-14 | Explicit updated_at on inserts | ✅ Done | `src/services/*` | `docs/STEP_fix_20250914.md` |
+| fix | 2025-09-15 | Unified sales storage | ✅ Done | `src/services/nozzleReading.service.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `src/controllers/dashboard.controller.ts`, `src/controllers/reports.controller.ts` | `docs/STEP_fix_20250915.md` |
