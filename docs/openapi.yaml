@@ -544,6 +544,28 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/fuel-prices/validate/{stationId}:
+    get:
+      summary: Validate fuel prices for a station
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/fuel-prices/missing:
+    get:
+      summary: List stations missing active prices
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/fuel-prices/{id}:
     put:
       summary: Update fuel price
@@ -2521,3 +2543,31 @@ paths:
           type: number
         totalSalesAmount:
           type: number
+    PriceValidation:
+      type: object
+      properties:
+        missing:
+          type: array
+          items:
+            type: string
+        outdated:
+          type: array
+          items:
+            type: object
+            properties:
+              fuelType:
+                type: string
+              validFrom:
+                type: string
+                format: date-time
+    StationMissingPrice:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        missing:
+          type: array
+          items:
+            type: string

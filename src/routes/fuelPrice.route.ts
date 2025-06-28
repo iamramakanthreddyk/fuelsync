@@ -11,6 +11,8 @@ export function createFuelPriceRouter(db: Pool) {
 
   router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.get('/validate/:stationId', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.validate);
+  router.get('/missing', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.missing);
   router.put('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
   router.delete('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 

@@ -967,3 +967,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added endpoint to list attendant cash reports.
 * Exposed attendant alerts API with acknowledge action.
+
+### 🛠️ Step 2.39 – Fuel price validation endpoints
+**Status:** ✅ Done
+**Files:** `src/services/fuelPriceValidation.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added validation API to check missing fuel types and outdated prices by station.
+* Endpoint to list stations lacking active prices.
