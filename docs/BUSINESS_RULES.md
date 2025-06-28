@@ -139,6 +139,18 @@ authenticateJWT → requireRole(['manager']) → checkStationAccess → route ha
 
 All enforced via FK constraints within the active tenant schema.
 
+
+## 🚨 Alert Generation Rules
+| Rule | Description |
+| --- | --- |
+| **No Reading in 24h** | Triggered when a nozzle has not submitted any readings for over 24 hours. |
+| **Missing Fuel Price** | Active nozzle lacks a current fuel price entry. |
+| **Credit Near Limit** | Creditor balance reaches 90% of credit limit. |
+| **Station Inactive** | No activity for 48h or pump maintenance older than 7 days. |
+| **Reading Discrepancy** | Successive reading jump exceeds 20% of previous value. |
+| **Missing Cash Report** | Daily cash report not submitted. |
+
+Alerts are inserted automatically via `alertRules.service.ts`.
 ---
 
 ## 📎 Cross-Reference Index

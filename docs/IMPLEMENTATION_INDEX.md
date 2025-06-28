@@ -170,3 +170,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.39 | Fuel price validation endpoints | ✅ Done | `src/services/fuelPriceValidation.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `docs/openapi.yaml` | `docs/STEP_2_39_COMMAND.md` |
 | 2     | 2.40 | Nozzle reading creation validation | ✅ Done | `src/services/nozzleReading.service.ts`, `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `docs/openapi.yaml`, `src/docs/swagger.ts` | `docs/STEP_2_40_COMMAND.md` |
 | 2     | 2.41 | Alert creation & summary endpoints | ✅ Done | `src/services/alert.service.ts`, `src/controllers/alerts.controller.ts`, `src/routes/alerts.route.ts`, `docs/openapi.yaml` | `docs/STEP_2_41_COMMAND.md` |
+| 2     | 2.42 | Scheduled alert checks | ✅ Done | `src/services/alertRules.service.ts`, `docs/BUSINESS_RULES.md` | `docs/STEP_2_42_COMMAND.md` |
