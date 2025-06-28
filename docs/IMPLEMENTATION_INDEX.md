@@ -161,3 +161,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-16 | Nozzle reading service wiring | ✅ Done | `src/controllers/nozzleReading.controller.ts` | `docs/STEP_fix_20250916.md` |
 | fix | 2025-09-17 | Sales listing numeric values | ✅ Done | `src/services/sales.service.ts` | `docs/STEP_fix_20250917.md` |
 | fix | 2025-09-18 | Numeric and date parsing | ✅ Done | `src/utils/parseDb.ts`, `src/services/*` | `docs/STEP_fix_20250918.md` |
+| fix | 2025-09-19 | TypeScript generic constraint | ✅ Done | `src/utils/parseDb.ts` | `docs/STEP_fix_20250919.md` |

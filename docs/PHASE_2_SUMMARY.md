@@ -923,3 +923,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Introduced a shared parser so all service methods return numbers and `Date` objects rather than strings.
+
+### 🛠️ Fix 2025-09-19 – TypeScript generic constraint
+**Status:** ✅ Done
+**Files:** `src/utils/parseDb.ts`, `docs/STEP_fix_20250919.md`
+
+**Overview:**
+* Added an explicit record constraint to `parseRows` so TypeScript build passes.
