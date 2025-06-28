@@ -2252,3 +2252,16 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `src/docs/swagger.ts`
 * `docs/STEP_2_40_COMMAND.md`
+
+## [Feature - 2025-09-27] – Alert creation & summary endpoints
+
+### 🟩 Features
+* API to create new alerts.
+* Endpoint to return unread alert counts by severity.
+
+### Files
+* `src/services/alert.service.ts`
+* `src/controllers/alerts.controller.ts`
+* `src/routes/alerts.route.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_41_COMMAND.md`

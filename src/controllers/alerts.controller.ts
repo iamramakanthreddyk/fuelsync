@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { getAlerts, markAlertRead } from '../services/inventory.service';
-import { deleteAlert } from '../services/alert.service';
+import { deleteAlert, createAlert, countBySeverity } from '../services/alert.service';
 
 // Controller supporting alert management endpoints used by the frontend
 import { errorResponse } from '../utils/errorResponse';
@@ -45,6 +45,41 @@ export function createAlertsHandlers(db: Pool) {
         const deleted = await deleteAlert(tenantId, req.params.id);
         if (!deleted) return errorResponse(res, 404, 'Alert not found');
         successResponse(res, true);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    create: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+
+        const { stationId, alertType, message, severity } = req.body;
+        if (!alertType || !message) {
+          return errorResponse(res, 400, 'alertType and message are required');
+        }
+
+        const alert = await createAlert(
+          tenantId,
+          stationId ?? null,
+          alertType,
+          message,
+          severity
+        );
+        successResponse(res, alert, 201);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    summary: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+
+        const counts = await countBySeverity(tenantId);
+        successResponse(res, counts);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

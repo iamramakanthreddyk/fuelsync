@@ -982,3 +982,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added endpoint to verify nozzle status and price before recording a reading.
+
+### 🛠️ Step 2.41 – Alert creation & summary endpoints
+**Status:** ✅ Done
+**Files:** `src/services/alert.service.ts`, `src/controllers/alerts.controller.ts`, `src/routes/alerts.route.ts`, `docs/openapi.yaml`
+
+**Overview:**
+* Added API to create alerts and fetch unread counts grouped by severity.
