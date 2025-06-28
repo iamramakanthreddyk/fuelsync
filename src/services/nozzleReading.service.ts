@@ -116,3 +116,43 @@ export async function listNozzleReadings(
   const res = await db.query(sql, params);
   return parseRows(res.rows);
 }
+
+export async function canCreateNozzleReading(
+  db: Pool,
+  tenantId: string,
+  nozzleId: string
+) {
+  const nozzleRes = await db.query<{ status: string; fuel_type: string; station_id: string }>(
+    `SELECT n.status, n.fuel_type, p.station_id
+       FROM public.nozzles n
+       JOIN public.pumps p ON n.pump_id = p.id
+      WHERE n.id = $1 AND n.tenant_id = $2`,
+    [nozzleId, tenantId]
+  );
+
+  if (!nozzleRes.rowCount) {
+    return { allowed: false, reason: 'Invalid nozzle' } as const;
+  }
+
+  const { status, fuel_type, station_id } = nozzleRes.rows[0];
+
+  if (status !== 'active') {
+    return { allowed: false, reason: 'Nozzle inactive' } as const;
+  }
+
+  const priceRes = await db.query<{ id: string }>(
+    `SELECT id FROM public.fuel_prices
+       WHERE station_id = $1 AND fuel_type = $2
+         AND tenant_id = $3
+         AND valid_from <= NOW()
+         AND (effective_to IS NULL OR effective_to > NOW())
+       LIMIT 1`,
+    [station_id, fuel_type, tenantId]
+  );
+
+  if (!priceRes.rowCount) {
+    return { allowed: false, reason: 'Active price missing' } as const;
+  }
+
+  return { allowed: true } as const;
+}

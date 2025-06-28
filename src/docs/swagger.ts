@@ -392,6 +392,17 @@ const swaggerSpec = {
         }
       }
     },
+    '/v1/nozzle-readings/can-create/{nozzleId}': {
+      get: {
+        tags: ['Nozzle Readings'],
+        summary: 'Check if a nozzle reading can be created',
+        parameters: [
+          { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } },
+          { name: 'nozzleId', in: 'path', required: true, schema: { type: 'string' } }
+        ],
+        responses: { 200: { description: 'Check result' } }
+      }
+    },
     '/v1/fuel-prices': {
       get: {
         tags: ['Fuel Prices'],

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createNozzleReading, listNozzleReadings } from '../services/nozzleReading.service';
+import { createNozzleReading, listNozzleReadings, canCreateNozzleReading } from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -34,6 +34,19 @@ export function createNozzleReadingHandlers(db: Pool) {
           to: query.endDate
         });
         successResponse(res, { readings });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    canCreate: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        const nozzleId = req.params.nozzleId;
+        if (!user?.tenantId || !nozzleId) {
+          return errorResponse(res, 400, 'nozzleId required');
+        }
+        const result = await canCreateNozzleReading(db, user.tenantId, nozzleId);
+        successResponse(res, { canCreate: result.allowed, reason: result.reason });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

@@ -975,3 +975,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added validation API to check missing fuel types and outdated prices by station.
 * Endpoint to list stations lacking active prices.
+
+### 🛠️ Step 2.40 – Nozzle reading creation validation
+**Status:** ✅ Done
+**Files:** `src/services/nozzleReading.service.ts`, `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `docs/openapi.yaml`, `src/docs/swagger.ts`
+
+**Overview:**
+* Added endpoint to verify nozzle status and price before recording a reading.
