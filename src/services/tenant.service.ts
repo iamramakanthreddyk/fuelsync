@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { slugify } from '../utils/slugify';
 import { parseRow, parseRows } from '../utils/parseDb';
+import { setDefaultSettings } from "./settingsService";
 
 export interface TenantInput {
   name: string;
@@ -87,6 +88,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
       'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW())',
       [randomUUID(), tenant.id, attendantEmail, attendantHash, `${input.name} Attendant`, 'attendant']
     );
+
+    await setDefaultSettings(client, tenant.id);
 
     await client.query('COMMIT');
 

@@ -2300,3 +2300,19 @@ Each entry is tied to a step from the implementation index.
 * `docs/journeys/MANAGER.md`
 * `docs/journeys/ATTENDANT.md`
 * `docs/STEP_2_44_COMMAND.md`
+
+## [Backend - Step 2.45] – SuperAdmin Tenant Settings
+
+### 🟩 Features
+* Added `tenant_settings_kv` table for per-tenant key-value settings.
+* SuperAdmin APIs to list, read and update tenant settings.
+* Default settings inserted on tenant creation.
+
+### Files
+* `migrations/schema/008_create_tenant_settings_kv.sql`
+* `src/services/settingsService.ts`
+* `src/services/tenant.service.ts`
+* `src/controllers/adminSettings.controller.ts`
+* `src/routes/adminApi.router.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_45_COMMAND.md`

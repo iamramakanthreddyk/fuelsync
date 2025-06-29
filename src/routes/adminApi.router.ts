@@ -4,10 +4,12 @@ import { authenticateJWT } from '../middlewares/authenticateJWT';
 import { requireRole } from '../middlewares/requireRole';
 import { UserRole } from '../constants/auth';
 import { createAdminApiHandlers } from '../controllers/admin.controller';
+import { createAdminSettingsHandlers } from '../controllers/adminSettings.controller';
 
 export function createAdminApiRouter(db: Pool) {
   const router = Router();
   const handlers = createAdminApiHandlers(db);
+  const settingsHandlers = createAdminSettingsHandlers(db);
   
   // Middleware to ensure SuperAdmin role
   const requireSuperAdmin = requireRole([UserRole.SuperAdmin]);
@@ -36,6 +38,11 @@ export function createAdminApiRouter(db: Pool) {
   router.put('/users/:id', authenticateJWT, requireSuperAdmin, handlers.updateAdminUser);
   router.delete('/users/:id', authenticateJWT, requireSuperAdmin, handlers.deleteAdminUser);
   router.post('/users/:id/reset-password', authenticateJWT, requireSuperAdmin, handlers.resetAdminPassword);
-  
+
+  // Tenant Settings
+  router.get('/tenants/:tenantId/settings', authenticateJWT, requireSuperAdmin, settingsHandlers.list);
+  router.get('/tenants/:tenantId/settings/:key', authenticateJWT, requireSuperAdmin, settingsHandlers.get);
+  router.put('/tenants/:tenantId/settings/:key', authenticateJWT, requireSuperAdmin, settingsHandlers.update);
+
   return router;
 }

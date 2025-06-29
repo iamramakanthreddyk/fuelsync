@@ -173,3 +173,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.42 | Scheduled alert checks | ✅ Done | `src/services/alertRules.service.ts`, `docs/BUSINESS_RULES.md` | `docs/STEP_2_42_COMMAND.md` |
 | 2     | 2.43 | Price checks on nozzle readings | ✅ Done | `src/utils/priceUtils.ts`, `src/services/nozzleReading.service.ts`, `tests/sales.service.test.ts` | `docs/STEP_2_43_COMMAND.md` |
 | 2     | 2.44 | Role journey documentation | ✅ Done | `docs/journeys/*` | `docs/STEP_2_44_COMMAND.md` |
+| 2     | 2.45 | SuperAdmin tenant settings | ✅ Done | `migrations/schema/008_create_tenant_settings_kv.sql`, `src/services/settingsService.ts`, `src/services/tenant.service.ts`, `src/controllers/adminSettings.controller.ts`, `src/routes/adminApi.router.ts` | `docs/STEP_2_45_COMMAND.md` |
