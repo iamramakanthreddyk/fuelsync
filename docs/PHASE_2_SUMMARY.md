@@ -1020,3 +1020,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Introduced `tenant_settings_kv` table to store feature flags and preferences per tenant.
 * Default records are seeded on tenant creation.
 * New SuperAdmin endpoints allow viewing and updating these settings.
+
+### 🛠️ Step 2.46 – Journey docs alignment
+**Status:** ✅ Done
+**Files:** `docs/journeys/*.md`
+
+**Overview:**
+* Updated all role journey documents to mirror the current OpenAPI contract including new settings endpoints, inventory routes and auth helpers.
