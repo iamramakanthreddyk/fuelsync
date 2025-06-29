@@ -1011,3 +1011,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added dedicated API journey guides for SUPERADMIN, OWNER, MANAGER and ATTENDANT roles. These documents map login flows, endpoints and DB touch points for QA and future-proofing.
+
+### 🛠️ Step 2.45 – SuperAdmin tenant settings
+**Status:** ✅ Done
+**Files:** `migrations/schema/008_create_tenant_settings_kv.sql`, `src/services/settingsService.ts`, `src/services/tenant.service.ts`, `src/controllers/adminSettings.controller.ts`, `src/routes/adminApi.router.ts`
+
+**Overview:**
+* Introduced `tenant_settings_kv` table to store feature flags and preferences per tenant.
+* Default records are seeded on tenant creation.
+* New SuperAdmin endpoints allow viewing and updating these settings.
