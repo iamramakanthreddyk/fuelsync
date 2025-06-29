@@ -2316,3 +2316,15 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/adminApi.router.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_45_COMMAND.md`
+
+## [Doc - Step 2.46] – Journey Docs Alignment
+
+### 🟦 Enhancements
+* Updated all role journey docs with missing endpoints, request fields and auth helper notes.
+
+### Files
+* `docs/journeys/SUPERADMIN.md`
+* `docs/journeys/OWNER.md`
+* `docs/journeys/MANAGER.md`
+* `docs/journeys/ATTENDANT.md`
+* `docs/STEP_2_46_COMMAND.md`
