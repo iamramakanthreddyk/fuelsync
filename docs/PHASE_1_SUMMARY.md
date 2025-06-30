@@ -592,3 +592,14 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-schema.js` detects Codex environment and skips without error.
+
+### 🛠 Fix 2025-10-06 – Seed admin timestamps
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`
+
+**Overview:**
+* Seed admin INSERT now specifies `created_at` and `updated_at` with `NOW()` so timestamps are always present.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` completes through migration 003 (requires database).
