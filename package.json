@@ -22,6 +22,7 @@
     "db:seed-data": "node scripts/seed-data.js",
     "add-yearly-price": "node scripts/add-yearly-price.js",
     "check-db": "node scripts/check-db-connection.js",
+    "setup-azure-db": "node scripts/setup-azure-db.js",
     "azure-migrate-cash": "node scripts/apply-cash-reports-azure.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },

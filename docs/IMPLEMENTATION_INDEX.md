@@ -184,3 +184,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-10-05 | PoolClient default settings | ✅ Done | `src/services/settingsService.ts` | `docs/STEP_fix_20251005.md` |
 | fix | 2025-10-06 | Admin user timestamp defaults | ✅ Done | `migrations/schema/003_unified_schema.sql` | `docs/STEP_fix_20251006.md` |
 | fix | 2025-10-07 | Azure cash_reports script | ✅ Done | `scripts/apply-cash-reports-azure.js` | `docs/STEP_fix_20251007.md` |
+| fix | 2025-10-08 | Azure unified setup script | ✅ Done | `scripts/setup-azure-db.js` | `docs/STEP_fix_20251008.md` |

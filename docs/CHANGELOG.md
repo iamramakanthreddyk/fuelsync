@@ -2422,3 +2422,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/apply-cash-reports-azure.js`
 * `docs/STEP_fix_20251007.md`
+
+## [Fix - 2025-10-08] – Azure unified setup script
+
+### 🟥 Fixes
+* Added `setup-azure-db.js` to run schema setup, migrations and seeding in one step on Azure.
+* Added npm script `setup-azure-db` for convenience.
+
+### Files
+* `scripts/setup-azure-db.js`
+* `docs/STEP_fix_20251008.md`

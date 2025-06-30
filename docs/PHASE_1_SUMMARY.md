@@ -614,3 +614,15 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/apply-cash-reports-azure.js` connects to Azure and applies the table without errors (requires Azure DB).
+
+### 🛠 Fix 2025-10-08 – Azure unified setup script
+
+**Status:** ✅ Done
+**Files:** `scripts/setup-azure-db.js`
+
+**Overview:**
+* Combined schema setup, migrations, and seeding into a single Azure-friendly script.
+* `npm run setup-azure-db` orchestrates all steps including the cash reports workaround.
+
+**Validations Performed:**
+* `node scripts/setup-azure-db.js` completes without errors when run against an Azure PostgreSQL instance.
