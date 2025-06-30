@@ -2348,3 +2348,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/migrate.js`
 * `docs/STEP_fix_20251001.md`
+
+## [Fix - 2025-10-02] – Local migration execution
+
+### 🟥 Fixes
+* Added dotenv loading to `scripts/migrate.js` and corrected ordering in `003_unified_schema.sql` so all migrations run on a local database.
+
+### Files
+* `scripts/migrate.js`
+* `migrations/schema/003_unified_schema.sql`
+* `docs/STEP_fix_20251002.md`

@@ -88,16 +88,6 @@ CREATE TABLE IF NOT EXISTS public.users (
 COMMENT ON TABLE public.users IS 'Tenant specific user accounts';
 CREATE INDEX IF NOT EXISTS idx_users_tenant ON public.users(tenant_id);
 
-CREATE TABLE IF NOT EXISTS public.user_stations (
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-    station_id UUID REFERENCES public.stations(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (user_id, station_id)
-);
-CREATE INDEX IF NOT EXISTS idx_user_stations_user ON public.user_stations(user_id);
-COMMENT ON TABLE public.user_stations IS 'Mapping of users to stations they can access';
-
 CREATE TABLE IF NOT EXISTS public.stations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
@@ -110,6 +100,16 @@ CREATE TABLE IF NOT EXISTS public.stations (
 );
 COMMENT ON TABLE public.stations IS 'Fuel stations belonging to a tenant';
 CREATE INDEX IF NOT EXISTS idx_stations_tenant ON public.stations(tenant_id);
+
+CREATE TABLE IF NOT EXISTS public.user_stations (
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    station_id UUID REFERENCES public.stations(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id, station_id)
+);
+CREATE INDEX IF NOT EXISTS idx_user_stations_user ON public.user_stations(user_id);
+COMMENT ON TABLE public.user_stations IS 'Mapping of users to stations they can access';
 
 CREATE TABLE IF NOT EXISTS public.pumps (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -139,8 +139,9 @@ CREATE TABLE IF NOT EXISTS public.nozzles (
 );
 CREATE INDEX IF NOT EXISTS idx_nozzles_tenant ON public.nozzles(tenant_id);
 
-CREATE TABLE IF NOT EXISTS public.nozzle_readings (
 COMMENT ON TABLE public.nozzles IS 'Pump nozzles dispensing fuel';
+
+CREATE TABLE IF NOT EXISTS public.nozzle_readings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES public.tenants(id),
     nozzle_id UUID NOT NULL REFERENCES public.nozzles(id),

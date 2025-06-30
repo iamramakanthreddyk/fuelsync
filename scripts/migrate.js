@@ -1,6 +1,12 @@
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+// Load environment variables from .env files if present
+try {
+  require('dotenv').config();
+} catch (e) {
+  console.log('dotenv not available, using environment variables');
+}
 
 class MigrationRunner {
   constructor() {
