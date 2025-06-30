@@ -2403,3 +2403,32 @@ Each entry is tied to a step from the implementation index.
 * `scripts/setup-azure-schema.js`
 * `docs/AZURE_DEV_SETUP.md`
 * `docs/STEP_1_26_COMMAND.md`
+
+## [Fix - 2025-10-06] – Seed admin timestamps
+
+### 🟥 Fixes
+* Seed admin user now sets `created_at` and `updated_at` explicitly to `NOW()`.
+
+### Files
+* `migrations/schema/003_unified_schema.sql`
+* `docs/STEP_fix_20251006.md`
+
+## [Fix - 2025-10-07] – Azure cash_reports migration
+
+### 🟥 Fixes
+* Added `apply-cash-reports-azure.js` to run migration 007 on Azure without foreign keys.
+* Added `npm` script `azure-migrate-cash` for convenience.
+
+### Files
+* `scripts/apply-cash-reports-azure.js`
+* `docs/STEP_fix_20251007.md`
+
+## [Fix - 2025-10-08] – Azure unified setup script
+
+### 🟥 Fixes
+* Added `setup-azure-db.js` to run schema setup, migrations and seeding in one step on Azure.
+* Added npm script `setup-azure-db` for convenience.
+
+### Files
+* `scripts/setup-azure-db.js`
+* `docs/STEP_fix_20251008.md`
