@@ -592,3 +592,37 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-schema.js` detects Codex environment and skips without error.
+
+### 🛠 Fix 2025-10-06 – Seed admin timestamps
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/003_unified_schema.sql`
+
+**Overview:**
+* Seed admin INSERT now specifies `created_at` and `updated_at` with `NOW()` so timestamps are always present.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` completes through migration 003 (requires database).
+
+### 🛠 Fix 2025-10-07 – Azure cash_reports migration
+
+**Status:** ✅ Done
+**Files:** `scripts/apply-cash-reports-azure.js`
+
+**Overview:**
+* Azure deployments using Citus fail to apply migration 007 due to unsupported foreign keys. The helper script runs the migration after stripping FK references.
+
+**Validations Performed:**
+* `node scripts/apply-cash-reports-azure.js` connects to Azure and applies the table without errors (requires Azure DB).
+
+### 🛠 Fix 2025-10-08 – Azure unified setup script
+
+**Status:** ✅ Done
+**Files:** `scripts/setup-azure-db.js`
+
+**Overview:**
+* Combined schema setup, migrations, and seeding into a single Azure-friendly script.
+* `npm run setup-azure-db` orchestrates all steps including the cash reports workaround.
+
+**Validations Performed:**
+* `node scripts/setup-azure-db.js` completes without errors when run against an Azure PostgreSQL instance.
