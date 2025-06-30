@@ -182,3 +182,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-10-03 | SSL in migration script | ✅ Done | `scripts/migrate.js` | `docs/STEP_fix_20251003.md` |
 | fix | 2025-10-04 | UUID defaults in migrations | ✅ Done | `migrations/schema/001_initial_schema.sql`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/004_complete_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql` | `docs/STEP_fix_20251004.md` |
 | fix | 2025-10-05 | PoolClient default settings | ✅ Done | `src/services/settingsService.ts` | `docs/STEP_fix_20251005.md` |
+| fix | 2025-10-06 | Admin user timestamp defaults | ✅ Done | `migrations/schema/003_unified_schema.sql` | `docs/STEP_fix_20251006.md` |
