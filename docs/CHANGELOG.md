@@ -2358,3 +2358,12 @@ Each entry is tied to a step from the implementation index.
 * `scripts/migrate.js`
 * `migrations/schema/003_unified_schema.sql`
 * `docs/STEP_fix_20251002.md`
+
+## [Fix - 2025-10-03] – SSL connection for migrations
+
+### 🟥 Fixes
+* `scripts/migrate.js` now passes `ssl: { rejectUnauthorized: false }` so migrations work with SSL-required databases.
+
+### Files
+* `scripts/migrate.js`
+* `docs/STEP_fix_20251003.md`

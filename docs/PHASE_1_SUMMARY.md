@@ -556,3 +556,14 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/migrate.js up` successfully applied versions 001–008 on the local database.
+
+### 🛠 Fix 2025-10-03 – SSL migration connections
+
+**Status:** ✅ Done
+**Files:** `scripts/migrate.js`
+
+**Overview:**
+* Added SSL configuration to the migration runner so Azure-hosted databases accept the connection.
+
+**Validations Performed:**
+* `node scripts/migrate.js status` confirms the connection (fails in CI without DB).

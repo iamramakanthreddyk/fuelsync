@@ -178,3 +178,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.46 | Journey docs alignment | ✅ Done | `docs/journeys/*` | `docs/STEP_2_46_COMMAND.md` |
 | fix | 2025-10-01 | Migration runner conflict handling | ✅ Done | `scripts/migrate.js` | `docs/STEP_fix_20251001.md` |
 | fix | 2025-10-02 | Local migration execution | ✅ Done | `scripts/migrate.js`, `migrations/schema/003_unified_schema.sql` | `docs/STEP_fix_20251002.md` |
+| fix | 2025-10-03 | SSL in migration script | ✅ Done | `scripts/migrate.js` | `docs/STEP_fix_20251003.md` |
