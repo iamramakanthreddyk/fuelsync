@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 
 export interface Setting {
   key: string;
@@ -33,7 +33,7 @@ export async function updateSetting(db: Pool, tenantId: string, key: string, val
   );
 }
 
-export async function setDefaultSettings(client: Pool | import('pg').Client, tenantId: string): Promise<void> {
+export async function setDefaultSettings(client: Pool | PoolClient, tenantId: string): Promise<void> {
   const defaults = [
     { key: 'branding.theme_color', value: '#FF9900' },
     { key: 'fuel.low_stock_threshold', value: '1000' },

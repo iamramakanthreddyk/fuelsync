@@ -2381,3 +2381,12 @@ Each entry is tied to a step from the implementation index.
 * `migrations/schema/004_complete_unified_schema.sql`
 * `migrations/schema/005_master_unified_schema.sql`
 * `docs/STEP_fix_20251004.md`
+
+## [Fix - 2025-10-05] – Allow PoolClient for default settings
+
+### 🟥 Fixes
+* `setDefaultSettings` now accepts `PoolClient` so tenant creation compiles.
+
+### Files
+* `src/services/settingsService.ts`
+* `docs/STEP_fix_20251005.md`
