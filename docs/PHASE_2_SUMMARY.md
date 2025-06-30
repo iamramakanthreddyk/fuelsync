@@ -1034,3 +1034,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Updated all role journey documents to mirror the current OpenAPI contract including new settings endpoints, inventory routes and auth helpers.
+
+### 🛠️ Fix 2025-10-05 – PoolClient settings parameter
+**Status:** ✅ Done
+**Files:** `src/services/settingsService.ts`, `docs/STEP_fix_20251005.md`
+
+**Overview:**
+* setDefaultSettings now accepts a `PoolClient` so tenant creation compiles without type errors.
+
