@@ -2328,3 +2328,14 @@ Each entry is tied to a step from the implementation index.
 * `docs/journeys/MANAGER.md`
 * `docs/journeys/ATTENDANT.md`
 * `docs/STEP_2_46_COMMAND.md`
+
+## [Fix - 2025-09-23] – Unified setup runs migrations
+
+### 🟥 Fixes
+* `npm run setup-unified-db` now automatically executes `node scripts/migrate.js up` to include any new migration files.
+
+### Files
+* `scripts/setup-unified-db.js`
+* `UNIFIED_DB_SETUP.md`
+* `db_brain.md`
+* `docs/STEP_fix_20250923.md`

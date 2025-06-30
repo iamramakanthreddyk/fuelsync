@@ -952,6 +952,13 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Daily summary now selects the correct fuel price based on each reading's timestamp via a lateral join and shows entries even when only one reading exists.
 
+### 🛠️ Fix 2025-09-23 – Unified setup runs migrations
+**Status:** ✅ Done
+**Files:** `scripts/setup-unified-db.js`, `UNIFIED_DB_SETUP.md`, `db_brain.md`, `docs/STEP_fix_20250923.md`
+
+**Overview:**
+* The setup script now executes `node scripts/migrate.js up` after applying the master schema to ensure all new migration files run automatically.
+
 ### 🛠️ Step 2.37 – Attendant access & cash reports
 **Status:** ✅ Done
 **Files:** `migrations/schema/007_create_cash_reports.sql`, `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `src/routes/attendant.route.ts`, `src/app.ts`, `docs/openapi.yaml`
