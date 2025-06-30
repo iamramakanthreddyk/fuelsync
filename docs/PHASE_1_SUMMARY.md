@@ -532,3 +532,14 @@ Each step includes:
 
 **Validations Performed:**
 * Manual execution of `npm run setup-unified-db` on a clean database.
+
+### 🛠 Fix 2025-10-01 – Migration runner conflict handling
+
+**Status:** ✅ Done
+**Files:** `scripts/migrate.js`
+
+**Overview:**
+* Added `ON CONFLICT` when recording applied migrations to avoid unique constraint errors when SQL files insert their own records.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` (fails in CI environment without database)

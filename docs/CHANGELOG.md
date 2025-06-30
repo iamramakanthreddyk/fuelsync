@@ -2339,3 +2339,12 @@ Each entry is tied to a step from the implementation index.
 * `UNIFIED_DB_SETUP.md`
 * `db_brain.md`
 * `docs/STEP_fix_20250923.md`
+
+## [Fix - 2025-10-01] – Migration runner conflict handling
+
+### 🟥 Fixes
+* Prevent duplicate entries in `schema_migrations` by using `ON CONFLICT` in `scripts/migrate.js`.
+
+### Files
+* `scripts/migrate.js`
+* `docs/STEP_fix_20251001.md`

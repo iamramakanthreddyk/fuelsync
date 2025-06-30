@@ -42,7 +42,7 @@ class MigrationRunner {
       
       // Record migration
       await client.query(
-        'INSERT INTO public.schema_migrations (version, description, rollback_sql) VALUES ($1, $2, $3)',
+        'INSERT INTO public.schema_migrations (version, description, rollback_sql) VALUES ($1, $2, $3) ON CONFLICT (version) DO NOTHING',
         [version, description, rollbackSql]
       );
       

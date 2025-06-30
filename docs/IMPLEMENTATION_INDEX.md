@@ -176,3 +176,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.44 | Role journey documentation | ✅ Done | `docs/journeys/*` | `docs/STEP_2_44_COMMAND.md` |
 | 2     | 2.45 | SuperAdmin tenant settings | ✅ Done | `migrations/schema/008_create_tenant_settings_kv.sql`, `src/services/settingsService.ts`, `src/services/tenant.service.ts`, `src/controllers/adminSettings.controller.ts`, `src/routes/adminApi.router.ts` | `docs/STEP_2_45_COMMAND.md` |
 | 2     | 2.46 | Journey docs alignment | ✅ Done | `docs/journeys/*` | `docs/STEP_2_46_COMMAND.md` |
+| fix | 2025-10-01 | Migration runner conflict handling | ✅ Done | `scripts/migrate.js` | `docs/STEP_fix_20251001.md` |
