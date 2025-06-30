@@ -603,3 +603,14 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/migrate.js up` completes through migration 003 (requires database).
+
+### 🛠 Fix 2025-10-07 – Azure cash_reports migration
+
+**Status:** ✅ Done
+**Files:** `scripts/apply-cash-reports-azure.js`
+
+**Overview:**
+* Azure deployments using Citus fail to apply migration 007 due to unsupported foreign keys. The helper script runs the migration after stripping FK references.
+
+**Validations Performed:**
+* `node scripts/apply-cash-reports-azure.js` connects to Azure and applies the table without errors (requires Azure DB).

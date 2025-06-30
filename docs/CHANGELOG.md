@@ -2412,3 +2412,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `migrations/schema/003_unified_schema.sql`
 * `docs/STEP_fix_20251006.md`
+
+## [Fix - 2025-10-07] – Azure cash_reports migration
+
+### 🟥 Fixes
+* Added `apply-cash-reports-azure.js` to run migration 007 on Azure without foreign keys.
+* Added `npm` script `azure-migrate-cash` for convenience.
+
+### Files
+* `scripts/apply-cash-reports-azure.js`
+* `docs/STEP_fix_20251007.md`
