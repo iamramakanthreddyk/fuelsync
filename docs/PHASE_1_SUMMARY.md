@@ -532,3 +532,27 @@ Each step includes:
 
 **Validations Performed:**
 * Manual execution of `npm run setup-unified-db` on a clean database.
+
+### 🛠 Fix 2025-10-01 – Migration runner conflict handling
+
+**Status:** ✅ Done
+**Files:** `scripts/migrate.js`
+
+**Overview:**
+* Added `ON CONFLICT` when recording applied migrations to avoid unique constraint errors when SQL files insert their own records.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` (fails in CI environment without database)
+
+### 🛠 Fix 2025-10-02 – Local migration execution
+
+**Status:** ✅ Done
+**Files:** `scripts/migrate.js`, `migrations/schema/003_unified_schema.sql`
+
+**Overview:**
+* Installed a local PostgreSQL server for Codex testing.
+* Migrations now load environment variables via dotenv.
+* Fixed ordering of statements in `003_unified_schema.sql` so the full migration set runs.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` successfully applied versions 001–008 on the local database.

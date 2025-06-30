@@ -1,6 +1,12 @@
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+// Load environment variables from .env files if present
+try {
+  require('dotenv').config();
+} catch (e) {
+  console.log('dotenv not available, using environment variables');
+}
 
 class MigrationRunner {
   constructor() {
@@ -42,7 +48,7 @@ class MigrationRunner {
       
       // Record migration
       await client.query(
-        'INSERT INTO public.schema_migrations (version, description, rollback_sql) VALUES ($1, $2, $3)',
+        'INSERT INTO public.schema_migrations (version, description, rollback_sql) VALUES ($1, $2, $3) ON CONFLICT (version) DO NOTHING',
         [version, description, rollbackSql]
       );
       
