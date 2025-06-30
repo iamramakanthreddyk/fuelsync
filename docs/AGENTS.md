@@ -100,6 +100,9 @@ When an issue is found in code or logic:
 * 🚫 **No external services** — everything must run in a local Docker + Postgres stack.
 * 🚫 **No hidden cloud calls** — seed scripts, migrations, and runtime config are entirely file‑based.
 * 🌐 Optional services (Redis, S3) must be stubbed locally.
+* 🐳 **Codex agents** must use the provided Docker Postgres with `pgcrypto` enabled.
+* ☁️ **Human developers** may connect to an Azure PostgreSQL instance (without `pgcrypto`) using `scripts/setup-azure-schema.js`.
+* 🚫 **Codex must never run `setup-azure-schema.js` or attempt to connect to Azure.**
 
 ---
 

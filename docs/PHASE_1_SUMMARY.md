@@ -579,3 +579,16 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/migrate.js up` runs through migration 003 without null id errors (requires database).
+
+### 🧱 Step 1.26 – Azure Schema Setup Support
+
+**Status:** ✅ Done
+**Files:** `docs/AGENTS.md`, `scripts/setup-azure-schema.js`, `docs/AZURE_DEV_SETUP.md`
+
+**Overview:**
+* Updated environment constraints so Codex stays local while developers may use Azure PostgreSQL.
+* Added a helper script to apply the unified schema on Azure without enabling `pgcrypto`.
+* Documented the workflow in `AZURE_DEV_SETUP.md`.
+
+**Validations Performed:**
+* `node scripts/setup-azure-schema.js` detects Codex environment and skips without error.
