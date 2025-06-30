@@ -7,6 +7,8 @@
 -- PUBLIC SCHEMA (Platform Tables)
 -- =====================================================
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Migration tracking
 CREATE TABLE IF NOT EXISTS public.schema_migrations (
   id SERIAL PRIMARY KEY,

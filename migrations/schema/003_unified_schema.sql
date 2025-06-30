@@ -8,6 +8,7 @@
 -- Ensure no production data exists before running.
 -- =========================================
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 BEGIN;
 
 -- Apply consolidated alterations
@@ -338,8 +339,8 @@ COMMENT ON TABLE public.validation_issues IS 'Records data validation errors for
 CREATE INDEX IF NOT EXISTS idx_validation_issues_tenant ON public.validation_issues(tenant_id);
 
 -- Seed single super admin
-INSERT INTO public.admin_users (email, password_hash, role)
-VALUES ('admin@example.com', '$2b$10$replace_with_hash', 'superadmin')
+INSERT INTO public.admin_users (id, email, password_hash, role)
+VALUES (gen_random_uuid(), 'admin@example.com', '$2b$10$replace_with_hash', 'superadmin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Record migration

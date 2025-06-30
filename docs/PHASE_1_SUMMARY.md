@@ -567,3 +567,15 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/migrate.js status` confirms the connection (fails in CI without DB).
+
+### 🛠 Fix 2025-10-04 – UUID defaults in migrations
+
+**Status:** ✅ Done
+**Files:** `migrations/schema/001_initial_schema.sql`, `migrations/schema/003_unified_schema.sql`, `migrations/schema/004_complete_unified_schema.sql`, `migrations/schema/005_master_unified_schema.sql`
+
+**Overview:**
+* Added `CREATE EXTENSION IF NOT EXISTS pgcrypto;` to ensure UUID generation is available.
+* Seed admin user in migration 003 now specifies `gen_random_uuid()` for the id.
+
+**Validations Performed:**
+* `node scripts/migrate.js up` runs through migration 003 without null id errors (requires database).

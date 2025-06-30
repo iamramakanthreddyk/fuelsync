@@ -3,6 +3,7 @@
 -- Version: 1.0.0
 -- Dependencies: 001_initial_schema
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 BEGIN;
 
 -- Ensure core tables exist with proper structure

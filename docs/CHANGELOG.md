@@ -2367,3 +2367,17 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/migrate.js`
 * `docs/STEP_fix_20251003.md`
+
+## [Fix - 2025-10-04] – Ensure UUID defaults
+
+### 🟥 Fixes
+* Added `CREATE EXTENSION IF NOT EXISTS pgcrypto;` to early schema migrations.
+* `003_unified_schema.sql` now inserts the seed admin user with an explicit
+  `gen_random_uuid()` ID.
+
+### Files
+* `migrations/schema/001_initial_schema.sql`
+* `migrations/schema/003_unified_schema.sql`
+* `migrations/schema/004_complete_unified_schema.sql`
+* `migrations/schema/005_master_unified_schema.sql`
+* `docs/STEP_fix_20251004.md`
