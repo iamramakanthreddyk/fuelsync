@@ -2390,3 +2390,16 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/settingsService.ts`
 * `docs/STEP_fix_20251005.md`
+
+## [Enhancement - 2025-10-06] – Azure schema setup script
+
+### 🟦 Enhancements
+* Added optional Azure setup script to run the unified schema without `pgcrypto`.
+* Clarified environment constraints in `AGENTS.md` and noted Codex must not run this script.
+* Documented Azure developer workflow and environment detection in the script.
+
+### Files
+* `docs/AGENTS.md`
+* `scripts/setup-azure-schema.js`
+* `docs/AZURE_DEV_SETUP.md`
+* `docs/STEP_1_26_COMMAND.md`

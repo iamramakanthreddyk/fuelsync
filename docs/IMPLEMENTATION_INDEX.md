@@ -37,6 +37,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 1     | 1.23 | Daily Reconciliation Table | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.23` |
 | 1     | 1.24 | Audit Logs Table | ✅ Done | `database/tenant_schema_template.sql` | `PHASE_1_SUMMARY.md#step-1.24` |
 | 1     | 1.25 | Final Schema Wrap-Up | ✅ Done | `database/tenant_schema_template.sql`, `scripts/seed-tenant-sample.ts` | `PHASE_1_SUMMARY.md#step-1.25` |
+| 1     | 1.26 | Azure schema setup script (Codex skips) | ✅ Done | `docs/AGENTS.md`, `scripts/setup-azure-schema.js`, `docs/AZURE_DEV_SETUP.md` | `PHASE_1_SUMMARY.md#step-1.26` |
 | 2     | 2.1  | Auth: JWT + Roles            | ✅ Done | `src/services/auth.service.ts`, `src/routes/auth.route.ts`, middlewares | `PHASE_2_SUMMARY.md#step-2.1` |
 | 2     | 2.2  | User Management APIs         | ✅ Done | `src/controllers/adminUser.controller.ts`, `src/controllers/user.controller.ts`, `src/routes/adminUser.route.ts`, `src/routes/user.route.ts`, `src/services/adminUser.service.ts`, `src/services/user.service.ts`, `src/validators/user.validator.ts` | `PHASE_2_SUMMARY.md#step-2.2` |
 | 2     | 2.3  | Station, Pump & Nozzle APIs | ✅ Done | `src/controllers/station.controller.ts`, `src/routes/station.route.ts` | `PHASE_2_SUMMARY.md#step-2.3` |
