@@ -165,6 +165,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-09-20 | Tenant_id column migration | ✅ Done | `migrations/schema/006_add_tenant_id_columns.sql` | `docs/STEP_fix_20250920.md` |
 | fix | 2025-09-21 | Daily summary previous-day readings | ✅ Done | `src/controllers/reconciliation.controller.ts` | `docs/STEP_fix_20250921.md` |
 | fix | 2025-09-22 | Daily summary price lookup | ✅ Done | `src/controllers/reconciliation.controller.ts` | `docs/STEP_fix_20250920.md` |
+| fix | 2025-09-23 | Unified setup runs migrations | ✅ Done | `scripts/setup-unified-db.js`, `UNIFIED_DB_SETUP.md`, `db_brain.md` | `docs/STEP_fix_20250923.md` |
 | 2     | 2.37 | Attendant access & cash reports | ✅ Done | `src/app.ts`, `src/routes/attendant.route.ts`, `src/controllers/attendant.controller.ts`, `src/services/attendant.service.ts`, `migrations/schema/007_create_cash_reports.sql`, `docs/openapi.yaml` | `docs/STEP_2_37_COMMAND.md` |
 | 2     | 2.38 | Attendant cash reports & alerts | ✅ Done | `src/routes/attendant.route.ts`, `src/controllers/attendant.controller.ts`, `src/services/attendant.service.ts`, `docs/openapi.yaml`, `backend_brain.md` | `docs/STEP_2_38_COMMAND.md` |
 | 2     | 2.39 | Fuel price validation endpoints | ✅ Done | `src/services/fuelPriceValidation.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/routes/fuelPrice.route.ts`, `docs/openapi.yaml` | `docs/STEP_2_39_COMMAND.md` |

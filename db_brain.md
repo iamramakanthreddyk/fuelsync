@@ -76,11 +76,11 @@ Foreign keys cascade on delete to maintain integrity.
 
 To reset an environment using the unified schema:
 
-1. Run the helper command which applies `migrations/schema/005_master_unified_schema.sql`:
+1. Run the helper command which applies `migrations/schema/005_master_unified_schema.sql` and any newer migrations:
    ```bash
    npm run setup-unified-db
    ```
-   This script removes existing tables, runs the master migration and seeds demo data.
+   This script removes existing tables, runs the master migration, applies all pending migration files and seeds demo data.
 
-The `005_master_unified_schema.sql` file defines the full schema so no extra SQL is required for a fresh setup. For subsequent schema changes create a new file under `migrations/schema` and run `node scripts/migrate.js up`.
+The `005_master_unified_schema.sql` file defines the full schema so no extra SQL is required for a fresh setup. Additional migration files placed under `migrations/schema` will be applied automatically during setup.
 

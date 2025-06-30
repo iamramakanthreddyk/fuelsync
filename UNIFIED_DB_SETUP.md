@@ -20,9 +20,10 @@ For a complete setup in one command:
 npm run setup-unified-db
 ```
 
-This command executes `scripts/setup-unified-db.js`, which in turn applies the
-`migrations/schema/005_master_unified_schema.sql` file. The master script
-recreates all tables from scratch, so it is safe for fresh environments.
+This command executes `scripts/setup-unified-db.js`, which applies the
+`migrations/schema/005_master_unified_schema.sql` file and then runs
+`node scripts/migrate.js up` to apply any new migration files. The master
+script recreates all tables from scratch, so it is safe for fresh environments.
 
 This script performs all the steps below automatically.
 

@@ -20,19 +20,23 @@ async function setupUnifiedDatabase() {
     console.log('Step 3: Applying unified schema...');
     execSync('node scripts/apply-unified-schema.js', { stdio: 'inherit' });
     console.log('✅ Unified schema applied\n');
-    
-    // Step 4: Verify schema
-    console.log('Step 4: Verifying schema structure...');
+
+    // Step 4: Running pending migrations
+    console.log('Step 4: Running pending migrations...');
+    execSync('node scripts/migrate.js up', { stdio: 'inherit' });
+    console.log('✅ Pending migrations applied\n');
+    // Step 5: Verify schema
+    console.log('Step 5: Verifying schema structure...');
     execSync('node scripts/verify-schema.js', { stdio: 'inherit' });
     console.log('✅ Schema structure verified\n');
     
-    // Step 5: Generate Prisma client
-    console.log('Step 5: Generating Prisma client...');
+    // Step 6: Generating Prisma client
+    console.log('Step 6: Generating Prisma client...');
     execSync('npx prisma generate', { stdio: 'inherit' });
     console.log('✅ Prisma client generated\n');
     
-    // Step 6: Seed data
-    console.log('Step 6: Seeding initial data...');
+    // Step 7: Seeding initial data
+    console.log('Step 7: Seeding initial data...');
     execSync('node scripts/seed-data.js', { stdio: 'inherit' });
     console.log('✅ Initial data seeded\n');
     
