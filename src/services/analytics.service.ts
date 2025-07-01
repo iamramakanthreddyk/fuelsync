@@ -63,3 +63,13 @@ export async function getFuelPerformance(
     totalSalesAmount: number;
   }[]>(query);
 }
+
+export async function getSystemHealth(db: import('pg').Pool) {
+  await db.query('SELECT 1');
+  return {
+    uptime: process.uptime(),
+    responseTime: 0,
+    errorRate: 0,
+    activeConnections: db.totalCount,
+  };
+}

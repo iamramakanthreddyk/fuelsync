@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { getSystemHealth } from '../services/analytics.service';
 
 export function createDashboardHandlers(db: Pool) {
   return {
@@ -231,6 +232,15 @@ export function createDashboardHandlers(db: Pool) {
         }));
 
         successResponse(res, trend);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    getSystemHealth: async (_req: Request, res: Response) => {
+      try {
+        const data = await getSystemHealth(db);
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

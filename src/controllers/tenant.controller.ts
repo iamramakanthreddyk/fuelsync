@@ -92,7 +92,7 @@ export function createAdminTenantHandlers(db: Pool) {
       try {
         const { id } = req.params;
         await deleteTenant(db, id);
-        successResponse(res, { message: 'Tenant deleted successfully' });
+        successResponse(res, {}, 'Tenant deleted successfully');
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

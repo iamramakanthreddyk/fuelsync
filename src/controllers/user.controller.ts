@@ -214,7 +214,7 @@ export function createUserHandlers(db: Pool) {
           [newPasswordHash, userId, tenantId]
         );
         
-        successResponse(res, { message: 'Password changed successfully', success: true });
+        successResponse(res, {}, 'Password changed successfully');
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -255,7 +255,7 @@ export function createUserHandlers(db: Pool) {
           [newPasswordHash, userId, tenantId]
         );
         
-        successResponse(res, { message: 'Password reset successfully', success: true });
+        successResponse(res, {}, 'Password reset successfully');
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -301,7 +301,7 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 404, 'User not found');
         }
         
-        successResponse(res, { message: 'User deleted successfully', success: true });
+        successResponse(res, {}, 'User deleted successfully');
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

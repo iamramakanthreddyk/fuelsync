@@ -209,3 +209,28 @@ export async function getStationRanking(db: Pool, tenantId: string, metric: stri
     }))
   );
 }
+
+export async function getStationEfficiency(db: Pool, tenantId: string, stationId: string) {
+  const query = `
+    SELECT
+      st.id,
+      st.name,
+      COUNT(DISTINCT p.id) as pump_count,
+      COALESCE(SUM(s.amount), 0) as total_sales,
+      CASE WHEN COUNT(DISTINCT p.id) > 0
+           THEN COALESCE(SUM(s.amount), 0) / COUNT(DISTINCT p.id)
+           ELSE 0 END as efficiency
+    FROM public.stations st
+    LEFT JOIN public.pumps p ON p.station_id = st.id
+    LEFT JOIN public.sales s ON s.station_id = st.id AND s.tenant_id = $2
+    WHERE st.id = $1 AND st.tenant_id = $2
+    GROUP BY st.id, st.name`;
+  const result = await db.query(query, [stationId, tenantId]);
+  if (!result.rowCount) return null;
+  const row = result.rows[0];
+  return {
+    stationId: row.id,
+    stationName: row.name,
+    efficiency: parseFloat(row.efficiency)
+  };
+}

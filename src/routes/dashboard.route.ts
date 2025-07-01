@@ -14,6 +14,7 @@ export function createDashboardRouter(db: Pool) {
   router.get('/fuel-breakdown', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getFuelTypeBreakdown);
   router.get('/top-creditors', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getTopCreditors);
   router.get('/sales-trend', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySalesTrend);
+  router.get('/system-health', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getSystemHealth);
 
   return router;
 }

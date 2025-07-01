@@ -18,6 +18,7 @@ export function createStationRouter(db: Pool) {
   router.get('/:stationId', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.get('/:stationId/metrics', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.metrics);
   router.get('/:stationId/performance', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.performance);
+  router.get('/:stationId/efficiency', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.efficiency);
   router.put('/:stationId', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
   router.delete('/:stationId', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 

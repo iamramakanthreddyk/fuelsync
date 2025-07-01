@@ -86,16 +86,16 @@ export function createApp() {
 
   // Simple test endpoint
   app.get('/test', (req, res) => {
-    successResponse(res, { message: 'API is working', method: req.method });
+    successResponse(res, { method: req.method }, 'API is working');
   });
 
   app.post('/test', (req, res) => {
-    successResponse(res, { message: 'POST working', body: req.body });
+    successResponse(res, { body: req.body }, 'POST working');
   });
 
   // Simple auth test
   app.post('/test-login', (req, res) => {
-    successResponse(res, { message: 'Login endpoint working', body: req.body });
+    successResponse(res, { body: req.body }, 'Login endpoint working');
   });
   
   // Health check endpoint
