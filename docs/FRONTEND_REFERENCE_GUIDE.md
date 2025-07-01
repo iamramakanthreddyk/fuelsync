@@ -18,14 +18,7 @@ The OpenAPI contract lives at `docs/openapi.yaml`. Any schema or endpoint change
 
 Refer to `frontend/docs/api-diff.md` for any temporary gaps between the spec and implementation.
 
-## When Adding a New Database Column
+## Schema Changes
 
-Follow this sequence whenever a table gains a new column:
-
-1. **Database** – create a migration under `migrations/schema` and adjust any seed scripts to populate the new field.
-2. **Scripts** – update helper scripts that rely on the table structure.
-3. **db_brain.md** – document why the column was introduced and any constraints.
-4. **Backend** – modify services, validators and routes to handle the column.
-5. **OpenAPI** – reflect the change in `docs/openapi.yaml` so clients know the new field.
-6. **Frontend** – update components, hooks and types accordingly.
-7. **Docs** – note outstanding differences in `frontend/docs/api-diff.md` until implementation matches the spec.
+When the database schema evolves—such as adding a new column—follow the workflow in `DATABASE_MANAGEMENT.md`.
+That guide describes migrating the database, updating backend services and docs, syncing `docs/openapi.yaml`, and finally adjusting the frontend.

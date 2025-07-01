@@ -103,3 +103,8 @@ A new file `frontend/docs/openapi-v1.yaml` captures the full API contract expect
 The canonical API specification now resides in `docs/openapi.yaml`.
 Refer to `FRONTEND_REFERENCE_GUIDE.md` for the full update flow and spec link.
 The older `frontend/docs/openapi-v1.yaml` is kept only for historical reference.
+
+### 📄 Documentation Addendum – 2025-11-07
+
+Instructions for handling new database columns moved to `DATABASE_MANAGEMENT.md`.
+`FRONTEND_REFERENCE_GUIDE.md` now points to that guide instead of duplicating the workflow.

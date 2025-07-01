@@ -2544,3 +2544,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/FRONTEND_REFERENCE_GUIDE.md`
 * `docs/STEP_fix_20251106.md`
+
+## [Fix - 2025-11-07] – Column workflow relocation
+
+### 🟥 Fixes
+* Moved database column change workflow to `DATABASE_MANAGEMENT.md`.
+* `FRONTEND_REFERENCE_GUIDE.md` now references this guide instead of duplicating the steps.
+
+### Files
+* `docs/DATABASE_MANAGEMENT.md`
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251107.md`
