@@ -49,6 +49,7 @@ export async function createFuelInventoryTable(db: Pool, tenantId: string): Prom
       current_volume DECIMAL(10, 2) NOT NULL DEFAULT 0,
       capacity DECIMAL(10, 2) NOT NULL,
       last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
       created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
       UNIQUE(station_id, fuel_type)
     )
