@@ -2556,3 +2556,15 @@ Each entry is tied to a step from the implementation index.
 * `docs/FRONTEND_REFERENCE_GUIDE.md`
 * `docs/PHASE_3_SUMMARY.md`
 * `docs/STEP_fix_20251107.md`
+
+## [Fix - 2025-11-08] – Clarify frontend update flow
+
+### 🟥 Fixes
+* Expanded the update flow in `FRONTEND_REFERENCE_GUIDE.md` to list backend docs and a final docs update step.
+* Reworded the schema change note to direct developers to `DATABASE_MANAGEMENT.md` first.
+* Updated `PHASE_3_SUMMARY.md` accordingly.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251108.md`

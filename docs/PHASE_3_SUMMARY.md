@@ -108,3 +108,9 @@ The older `frontend/docs/openapi-v1.yaml` is kept only for historical reference.
 
 Instructions for handling new database columns moved to `DATABASE_MANAGEMENT.md`.
 `FRONTEND_REFERENCE_GUIDE.md` now points to that guide instead of duplicating the workflow.
+
+### 📄 Documentation Addendum – 2025-11-08
+
+Clarified the update flow in `FRONTEND_REFERENCE_GUIDE.md` to include backend documentation
+and the final doc sync step. The schema changes section now explicitly states that
+database and backend docs are updated before the frontend adjusts.

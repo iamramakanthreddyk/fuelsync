@@ -10,15 +10,16 @@ The OpenAPI contract lives at `docs/openapi.yaml`. Any schema or endpoint change
 ## Update Flow
 
 1. **Database** – adjust migrations and seed scripts.
-2. **Scripts** – update helper scripts.
+2. **Scripts** – update helper utilities.
 3. **db_brain.md** – record structural reasoning.
 4. **Backend** – update services and routes.
-5. **OpenAPI** – sync `docs/openapi.yaml`.
-6. **Frontend** – update components and hooks based on the spec.
+5. **backend_brain.md** – document API or behaviour changes.
+6. **OpenAPI** – sync `docs/openapi.yaml`.
+7. **Frontend** – update components and hooks based on the spec.
+8. **Docs** – update this guide and `frontend/docs/api-diff.md` as needed.
 
 Refer to `frontend/docs/api-diff.md` for any temporary gaps between the spec and implementation.
 
 ## Schema Changes
 
-When the database schema evolves—such as adding a new column—follow the workflow in `DATABASE_MANAGEMENT.md`.
-That guide describes migrating the database, updating backend services and docs, syncing `docs/openapi.yaml`, and finally adjusting the frontend.
+Schema updates originate in the database. Always consult `DATABASE_MANAGEMENT.md` for the full workflow: migrations, script updates, documenting reasoning in `db_brain.md`, backend changes with notes in `backend_brain.md`, spec updates in `docs/openapi.yaml`, and only then frontend adjustments. Update this guide once those steps are complete so the team knows exactly what changed.

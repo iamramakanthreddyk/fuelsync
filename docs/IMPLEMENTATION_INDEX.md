@@ -196,3 +196,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-05 | Frontend guide & spec path | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md`, `frontend/docs/api-diff.md` | `docs/STEP_fix_20251105.md` |
 | fix | 2025-11-06 | Column update process doc | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md` | `docs/STEP_fix_20251106.md` |
 | fix | 2025-11-07 | Column workflow relocation | ✅ Done | `docs/DATABASE_MANAGEMENT.md`, `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251107.md` |
+| fix | 2025-11-08 | Frontend update flow clarifications | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251108.md` |
