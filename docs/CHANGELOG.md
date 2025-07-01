@@ -2610,3 +2610,16 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/utils/seedHelpers.ts`
 * `docs/STEP_1_17_COMMAND.md`
+
+## [Fix - 2025-11-13] – Duplicate nozzle conflict handling
+
+### 🟥 Fixes
+* `create` handler in `nozzle.controller` now returns **409** when a nozzle number already exists for the pump.
+* OpenAPI spec documents the 409 response.
+* Added unit test for this scenario.
+
+### Files
+* `src/controllers/nozzle.controller.ts`
+* `docs/openapi.yaml`
+* `tests/nozzle.controller.test.ts`
+* `docs/STEP_2_51_COMMAND.md`

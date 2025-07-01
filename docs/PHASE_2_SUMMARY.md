@@ -1090,3 +1090,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added `/setup-status` endpoint to compute onboarding progress via entity counts.
 * Service checks stations, pumps, nozzles and fuel prices for the current tenant.
+
+### 🛠️ Step 2.51 – Duplicate nozzle conflict handling
+**Status:** ✅ Done
+**Files:** `src/controllers/nozzle.controller.ts`, `docs/openapi.yaml`, `tests/nozzle.controller.test.ts`, `docs/STEP_2_51_COMMAND.md`
+
+**Overview:**
+* Creation errors from Prisma with code `P2002` now return status `409` and a clear message.
+* OpenAPI spec lists the 409 response and a unit test verifies the behaviour.

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { validateCreateNozzle } from '../validators/nozzle.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -25,6 +26,16 @@ export function createNozzleHandlers(db: Pool) {
         });
         successResponse(res, { id: nozzle.id }, undefined, 201);
       } catch (err: any) {
+        if (
+          err instanceof PrismaClientKnownRequestError &&
+          err.code === 'P2002'
+        ) {
+          return errorResponse(
+            res,
+            409,
+            'Nozzle number already exists for this pump.'
+          );
+        }
         return errorResponse(res, 400, err.message);
       }
     },
