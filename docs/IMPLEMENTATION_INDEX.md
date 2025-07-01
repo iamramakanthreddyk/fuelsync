@@ -189,3 +189,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-10-10 | Azure tenant_settings_kv migration | ✅ Done | `scripts/apply-tenant-settings-kv-azure.js`, `scripts/setup-azure-db.js`, `package.json` | `docs/STEP_fix_20251010.md` |
 | fix | 2025-10-11 | Azure README instructions | ✅ Done | `README.md` | `docs/STEP_fix_20251011.md` |
 | fix | 2025-10-12 | Azure migration helper syntax | ✅ Done | `scripts/apply-tenant-settings-kv-azure.js` | `docs/STEP_fix_20251012.md` |
+| fix | 2025-11-01 | Fuel inventory updated_at column | ✅ Done | `src/services/fuelInventory.service.ts` | `docs/STEP_fix_20251101.md` |

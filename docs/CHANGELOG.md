@@ -2471,3 +2471,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/apply-tenant-settings-kv-azure.js`
 * `docs/STEP_fix_20251012.md`
+
+## [Fix - 2025-11-01] – Fuel inventory updated_at column
+
+### 🟥 Fixes
+* Added `updated_at` column in `createFuelInventoryTable` so seeding works.
+
+### Files
+* `src/services/fuelInventory.service.ts`
+* `docs/STEP_fix_20251101.md`

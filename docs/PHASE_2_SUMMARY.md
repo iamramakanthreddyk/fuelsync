@@ -1042,3 +1042,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * setDefaultSettings now accepts a `PoolClient` so tenant creation compiles without type errors.
 
+
+### 🛠️ Fix 2025-11-01 – Fuel inventory updated_at column
+**Status:** ✅ Done
+**Files:** `src/services/fuelInventory.service.ts`, `docs/STEP_fix_20251101.md`
+
+**Overview:**
+* Added `updated_at` timestamp to the tenant `fuel_inventory` table to align with seed logic.
