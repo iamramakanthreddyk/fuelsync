@@ -13,6 +13,7 @@ export function createReconciliationRouter(db: Pool) {
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.get('/daily-summary', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
   router.get('/:stationId', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
+  router.post('/:id/approve', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.approve);
 
   return router;
 }

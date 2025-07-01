@@ -52,6 +52,7 @@ This document tracks the current API surface and backend best practices. It is u
 | POST | /api/v1/reconciliation | Run daily reconciliation |
 | GET | /api/v1/reconciliation | Reconciliation history |
 | GET | /api/v1/reconciliation/daily-summary | Daily nozzle reading summary |
+| POST | /api/v1/reconciliation/:id/approve | Approve reconciliation record |
 | GET | /api/v1/sales | List sales records |
 | GET | /api/v1/sales/analytics | Sales analytics |
 | GET | /api/v1/settings | Get tenant settings |
@@ -67,6 +68,7 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/dashboard/fuel-breakdown | Fuel type breakdown |
 | GET | /api/v1/dashboard/top-creditors | Top creditors |
 | GET | /api/v1/dashboard/sales-trend | Daily sales trend |
+| GET | /api/v1/dashboard/system-health | System health metrics |
 | GET | /api/v1/inventory | Current inventory metrics |
 | POST | /api/v1/inventory/update | Update inventory counts |
 | GET | /api/v1/inventory/alerts | Inventory alerts |
@@ -97,7 +99,7 @@ This document tracks the current API surface and backend best practices. It is u
 
 * All routes require JWT authentication except `/auth/login`.
 * Multi-tenancy is enforced via `tenant_id` extracted from the JWT payload.
-* Errors are returned with `errorResponse()` which standardises `{status:'error', message}`.
+* Errors are returned with `errorResponse()` which now returns `{ success: false, message, details? }`.
 * When using Prisma, always filter by `tenant_id` to avoid cross-tenant leakage.
 
 ## ORM Conventions
@@ -160,6 +162,7 @@ const users = await prisma.user.findMany({ where: { tenant_id } });
 | GET | /api/v1/stations/:stationId | station.controller.ts | yes |
 | GET | /api/v1/stations/:stationId/metrics | station.controller.ts | yes |
 | GET | /api/v1/stations/:stationId/performance | station.controller.ts | yes |
+| GET | /api/v1/stations/:stationId/efficiency | station.controller.ts | yes |
 | PUT | /api/v1/stations/:stationId | station.controller.ts | yes |
 | DELETE | /api/v1/stations/:stationId | station.controller.ts | yes |
 | GET | /api/v1/inventory/ | inventory.controller.ts | no |
@@ -282,4 +285,4 @@ The spec now defines request bodies and success/error responses for every endpoi
 3. Run `node merge-api-docs.js` to check for drift.
 4. Address any missing or extra endpoints reported by the script.
 5. Commit code and docs together so the spec and knowledge base never diverge.
-\n### 2025-07-30 Pump Response Update\n- Pump listing now includes `nozzleCount` using Prisma \_count.\n- Successful responses are wrapped in `{ data }`.
+\n### 2025-11-03 Response Wrapper Update\n- Pump listing now includes `nozzleCount` using Prisma \_count.\n- Successful responses are wrapped in `{ success: true, data, message? }`.

@@ -142,5 +142,20 @@ export function createReconciliationHandlers(db: Pool) {
         return errorResponse(res, 500, err.message);
       }
     },
+
+    approve: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const id = req.params.id;
+        await db.query(
+          'UPDATE public.day_reconciliations SET finalized = true, updated_at = NOW() WHERE id = $1 AND tenant_id = $2',
+          [id, tenantId]
+        );
+        successResponse(res, {}, 'Reconciliation approved');
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    }
   };
 }

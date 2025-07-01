@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
-import { getStationMetrics, getStationPerformance, getStationComparison, getStationRanking } from '../services/station.service';
+import { getStationMetrics, getStationPerformance, getStationComparison, getStationRanking, getStationEfficiency } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -166,6 +166,18 @@ export function createStationHandlers(db: Pool) {
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const ranking = await getStationRanking(db, tenantId, req.query.metric as string || 'sales', req.query.period as string || 'monthly');
         successResponse(res, ranking);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    efficiency: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const data = await getStationEfficiency(db, tenantId, req.params.stationId);
+        if (!data) return errorResponse(res, 404, 'Station not found');
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

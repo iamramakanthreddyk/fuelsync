@@ -1057,3 +1057,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * OpenAPI docs now expose a `capacity` field on inventory entries.
 * Fuel deliveries accept a `supplier` name and `premium` as a fuel type.
+
+### 🛠️ Step 2.47 – Response wrapper & new endpoints
+**Status:** ✅ Done
+**Files:** See `docs/STEP_2_47_COMMAND.md`
+
+**Overview:**
+* Standardised success and error responses.
+* Added `/dashboard/system-health`, `/stations/{stationId}/efficiency`, and `/reconciliation/{id}/approve` endpoints.
+

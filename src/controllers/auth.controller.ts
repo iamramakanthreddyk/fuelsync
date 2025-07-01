@@ -103,7 +103,7 @@ export function createAuthController(db: Pool) {
     },
     logout: async (_req: Request, res: Response) => {
       try {
-        successResponse(res, { message: 'Logged out successfully' });
+        successResponse(res, {}, 'Logged out successfully');
       } catch (error: any) {
         return errorResponse(res, 500, error.message);
       }
