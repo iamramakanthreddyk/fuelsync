@@ -2522,3 +2522,16 @@ Each entry is tied to a step from the implementation index.
 * `scripts/` removed files
 * `docs/STEP_2_48_COMMAND.md`
 
+
+## [Fix - 2025-11-05] – Frontend docs consolidation
+
+### 🟥 Fixes
+* Introduced `FRONTEND_REFERENCE_GUIDE.md` pointing to the canonical `docs/openapi.yaml` spec.
+* Updated `PHASE_3_SUMMARY.md` with the new spec path.
+* Revised `frontend/docs/api-diff.md` to reference the consolidated spec.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `frontend/docs/api-diff.md`
+* `docs/STEP_fix_20251105.md`

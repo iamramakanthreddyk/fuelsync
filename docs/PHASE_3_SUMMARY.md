@@ -97,3 +97,9 @@ Each step includes:
 ### 📄 Documentation Addendum – 2025-07-13
 
 A new file `frontend/docs/openapi-v1.yaml` captures the full API contract expected by the frontend. Differences between this specification and the backend are tracked in `frontend/docs/api-diff.md`.
+
+### 📄 Documentation Addendum – 2025-11-05
+
+The canonical API specification now resides in `docs/openapi.yaml`.
+Refer to `FRONTEND_REFERENCE_GUIDE.md` for the full update flow and spec link.
+The older `frontend/docs/openapi-v1.yaml` is kept only for historical reference.
