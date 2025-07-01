@@ -2441,3 +2441,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/setup-azure-db.js`
 * `docs/STEP_fix_20251009.md`
+
+## [Fix - 2025-10-10] – Azure tenant_settings_kv migration
+
+### 🟥 Fixes
+* Added helper script to run migration 008 without foreign keys and updated Azure setup script accordingly.
+* New npm script `azure-migrate-settings` for manual execution.
+
+### Files
+* `scripts/apply-tenant-settings-kv-azure.js`
+* `scripts/setup-azure-db.js`
+* `package.json`
+* `docs/STEP_fix_20251010.md`

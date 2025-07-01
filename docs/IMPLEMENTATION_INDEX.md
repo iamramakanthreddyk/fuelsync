@@ -186,3 +186,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-10-07 | Azure cash_reports script | ✅ Done | `scripts/apply-cash-reports-azure.js` | `docs/STEP_fix_20251007.md` |
 | fix | 2025-10-08 | Azure unified setup script | ✅ Done | `scripts/setup-azure-db.js` | `docs/STEP_fix_20251008.md` |
 | fix | 2025-10-09 | Skip cash_reports migration in Azure setup | ✅ Done | `scripts/setup-azure-db.js` | `docs/STEP_fix_20251009.md` |
+| fix | 2025-10-10 | Azure tenant_settings_kv migration | ✅ Done | `scripts/apply-tenant-settings-kv-azure.js`, `scripts/setup-azure-db.js`, `package.json` | `docs/STEP_fix_20251010.md` |

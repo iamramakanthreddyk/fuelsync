@@ -637,3 +637,16 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-db.js` completes successfully when connected to Azure (requires database).
+
+### 🛠 Fix 2025-10-10 – Azure tenant_settings_kv migration
+
+**Status:** ✅ Done
+**Files:** `scripts/apply-tenant-settings-kv-azure.js`, `scripts/setup-azure-db.js`, `package.json`
+
+**Overview:**
+* Migration `008_create_tenant_settings_kv.sql` cannot be applied on Azure due to foreign keys. New helper script strips the FK reference and executes the SQL.
+* `setup-azure-db.js` skips this migration during Step 4 and calls the helper after applying `cash_reports`.
+* Added npm script `azure-migrate-settings` for manual runs.
+
+**Validations Performed:**
+* `node scripts/setup-azure-db.js` completes successfully when connected to Azure (requires database).
