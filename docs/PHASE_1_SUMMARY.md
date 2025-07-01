@@ -662,3 +662,14 @@ Each step includes:
 
 **Validations Performed:**
 * Documentation rendered correctly in Markdown preview.
+
+### 🛠 Fix 2025-10-12 – Azure migration helper syntax
+
+**Status:** ✅ Done
+**Files:** `scripts/apply-tenant-settings-kv-azure.js`
+
+**Overview:**
+* Updated the Azure helper script to remove the trailing `ON DELETE CASCADE` clause when stripping the tenant foreign key.
+
+**Validations Performed:**
+* `node scripts/setup-azure-db.js` completes without syntax errors when run against Azure (requires database).
