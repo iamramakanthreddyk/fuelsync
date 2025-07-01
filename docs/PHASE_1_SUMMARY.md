@@ -650,3 +650,15 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-db.js` completes successfully when connected to Azure (requires database).
+
+### 🛠 Fix 2025-10-11 – Azure README instructions
+
+**Status:** ✅ Done
+**Files:** `README.md`
+
+**Overview:**
+* Added "Deploying to Azure" section linking to the Azure deployment guides.
+* Mentioned `npm run setup-azure-db` for table creation and seeding.
+
+**Validations Performed:**
+* Documentation rendered correctly in Markdown preview.
