@@ -42,7 +42,7 @@ Build a utility module to:
 * `createTenant(data)`
 * `createStation(tenantId, data)`
 * `createPump(stationId, data)`
-* `createNozzles(pumpId, data[])`
+* `createNozzles(pumpId, data[])` – skips duplicates with `ON CONFLICT (tenant_id, pump_id, nozzle_number) DO NOTHING`
 * `getLatestReading(nozzleId)`
 * `getCurrentFuelPrice(fuelType, stationId, atTime)`
 
