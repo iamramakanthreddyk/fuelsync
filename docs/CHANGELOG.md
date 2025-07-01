@@ -2432,3 +2432,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `scripts/setup-azure-db.js`
 * `docs/STEP_fix_20251008.md`
+
+## [Fix - 2025-10-09] – Skip cash_reports migration in Azure setup
+
+### 🟥 Fixes
+* `setup-azure-db.js` now runs migrations individually and skips `007_create_cash_reports.sql`, applying it separately with the existing script.
+
+### Files
+* `scripts/setup-azure-db.js`
+* `docs/STEP_fix_20251009.md`

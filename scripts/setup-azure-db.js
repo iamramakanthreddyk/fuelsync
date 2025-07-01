@@ -1,5 +1,8 @@
 const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
+const MigrationRunner = require('./migrate');
 
 // Skip when running in Codex or CI
 if (process.env.CODEX_ENV_NODE_VERSION || process.env.CI) {
@@ -23,8 +26,31 @@ async function setupAzureDatabase() {
     execSync('node scripts/setup-azure-schema.js', { stdio: 'inherit' });
     console.log('✅ Unified schema applied\n');
 
-    console.log('Step 4: Running pending migrations...');
-    execSync('node scripts/migrate.js up', { stdio: 'inherit' });
+    console.log('Step 4: Running pending migrations (excluding cash_reports)...');
+
+    const runner = new MigrationRunner();
+    await runner.ensureMigrationTable();
+    const applied = await runner.getAppliedMigrations();
+    const migrationFiles = fs.readdirSync(path.join(__dirname, '../migrations/schema'))
+      .filter(file => file.endsWith('.sql') &&
+        !file.includes('template') &&
+        file !== '007_create_cash_reports.sql')
+      .sort();
+
+    for (const file of migrationFiles) {
+      const version = file.split('_')[0];
+      if (applied.includes(version)) {
+        console.log(`⏭️  Skipping ${version} (already applied)`);
+        continue;
+      }
+
+      const filePath = path.join(__dirname, '../migrations/schema', file);
+      const content = fs.readFileSync(filePath, 'utf8');
+      const descMatch = content.match(/-- Description: (.+)/);
+      const description = descMatch ? descMatch[1] : file;
+      await runner.runMigration(version, description, content);
+    }
+    await runner.close();
     console.log('✅ Pending migrations applied\n');
 
     console.log('Step 5: Applying cash_reports migration...');
