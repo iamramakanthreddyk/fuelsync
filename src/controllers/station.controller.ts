@@ -23,7 +23,7 @@ export function createStationHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        successResponse(res, { id: station.id }, 201);
+        successResponse(res, { id: station.id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

@@ -67,7 +67,7 @@ export function createAlertsHandlers(db: Pool) {
           message,
           severity
         );
-        successResponse(res, alert, 201);
+        successResponse(res, alert, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

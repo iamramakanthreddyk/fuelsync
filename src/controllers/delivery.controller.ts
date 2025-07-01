@@ -15,7 +15,7 @@ export function createDeliveryHandlers(db: Pool) {
         }
         const data = validateCreateDelivery(req.body);
         const id = await createFuelDelivery(db, tenantId, data);
-        successResponse(res, { id }, 201);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

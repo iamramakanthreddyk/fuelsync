@@ -50,7 +50,7 @@ export function createTenantHandlers(db: Pool) {
             password: result.owner.password,
             name: result.owner.name
           }
-        }, 201);
+        }, undefined, 201);
       } catch (err: any) {
         console.error('Error creating tenant:', err);
         return errorResponse(res, 400, err.message);

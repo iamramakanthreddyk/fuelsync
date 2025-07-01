@@ -29,7 +29,7 @@ export function createFuelPriceHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        successResponse(res, { id: price.id }, 201);
+        successResponse(res, { id: price.id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

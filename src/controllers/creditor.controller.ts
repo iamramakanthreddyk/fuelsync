@@ -31,7 +31,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const data = validateCreateCreditor(req.body);
         const id = await createCreditor(db, tenantId, data);
-        successResponse(res, { id }, 201);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);
@@ -114,7 +114,7 @@ export function createCreditorHandlers(db: Pool) {
         }
         const data = validateCreatePayment(req.body);
         const id = await createCreditPayment(db, user.tenantId, data, user.userId);
-        successResponse(res, { id }, 201);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {
           return errorResponse(res, err.code, err.message);

@@ -2580,3 +2580,12 @@ Each entry is tied to a step from the implementation index.
 * `docs/FRONTEND_REFERENCE_GUIDE.md`
 * `docs/PHASE_3_SUMMARY.md`
 * `docs/STEP_fix_20251109.md`
+## [Fix - 2025-11-10] – successResponse parameter alignment
+
+### 🟥 Fixes
+* Updated create endpoints to pass the HTTP status code as the fourth argument of `successResponse`.
+* Compilation no longer fails due to type mismatch.
+
+### Files
+* `src/controllers/*.ts` updated
+* `docs/STEP_2_49_COMMAND.md`

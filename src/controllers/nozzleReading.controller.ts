@@ -15,7 +15,7 @@ export function createNozzleReadingHandlers(db: Pool) {
         }
         const data = validateCreateNozzleReading(req.body);
         const id = await createNozzleReading(db, user.tenantId, data, user.userId);
-        successResponse(res, { id }, 201);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

@@ -24,7 +24,7 @@ export function createAdminApiHandlers(db: Pool) {
           ownerEmail,
           ownerPassword
         });
-        successResponse(res, tenant, 201);
+        successResponse(res, tenant, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -95,7 +95,7 @@ export function createAdminApiHandlers(db: Pool) {
           priceYearly,
           features
         });
-        successResponse(res, plan, 201);
+        successResponse(res, plan, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -162,7 +162,7 @@ export function createAdminApiHandlers(db: Pool) {
         }
         
         const adminUser = await adminService.createAdminUser(db, { email, name, password, role });
-        successResponse(res, adminUser, 201);
+        successResponse(res, adminUser, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
