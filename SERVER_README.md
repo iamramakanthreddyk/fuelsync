@@ -68,26 +68,8 @@ If you prefer to run the steps individually:
 
 To run the complete test suite (database setup, seeding, and login tests):
 
-```bash
-npm run test:all
-```
-
-This will:
-1. Check database connection
-2. Reset and seed the database using the production seeder
-3. Check database users
-4. Test login functionality
-5. Test API login and generate frontend login code
-6. Generate frontend login code for browser testing
-
-### Individual Test Commands
-
-- Test login functionality: `npm run test:simple-login`
-- Test API login: `npm run test:api-login`
-- Generate frontend login code: `npm run generate:frontend-login`
-- Generate login code for a specific user: `npm run frontend:login [role]`
-  - Example: `npm run frontend:login owner`
-  - Example: `npm run frontend:login superadmin`
+Legacy test scripts were removed. See [docs/SCRIPTS_GUIDE.md](docs/SCRIPTS_GUIDE.md) for the
+current helper commands.
 
 ### Test Users
 

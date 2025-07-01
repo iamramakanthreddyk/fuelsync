@@ -2508,3 +2508,17 @@ Each entry is tied to a step from the implementation index.
 * `backend_brain.md`
 * `docs/STEP_2_47_COMMAND.md`
 
+## [Fix - 2025-11-04] – Script cleanup and guide
+
+### 🟥 Fixes
+* Added `docs/SCRIPTS_GUIDE.md` documenting all helper scripts.
+* Removed obsolete scripts: `check-db-users.ts`, `check-server.js`, `check-tenant-structure.js`, `check-users.js`, `direct-login-test.js`, `frontend-login.js`, `generate-frontend-login.ts`, `run-all-migrations.ts`, `run-all-tests.js`, `simple-login-test.js`, `test-api-login.ts`.
+* Updated `README.md` and `SERVER_README.md` to reference the new guide.
+
+### Files
+* `docs/SCRIPTS_GUIDE.md`
+* `README.md`
+* `SERVER_README.md`
+* `scripts/` removed files
+* `docs/STEP_2_48_COMMAND.md`
+

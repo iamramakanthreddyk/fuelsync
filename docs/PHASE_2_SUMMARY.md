@@ -1066,3 +1066,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Standardised success and error responses.
 * Added `/dashboard/system-health`, `/stations/{stationId}/efficiency`, and `/reconciliation/{id}/approve` endpoints.
 
+### 🛠️ Step 2.48 – Script guide and cleanup
+**Status:** ✅ Done
+**Files:** `docs/SCRIPTS_GUIDE.md`, removed legacy scripts, `docs/STEP_2_48_COMMAND.md`
+
+**Overview:**
+* Documented all useful scripts in one guide.
+* Deleted obsolete testing utilities.
+* README files link to the new guide.
+
