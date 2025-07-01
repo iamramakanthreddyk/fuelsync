@@ -2601,3 +2601,12 @@ Each entry is tied to a step from the implementation index.
 * `src/app.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_50_COMMAND.md`
+
+## [Fix - 2025-11-12] – Nozzle seeding conflict
+
+### 🟥 Fixes
+* `createNozzles` now uses `ON CONFLICT (tenant_id, pump_id, nozzle_number) DO NOTHING` to avoid duplicates.
+
+### Files
+* `src/utils/seedHelpers.ts`
+* `docs/STEP_1_17_COMMAND.md`

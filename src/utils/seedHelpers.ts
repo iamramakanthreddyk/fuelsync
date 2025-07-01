@@ -58,7 +58,7 @@ export async function createNozzles(
     await client.query(
       `INSERT INTO public.nozzles (tenant_id, pump_id, nozzle_number, fuel_type)
        VALUES ($1, $2, $3, $4)
-       ON CONFLICT (pump_id, nozzle_number) DO NOTHING`,
+       ON CONFLICT (tenant_id, pump_id, nozzle_number) DO NOTHING`,
       [tenantId, pumpId, nozzle.nozzleNumber, nozzle.fuelType]
     );
   }
