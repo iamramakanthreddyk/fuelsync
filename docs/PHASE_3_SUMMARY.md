@@ -114,3 +114,7 @@ Instructions for handling new database columns moved to `DATABASE_MANAGEMENT.md`
 Clarified the update flow in `FRONTEND_REFERENCE_GUIDE.md` to include backend documentation
 and the final doc sync step. The schema changes section now explicitly states that
 database and backend docs are updated before the frontend adjusts.
+
+### 📄 Documentation Addendum – 2025-11-09
+
+`FRONTEND_REFERENCE_GUIDE.md` now lists a detailed schema change propagation flow starting from the database. Developers should review `DATABASE_MANAGEMENT.md` and `backend_brain.md` for context before updating frontend code.

@@ -2568,3 +2568,15 @@ Each entry is tied to a step from the implementation index.
 * `docs/FRONTEND_REFERENCE_GUIDE.md`
 * `docs/PHASE_3_SUMMARY.md`
 * `docs/STEP_fix_20251108.md`
+
+## [Fix - 2025-11-09] – Authoritative frontend flow
+
+### 🟥 Fixes
+* Replaced the update list in `FRONTEND_REFERENCE_GUIDE.md` with a detailed flow starting from database migrations.
+* Noted the new flow in `PHASE_3_SUMMARY.md`.
+* Reinforced references to `DATABASE_MANAGEMENT.md` and `backend_brain.md`.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251109.md`
