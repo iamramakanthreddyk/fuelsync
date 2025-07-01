@@ -626,3 +626,14 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-db.js` completes without errors when run against an Azure PostgreSQL instance.
+
+### 🛠 Fix 2025-10-09 – Skip migration 007 in Azure setup
+
+**Status:** ✅ Done
+**Files:** `scripts/setup-azure-db.js`
+
+**Overview:**
+* `setup-azure-db.js` now runs migrations individually and excludes `007_create_cash_reports.sql`, which is applied separately.
+
+**Validations Performed:**
+* `node scripts/setup-azure-db.js` completes successfully when connected to Azure (requires database).
