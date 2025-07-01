@@ -192,3 +192,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-01 | Fuel inventory updated_at column | ✅ Done | `src/services/fuelInventory.service.ts` | `docs/STEP_fix_20251101.md` |
 | fix | 2025-11-02 | Delivery & inventory schema enums | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/docs/swagger.ts` | `docs/STEP_fix_20251102.md` |
 | 2     | 2.47 | Response wrapper & analytics endpoints | ✅ Done | see docs/STEP_2_47_COMMAND.md | `PHASE_2_SUMMARY.md#step-2.47` |
+| 2     | 2.48 | Script guide & cleanup | ✅ Done | `docs/SCRIPTS_GUIDE.md` | `docs/STEP_2_48_COMMAND.md` |
