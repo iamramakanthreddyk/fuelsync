@@ -2589,3 +2589,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/*.ts` updated
 * `docs/STEP_2_49_COMMAND.md`
+## [Feature - 2025-11-11] – Setup status API
+
+### 🟢 Features
+* Added `/api/v1/setup-status` endpoint to check onboarding completion without extra tables.
+
+### Files
+* `src/services/setupStatus.service.ts`
+* `src/controllers/setupStatus.controller.ts`
+* `src/routes/setupStatus.route.ts`
+* `src/app.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_50_COMMAND.md`

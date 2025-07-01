@@ -1082,3 +1082,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Updated create endpoints to pass the HTTP status code as the fourth argument of `successResponse`.
+
+### 🛠️ Step 2.50 – Setup status API
+**Status:** ✅ Done
+**Files:** `src/services/setupStatus.service.ts`, `src/controllers/setupStatus.controller.ts`, `src/routes/setupStatus.route.ts`, `src/app.ts`, `docs/openapi.yaml`, `docs/STEP_2_50_COMMAND.md`
+
+**Overview:**
+* Added `/setup-status` endpoint to compute onboarding progress via entity counts.
+* Service checks stations, pumps, nozzles and fuel prices for the current tenant.
