@@ -14,7 +14,7 @@ async function run() {
   let sql = fs.readFileSync(filePath, 'utf8');
 
   // Remove FK references unsupported on Azure Citus
-  sql = sql.replace(/REFERENCES public\.tenants\(id\)/g, '');
+  sql = sql.replace(/REFERENCES public\.tenants\(id\)(?:\s+ON DELETE CASCADE)?/g, '');
 
   const pool = new Pool({
     host: process.env.DB_HOST,

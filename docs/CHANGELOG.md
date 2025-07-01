@@ -2462,3 +2462,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `README.md`
 * `docs/STEP_fix_20251011.md`
+
+## [Fix - 2025-10-12] – Azure migration helper syntax
+
+### 🟥 Fixes
+* Removed leftover `ON DELETE CASCADE` clause in `apply-tenant-settings-kv-azure.js` which caused a syntax error during migration.
+
+### Files
+* `scripts/apply-tenant-settings-kv-azure.js`
+* `docs/STEP_fix_20251012.md`
