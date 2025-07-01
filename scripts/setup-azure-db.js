@@ -26,7 +26,7 @@ async function setupAzureDatabase() {
     execSync('node scripts/setup-azure-schema.js', { stdio: 'inherit' });
     console.log('✅ Unified schema applied\n');
 
-    console.log('Step 4: Running pending migrations (excluding cash_reports)...');
+    console.log('Step 4: Running pending migrations (excluding cash_reports and tenant_settings_kv)...');
 
     const runner = new MigrationRunner();
     await runner.ensureMigrationTable();
@@ -34,7 +34,8 @@ async function setupAzureDatabase() {
     const migrationFiles = fs.readdirSync(path.join(__dirname, '../migrations/schema'))
       .filter(file => file.endsWith('.sql') &&
         !file.includes('template') &&
-        file !== '007_create_cash_reports.sql')
+        file !== '007_create_cash_reports.sql' &&
+        file !== '008_create_tenant_settings_kv.sql')
       .sort();
 
     for (const file of migrationFiles) {
@@ -57,15 +58,19 @@ async function setupAzureDatabase() {
     execSync('node scripts/apply-cash-reports-azure.js', { stdio: 'inherit' });
     console.log('✅ cash_reports table created\n');
 
-    console.log('Step 6: Verifying schema structure...');
+    console.log('Step 6: Applying tenant_settings_kv migration...');
+    execSync('node scripts/apply-tenant-settings-kv-azure.js', { stdio: 'inherit' });
+    console.log('✅ tenant_settings_kv table created\n');
+
+    console.log('Step 7: Verifying schema structure...');
     execSync('node scripts/verify-schema.js', { stdio: 'inherit' });
     console.log('✅ Schema structure verified\n');
 
-    console.log('Step 7: Generating Prisma client...');
+    console.log('Step 8: Generating Prisma client...');
     execSync('npx prisma generate', { stdio: 'inherit' });
     console.log('✅ Prisma client generated\n');
 
-    console.log('Step 8: Seeding initial data...');
+    console.log('Step 9: Seeding initial data...');
     execSync('node scripts/seed-data.js', { stdio: 'inherit' });
     console.log('✅ Initial data seeded\n');
 

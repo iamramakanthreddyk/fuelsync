@@ -24,6 +24,7 @@
     "check-db": "node scripts/check-db-connection.js",
     "setup-azure-db": "node scripts/setup-azure-db.js",
     "azure-migrate-cash": "node scripts/apply-cash-reports-azure.js",
+    "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
     "test": "echo \"Tests not available in this environment\" && exit 0"
   },
   "dependencies": {
