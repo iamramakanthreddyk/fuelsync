@@ -1432,6 +1432,14 @@ paths:
           application/json:
             schema:
               type: object
+  /api/v1/setup-status:
+    get:
+      summary: Check tenant setup status
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/stations/compare:
     get:
       summary: Compare station performance
