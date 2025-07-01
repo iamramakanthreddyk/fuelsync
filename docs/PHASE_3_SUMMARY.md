@@ -97,3 +97,24 @@ Each step includes:
 ### 📄 Documentation Addendum – 2025-07-13
 
 A new file `frontend/docs/openapi-v1.yaml` captures the full API contract expected by the frontend. Differences between this specification and the backend are tracked in `frontend/docs/api-diff.md`.
+
+### 📄 Documentation Addendum – 2025-11-05
+
+The canonical API specification now resides in `docs/openapi.yaml`.
+Refer to `FRONTEND_REFERENCE_GUIDE.md` for the full update flow and spec link.
+The older `frontend/docs/openapi-v1.yaml` is kept only for historical reference.
+
+### 📄 Documentation Addendum – 2025-11-07
+
+Instructions for handling new database columns moved to `DATABASE_MANAGEMENT.md`.
+`FRONTEND_REFERENCE_GUIDE.md` now points to that guide instead of duplicating the workflow.
+
+### 📄 Documentation Addendum – 2025-11-08
+
+Clarified the update flow in `FRONTEND_REFERENCE_GUIDE.md` to include backend documentation
+and the final doc sync step. The schema changes section now explicitly states that
+database and backend docs are updated before the frontend adjusts.
+
+### 📄 Documentation Addendum – 2025-11-09
+
+`FRONTEND_REFERENCE_GUIDE.md` now lists a detailed schema change propagation flow starting from the database. Developers should review `DATABASE_MANAGEMENT.md` and `backend_brain.md` for context before updating frontend code.

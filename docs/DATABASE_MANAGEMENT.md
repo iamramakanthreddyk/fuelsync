@@ -171,6 +171,17 @@ node scripts/migrate.js up
 The migration runner records applied versions in `public.schema_migrations`.
 Never modify existing files—always create a new migration.
 
+### End-to-End Workflow for Adding a Column
+
+1. **Database** – create the migration and adjust seed scripts.
+2. **Scripts** – update helper utilities that rely on the table structure.
+3. **db_brain.md** – record the reasoning behind the new column and any constraints.
+4. **Backend** – modify services, validators, and routes accordingly.
+5. **backend_brain.md** – document API updates or behavioural changes.
+6. **OpenAPI** – update `docs/openapi.yaml` to expose the new field.
+7. **Frontend** – follow `FRONTEND_REFERENCE_GUIDE.md` to consume the updated spec.
+8. **Docs** – track temporary mismatches in `frontend/docs/api-diff.md` until implementation catches up.
+
 ## Maintenance Procedures
 
 ### Daily

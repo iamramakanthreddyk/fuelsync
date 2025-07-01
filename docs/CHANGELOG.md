@@ -2522,3 +2522,61 @@ Each entry is tied to a step from the implementation index.
 * `scripts/` removed files
 * `docs/STEP_2_48_COMMAND.md`
 
+
+## [Fix - 2025-11-05] – Frontend docs consolidation
+
+### 🟥 Fixes
+* Introduced `FRONTEND_REFERENCE_GUIDE.md` pointing to the canonical `docs/openapi.yaml` spec.
+* Updated `PHASE_3_SUMMARY.md` with the new spec path.
+* Revised `frontend/docs/api-diff.md` to reference the consolidated spec.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `frontend/docs/api-diff.md`
+* `docs/STEP_fix_20251105.md`
+
+## [Fix - 2025-11-06] – Column update process docs
+
+### 🟥 Fixes
+* Added instructions for handling new database columns in `FRONTEND_REFERENCE_GUIDE.md`.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/STEP_fix_20251106.md`
+
+## [Fix - 2025-11-07] – Column workflow relocation
+
+### 🟥 Fixes
+* Moved database column change workflow to `DATABASE_MANAGEMENT.md`.
+* `FRONTEND_REFERENCE_GUIDE.md` now references this guide instead of duplicating the steps.
+
+### Files
+* `docs/DATABASE_MANAGEMENT.md`
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251107.md`
+
+## [Fix - 2025-11-08] – Clarify frontend update flow
+
+### 🟥 Fixes
+* Expanded the update flow in `FRONTEND_REFERENCE_GUIDE.md` to list backend docs and a final docs update step.
+* Reworded the schema change note to direct developers to `DATABASE_MANAGEMENT.md` first.
+* Updated `PHASE_3_SUMMARY.md` accordingly.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251108.md`
+
+## [Fix - 2025-11-09] – Authoritative frontend flow
+
+### 🟥 Fixes
+* Replaced the update list in `FRONTEND_REFERENCE_GUIDE.md` with a detailed flow starting from database migrations.
+* Noted the new flow in `PHASE_3_SUMMARY.md`.
+* Reinforced references to `DATABASE_MANAGEMENT.md` and `backend_brain.md`.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/PHASE_3_SUMMARY.md`
+* `docs/STEP_fix_20251109.md`

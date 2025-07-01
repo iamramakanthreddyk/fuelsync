@@ -1,7 +1,7 @@
 # API Differences Between Frontend Expectations and Backend Implementation
 
-The file `openapi-v1.yaml` describes the REST API expected by the frontend. The backend currently exposes a smaller set of endpoints under the prefix `/api/v1`. Paths and response structures do not fully match. The table below captures the main gaps.
-
+The canonical API specification resides in `docs/openapi.yaml`.
+The legacy `frontend/docs/openapi-v1.yaml` remains for historical reference. The backend currently serves endpoints under `/api/v1`. The table below captures the remaining gaps.
 | API Endpoint (Frontend) | Frontend Expects | Backend Provides | Status |
 |-------------------------|-----------------|------------------|-------|
 | **POST /v1/auth/login** | `{ email, password } → { token, user }` | `POST /api/v1/auth/login` same payload | 🔧 Path prefix mismatch |
