@@ -193,6 +193,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-02 | Delivery & inventory schema enums | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/docs/swagger.ts` | `docs/STEP_fix_20251102.md` |
 | 2     | 2.47 | Response wrapper & analytics endpoints | ✅ Done | see docs/STEP_2_47_COMMAND.md | `PHASE_2_SUMMARY.md#step-2.47` |
 | 2     | 2.48 | Script guide & cleanup | ✅ Done | `docs/SCRIPTS_GUIDE.md` | `docs/STEP_2_48_COMMAND.md` |
+| 2     | 2.49 | successResponse parameter alignment | ✅ Done | `src/controllers/...` | `PHASE_2_SUMMARY.md#step-2.49` |
 | fix | 2025-11-05 | Frontend guide & spec path | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md`, `frontend/docs/api-diff.md` | `docs/STEP_fix_20251105.md` |
 | fix | 2025-11-06 | Column update process doc | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md` | `docs/STEP_fix_20251106.md` |
 | fix | 2025-11-07 | Column workflow relocation | ✅ Done | `docs/DATABASE_MANAGEMENT.md`, `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251107.md` |

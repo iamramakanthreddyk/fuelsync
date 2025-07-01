@@ -69,7 +69,7 @@ export function createAttendantHandlers(db: Pool) {
           Number(cashAmount || 0),
           Number(creditAmount || 0)
         );
-        successResponse(res, { id }, 201);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

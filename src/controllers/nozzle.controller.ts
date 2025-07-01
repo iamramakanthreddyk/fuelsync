@@ -23,7 +23,7 @@ export function createNozzleHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        successResponse(res, { id: nozzle.id }, 201);
+        successResponse(res, { id: nozzle.id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

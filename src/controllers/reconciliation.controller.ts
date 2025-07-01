@@ -25,7 +25,7 @@ export function createReconciliationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Invalid reconciliationDate');
         }
         const summary = await runReconciliation(db, user.tenantId, stationId, date);
-        successResponse(res, { summary }, 201);
+        successResponse(res, { summary }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

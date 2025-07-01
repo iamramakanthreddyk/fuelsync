@@ -11,7 +11,7 @@ export function createAdminUserHandlers(db: Pool) {
       try {
         const { email, password } = validateAdminUser(req.body);
         await createAdminUser(db, email, password);
-        successResponse(res, { status: 'ok' }, 201);
+        successResponse(res, { status: 'ok' }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

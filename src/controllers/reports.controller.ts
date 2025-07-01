@@ -189,7 +189,7 @@ export function createReportsHandlers(db: Pool) {
           `INSERT INTO public.report_schedules (tenant_id, station_id, type, frequency) VALUES ($1,$2,$3,$4) RETURNING id`,
           [tenantId, stationId || null, type, frequency]
         );
-        successResponse(res, { id: result.rows[0].id }, 201);
+        successResponse(res, { id: result.rows[0].id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

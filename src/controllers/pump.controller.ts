@@ -23,7 +23,7 @@ export function createPumpHandlers(db: Pool) {
           },
           select: { id: true }
         });
-        successResponse(res, { id: pump.id }, 201);
+        successResponse(res, { id: pump.id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
