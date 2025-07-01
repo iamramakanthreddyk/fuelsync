@@ -203,7 +203,7 @@ const swaggerSpec = {
                 properties: {
                   pumpId: { type: 'string', format: 'uuid' },
                   nozzleNumber: { type: 'integer' },
-                  fuelType: { type: 'string', enum: ['petrol', 'diesel'] }
+                  fuelType: { type: 'string', enum: ['petrol', 'diesel', 'premium'] }
                 }
               }
             }
@@ -282,10 +282,10 @@ const swaggerSpec = {
                 required: ['stationId', 'fuelType', 'volume', 'deliveryDate'],
                 properties: {
                   stationId: { type: 'string', format: 'uuid' },
-                  fuelType: { type: 'string', enum: ['petrol', 'diesel'] },
+                  fuelType: { type: 'string', enum: ['petrol', 'diesel', 'premium'] },
                   volume: { type: 'number', minimum: 0 },
                   deliveryDate: { type: 'string', format: 'date' },
-                  deliveredBy: { type: 'string' }
+                  supplier: { type: 'string' }
                 }
               }
             }
@@ -303,7 +303,7 @@ const swaggerSpec = {
         parameters: [
           { name: 'x-tenant-id', in: 'header', required: true, schema: { type: 'string' } },
           { name: 'stationId', in: 'query', schema: { type: 'string' } },
-          { name: 'fuelType', in: 'query', schema: { type: 'string', enum: ['petrol', 'diesel'] } }
+          { name: 'fuelType', in: 'query', schema: { type: 'string', enum: ['petrol', 'diesel', 'premium'] } }
         ],
         responses: {
           200: { 
@@ -429,7 +429,7 @@ const swaggerSpec = {
                 required: ['stationId', 'fuelType', 'price'],
                 properties: {
                   stationId: { type: 'string', format: 'uuid' },
-                  fuelType: { type: 'string', enum: ['petrol', 'diesel'] },
+                  fuelType: { type: 'string', enum: ['petrol', 'diesel', 'premium'] },
                   price: { type: 'number', minimum: 0 }
                 }
               }
@@ -458,7 +458,7 @@ const swaggerSpec = {
                 required: ['stationId', 'fuelType', 'price'],
                 properties: {
                   stationId: { type: 'string', format: 'uuid' },
-                  fuelType: { type: 'string', enum: ['petrol', 'diesel'] },
+                  fuelType: { type: 'string', enum: ['petrol', 'diesel', 'premium'] },
                   price: { type: 'number', minimum: 0 },
                   validFrom: { type: 'string', format: 'date-time' }
                 }

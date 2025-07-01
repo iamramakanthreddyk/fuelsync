@@ -1979,13 +1979,13 @@ paths:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel]
+          enum: [petrol, diesel, premium]
         volume:
           type: number
         deliveryDate:
           type: string
           format: date-time
-        deliveredBy:
+        supplier:
           type: string
         createdAt:
           type: string
@@ -1998,13 +1998,13 @@ paths:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel]
+          enum: [petrol, diesel, premium]
         volume:
           type: number
         deliveryDate:
           type: string
           format: date-time
-        deliveredBy:
+        supplier:
           type: string
     FuelInventory:
       type: object
@@ -2017,7 +2017,9 @@ paths:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel]
+          enum: [petrol, diesel, premium]
+        capacity:
+          type: number
         currentVolume:
           type: number
         lastUpdated:

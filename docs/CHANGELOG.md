@@ -2480,3 +2480,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/fuelInventory.service.ts`
 * `docs/STEP_fix_20251101.md`
+
+## [Fix - 2025-11-02] – Delivery and inventory schema enums
+
+### 🟥 Fixes
+* Extended `fuelType` enum to include `premium` and renamed delivery property to `supplier`.
+* Added `capacity` field to `FuelInventory` objects in API specs.
+
+### Files
+* `docs/openapi.yaml`
+* `frontend/docs/openapi-v1.yaml`
+* `src/docs/swagger.ts`
+* `docs/STEP_fix_20251102.md`

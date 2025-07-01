@@ -1049,3 +1049,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added `updated_at` timestamp to the tenant `fuel_inventory` table to align with seed logic.
+
+### 🛠️ Fix 2025-11-02 – Delivery and inventory schema enums
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/docs/swagger.ts`, `docs/STEP_fix_20251102.md`
+
+**Overview:**
+* OpenAPI docs now expose a `capacity` field on inventory entries.
+* Fuel deliveries accept a `supplier` name and `premium` as a fuel type.
