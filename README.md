@@ -47,3 +47,15 @@ sudo service postgresql start
 
 - [SERVER_README.md](SERVER_README.md) – how to start the API server and run quick login tests
 - [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues
+
+## Deploying to Azure
+
+For production deployments, follow the steps in [AZURE_DEPLOYMENT_GUIDE.md](docs/AZURE_DEPLOYMENT_GUIDE.md). Developers using an Azure database can also consult [AZURE_DEV_SETUP.md](docs/AZURE_DEV_SETUP.md) for local configuration.
+
+After provisioning the database, run:
+
+```bash
+npm run setup-azure-db
+```
+
+This script creates all tables and loads the seed data.

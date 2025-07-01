@@ -2453,3 +2453,12 @@ Each entry is tied to a step from the implementation index.
 * `scripts/setup-azure-db.js`
 * `package.json`
 * `docs/STEP_fix_20251010.md`
+
+## [Enhancement - 2025-10-11] – Azure README instructions
+
+### 🟦 Enhancements
+* Added "Deploying to Azure" section in `README.md` linking to Azure deployment docs and referencing `npm run setup-azure-db`.
+
+### Files
+* `README.md`
+* `docs/STEP_fix_20251011.md`
