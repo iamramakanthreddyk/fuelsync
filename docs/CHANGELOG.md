@@ -2535,3 +2535,12 @@ Each entry is tied to a step from the implementation index.
 * `docs/PHASE_3_SUMMARY.md`
 * `frontend/docs/api-diff.md`
 * `docs/STEP_fix_20251105.md`
+
+## [Fix - 2025-11-06] – Column update process docs
+
+### 🟥 Fixes
+* Added instructions for handling new database columns in `FRONTEND_REFERENCE_GUIDE.md`.
+
+### Files
+* `docs/FRONTEND_REFERENCE_GUIDE.md`
+* `docs/STEP_fix_20251106.md`
