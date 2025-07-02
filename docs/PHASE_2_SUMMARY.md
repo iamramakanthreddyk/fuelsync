@@ -1113,4 +1113,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * POST and PUT pump endpoints use the correct `CreatePumpRequest` schema.
-* `CreatePumpRequest` requires `stationId`, `name`, and `serialNumber`.
+### 🛠️ Fix 2025-11-16 – Nozzle request schema cleanup
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20251116_COMMAND.md`
+
+**Overview:**
+* POST and PUT nozzle endpoints now reference `CreateNozzleRequest` for consistency.
+* The schema lists allowed values for `fuelType` and optional `status`.
