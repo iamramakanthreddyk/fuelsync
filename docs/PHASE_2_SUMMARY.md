@@ -1098,3 +1098,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Creation errors from Prisma with code `P2002` now return status `409` and a clear message.
 * OpenAPI spec lists the 409 response and a unit test verifies the behaviour.
+
+### 🛠️ Fix 2025-11-14 – Pump request schema correction
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20251114.md`
+
+**Overview:**
+* POST and PUT pump endpoints use the correct `CreatePumpRequest` schema.
+* `CreatePumpRequest` requires `stationId`, `name`, and `serialNumber`.
