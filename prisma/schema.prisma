@@ -128,7 +128,7 @@ model Pump {
   id            String   @id @default(uuid())
   tenant_id     String
   station_id    String
-  label         String
+  name          String
   serial_number String?
   status        String   @default("active")
   created_at    DateTime @default(now())
@@ -136,7 +136,7 @@ model Pump {
   station       Station  @relation(fields: [station_id], references: [id], onDelete: Cascade)
   nozzles       Nozzle[]
 
-  @@unique([tenant_id, station_id, label])
+  @@unique([tenant_id, station_id, name])
   @@index([tenant_id])
   @@index([station_id])
   @@map("pumps")

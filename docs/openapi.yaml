@@ -2176,7 +2176,7 @@ paths:
           type: number
     CreatePumpRequest:
       type: object
-      required: [stationId, name, serialNumber]
+      required: [stationId, name]
       properties:
         stationId:
           type: string

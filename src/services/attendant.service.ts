@@ -16,11 +16,11 @@ export async function listUserStations(db: Pool, tenantId: string, userId: strin
 
 export async function listUserPumps(db: Pool, tenantId: string, userId: string, stationId: string) {
   const res = await db.query(
-    `SELECT p.id, p.label, p.station_id
+    `SELECT p.id, p.name, p.station_id
        FROM public.pumps p
        JOIN public.user_stations us ON us.station_id = p.station_id
       WHERE us.user_id = $1 AND p.tenant_id = $2 AND p.station_id = $3
-      ORDER BY p.label`,
+      ORDER BY p.name`,
     [userId, tenantId, stationId]
   );
   return parseRows(res.rows);

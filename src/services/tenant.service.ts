@@ -183,9 +183,9 @@ export async function getTenant(db: Pool, id: string): Promise<any | null> {
   const stations = [] as any[];
   for (const station of parseRows(stationsResult.rows)) {
     const pumpsResult = await db.query(
-      `SELECT p.id, p.label, p.serial_number, p.status,
+      `SELECT p.id, p.name, p.serial_number, p.status,
        (SELECT COUNT(*) FROM public.nozzles n WHERE n.pump_id = p.id) as nozzle_count
-       FROM public.pumps p WHERE p.station_id = $1 ORDER BY p.label`,
+       FROM public.pumps p WHERE p.station_id = $1 ORDER BY p.name`,
       [station.id]
     );
 
