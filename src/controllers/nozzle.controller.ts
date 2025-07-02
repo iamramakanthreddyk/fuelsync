@@ -66,7 +66,7 @@ export function createNozzleHandlers(db: Pool) {
         if (!nozzle) {
           return errorResponse(res, 404, 'Nozzle not found');
         }
-        successResponse(res, nozzle);
+        successResponse(res, { nozzle });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -102,7 +102,7 @@ export function createNozzleHandlers(db: Pool) {
         });
         if (!updated.count) return errorResponse(res, 404, 'Nozzle not found');
         const nozzle = await prisma.nozzle.findUnique({ where: { id: req.params.id } });
-        successResponse(res, nozzle);
+        successResponse(res, { nozzle });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

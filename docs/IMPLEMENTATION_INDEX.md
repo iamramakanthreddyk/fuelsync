@@ -204,3 +204,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-14 | Pump request schema correction | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20251114.md` |
 | 2     | 2.52 | Nozzle fuel type validation | ✅ Done | `src/validators/nozzle.validator.ts` | `PHASE_2_SUMMARY.md#step-2.52` |
 | fix | 2025-11-16 | Nozzle request schema cleanup | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20251116_COMMAND.md` |
+| fix | 2025-11-17 | Response object consistency | ✅ Done | `src/controllers/nozzle.controller.ts` | `docs/STEP_fix_20251117.md` |

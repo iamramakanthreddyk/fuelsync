@@ -1120,3 +1120,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * POST and PUT nozzle endpoints now reference `CreateNozzleRequest` for consistency.
 * The schema lists allowed values for `fuelType` and optional `status`.
+
+### 🛠️ Fix 2025-11-17 – Response object consistency
+**Status:** ✅ Done
+**Files:** `src/controllers/nozzle.controller.ts`, `docs/STEP_fix_20251117.md`
+
+**Overview:**
+* GET handlers return `{ pump }` or `{ nozzle }` within the success response wrapper for consistent API shape.
