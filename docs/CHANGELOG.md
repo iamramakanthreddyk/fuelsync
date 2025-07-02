@@ -2653,3 +2653,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20251116_COMMAND.md`
+
+## [Fix - 2025-11-17] – Response object consistency
+
+### 🟥 Fixes
+* Pump and nozzle GET handlers now return `{ pump }` or `{ nozzle }` within the success wrapper.
+
+### Files
+* `src/controllers/nozzle.controller.ts`
+* `docs/STEP_fix_20251117.md`
