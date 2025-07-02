@@ -2662,3 +2662,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/nozzle.controller.ts`
 * `docs/STEP_fix_20251117.md`
+
+## [Fix - 2025-11-18] – Nozzle validator type cast
+
+### 🟥 Fixes
+* `validateCreateNozzle` now casts `fuelType` to the union type to satisfy TypeScript.
+
+### Files
+* `src/validators/nozzle.validator.ts`
+* `docs/STEP_fix_20251118.md`
