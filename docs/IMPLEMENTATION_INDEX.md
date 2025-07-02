@@ -201,3 +201,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-07 | Column workflow relocation | ✅ Done | `docs/DATABASE_MANAGEMENT.md`, `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251107.md` |
 | fix | 2025-11-08 | Frontend update flow clarifications | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251108.md` |
 | fix | 2025-11-09 | Authoritative frontend flow | ✅ Done | `docs/FRONTEND_REFERENCE_GUIDE.md`, `docs/PHASE_3_SUMMARY.md` | `docs/STEP_fix_20251109.md` |
+| fix | 2025-11-14 | Pump request schema correction | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20251114.md` |

@@ -359,7 +359,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateTenantRequest'
+              $ref: '#/components/schemas/CreatePumpRequest'
     get:
       summary: List pumps
       description: Returns pumps with `nozzleCount` per pump.
@@ -401,7 +401,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateTenantRequest'
+              $ref: '#/components/schemas/CreatePumpRequest'
     delete:
       summary: Delete pump
       responses:
@@ -2176,7 +2176,7 @@ paths:
           type: number
     CreatePumpRequest:
       type: object
-      required: [stationId, name]
+      required: [stationId, name, serialNumber]
       properties:
         stationId:
           type: string

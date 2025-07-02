@@ -2623,3 +2623,13 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `tests/nozzle.controller.test.ts`
 * `docs/STEP_2_51_COMMAND.md`
+
+## [Fix - 2025-11-14] – Pump request schema correction
+
+### 🟥 Fixes
+* Pump creation and update endpoints now reference `CreatePumpRequest`.
+* `CreatePumpRequest` requires `serialNumber` alongside `stationId` and `name`.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20251114.md`
