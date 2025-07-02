@@ -25,7 +25,11 @@ export function validateCreateNozzle(data: any): NozzleInput {
     );
   }
 
-  const result: NozzleInput = { pumpId, nozzleNumber, fuelType };
+  const result: NozzleInput = {
+    pumpId,
+    nozzleNumber,
+    fuelType: fuelType as 'petrol' | 'diesel' | 'premium'
+  };
 
   if (status !== undefined) {
     if (typeof status !== 'string') {

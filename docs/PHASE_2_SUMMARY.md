@@ -1127,3 +1127,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * GET handlers return `{ pump }` or `{ nozzle }` within the success response wrapper for consistent API shape.
+
+### 🛠️ Fix 2025-11-18 – Nozzle validator type cast
+**Status:** ✅ Done
+**Files:** `src/validators/nozzle.validator.ts`, `docs/STEP_fix_20251118.md`
+
+**Overview:**
+* Cast `fuelType` to the allowed union type to resolve TypeScript compilation errors.
