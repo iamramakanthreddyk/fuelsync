@@ -1099,6 +1099,14 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Creation errors from Prisma with code `P2002` now return status `409` and a clear message.
 * OpenAPI spec lists the 409 response and a unit test verifies the behaviour.
 
+### 🛠️ Step 2.52 – Nozzle fuel type validation
+**Status:** ✅ Done
+**Files:** `src/validators/nozzle.validator.ts`, `docs/STEP_2_52_COMMAND.md`
+
+**Overview:**
+* `validateCreateNozzle` checks that `fuelType` is one of `petrol`, `diesel` or `premium`.
+* Optional `status` is validated and included when present.
+
 ### 🛠️ Fix 2025-11-14 – Pump request schema correction
 **Status:** ✅ Done
 **Files:** `docs/openapi.yaml`, `docs/STEP_fix_20251114.md`

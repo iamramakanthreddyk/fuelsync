@@ -2633,3 +2633,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20251114.md`
+
+## [Fix - 2025-11-15] – Nozzle fuel type validation
+
+### 🟥 Fixes
+* `validateCreateNozzle` ensures `fuelType` is `petrol`, `diesel` or `premium`.
+* Optional `status` is validated against `active`, `inactive` and `maintenance`.
+
+### Files
+* `src/validators/nozzle.validator.ts`
+* `docs/STEP_2_52_COMMAND.md`
