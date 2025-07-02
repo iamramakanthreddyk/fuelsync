@@ -2643,3 +2643,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/validators/nozzle.validator.ts`
 * `docs/STEP_2_52_COMMAND.md`
+
+## [Fix - 2025-11-16] – Nozzle request schema cleanup
+
+### 🟥 Fixes
+* POST and PUT nozzle endpoints now reference `CreateNozzleRequest`.
+* `CreateNozzleRequest` includes optional `status` with allowed enums.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20251116_COMMAND.md`

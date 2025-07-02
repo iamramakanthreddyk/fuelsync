@@ -424,7 +424,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateNozzleRequest'
     get:
       summary: List nozzles
       parameters:
@@ -465,7 +465,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateNozzleRequest'
     delete:
       summary: Delete nozzle
       responses:
@@ -2144,17 +2144,20 @@ paths:
         createdAt:
           type: string
           format: date-time
-    CreateNozzleRequest:
-      type: object
-      required: [pumpId, nozzleNumber, fuelType]
-      properties:
-        pumpId:
-          type: string
-        nozzleNumber:
-          type: number
-        fuelType:
-          type: string
-          enum: [petrol, diesel, premium]
+  CreateNozzleRequest:
+    type: object
+    required: [pumpId, nozzleNumber, fuelType]
+    properties:
+      pumpId:
+        type: string
+      nozzleNumber:
+        type: number
+      fuelType:
+        type: string
+        enum: [petrol, diesel, premium]
+      status:
+        type: string
+        enum: [active, inactive, maintenance]
     Pump:
       type: object
       properties:
