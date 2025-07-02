@@ -1,11 +1,15 @@
 export interface NozzleInput {
   pumpId: string;
   nozzleNumber: number;
-  fuelType: string;
+  fuelType: 'petrol' | 'diesel' | 'premium';
+  status?: 'active' | 'inactive' | 'maintenance';
 }
 
+const ALLOWED_FUEL_TYPES = ['petrol', 'diesel', 'premium'];
+const ALLOWED_STATUSES = ['active', 'inactive', 'maintenance'];
+
 export function validateCreateNozzle(data: any): NozzleInput {
-  const { pumpId, nozzleNumber, fuelType } = data || {};
+  const { pumpId, nozzleNumber, fuelType, status } = data || {};
   if (!pumpId || typeof pumpId !== 'string') {
     throw new Error('pumpId required');
   }
@@ -15,5 +19,25 @@ export function validateCreateNozzle(data: any): NozzleInput {
   if (!fuelType || typeof fuelType !== 'string') {
     throw new Error('fuelType required');
   }
-  return { pumpId, nozzleNumber, fuelType };
+  if (!ALLOWED_FUEL_TYPES.includes(fuelType)) {
+    throw new Error(
+      `fuelType must be one of ${ALLOWED_FUEL_TYPES.join(', ')}`
+    );
+  }
+
+  const result: NozzleInput = { pumpId, nozzleNumber, fuelType };
+
+  if (status !== undefined) {
+    if (typeof status !== 'string') {
+      throw new Error('status must be a string');
+    }
+    if (!ALLOWED_STATUSES.includes(status)) {
+      throw new Error(
+        `status must be one of ${ALLOWED_STATUSES.join(', ')}`
+      );
+    }
+    result.status = status as 'active' | 'inactive' | 'maintenance';
+  }
+
+  return result;
 }
