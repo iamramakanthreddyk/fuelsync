@@ -3,15 +3,15 @@ import { randomUUID } from 'crypto';
 import { beforeCreatePump } from '../middleware/planEnforcement';
 import { parseRows } from '../utils/parseDb';
 
-export async function createPump(db: Pool, tenantId: string, stationId: string, label: string, serialNumber?: string): Promise<string> {
+export async function createPump(db: Pool, tenantId: string, stationId: string, name: string, serialNumber?: string): Promise<string> {
   const client = await db.connect();
   try {
     // Enforce plan limits using tenant id
     await beforeCreatePump(client, tenantId, stationId);
 
     const res = await client.query<{ id: string }>(
-      'INSERT INTO public.pumps (id, tenant_id, station_id, label, serial_number, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
-      [randomUUID(), tenantId, stationId, label, serialNumber || null]
+      'INSERT INTO public.pumps (id, tenant_id, station_id, name, serial_number, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
+      [randomUUID(), tenantId, stationId, name, serialNumber || null]
     );
     return res.rows[0].id;
   } finally {
@@ -23,9 +23,9 @@ export async function listPumps(db: Pool, tenantId: string, stationId?: string) 
   const where = stationId ? 'WHERE p.station_id = $1' : '';
   const params = stationId ? [stationId, tenantId] : [tenantId];
   const res = await db.query(
-    `SELECT p.id, p.station_id, p.label, p.serial_number, p.status, p.created_at,
+    `SELECT p.id, p.station_id, p.name, p.serial_number, p.status, p.created_at,
      (SELECT COUNT(*) FROM public.nozzles n WHERE n.pump_id = p.id) as nozzle_count
-     FROM public.pumps p WHERE p.tenant_id = $${stationId ? 2 : 1} ${where ? 'AND ' + where : ''} ORDER BY p.label`,
+     FROM public.pumps p WHERE p.tenant_id = $${stationId ? 2 : 1} ${where ? 'AND ' + where : ''} ORDER BY p.name`,
     params
   );
   return parseRows(
@@ -48,16 +48,16 @@ export async function updatePump(
   db: Pool,
   tenantId: string,
   pumpId: string,
-  label?: string,
+  name?: string,
   serialNumber?: string
 ) {
   const updates = [] as string[];
   const params = [pumpId, tenantId];
   let idx = 2;
 
-  if (label !== undefined) {
-    updates.push(`label = $${idx}`);
-    params.push(label);
+  if (name !== undefined) {
+    updates.push(`name = $${idx}`);
+    params.push(name);
     idx++;
   }
 

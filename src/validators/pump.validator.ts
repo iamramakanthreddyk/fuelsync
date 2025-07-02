@@ -1,17 +1,16 @@
 export interface PumpInput {
   stationId: string;
-  label: string;
+  name: string;
   serialNumber?: string;
 }
 
 export function validateCreatePump(data: any): PumpInput {
-  const { stationId, name, label, serialNumber } = data || {};
+  const { stationId, name, serialNumber } = data || {};
   if (!stationId || typeof stationId !== 'string') {
     throw new Error('stationId required');
   }
-  const pumpLabel = name || label;
-  if (!pumpLabel || typeof pumpLabel !== 'string') {
-    throw new Error('name or label required');
+  if (!name || typeof name !== 'string') {
+    throw new Error('name required');
   }
-  return { stationId, label: pumpLabel, serialNumber };
+  return { stationId, name, serialNumber };
 }

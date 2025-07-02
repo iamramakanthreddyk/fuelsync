@@ -147,7 +147,7 @@ async function seedData() {
         id: '00000000-0000-0000-0000-000000000030',
         tenant_id: demoTenant.id,
         station_id: mainStation.id,
-        label: 'Pump 1',
+        name: 'Pump 1',
         serial_number: 'P10001',
         status: 'active'
       }
@@ -160,7 +160,7 @@ async function seedData() {
         id: '00000000-0000-0000-0000-000000000031',
         tenant_id: demoTenant.id,
         station_id: mainStation.id,
-        label: 'Pump 2',
+        name: 'Pump 2',
         serial_number: 'P10002',
         status: 'active'
       }

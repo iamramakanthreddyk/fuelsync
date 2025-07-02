@@ -18,12 +18,11 @@ export function createPumpHandlers(db: Pool) {
           data: {
             tenant_id: tenantId,
             station_id: data.stationId,
-            label: data.label,
+            name: data.name,
             serial_number: data.serialNumber || null
-          },
-          select: { id: true }
+          }
         });
-        successResponse(res, { id: pump.id }, undefined, 201);
+        successResponse(res, { pump }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -39,7 +38,7 @@ export function createPumpHandlers(db: Pool) {
           tenant_id: tenantId,
           ...(stationId ? { station_id: stationId } : {})
         },
-        orderBy: { label: 'asc' },
+        orderBy: { name: 'asc' },
         include: { _count: { select: { nozzles: true } } }
       });
       successResponse(res, {
@@ -61,7 +60,7 @@ export function createPumpHandlers(db: Pool) {
         if (!pump) {
           return errorResponse(res, 404, 'Pump not found');
         }
-        successResponse(res, pump);
+        successResponse(res, { pump });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
@@ -90,17 +89,17 @@ export function createPumpHandlers(db: Pool) {
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        const { label, serialNumber } = req.body;
+        const { name, serialNumber } = req.body;
         const updated = await prisma.pump.updateMany({
           where: { id: req.params.id, tenant_id: tenantId },
           data: {
-            ...(label !== undefined ? { label } : {}),
+            ...(name !== undefined ? { name } : {}),
             ...(serialNumber !== undefined ? { serial_number: serialNumber } : {})
           }
         });
         if (!updated.count) return errorResponse(res, 404, 'Pump not found');
         const pump = await prisma.pump.findUnique({ where: { id: req.params.id } });
-        successResponse(res, pump);
+        successResponse(res, { pump });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
