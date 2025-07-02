@@ -286,3 +286,4 @@ The spec now defines request bodies and success/error responses for every endpoi
 4. Address any missing or extra endpoints reported by the script.
 5. Commit code and docs together so the spec and knowledge base never diverge.
 \n### 2025-11-03 Response Wrapper Update\n- Pump listing now includes `nozzleCount` using Prisma \_count.\n- Successful responses are wrapped in `{ success: true, data, message? }`.
+\n### 2025-11-19 Fuel Price Response Enhancement\n- `GET /api/v1/fuel-prices` now includes a `station` object `{ id, name }` for each price entry.

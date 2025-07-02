@@ -2671,3 +2671,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/validators/nozzle.validator.ts`
 * `docs/STEP_fix_20251118.md`
+
+## [Fix - 2025-11-19] – Fuel price response station names
+
+### 🟥 Fixes
+* Fuel price listing now returns associated station `{ id, name }`.
+
+### Files
+* `backend_brain.md`
+* `docs/STEP_fix_20251119.md`

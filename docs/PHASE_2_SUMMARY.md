@@ -1134,3 +1134,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Cast `fuelType` to the allowed union type to resolve TypeScript compilation errors.
+
+### 🛠️ Fix 2025-11-19 – Fuel price station names
+**Status:** ✅ Done
+**Files:** `backend_brain.md`, `docs/STEP_fix_20251119.md`
+
+**Overview:**
+* Fuel price endpoints now include related station details in the response.
