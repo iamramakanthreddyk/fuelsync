@@ -112,6 +112,8 @@ components:
         station:
           type: object
           properties:
+            id:
+              type: string
             name:
               type: string
     
@@ -184,6 +186,8 @@ components:
         station:
           type: object
           properties:
+            id:
+              type: string
             name:
               type: string
         nozzle:
