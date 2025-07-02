@@ -2680,3 +2680,15 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `backend_brain.md`
 * `docs/STEP_fix_20251119.md`
+
+## [Fix - 2025-11-20] – Fuel price station id in spec
+
+### 🟥 Fixes
+* OpenAPI and complete specs now document station `id` with `name`.
+* Listing endpoint returns station id and name.
+
+### Files
+* `docs/openapi.yaml`
+* `docs/missing/COMPLETE_API_SPEC.yaml`
+* `src/controllers/fuelPrice.controller.ts`
+* `docs/STEP_fix_20251120.md`

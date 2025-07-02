@@ -45,7 +45,8 @@ export function createFuelPriceHandlers(db: Pool) {
       if (query.fuelType) filters.fuel_type = query.fuelType;
       const prices = await prisma.fuelPrice.findMany({
         where: filters,
-        orderBy: { valid_from: 'desc' }
+        orderBy: { valid_from: 'desc' },
+        include: { station: { select: { id: true, name: true } } }
       });
       successResponse(res, { prices });
     },

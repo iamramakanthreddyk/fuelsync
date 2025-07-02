@@ -207,3 +207,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-17 | Response object consistency | ✅ Done | `src/controllers/nozzle.controller.ts` | `docs/STEP_fix_20251117.md` |
 | fix | 2025-11-18 | Nozzle validator type cast | ✅ Done | `src/validators/nozzle.validator.ts` | `docs/STEP_fix_20251118.md` |
 | fix | 2025-11-19 | Fuel price station names | ✅ Done | `backend_brain.md` | `docs/STEP_fix_20251119.md` |
+| fix | 2025-11-20 | Fuel price station id in spec | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20251120.md` |

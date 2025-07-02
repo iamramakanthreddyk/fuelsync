@@ -1141,3 +1141,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Fuel price endpoints now include related station details in the response.
+
+### 🛠️ Fix 2025-11-20 – Fuel price station id in spec
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `src/controllers/fuelPrice.controller.ts`, `docs/STEP_fix_20251120.md`
+
+**Overview:**
+* Fuel price schema now documents `station.id` and listing returns station id with name.
