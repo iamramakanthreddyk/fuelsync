@@ -1637,7 +1637,7 @@ paths:
           $ref: '#/components/responses/Error'
   /api/v1/attendant/cash-report:
     post:
-      summary: Submit cash and credit totals
+      summary: Submit daily cash total and credit sales breakdown
       requestBody:
         required: true
         content:
@@ -1652,8 +1652,21 @@ paths:
                   format: date
                 cashAmount:
                   type: number
-                creditAmount:
-                  type: number
+                creditEntries:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      creditorId:
+                        type: string
+                      fuelType:
+                        type: string
+                        enum: [petrol, diesel]
+                      litres:
+                        type: number
+                      amount:
+                        type: number
+                    required: [creditorId, fuelType]
               required:
                 - stationId
                 - date

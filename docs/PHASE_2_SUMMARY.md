@@ -1156,3 +1156,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added `GET /fuel-inventory/summary` to aggregate current volume and capacity by fuel type.
 * Endpoint creates the table if missing and returns totals using the standard success wrapper.
+
+### 🛠️ Fix 2025-11-23 – Cash report credit entries
+**Status:** ✅ Done
+**Files:** `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `docs/openapi.yaml`, `backend_brain.md`, `docs/STEP_fix_20251123.md`
+
+**Overview:**
+* Cash report API now accepts `creditEntries` with creditor and fuel details.
+* Service creates sales for each credit entry and calculates total credit automatically.
