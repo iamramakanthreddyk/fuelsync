@@ -673,3 +673,13 @@ Each step includes:
 
 **Validations Performed:**
 * `node scripts/setup-azure-db.js` completes without syntax errors when run against Azure (requires database).
+
+### 🛠 Fix 2025-11-21 – Pump column rename
+**Status:** ✅ Done
+**Files:** `migrations/schema/009_rename_pumps_label_to_name.sql`
+
+**Overview:**
+* Renamed `pumps.label` column to `name` to align database with Prisma models.
+
+**Validations Performed:**
+* Migration applies successfully when run against local database.
