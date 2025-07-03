@@ -1193,3 +1193,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Normalizes `stationId` query parameters so `all` or undefined values aggregate all stations.
+
+### 🛠️ Fix 2025-11-28 – Previous reading in nozzle listing
+**Status:** ✅ Done
+**Files:** `src/services/nozzleReading.service.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20251128.md`
+
+**Overview:**
+* `GET /api/v1/nozzle-readings` now returns `previousReading` by computing a window function over all readings.
+* OpenAPI schema updated accordingly.
