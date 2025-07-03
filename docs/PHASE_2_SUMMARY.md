@@ -1187,3 +1187,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Inventory and delivery services now reference `public.fuel_inventory` and join `public` tables.
 * Queries filter by `tenant_id` and controllers no longer embed tenant schema strings.
+### 🛠️ Fix 2025-11-27 – Dashboard station filter handling
+**Status:** ✅ Done
+**Files:** `src/utils/normalizeStationId.ts`, controllers updated, `docs/STEP_fix_20251127.md`
+
+**Overview:**
+* Normalizes `stationId` query parameters so `all` or undefined values aggregate all stations.

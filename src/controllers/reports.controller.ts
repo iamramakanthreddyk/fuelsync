@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createReportsHandlers(db: Pool) {
   async function runExportSales(req: Request, res: Response) {
@@ -9,7 +10,7 @@ export function createReportsHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const dateFrom = req.query.dateFrom as string | undefined;
         const dateTo = req.query.dateTo as string | undefined;
         const format = req.query.format as string || 'json';
@@ -82,7 +83,7 @@ export function createReportsHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
 
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const period = req.query.period as string || 'monthly';
 
         let dateFilter = '';

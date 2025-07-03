@@ -6,6 +6,7 @@ import { deleteAlert, createAlert, countBySeverity } from '../services/alert.ser
 // Controller supporting alert management endpoints used by the frontend
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createAlertsHandlers(db: Pool) {
   return {
@@ -14,7 +15,7 @@ export function createAlertsHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
 
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const unreadOnly = req.query.unreadOnly === 'true';
         const alerts = await getAlerts(db, tenantId, stationId, unreadOnly);
         successResponse(res, alerts);

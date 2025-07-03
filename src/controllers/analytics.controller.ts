@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 import { getStationComparison } from '../services/station.service';
 // Frontend analytics endpoints handler
 import {
@@ -204,7 +205,7 @@ export function createAnalyticsHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const stationId = req.query.stationId as string;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (!stationId) return errorResponse(res, 400, 'stationId required');
         const data = await getPeakHours(tenantId, stationId);
         successResponse(res, data);
@@ -217,7 +218,8 @@ export function createAnalyticsHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const { stationId, dateFrom, dateTo } = req.query as any;
+        const { stationId: stationIdRaw, dateFrom, dateTo } = req.query as any;
+        const stationId = normalizeStationId(stationIdRaw);
         if (!stationId || !dateFrom || !dateTo) {
           return errorResponse(res, 400, 'stationId, dateFrom and dateTo required');
         }

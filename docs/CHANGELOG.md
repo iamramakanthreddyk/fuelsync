@@ -2776,3 +2776,21 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/fuelInventory.controller.ts`
 * `src/controllers/delivery.controller.ts`
 * `docs/STEP_fix_20251126.md`
+
+## [Fix - 2025-11-27] – Dashboard station filter handling
+
+### 🟥 Fixes
+* Added `normalizeStationId` helper to treat `stationId=all` and similar values as undefined.
+* Updated multiple controllers to use the helper ensuring owner dashboard aggregates all stations correctly.
+
+### Files
+* `src/utils/normalizeStationId.ts`
+* `src/controllers/dashboard.controller.ts`
+* `src/controllers/inventory.controller.ts`
+* `src/controllers/reports.controller.ts`
+* `src/controllers/sales.controller.ts`
+* `src/controllers/pump.controller.ts`
+* `src/controllers/alerts.controller.ts`
+* `src/controllers/attendant.controller.ts`
+* `src/controllers/analytics.controller.ts`
+* `docs/STEP_fix_20251127.md`

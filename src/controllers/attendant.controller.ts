@@ -12,6 +12,7 @@ import {
 } from '../services/attendant.service';
 import { successResponse } from '../utils/successResponse';
 import { errorResponse } from '../utils/errorResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createAttendantHandlers(db: Pool) {
   return {
@@ -25,7 +26,7 @@ export function createAttendantHandlers(db: Pool) {
     },
     pumps: async (req: Request, res: Response) => {
       const user = req.user;
-      const stationId = req.query.stationId as string;
+      const stationId = normalizeStationId(req.query.stationId as string | undefined);
       if (!user?.tenantId || !user.userId || !stationId) {
         return errorResponse(res, 400, 'stationId required');
       }
@@ -87,7 +88,7 @@ export function createAttendantHandlers(db: Pool) {
       if (!user?.tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
-      const stationId = req.query.stationId as string | undefined;
+      const stationId = normalizeStationId(req.query.stationId as string | undefined);
       const unreadOnly = req.query.unreadOnly === 'true';
       const alerts = await listAlerts(db, user.tenantId, stationId, unreadOnly);
       successResponse(res, { alerts });

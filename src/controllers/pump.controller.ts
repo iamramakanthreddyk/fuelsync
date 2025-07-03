@@ -4,6 +4,7 @@ import prisma from '../utils/prisma';
 import { validateCreatePump } from '../validators/pump.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createPumpHandlers(db: Pool) {
   return {
@@ -32,7 +33,7 @@ export function createPumpHandlers(db: Pool) {
       if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
-      const stationId = req.query.stationId as string | undefined;
+      const stationId = normalizeStationId(req.query.stationId as string | undefined);
       const pumps = await prisma.pump.findMany({
         where: {
           tenant_id: tenantId,

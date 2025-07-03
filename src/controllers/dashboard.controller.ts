@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 import { getSystemHealth } from '../services/analytics.service';
 
 export function createDashboardHandlers(db: Pool) {
@@ -9,7 +10,7 @@ export function createDashboardHandlers(db: Pool) {
     getSalesSummary: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const range = (req.query.range as string) || 'monthly';
 
         let dateFilter = '';
@@ -61,7 +62,7 @@ export function createDashboardHandlers(db: Pool) {
     getPaymentMethodBreakdown: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const dateFrom = req.query.dateFrom as string | undefined;
         const dateTo = req.query.dateTo as string | undefined;
 
@@ -115,7 +116,7 @@ export function createDashboardHandlers(db: Pool) {
     getFuelTypeBreakdown: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const period = (req.query.period as string) || 'monthly';
 
         let dateFilter = '';
@@ -166,7 +167,7 @@ export function createDashboardHandlers(db: Pool) {
     getTopCreditors: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const limit = parseInt(req.query.limit as string) || 5;
 
         const query = `
@@ -206,7 +207,7 @@ export function createDashboardHandlers(db: Pool) {
     getDailySalesTrend: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const days = parseInt(req.query.days as string) || 7;
 
         const query = `
