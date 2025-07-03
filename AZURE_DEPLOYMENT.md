@@ -7,12 +7,14 @@
 In the Azure Portal, go to your App Service and add these environment variables:
 
 ```
-POSTGRES_HOST=fuelsync-server.postgres.database.azure.com
-POSTGRES_PORT=5432
-POSTGRES_DATABASE=fuelsync_db
-POSTGRES_USER=fueladmin
-POSTGRES_PASSWORD=your_actual_password
+DB_HOST=fuelsync-server.postgres.database.azure.com
+DB_PORT=5432
+DB_NAME=fuelsync_db
+DB_USER=fueladmin
+DB_PASSWORD=your_actual_password
 ```
+
+**Note:** The backend reads these `DB_*` variables as its database configuration. See `src/utils/db.ts` for details.
 
 ### 2. Run the Azure Seed Script
 

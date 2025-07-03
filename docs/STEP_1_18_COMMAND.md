@@ -39,9 +39,9 @@ db:
   ports:
     - "5432:5432"
   environment:
-    POSTGRES_USER: ${DB_USER}
-    POSTGRES_PASSWORD: ${DB_PASS}
-    POSTGRES_DB: ${DB_NAME}
+    DB_USER: ${DB_USER}
+    DB_PASSWORD: ${DB_PASS}
+    DB_NAME: ${DB_NAME}
   volumes:
     - pgdata:/var/lib/postgresql/data
 
