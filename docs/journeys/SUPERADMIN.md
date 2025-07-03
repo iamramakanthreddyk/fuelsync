@@ -88,7 +88,7 @@ All subsequent endpoints require `Authorization: Bearer <jwt>` header and `requi
 `POST /api/v1/admin/users` requires `{ name, email, password }` and returns `201`.
 
 ## Sample Flow – Provision Tenant
-1. **Login** as SUPERADMIN and obtain JWT (expires in 1h; renew via `/api/v1/auth/refresh`).
+1. **Login** as SUPERADMIN and obtain JWT (expires in `100y`; renew via `/api/v1/auth/refresh`).
 2. **POST `/api/v1/tenants`** with `{ name, planId, adminEmail?, adminPassword? }` to create tenant and owner user. Returns `201` and inserts into `public.tenants` and `public.users` (owner/manager/attendant created automatically within a transaction).
 3. **GET `/api/v1/admin/tenants/{id}`** to fetch full hierarchy.
 4. **PATCH `/api/v1/admin/tenants/{id}/status`** if you need to suspend or activate tenant.
@@ -117,7 +117,7 @@ All subsequent endpoints require `Authorization: Bearer <jwt>` header and `requi
 
 ## Edge Cases & TODOs
 - Behaviour when tenant creation fails mid-way is not fully documented. Transaction should rollback, but verify.
-- JWT expiry (`1h`) may require refresh via `/api/v1/auth/refresh` (not admin specific).
+- JWT expiry (`100y`) may require refresh via `/api/v1/auth/refresh` (not admin specific).
 - Unknown if multiple owners per tenant are allowed via admin APIs – currently createTenant auto-generates one owner.
 - API calls are not rate limited.
 - `deleteAdminUser` prevents removing the final admin account.

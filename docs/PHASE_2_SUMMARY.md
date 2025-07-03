@@ -1164,3 +1164,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Cash report API now accepts `creditEntries` with creditor and fuel details.
 * Service creates sales for each credit entry and calculates total credit automatically.
+
+### 🛠️ Fix 2025-11-24 – Extended JWT lifetime
+**Status:** ✅ Done
+**Files:** `src/constants/auth.ts`, `src/utils/jwt.ts`, `docs/AUTH.md`, `docs/journeys/*`, `docs/STEP_fix_20251124.md`
+
+**Overview:**
+* Increased `JWT_EXPIRES_IN` to `100y` to avoid token expiry during long-running tests.
