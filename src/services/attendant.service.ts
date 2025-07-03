@@ -1,6 +1,8 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { parseRows } from '../utils/parseDb';
+import { getPriceAtTimestamp } from '../utils/priceUtils';
+import { incrementCreditorBalance } from './creditor.service';
 
 export async function listUserStations(db: Pool, tenantId: string, userId: string) {
   const res = await db.query(
@@ -50,6 +52,13 @@ export async function listUserCreditors(db: Pool, tenantId: string) {
   return parseRows(res.rows);
 }
 
+export interface CreditEntry {
+  creditorId: string;
+  fuelType: string;
+  litres?: number;
+  amount?: number;
+}
+
 export async function createCashReport(
   db: Pool,
   tenantId: string,
@@ -57,14 +66,67 @@ export async function createCashReport(
   stationId: string,
   date: Date,
   cashAmount: number,
-  creditAmount: number
+  creditEntries: CreditEntry[] = []
 ) {
-  const res = await db.query<{ id: string }>(
-    `INSERT INTO public.cash_reports (id, tenant_id, station_id, user_id, date, cash_amount, credit_amount, updated_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
-    [randomUUID(), tenantId, stationId, userId, date, cashAmount, creditAmount]
-  );
-  return res.rows[0].id;
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+    let totalCredit = 0;
+    for (const entry of creditEntries) {
+      const nozzleRes = await client.query<{ id: string }>(
+        `SELECT n.id FROM public.nozzles n
+           JOIN public.pumps p ON n.pump_id = p.id
+          WHERE p.station_id = $1 AND n.fuel_type = $2 AND n.tenant_id = $3
+          LIMIT 1`,
+        [stationId, entry.fuelType, tenantId]
+      );
+      if (!nozzleRes.rowCount) {
+        throw new Error('No matching nozzle for fuel type');
+      }
+      const nozzleId = nozzleRes.rows[0].id;
+      const priceRec = await getPriceAtTimestamp(
+        client,
+        tenantId,
+        stationId,
+        entry.fuelType,
+        date
+      );
+      const price = priceRec ? priceRec.price : 0;
+      const volume = entry.litres ?? (entry.amount ? entry.amount / price : 0);
+      const amount = entry.amount ?? volume * price;
+      await client.query(
+        `INSERT INTO public.sales (id, tenant_id, nozzle_id, station_id, volume, fuel_type, fuel_price, amount, payment_method, creditor_id, created_by, recorded_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'credit',$9,$10,$11,NOW())`,
+        [
+          randomUUID(),
+          tenantId,
+          nozzleId,
+          stationId,
+          volume,
+          entry.fuelType,
+          price,
+          amount,
+          entry.creditorId,
+          userId,
+          date
+        ]
+      );
+      await incrementCreditorBalance(client, tenantId, entry.creditorId, amount);
+      totalCredit += amount;
+    }
+    const res = await client.query<{ id: string }>(
+      `INSERT INTO public.cash_reports (id, tenant_id, station_id, user_id, date, cash_amount, credit_amount, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
+      [randomUUID(), tenantId, stationId, userId, date, cashAmount, totalCredit]
+    );
+    await client.query('COMMIT');
+    return res.rows[0].id;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 export async function listCashReports(db: Pool, tenantId: string, userId: string) {

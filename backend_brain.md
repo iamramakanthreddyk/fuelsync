@@ -90,7 +90,7 @@ This document tracks the current API surface and backend best practices. It is u
 | GET | /api/v1/attendant/pumps | Attendant assigned pumps |
 | GET | /api/v1/attendant/nozzles | Attendant assigned nozzles |
 | GET | /api/v1/attendant/creditors | Attendant creditors |
-| POST | /api/v1/attendant/cash-report | Submit cash report |
+| POST | /api/v1/attendant/cash-report | Submit cash report with credit breakdown |
 | GET | /api/v1/attendant/cash-reports | List cash reports |
 | GET | /api/v1/attendant/alerts | List attendant alerts |
 | PUT | /api/v1/attendant/alerts/:id/acknowledge | Acknowledge alert |

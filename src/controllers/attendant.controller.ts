@@ -52,7 +52,7 @@ export function createAttendantHandlers(db: Pool) {
     cashReport: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        const { stationId, date, cashAmount, creditAmount } = req.body || {};
+        const { stationId, date, cashAmount, creditEntries } = req.body || {};
         if (!user?.tenantId || !user.userId || !stationId || !date) {
           return errorResponse(res, 400, 'stationId and date required');
         }
@@ -67,7 +67,7 @@ export function createAttendantHandlers(db: Pool) {
           stationId,
           dt,
           Number(cashAmount || 0),
-          Number(creditAmount || 0)
+          Array.isArray(creditEntries) ? creditEntries : []
         );
         successResponse(res, { id }, undefined, 201);
       } catch (err: any) {

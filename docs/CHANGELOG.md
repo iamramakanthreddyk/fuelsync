@@ -2726,3 +2726,16 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/fuelInventory.route.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_53_COMMAND.md`
+
+## [Fix - 2025-11-23] – Cash report credit entries
+
+### 🟥 Fixes
+* Cash report endpoint accepts `creditEntries` instead of a single `creditAmount`.
+* Service records sales per credit entry and auto-calculates the credit total.
+
+### Files
+* `src/services/attendant.service.ts`
+* `src/controllers/attendant.controller.ts`
+* `docs/openapi.yaml`
+* `backend_brain.md`
+* `docs/STEP_fix_20251123.md`
