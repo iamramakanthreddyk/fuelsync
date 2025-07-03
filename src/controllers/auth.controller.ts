@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { login, loginSuperAdmin } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { JWT_SECRET, REFRESH_TOKEN_EXPIRES_IN } from '../constants/auth';
 
 export function createAuthController(db: Pool) {
   return {
@@ -121,8 +122,8 @@ export function createAuthController(db: Pool) {
             tenantId: user.tenantId,
             role: user.role
           },
-          process.env.JWT_SECRET || 'fallback-secret',
-          { expiresIn: '24h' }
+          JWT_SECRET,
+          { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
         );
 
         successResponse(res, { token, user });
