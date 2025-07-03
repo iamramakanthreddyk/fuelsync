@@ -10,6 +10,7 @@ export function createFuelInventoryRouter(db: Pool) {
   const handlers = createFuelInventoryHandlers(db);
 
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.list);
+  router.get('/summary', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.summary);
 
   return router;
 }

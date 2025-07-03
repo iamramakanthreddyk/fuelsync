@@ -1371,6 +1371,14 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/fuel-inventory/summary:
+    get:
+      summary: Fuel inventory totals by fuel type
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/inventory:
     get:
       summary: Current part inventory

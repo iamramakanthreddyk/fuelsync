@@ -2714,3 +2714,15 @@ Each entry is tied to a step from the implementation index.
 * `docs/FRONTEND_NAVIGATION_GUIDE.md`
 * `prisma/schema.prisma`
 * `docs/STEP_fix_20251122.md`
+
+## [Feature - 2025-11-23] – Fuel inventory summary endpoint
+
+### 🟩 Features
+* Added `GET /api/v1/fuel-inventory/summary` to aggregate stock totals by fuel type.
+
+### Files
+* `src/services/fuelInventory.service.ts`
+* `src/controllers/fuelInventory.controller.ts`
+* `src/routes/fuelInventory.route.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_53_COMMAND.md`

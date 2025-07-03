@@ -210,3 +210,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-20 | Fuel price station id in spec | ✅ Done | `docs/openapi.yaml` | `docs/STEP_fix_20251120.md` |
 | fix | 2025-11-21 | Pump column rename | ✅ Done | `migrations/schema/009_rename_pumps_label_to_name.sql` | `docs/STEP_fix_20251121.md` |
 | fix | 2025-11-22 | Schema naming alignment | ✅ Done | `prisma/schema.prisma`, docs updated | `docs/STEP_fix_20251122.md` |
+| 2     | 2.53 | Fuel inventory summary endpoint | ✅ Done | `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`, `docs/openapi.yaml` | `PHASE_2_SUMMARY.md#step-2.53` |

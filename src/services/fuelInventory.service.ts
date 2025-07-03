@@ -87,3 +87,28 @@ export async function seedFuelInventory(db: Pool, tenantId: string): Promise<voi
     }
   }
 }
+export interface FuelInventorySummary {
+  fuelType: string;
+  totalVolume: number;
+  totalCapacity: number;
+}
+
+export async function getFuelInventorySummary(db: Pool, tenantId: string): Promise<FuelInventorySummary[]> {
+  const query = `
+    SELECT
+      fuel_type as "fuelType",
+      SUM(current_volume) as "totalVolume",
+      SUM(capacity) as "totalCapacity"
+    FROM ${tenantId}.fuel_inventory
+    GROUP BY fuel_type
+    ORDER BY fuel_type
+  `;
+
+  try {
+    const result = await db.query(query);
+    return parseRows(result.rows);
+  } catch (error) {
+    console.error('Error fetching fuel inventory summary:', error);
+    return [];
+  }
+}
