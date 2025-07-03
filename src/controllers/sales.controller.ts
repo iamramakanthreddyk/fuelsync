@@ -4,6 +4,7 @@ import { parseSalesQuery } from '../validators/sales.validator';
 import { listSales, salesAnalytics } from '../services/sales.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createSalesHandlers(db: Pool) {
   return {
@@ -36,7 +37,7 @@ export function createSalesHandlers(db: Pool) {
         if (!user?.tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const groupBy = (req.query.groupBy as string) || 'station';
         if (stationId) {
           const access = await db.query(

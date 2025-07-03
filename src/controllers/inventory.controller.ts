@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { getInventory, updateInventory, getAlerts } from '../services/inventory.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createInventoryHandlers(db: Pool) {
   return {
@@ -11,7 +12,7 @@ export function createInventoryHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const inventory = await getInventory(db, tenantId, stationId);
         successResponse(res, inventory);
       } catch (err: any) {
@@ -41,7 +42,7 @@ export function createInventoryHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         
-        const stationId = req.query.stationId as string | undefined;
+        const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const unreadOnly = req.query.unreadOnly === 'true';
         const alerts = await getAlerts(db, tenantId, stationId, unreadOnly);
         successResponse(res, alerts);
