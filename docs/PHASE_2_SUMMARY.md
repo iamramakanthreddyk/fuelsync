@@ -1171,3 +1171,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Increased `JWT_EXPIRES_IN` to `100y` to avoid token expiry during long-running tests.
+
+### 🛠️ Fix 2025-11-25 – Refresh token constant
+**Status:** ✅ Done
+**Files:** `src/constants/auth.ts`, `src/controllers/auth.controller.ts`, `docs/AUTH.md`, `docs/STEP_fix_20251125.md`
+
+**Overview:**
+* Added `REFRESH_TOKEN_EXPIRES_IN` constant and used `JWT_SECRET` when signing refresh tokens.
+* AUTH guide now notes the 24h refresh token policy.

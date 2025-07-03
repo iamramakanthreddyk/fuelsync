@@ -2751,3 +2751,14 @@ Each entry is tied to a step from the implementation index.
 * `docs/AUTH.md`
 * `docs/journeys/*`
 * `docs/STEP_fix_20251124.md`
+
+## [Fix - 2025-11-25] – Refresh token constant
+
+### 🟥 Fixes
+* Added `REFRESH_TOKEN_EXPIRES_IN` constant and updated refresh endpoint to use `JWT_SECRET` and the new value. Documentation now clarifies refresh token lifetime.
+
+### Files
+* `src/constants/auth.ts`
+* `src/controllers/auth.controller.ts`
+* `docs/AUTH.md`
+* `docs/STEP_fix_20251125.md`
