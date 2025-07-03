@@ -683,3 +683,14 @@ Each step includes:
 
 **Validations Performed:**
 * Migration applies successfully when run against local database.
+
+### 🛠 Fix 2025-11-22 – Schema naming alignment
+**Status:** ✅ Done
+**Files:** `prisma/schema.prisma`, documentation updates
+
+**Overview:**
+* Added Prisma model for `tenant_settings_kv`.
+* Updated remaining docs to reference `pumps.name`.
+
+**Validations Performed:**
+* `npx prisma format` and `npx prisma generate` executed without errors.

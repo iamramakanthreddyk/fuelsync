@@ -16,7 +16,7 @@ This document records the reasoning and structure for migrating FuelSync Hub fro
 | `tenants` | `id`, `name`, `plan_id`, `status`, `created_at`, `updated_at` |
 | `users` | `id`, `tenant_id`, `email`, `password_hash`, `name`, `role`, `created_at`, `updated_at` |
 | `stations` | `id`, `tenant_id`, `name`, `address`, `status`, `created_at`, `updated_at` |
-| `pumps` | `id`, `tenant_id`, `station_id`, `label`, `serial_number`, `status`, `created_at`, `updated_at` |
+| `pumps` | `id`, `tenant_id`, `station_id`, `name`, `serial_number`, `status`, `created_at`, `updated_at` |
 | `nozzles` | `id`, `tenant_id`, `pump_id`, `nozzle_number`, `fuel_type`, `status`, `created_at`, `updated_at` |
 | `fuel_prices` | `id`, `tenant_id`, `station_id`, `fuel_type`, `price`, `cost_price`, `valid_from`, `effective_to`, `created_at`, `updated_at` |
 | `creditors` | `id`, `tenant_id`, `station_id`, `party_name`, `contact_number`, `address`, `credit_limit`, `status`, `created_at`, `updated_at` |
