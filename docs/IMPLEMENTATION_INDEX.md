@@ -214,3 +214,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-23 | Cash report credit entries | ✅ Done | `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20251123.md` |
 | fix | 2025-11-24 | Extended JWT lifetime | ✅ Done | `src/constants/auth.ts`, `src/utils/jwt.ts`, docs updated | `docs/STEP_fix_20251124.md` |
 | fix | 2025-11-25 | Refresh token constant | ✅ Done | `src/constants/auth.ts`, `src/controllers/auth.controller.ts`, `docs/AUTH.md` | `docs/STEP_fix_20251125.md` |
+| fix | 2025-11-26 | Unified fuel inventory queries | ✅ Done | `src/services/fuelInventory.service.ts`, `src/services/inventory.service.ts`, `src/services/delivery.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/controllers/delivery.controller.ts` | `docs/STEP_fix_20251126.md` |

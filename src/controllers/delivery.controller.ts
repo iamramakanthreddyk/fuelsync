@@ -37,18 +37,19 @@ export function createDeliveryHandlers(db: Pool) {
       try {
         const { stationId, fuelType } = req.query;
         const client = await db.connect();
-        let query = `SELECT station_id, fuel_type, current_volume, updated_at FROM ${tenantId}.fuel_inventory WHERE 1=1`;
-        const params: any[] = [];
-        
+        let query = 'SELECT station_id, fuel_type, current_volume, updated_at FROM public.fuel_inventory WHERE tenant_id = $1';
+        const params: any[] = [tenantId];
+        let idx = 2;
+
         if (stationId) {
           params.push(stationId);
-          query += ` AND station_id = ${params.length}`;
+          query += ` AND station_id = $${idx++}`;
         }
         if (fuelType) {
           params.push(fuelType);
-          query += ` AND fuel_type = ${params.length}`;
+          query += ` AND fuel_type = $${idx++}`;
         }
-        
+
         const { rows } = await client.query(query, params);
         client.release();
         successResponse(res, { inventory: rows });
