@@ -115,30 +115,41 @@ export async function listNozzleReadings(
 ) {
   const params: any[] = [tenantId];
   let idx = 2;
-  const conditions: string[] = ['nr.tenant_id = $1'];
+  const filters: string[] = [];
   if (query.nozzleId) {
-    conditions.push(`nr.nozzle_id = $${idx++}`);
+    filters.push(`o.nozzle_id = $${idx++}`);
     params.push(query.nozzleId);
   }
   if (query.stationId) {
-    conditions.push(`p.station_id = $${idx++}`);
+    filters.push(`o.station_id = $${idx++}`);
     params.push(query.stationId);
   }
   if (query.from) {
-    conditions.push(`nr.recorded_at >= $${idx++}`);
+    filters.push(`o.recorded_at >= $${idx++}`);
     params.push(query.from);
   }
   if (query.to) {
-    conditions.push(`nr.recorded_at <= $${idx++}`);
+    filters.push(`o.recorded_at <= $${idx++}`);
     params.push(query.to);
   }
-  const where = `WHERE ${conditions.join(' AND ')}`;
-  const sql = `SELECT nr.id, nr.nozzle_id, nr.reading, nr.recorded_at
-    FROM public.nozzle_readings nr
-    JOIN public.nozzles n ON nr.nozzle_id = n.id
-    JOIN public.pumps p ON n.pump_id = p.id
+  const where = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
+  const sql = `WITH ordered AS (
+      SELECT
+        nr.id,
+        nr.nozzle_id,
+        nr.reading,
+        nr.recorded_at,
+        p.station_id,
+        LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading
+      FROM public.nozzle_readings nr
+      JOIN public.nozzles n ON nr.nozzle_id = n.id
+      JOIN public.pumps p ON n.pump_id = p.id
+      WHERE nr.tenant_id = $1
+    )
+    SELECT id, nozzle_id, reading, recorded_at, previous_reading
+    FROM ordered o
     ${where}
-    ORDER BY nr.recorded_at DESC`;
+    ORDER BY recorded_at DESC`;
   const res = await db.query(sql, params);
   return parseRows(res.rows);
 }

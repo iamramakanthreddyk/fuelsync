@@ -2217,6 +2217,8 @@ paths:
           type: string
         nozzleId:
           type: string
+        previousReading:
+          type: number
         reading:
           type: number
         recordedAt:

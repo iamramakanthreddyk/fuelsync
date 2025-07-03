@@ -2794,3 +2794,14 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/attendant.controller.ts`
 * `src/controllers/analytics.controller.ts`
 * `docs/STEP_fix_20251127.md`
+
+## [Fix - 2025-11-28] – Previous reading in nozzle listing
+
+### 🟥 Fixes
+* `listNozzleReadings` now computes `previous_reading` using a window function.
+* `NozzleReading` schema updated in OpenAPI.
+
+### Files
+* `src/services/nozzleReading.service.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_fix_20251128.md`
