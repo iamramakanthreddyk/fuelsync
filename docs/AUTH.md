@@ -61,7 +61,7 @@ Middlewares live under `src/middlewares` (re-exported via `src/middleware/auth.m
 
 ---
 
-Login and logout routes exist under `/api/auth`. Tokens expire after one hour and must be renewed via re-login.
+Login and logout routes exist under `/api/auth`. Tokens expire after **100 years** by default and rarely require renewal.
 
 ### Example Usage
 

@@ -78,5 +78,5 @@ Owners operate within their tenant schema (`<tenant_id>`). Common tables:
 ## Edge Notes
 - Some endpoints like analytics may require additional query params (`stationId`, `dateFrom`, `dateTo`).
 - Ensure `x-tenant-id` header always matches the tenant in JWT to avoid `TENANT_REQUIRED` errors.
-- JWTs expire in 1h; use `/api/v1/auth/refresh` to renew.
+- JWTs expire in `100y`; use `/api/v1/auth/refresh` to renew.
 

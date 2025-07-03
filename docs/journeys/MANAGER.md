@@ -29,5 +29,5 @@ Managers **cannot** update tenant settings or create additional users.
 
 ## Errors
 Same as OWNER plus forbidden (`403`) when attempting owner‑only actions such as creating users or updating settings.
-- JWTs expire in 1h; use `/api/v1/auth/refresh`.
+- JWTs expire in `100y`; use `/api/v1/auth/refresh`.
 

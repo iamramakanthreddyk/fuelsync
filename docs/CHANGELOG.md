@@ -2739,3 +2739,15 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `backend_brain.md`
 * `docs/STEP_fix_20251123.md`
+
+## [Fix - 2025-11-24] – Extended JWT lifetime
+
+### 🟥 Fixes
+* Increased `JWT_EXPIRES_IN` constant to `100y` and updated documentation.
+
+### Files
+* `src/constants/auth.ts`
+* `src/utils/jwt.ts`
+* `docs/AUTH.md`
+* `docs/journeys/*`
+* `docs/STEP_fix_20251124.md`

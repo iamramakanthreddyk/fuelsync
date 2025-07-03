@@ -212,3 +212,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-22 | Schema naming alignment | ✅ Done | `prisma/schema.prisma`, docs updated | `docs/STEP_fix_20251122.md` |
 | 2     | 2.53 | Fuel inventory summary endpoint | ✅ Done | `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`, `docs/openapi.yaml` | `PHASE_2_SUMMARY.md#step-2.53` |
 | fix | 2025-11-23 | Cash report credit entries | ✅ Done | `src/services/attendant.service.ts`, `src/controllers/attendant.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20251123.md` |
+| fix | 2025-11-24 | Extended JWT lifetime | ✅ Done | `src/constants/auth.ts`, `src/utils/jwt.ts`, docs updated | `docs/STEP_fix_20251124.md` |
