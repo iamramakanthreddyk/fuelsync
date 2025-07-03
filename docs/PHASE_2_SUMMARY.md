@@ -1148,3 +1148,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Fuel price schema now documents `station.id` and listing returns station id with name.
+
+### 🛠️ Step 2.53 – Fuel inventory summary endpoint
+**Status:** ✅ Done
+**Files:** `src/services/fuelInventory.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/routes/fuelInventory.route.ts`, `docs/openapi.yaml`, `docs/STEP_2_53_COMMAND.md`
+
+**Overview:**
+* Added `GET /fuel-inventory/summary` to aggregate current volume and capacity by fuel type.
+* Endpoint creates the table if missing and returns totals using the standard success wrapper.

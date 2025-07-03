@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { getFuelInventory, createFuelInventoryTable, seedFuelInventory } from '../services/fuelInventory.service';
+import { getFuelInventory, createFuelInventoryTable, seedFuelInventory, getFuelInventorySummary } from '../services/fuelInventory.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 
@@ -30,6 +30,22 @@ export function createFuelInventoryHandlers(db: Pool) {
         return successResponse(res, inventory);
       } catch (err: any) {
         console.error('Error in fuel inventory list:', err);
+        return errorResponse(res, 500, err.message || 'Internal server error');
+      }
+    },
+
+    summary: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        await createFuelInventoryTable(db, tenantId);
+        const summary = await getFuelInventorySummary(db, tenantId);
+        return successResponse(res, summary);
+      } catch (err: any) {
+        console.error('Error in fuel inventory summary:', err);
         return errorResponse(res, 500, err.message || 'Internal server error');
       }
     }
