@@ -2692,3 +2692,12 @@ Each entry is tied to a step from the implementation index.
 * `docs/missing/COMPLETE_API_SPEC.yaml`
 * `src/controllers/fuelPrice.controller.ts`
 * `docs/STEP_fix_20251120.md`
+
+## [Fix - 2025-11-21] – Pump column rename
+
+### 🟥 Fixes
+* Database column `pumps.label` renamed to `name` to match API and Prisma schema.
+
+### Files
+* `migrations/schema/009_rename_pumps_label_to_name.sql`
+* `docs/STEP_fix_20251121.md`
