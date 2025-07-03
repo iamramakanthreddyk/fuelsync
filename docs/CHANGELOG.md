@@ -2701,3 +2701,16 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `migrations/schema/009_rename_pumps_label_to_name.sql`
 * `docs/STEP_fix_20251121.md`
+
+## [Fix - 2025-11-22] – Schema naming alignment
+
+### 🟥 Fixes
+* Updated documentation examples to use `pumps.name`.
+* Added Prisma model for `tenant_settings_kv`.
+
+### Files
+* `db_brain.md`
+* `docs/BACKEND_HIERARCHY_API.md`
+* `docs/FRONTEND_NAVIGATION_GUIDE.md`
+* `prisma/schema.prisma`
+* `docs/STEP_fix_20251122.md`

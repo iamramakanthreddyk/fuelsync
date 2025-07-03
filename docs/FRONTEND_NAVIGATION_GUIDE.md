@@ -129,7 +129,7 @@ function StationDetail({ stationId }) {
         {pumps?.map(pump => (
           <li key={pump.id}>
             <Link to={`/stations/${stationId}/pumps/${pump.id}`}>
-              {pump.label}
+              {pump.name}
             </Link>
           </li>
         ))}

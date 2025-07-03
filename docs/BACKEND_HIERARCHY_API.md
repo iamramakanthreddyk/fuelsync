@@ -58,7 +58,7 @@ Authorization: Bearer <super_admin_token>
       "pumps": [
         {
           "id": "pump-uuid-1",
-          "label": "Pump 1",
+          "name": "Pump 1",
           "serialNumber": "P001",
           "status": "active",
           "nozzleCount": 2,
@@ -79,7 +79,7 @@ Authorization: Bearer <super_admin_token>
         },
         {
           "id": "pump-uuid-2",
-          "label": "Pump 2", 
+          "name": "Pump 2",
           "serialNumber": "P002",
           "status": "maintenance",
           "nozzleCount": 1,
@@ -103,7 +103,7 @@ Authorization: Bearer <super_admin_token>
       "pumps": [
         {
           "id": "pump-uuid-3",
-          "label": "Pump 1",
+          "name": "Pump 1",
           "serialNumber": "P003",
           "status": "active",
           "nozzleCount": 2,
@@ -189,11 +189,11 @@ FROM {schema}.stations s
 ORDER BY s.name;
 
 -- Get pumps with nozzle counts
-SELECT p.id, p.label, p.serial_number, p.status,
+SELECT p.id, p.name, p.serial_number, p.status,
        (SELECT COUNT(*) FROM {schema}.nozzles n WHERE n.pump_id = p.id) as nozzle_count
 FROM {schema}.pumps p 
 WHERE p.station_id = $1 
-ORDER BY p.label;
+ORDER BY p.name;
 
 -- Get nozzles for pump
 SELECT id, nozzle_number, fuel_type, status 

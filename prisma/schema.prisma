@@ -27,72 +27,73 @@ model Plan {
 }
 
 model Tenant {
-  id                    String              @id @default(uuid())
-  name                  String
-  plan_id               String?
-  status                String              @default("active")
-  created_at            DateTime            @default(now())
-  updated_at            DateTime            @updatedAt
-  deleted_at            DateTime?
-  plan                  Plan?               @relation(fields: [plan_id], references: [id])
-  users                 User[]
-  stations              Station[]
-  tenant_settings       TenantSettings?
-  fuel_inventory        FuelInventory[]
-  alerts                Alert[]
-  fuel_deliveries       FuelDelivery[]
-  credit_payments       CreditPayment[]
-  day_reconciliations   DayReconciliation[]
-  report_schedules      ReportSchedule[]
-  audit_logs            AuditLog[]
-  user_activity_logs    UserActivityLog[]
-  validation_issues     ValidationIssue[]
+  id                  String              @id @default(uuid())
+  name                String
+  plan_id             String?
+  status              String              @default("active")
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  deleted_at          DateTime?
+  plan                Plan?               @relation(fields: [plan_id], references: [id])
+  users               User[]
+  stations            Station[]
+  tenant_settings     TenantSettings?
+  fuel_inventory      FuelInventory[]
+  alerts              Alert[]
+  fuel_deliveries     FuelDelivery[]
+  credit_payments     CreditPayment[]
+  day_reconciliations DayReconciliation[]
+  report_schedules    ReportSchedule[]
+  audit_logs          AuditLog[]
+  user_activity_logs  UserActivityLog[]
+  validation_issues   ValidationIssue[]
+  TenantSettingsKv    TenantSettingsKv[]
 
   @@map("tenants")
 }
 
 model AdminUser {
-  id                   String               @id @default(uuid())
-  email                String               @unique
-  password_hash        String
-  name                 String?
-  role                 String               @default("superadmin")
-  created_at           DateTime             @default(now())
-  updated_at           DateTime             @updatedAt
-  admin_activity_logs  AdminActivityLog[]
+  id                  String             @id @default(uuid())
+  email               String             @unique
+  password_hash       String
+  name                String?
+  role                String             @default("superadmin")
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
+  admin_activity_logs AdminActivityLog[]
 
   @@map("admin_users")
 }
 
 model AdminActivityLog {
-  id             String     @id @default(uuid())
-  admin_user_id  String?
-  action         String
-  target_type    String?
-  target_id      String?
-  details        Json?
-  created_at     DateTime   @default(now())
-  updated_at     DateTime   @updatedAt
-  admin_user     AdminUser? @relation(fields: [admin_user_id], references: [id], onDelete: Cascade)
+  id            String     @id @default(uuid())
+  admin_user_id String?
+  action        String
+  target_type   String?
+  target_id     String?
+  details       Json?
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  admin_user    AdminUser? @relation(fields: [admin_user_id], references: [id], onDelete: Cascade)
 
   @@map("admin_activity_logs")
 }
 
 // Tenant-specific tables
 model User {
-  id                  String            @id @default(uuid())
-  tenant_id           String
-  email               String
-  password_hash       String
-  name                String
-  role                String
-  created_at          DateTime          @default(now())
-  updated_at          DateTime          @updatedAt
-  tenant              Tenant            @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
-  stations            UserStation[]
-  sales               Sale[]
-  audit_logs          AuditLog[]
-  user_activity_logs  UserActivityLog[]
+  id                 String            @id @default(uuid())
+  tenant_id          String
+  email              String
+  password_hash      String
+  name               String
+  role               String
+  created_at         DateTime          @default(now())
+  updated_at         DateTime          @updatedAt
+  tenant             Tenant            @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  stations           UserStation[]
+  sales              Sale[]
+  audit_logs         AuditLog[]
+  user_activity_logs UserActivityLog[]
 
   @@unique([tenant_id, email])
   @@index([tenant_id])
@@ -100,24 +101,24 @@ model User {
 }
 
 model Station {
-  id                    String              @id @default(uuid())
-  tenant_id             String
-  name                  String
-  address               String?
-  status                String              @default("active")
-  created_at            DateTime            @default(now())
-  updated_at            DateTime            @updatedAt
-  tenant                Tenant              @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
-  pumps                 Pump[]
-  users                 UserStation[]
-  creditors             Creditor[]
-  sales                 Sale[]
-  fuel_prices           FuelPrice[]
-  fuel_inventory        FuelInventory[]
-  alerts                Alert[]
-  fuel_deliveries       FuelDelivery[]
-  day_reconciliations   DayReconciliation[]
-  report_schedules      ReportSchedule[]
+  id                  String              @id @default(uuid())
+  tenant_id           String
+  name                String
+  address             String?
+  status              String              @default("active")
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  tenant              Tenant              @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  pumps               Pump[]
+  users               UserStation[]
+  creditors           Creditor[]
+  sales               Sale[]
+  fuel_prices         FuelPrice[]
+  fuel_inventory      FuelInventory[]
+  alerts              Alert[]
+  fuel_deliveries     FuelDelivery[]
+  day_reconciliations DayReconciliation[]
+  report_schedules    ReportSchedule[]
 
   @@unique([tenant_id, name])
   @@index([tenant_id])
@@ -143,17 +144,17 @@ model Pump {
 }
 
 model Nozzle {
-  id             String          @id @default(uuid())
-  tenant_id      String
-  pump_id        String
-  nozzle_number  Int
-  fuel_type      String
-  status         String          @default("active")
-  created_at     DateTime        @default(now())
-  updated_at     DateTime        @updatedAt
-  pump           Pump            @relation(fields: [pump_id], references: [id], onDelete: Cascade)
-  readings       NozzleReading[]
-  sales          Sale[]
+  id            String          @id @default(uuid())
+  tenant_id     String
+  pump_id       String
+  nozzle_number Int
+  fuel_type     String
+  status        String          @default("active")
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  pump          Pump            @relation(fields: [pump_id], references: [id], onDelete: Cascade)
+  readings      NozzleReading[]
+  sales         Sale[]
 
   @@unique([tenant_id, pump_id, nozzle_number])
   @@index([tenant_id])
@@ -179,18 +180,18 @@ model FuelPrice {
 }
 
 model Creditor {
-  id             String          @id @default(uuid())
-  tenant_id      String
-  station_id     String?
-  party_name     String
-  contact_number String?
-  address        String?
-  credit_limit   Decimal         @default(0)
-  status         String          @default("active")
-  created_at     DateTime        @default(now())
-  updated_at     DateTime        @updatedAt
-  station        Station?        @relation(fields: [station_id], references: [id], onDelete: Cascade)
-  sales          Sale[]
+  id              String          @id @default(uuid())
+  tenant_id       String
+  station_id      String?
+  party_name      String
+  contact_number  String?
+  address         String?
+  credit_limit    Decimal         @default(0)
+  status          String          @default("active")
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  station         Station?        @relation(fields: [station_id], references: [id], onDelete: Cascade)
+  sales           Sale[]
   credit_payments CreditPayment[]
 
   @@index([tenant_id])
@@ -198,7 +199,7 @@ model Creditor {
 }
 
 model Sale {
-  id             String     @id @default(uuid())
+  id             String         @id @default(uuid())
   tenant_id      String
   nozzle_id      String
   reading_id     String?
@@ -206,20 +207,20 @@ model Sale {
   volume         Decimal
   fuel_type      String
   fuel_price     Decimal
-  cost_price     Decimal    @default(0)
+  cost_price     Decimal        @default(0)
   amount         Decimal
-  profit         Decimal    @default(0)
+  profit         Decimal        @default(0)
   payment_method String
   creditor_id    String?
   created_by     String?
-  status         String     @default("posted")
+  status         String         @default("posted")
   recorded_at    DateTime
-  created_at     DateTime   @default(now())
-  updated_at     DateTime   @updatedAt
-  nozzle         Nozzle     @relation(fields: [nozzle_id], references: [id], onDelete: Cascade)
-  station        Station    @relation(fields: [station_id], references: [id], onDelete: Cascade)
-  creditor       Creditor?  @relation(fields: [creditor_id], references: [id])
-  creator        User?      @relation(fields: [created_by], references: [id])
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  nozzle         Nozzle         @relation(fields: [nozzle_id], references: [id], onDelete: Cascade)
+  station        Station        @relation(fields: [station_id], references: [id], onDelete: Cascade)
+  creditor       Creditor?      @relation(fields: [creditor_id], references: [id])
+  creator        User?          @relation(fields: [created_by], references: [id])
   reading        NozzleReading? @relation(fields: [reading_id], references: [id])
 
   @@index([tenant_id])
@@ -250,6 +251,18 @@ model TenantSettings {
   tenant            Tenant   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
 
   @@map("tenant_settings")
+}
+
+model TenantSettingsKv {
+  tenant_id  String
+  key        String
+  value      String
+  updated_at DateTime @default(now())
+  tenant     Tenant   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+
+  @@id([tenant_id, key])
+  @@index([tenant_id])
+  @@map("tenant_settings_kv")
 }
 
 model FuelInventory {
@@ -320,7 +333,7 @@ model NozzleReading {
 }
 
 model CreditPayment {
-  id               String    @id @default(uuid())
+  id               String   @id @default(uuid())
   tenant_id        String
   creditor_id      String
   amount           Decimal
@@ -328,10 +341,10 @@ model CreditPayment {
   reference_number String?
   notes            String?
   received_at      DateTime
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
-  tenant           Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
-  creditor         Creditor  @relation(fields: [creditor_id], references: [id], onDelete: Cascade)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  tenant           Tenant   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  creditor         Creditor @relation(fields: [creditor_id], references: [id], onDelete: Cascade)
 
   @@index([tenant_id])
   @@index([creditor_id])
@@ -393,29 +406,29 @@ model AuditLog {
 }
 
 model UserActivityLog {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   tenant_id   String?
   user_id     String?
   ip_address  String?
   user_agent  String?
   event       String?
-  recorded_at DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
-  tenant      Tenant?   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
-  user        User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  recorded_at DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  tenant      Tenant?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([tenant_id])
   @@map("user_activity_logs")
 }
 
 model ValidationIssue {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   tenant_id   String?
   entity_type String
   entity_id   String
   message     String
-  created_at  DateTime  @default(now())
-  tenant      Tenant?   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  created_at  DateTime @default(now())
+  tenant      Tenant?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
 
   @@index([tenant_id])
   @@map("validation_issues")
