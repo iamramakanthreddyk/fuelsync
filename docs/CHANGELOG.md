@@ -2762,3 +2762,17 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/auth.controller.ts`
 * `docs/AUTH.md`
 * `docs/STEP_fix_20251125.md`
+
+## [Fix - 2025-11-26] – Unified fuel inventory queries
+
+### 🟥 Fixes
+* Inventory and delivery services now use `public.fuel_inventory` with `tenant_id` filters.
+* Removed obsolete `createFuelInventoryTable` helper and updated controllers.
+
+### Files
+* `src/services/fuelInventory.service.ts`
+* `src/services/inventory.service.ts`
+* `src/services/delivery.service.ts`
+* `src/controllers/fuelInventory.controller.ts`
+* `src/controllers/delivery.controller.ts`
+* `docs/STEP_fix_20251126.md`

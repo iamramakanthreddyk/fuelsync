@@ -3,8 +3,13 @@ import { randomUUID } from 'crypto';
 import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function getInventory(db: Pool, tenantId: string, stationId?: string) {
-  const stationFilter = stationId ? 'WHERE fi.station_id = $1' : '';
-  const params = stationId ? [stationId] : [];
+  const params: any[] = [tenantId];
+  let stationFilter = '';
+  let idx = 2;
+  if (stationId) {
+    stationFilter = `AND fi.station_id = $${idx++}`;
+    params.push(stationId);
+  }
   
   const query = `
     SELECT 
@@ -20,12 +25,12 @@ export async function getInventory(db: Pool, tenantId: string, stationId?: strin
         WHEN fi.current_stock <= fi.minimum_level * 1.5 THEN 'medium'
         ELSE 'good'
       END as stock_status
-    FROM ${tenantId}.fuel_inventory fi
-    JOIN ${tenantId}.stations st ON fi.station_id = st.id
-    ${stationFilter}
+    FROM public.fuel_inventory fi
+    JOIN public.stations st ON fi.station_id = st.id
+    WHERE fi.tenant_id = $1 ${stationFilter}
     ORDER BY st.name, fi.fuel_type
   `;
-  
+
   const result = await db.query(query, params);
   return parseRows(
     result.rows.map(row => ({
@@ -43,19 +48,19 @@ export async function getInventory(db: Pool, tenantId: string, stationId?: strin
 
 export async function updateInventory(db: Pool, tenantId: string, stationId: string, fuelType: string, newStock: number) {
   const query = `
-    UPDATE ${tenantId}.fuel_inventory 
-    SET current_stock = $3, last_updated = NOW()
-    WHERE station_id = $1 AND fuel_type = $2
+    UPDATE public.fuel_inventory
+    SET current_stock = $4, last_updated = NOW()
+    WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
   `;
-  await db.query(query, [stationId, fuelType, newStock]);
+  await db.query(query, [tenantId, stationId, fuelType, newStock]);
   
   // Check if stock is low and create alert
   const checkQuery = `
-    SELECT current_stock, minimum_level 
-    FROM ${tenantId}.fuel_inventory 
-    WHERE station_id = $1 AND fuel_type = $2
+    SELECT current_stock, minimum_level
+    FROM public.fuel_inventory
+    WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
   `;
-  const result = await db.query(checkQuery, [stationId, fuelType]);
+  const result = await db.query(checkQuery, [tenantId, stationId, fuelType]);
   const { current_stock, minimum_level } = result.rows[0];
   
   if (current_stock <= minimum_level) {
@@ -66,16 +71,16 @@ export async function updateInventory(db: Pool, tenantId: string, stationId: str
 
 export async function createAlert(db: Pool, tenantId: string, stationId: string, alertType: string, message: string, severity: string = 'info') {
   const query = `
-    INSERT INTO ${tenantId}.alerts (id, tenant_id, station_id, alert_type, message, severity, updated_at)
+    INSERT INTO public.alerts (id, tenant_id, station_id, alert_type, message, severity, updated_at)
     VALUES ($1, $2, $3, $4, $5, $6, NOW())
   `;
   await db.query(query, [randomUUID(), tenantId, stationId, alertType, message, severity]);
 }
 
 export async function getAlerts(db: Pool, tenantId: string, stationId?: string, unreadOnly: boolean = false) {
-  const conditions = [];
-  const params = [];
-  let paramIndex = 1;
+  const conditions = ['a.tenant_id = $1'];
+  const params: any[] = [tenantId];
+  let paramIndex = 2;
   
   if (stationId) {
     conditions.push(`a.station_id = $${paramIndex++}`);
@@ -86,7 +91,7 @@ export async function getAlerts(db: Pool, tenantId: string, stationId?: string, 
     conditions.push(`a.is_read = false`);
   }
   
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const whereClause = `WHERE ${conditions.join(' AND ')}`;
   
   const query = `
     SELECT 
@@ -98,8 +103,8 @@ export async function getAlerts(db: Pool, tenantId: string, stationId?: string, 
       a.severity,
       a.is_read,
       a.created_at
-    FROM ${tenantId}.alerts a
-    LEFT JOIN ${tenantId}.stations st ON a.station_id = st.id
+    FROM public.alerts a
+    LEFT JOIN public.stations st ON a.station_id = st.id
     ${whereClause}
     ORDER BY a.created_at DESC
     LIMIT 50
@@ -122,8 +127,8 @@ export async function getAlerts(db: Pool, tenantId: string, stationId?: string, 
 
 export async function markAlertRead(db: Pool, tenantId: string, alertId: string): Promise<boolean> {
   const result = await db.query(
-    `UPDATE ${tenantId}.alerts SET is_read = TRUE WHERE id = $1 RETURNING id`,
-    [alertId]
+    `UPDATE public.alerts SET is_read = TRUE WHERE tenant_id = $1 AND id = $2 RETURNING id`,
+    [tenantId, alertId]
   );
   return (result.rowCount ?? 0) > 0;
 }

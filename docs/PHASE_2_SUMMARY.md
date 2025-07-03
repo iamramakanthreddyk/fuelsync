@@ -1179,3 +1179,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added `REFRESH_TOKEN_EXPIRES_IN` constant and used `JWT_SECRET` when signing refresh tokens.
 * AUTH guide now notes the 24h refresh token policy.
+
+### 🛠️ Fix 2025-11-26 – Unified fuel inventory queries
+**Status:** ✅ Done
+**Files:** `src/services/fuelInventory.service.ts`, `src/services/inventory.service.ts`, `src/services/delivery.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/controllers/delivery.controller.ts`, `docs/STEP_fix_20251126.md`
+
+**Overview:**
+* Inventory and delivery services now reference `public.fuel_inventory` and join `public` tables.
+* Queries filter by `tenant_id` and controllers no longer embed tenant schema strings.
