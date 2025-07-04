@@ -239,7 +239,7 @@ export function createDashboardHandlers(db: Pool) {
       }
     },
 
-    getStationMetrics: async (_req: Request, res: Response) => {
+    getStationMetrics: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
