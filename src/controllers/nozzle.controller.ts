@@ -5,6 +5,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { validateCreateNozzle, validateUpdateNozzle } from '../validators/nozzle.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { getNozzleSettings, updateNozzleSettings } from '../services/nozzleSettings.service';
 
 export function createNozzleHandlers(db: Pool) {
   return {
@@ -106,6 +107,23 @@ export function createNozzleHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
+    },
+    getSettings: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const settings = await getNozzleSettings(db, req.params.id);
+      successResponse(res, { settings });
+    },
+    updateSettings: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      await updateNozzleSettings(db, req.params.id, req.body);
+      const settings = await getNozzleSettings(db, req.params.id);
+      successResponse(res, { settings });
     },
   };
 }

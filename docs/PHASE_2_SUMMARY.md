@@ -1234,3 +1234,27 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Fuel inventory uses delivery and reading data for tank levels.
 * Auth responses now return tenant name and fuel price list includes station name.
 * Marked testing endpoints as internal in API docs.
+
+### 🛠️ Step 2.57 – Tenant email convention update
+**Status:** ✅ Done
+**Files:** `src/services/tenant.service.ts`, `docs/TENANT_CREATION_API.md`, `docs/TENANT_MANAGEMENT_GUIDE.md`, `TENANT_USER_CREATION_PROCESS.md`, `docs/USER_MANAGEMENT.md`, `UNIFIED_DB_SETUP.md`, `docs/STEP_2_57_COMMAND.md`
+
+**Overview:**
+* Default user emails now follow `<role>@<schema>.fuelsync.com` for predictability.
+
+### 🛠️ Fix 2025-12-02 – Frontend hooks OpenAPI alignment
+**Status:** ✅ Done
+**Files:** `src/api/*`, `CHANGELOG.md`, `docs/STEP_fix_20251202.md`
+
+**Overview:**
+* API services now read from the `data` field of responses.
+* Legacy keys like `stations` or `inventory` are no longer referenced.
+
+### 🛠️ Fix 2025-12-06 – Prisma usage audit
+**Status:** ✅ Done
+**Files:** `docs/PRISMA_EFFICIENCY_REVIEW.md`, `docs/STEP_fix_20251206.md`
+
+**Overview:**
+* Reviewed all services and controllers for raw SQL and inefficient Prisma usage.
+* Documented recommendations to migrate queries to Prisma and add proper types.
+\n### 🛠️ Fix 2025-12-07 – Prisma migration of services\n**Status:** ✅ Done\n**Files:** `src/services/user.service.ts`, `src/services/pump.service.ts`, `src/controllers/analytics.controller.ts`, `docs/STEP_fix_20251207.md`\n\n**Overview:**\n* Replaced `pg` queries with Prisma transactions in core services.\n* Converted analytics controller to use Prisma aggregates.\n

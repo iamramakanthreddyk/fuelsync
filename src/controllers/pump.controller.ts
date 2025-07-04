@@ -5,6 +5,7 @@ import { validateCreatePump, validateUpdatePump } from '../validators/pump.valid
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
+import { getPumpSettings, updatePumpSettings } from '../services/pumpSettings.service';
 
 export function createPumpHandlers(db: Pool) {
   return {
@@ -104,6 +105,23 @@ export function createPumpHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
+    },
+    getSettings: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      const settings = await getPumpSettings(db, req.params.id);
+      successResponse(res, { settings });
+    },
+    updateSettings: async (req: Request, res: Response) => {
+      const tenantId = req.user?.tenantId;
+      if (!tenantId) {
+        return errorResponse(res, 400, 'Missing tenant context');
+      }
+      await updatePumpSettings(db, req.params.id, req.body);
+      const settings = await getPumpSettings(db, req.params.id);
+      successResponse(res, { settings });
     },
   };
 }

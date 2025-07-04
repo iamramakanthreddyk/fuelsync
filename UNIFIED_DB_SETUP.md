@@ -96,7 +96,7 @@ The seed script creates the following data:
   - Password: Admin@123
 
 - **Tenant Owner**:
-  - Email: owner@demofuels.com
+  - Email: owner@demofuels.fuelsync.com
   - Password: Owner@123
 
 ### Demo Tenant Infrastructure

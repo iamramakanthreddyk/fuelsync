@@ -1,11 +1,11 @@
-import { Pool } from 'pg';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { createAlert } from './alert.service';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
 import { isDayFinalized } from './reconciliation.service';
-import { parseRows } from '../utils/parseDb';
+import prisma from '../utils/prisma';
 
 export async function createNozzleReading(
   db: Pool,
@@ -109,7 +109,6 @@ export async function createNozzleReading(
 }
 
 export async function listNozzleReadings(
-  db: Pool,
   tenantId: string,
   query: ReadingQuery
 ) {
@@ -150,8 +149,8 @@ export async function listNozzleReadings(
     FROM ordered o
     ${where}
     ORDER BY recorded_at DESC`;
-  const res = await db.query(sql, params);
-  return parseRows(res.rows);
+  const rows = await prisma.$queryRawUnsafe<any[]>(sql, ...params);
+  return rows;
 }
 
 export async function canCreateNozzleReading(

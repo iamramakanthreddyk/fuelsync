@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Pool } from 'pg';
+import prisma from '../utils/prisma';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
@@ -12,74 +12,38 @@ import {
   getTenantDashboardMetrics,
 } from '../services/analytics.service';
 
-export function createAnalyticsHandlers(db: Pool) {
+export function createAnalyticsHandlers() {
   return {
     getDashboardMetrics: async (_req: Request, res: Response) => {
       try {
-        // Get tenant count
-        const tenantResult = await db.query('SELECT COUNT(*) FROM public.tenants');
-        const tenantCount = parseInt(tenantResult.rows[0].count);
-        
-        // Get active tenant count
-        const activeTenantResult = await db.query("SELECT COUNT(*) FROM public.tenants WHERE status = 'active'");
-        const activeTenantCount = parseInt(activeTenantResult.rows[0].count);
-
-        // Signups in current month
-        const signupsResult = await db.query(
-          `SELECT COUNT(*) FROM public.tenants WHERE date_trunc('month', created_at) = date_trunc('month', CURRENT_DATE)`
-        );
-        const signupsThisMonth = parseInt(signupsResult.rows[0].count);
-        
-        // Get plan count
-        const planResult = await db.query('SELECT COUNT(*) FROM public.plans');
-        const planCount = parseInt(planResult.rows[0].count);
-        
-        // Get admin user count
-        const adminResult = await db.query('SELECT COUNT(*) FROM public.admin_users');
-        const adminCount = parseInt(adminResult.rows[0].count);
-        
-        // Get total users across all tenants
-        const userCountResult = await db.query('SELECT COUNT(*) FROM public.users');
-        const userCount = parseInt(userCountResult.rows[0].count);
-        
-        // Get total stations across all tenants
-        const stationCountResult = await db.query('SELECT COUNT(*) FROM public.stations');
-        const stationCount = parseInt(stationCountResult.rows[0].count);
-        
-        // Get recent tenants with formatted dates
-        const recentTenantsResult = await db.query(`
-          SELECT
-            id,
-            name,
-            status,
-            created_at,
-            TO_CHAR(created_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at_iso
-          FROM public.tenants
-          ORDER BY created_at DESC
-          LIMIT 5
-        `);
-        
-        // Get tenant distribution by plan
-        const planDistributionResult = await db.query(`
-          SELECT p.name as plan_name, COUNT(t.id) as tenant_count
-          FROM public.tenants t
-          JOIN public.plans p ON t.plan_id = p.id
-          GROUP BY p.name
-          ORDER BY tenant_count DESC
-        `);
-
-        const tenantsByPlan = planDistributionResult.rows.map(row => ({
-          planName: row.plan_name,
-          count: parseInt(row.tenant_count),
-          percentage: tenantCount > 0 ? parseFloat(((row.tenant_count / tenantCount) * 100).toFixed(2)) : 0
+        const tenantCount = await prisma.tenant.count();
+        const activeTenantCount = await prisma.tenant.count({ where: { status: 'active' } });
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+        const signupsThisMonth = await prisma.tenant.count({ where: { created_at: { gte: startOfMonth } } });
+        const planCount = await prisma.plan.count();
+        const adminCount = await prisma.admin_user.count();
+        const userCount = await prisma.user.count();
+        const stationCount = await prisma.station.count();
+        const recentTenants = await prisma.tenant.findMany({
+          orderBy: { created_at: 'desc' },
+          take: 5,
+          select: { id: true, name: true, status: true, created_at: true, plan_id: true },
+        });
+        const planMap = await prisma.plan.findMany({ select: { id: true, name: true } });
+        const distribution = await prisma.tenant.groupBy({ by: ['plan_id'], _count: { _all: true } });
+        const planNameMap = Object.fromEntries(planMap.map(p => [p.id, p.name]));
+        const tenantsByPlan = distribution.map(d => ({
+          planName: planNameMap[d.plan_id] || d.plan_id,
+          count: d._count._all,
+          percentage: tenantCount > 0 ? parseFloat(((d._count._all / tenantCount) * 100).toFixed(2)) : 0,
         }));
-        
-        // Format the response for frontend compatibility
-        const formattedTenants = recentTenantsResult.rows.map(tenant => ({
-          id: tenant.id,
-          name: tenant.name,
-          createdAt: tenant.created_at_iso,
-          status: tenant.status
+        const formattedTenants = recentTenants.map(t => ({
+          id: t.id,
+          name: t.name,
+          createdAt: t.created_at.toISOString(),
+          status: t.status,
         }));
 
         successResponse(res, {
@@ -102,7 +66,7 @@ export function createAnalyticsHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const data = await getTenantDashboardMetrics(db, tenantId);
+        const data = await getTenantDashboardMetrics(tenantId);
         successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -112,50 +76,33 @@ export function createAnalyticsHandlers(db: Pool) {
     getTenantAnalytics: async (req: Request, res: Response) => {
       try {
         const tenantId = req.params.id;
-        
-        // Get tenant details
-        const tenantResult = await db.query(`
-          SELECT t.id, t.name, t.status, t.created_at, p.name as plan_name
-          FROM public.tenants t
-          JOIN public.plans p ON t.plan_id = p.id
-          WHERE t.id = $1
-        `, [tenantId]);
-        
-        if (tenantResult.rows.length === 0) {
+
+        const tenant = await prisma.tenant.findFirst({
+          where: { id: tenantId },
+          include: { plan: { select: { name: true } } },
+        });
+        if (!tenant) {
           return errorResponse(res, 404, 'Tenant not found');
         }
-        
-        const tenant = tenantResult.rows[0];
 
-        const userCountResult = await db.query(
-          'SELECT COUNT(*) FROM public.users WHERE tenant_id = $1',
-          [tenantId]
-        );
-        const userCount = parseInt(userCountResult.rows[0].count);
+        const userCount = await prisma.user.count({ where: { tenant_id: tenantId } });
+        const stationCount = await prisma.station.count({ where: { tenant_id: tenantId } });
+        const pumpCount = await prisma.pump.count({ where: { tenant_id: tenantId } });
+        const salesAggregate = await prisma.sale.aggregate({
+          where: { tenant_id: tenantId },
+          _sum: { amount: true },
+          _count: { _all: true },
+        });
+        const salesCount = salesAggregate._count._all;
+        const totalSales = Number(salesAggregate._sum.amount || 0);
 
-        const stationCountResult = await db.query(
-          'SELECT COUNT(*) FROM public.stations WHERE tenant_id = $1',
-          [tenantId]
-        );
-        const stationCount = parseInt(stationCountResult.rows[0].count);
-
-        const pumpCountResult = await db.query(
-          'SELECT COUNT(*) FROM public.pumps WHERE tenant_id = $1',
-          [tenantId]
-        );
-        const pumpCount = parseInt(pumpCountResult.rows[0].count);
-
-        const salesResult = await db.query(
-          'SELECT COUNT(*), COALESCE(SUM(amount), 0) as total_amount FROM public.sales WHERE tenant_id = $1',
-          [tenantId]
-        );
-        const salesCount = parseInt(salesResult.rows[0].count);
-        const totalSales = parseFloat(salesResult.rows[0].total_amount);
-        
         // Format tenant date for frontend
         const formattedTenant = {
-          ...tenant,
-          created_at: new Date(tenant.created_at).toISOString()
+          id: tenant.id,
+          name: tenant.name,
+          status: tenant.status,
+          plan_name: tenant.plan?.name,
+          created_at: tenant.created_at.toISOString(),
         };
         
         successResponse(res, {
@@ -186,7 +133,7 @@ export function createAnalyticsHandlers(db: Pool) {
         if (!idsParam) return errorResponse(res, 400, 'stationIds required');
         const stationIds = idsParam.split(',');
         const period = (req.query.period as string) || 'monthly';
-        const data = await getStationComparison(db, tenantId, stationIds, period);
+        const data = await getStationComparison(tenantId, stationIds, period);
         successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

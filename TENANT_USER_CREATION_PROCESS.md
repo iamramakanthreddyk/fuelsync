@@ -16,19 +16,19 @@ When a new tenant is created, the system:
 ### 2. Automatic User Creation
 
 #### Owner User (Primary Admin)
-- **Email**: `owner@{tenant-slug}.com` (e.g., `owner@acme-corp.com`)
+- **Email**: `owner@{tenant-slug}.fuelsync.com` (e.g., `owner@acme-corp.fuelsync.com`)
 - **Password**: `{firstname}@{schema}123` (e.g., `acme@tenant123`)
 - **Role**: `owner` - Full system access
 - **Name**: `{Tenant Name} Owner` (e.g., `Acme Corp Owner`)
 
 #### Manager User (Operations Manager)
-- **Email**: `manager@{tenant-slug}.com`
+- **Email**: `manager@{tenant-slug}.fuelsync.com`
 - **Password**: `{firstname}@{schema}123`
 - **Role**: `manager` - Station management, reports, user management
 - **Name**: `{Tenant Name} Manager`
 
 #### Attendant User (Station Operator)
-- **Email**: `attendant@{tenant-slug}.com`
+- **Email**: `attendant@{tenant-slug}.fuelsync.com`
 - **Password**: `{firstname}@{schema}123`
 - **Role**: `attendant` - Basic operations, readings entry
 - **Name**: `{Tenant Name} Attendant`

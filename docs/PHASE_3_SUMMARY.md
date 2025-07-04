@@ -92,7 +92,55 @@ Each step includes:
 
 ---
 
+### 🖼️ Step 3.5 – Page Action Validation
+
+**Status:** ✅ Done
+**Pages:** `src/pages/dashboard/StationDetailPage.tsx`, `src/pages/dashboard/SalesPage.tsx`, `src/pages/dashboard/FuelInventoryPage.tsx`, `src/pages/dashboard/EditStationPage.tsx`
+
+**Business Rules Covered:**
+
+* All visible actions navigate correctly
+
+**Validation Performed:**
+
+* Hooks wired to OpenAPI export endpoint
+* Role guards enforced on new edit route
+
+---
+
+### 🖼️ Step 3.6 – Pump & Nozzle Settings Stubs
+
+**Status:** ✅ Done
+**Pages:** `src/pages/dashboard/PumpSettingsPage.tsx`
+
+**Business Rules Covered:**
+
+* Future settings endpoints available for pumps and nozzles
+
+**Validation Performed:**
+
+* Added `/pumps/{id}/settings` and `/nozzles/{id}/settings` to OpenAPI
+* Routes secured with owner and manager roles
+
+---
+
 > 🎯 After building each page or component, update its status and include links to relevant backend and OpenAPI references.
+
+### 🖼️ Step 3.7 – Contract Mismatch Cleanup
+
+**Status:** ✅ Done
+**Files:** `src/api/contract/readings.service.ts`, `src/hooks/useReadings.ts`, `src/api/reports.ts`, `src/hooks/useReports.ts`
+
+**Business Rules Covered:**
+
+* Frontend must only call endpoints defined in the OpenAPI specification.
+
+**Validation Performed:**
+
+* Removed obsolete single-report and single-reading functions.
+* Confirmed hooks compile without errors.
+
+---
 
 ### 📄 Documentation Addendum – 2025-07-13
 
@@ -118,3 +166,62 @@ database and backend docs are updated before the frontend adjusts.
 ### 📄 Documentation Addendum – 2025-11-09
 
 `FRONTEND_REFERENCE_GUIDE.md` now lists a detailed schema change propagation flow starting from the database. Developers should review `DATABASE_MANAGEMENT.md` and `backend_brain.md` for context before updating frontend code.
+
+### 📄 Documentation Addendum – 2025-12-03
+
+Updated dashboard components to use `/dashboard/fuel-breakdown` and `/dashboard/sales-trend` as per latest OpenAPI.
+
+\n### \ud83d\udcc4 Documentation Addendum – 2025-12-04\n\nRefactored admin dashboard hook to use superadmin API service and standardized auth route test response.
+\n### 🖼️ Step 3.8 – Final QA Audit\n\n**Status:** ✅ Done\n**Files:** `docs/QA_AUDIT_REPORT.md`\n\n**Business Rules Covered:**\n\n* Ensure frontend and backend are fully aligned with OpenAPI.\n\n**Validation Performed:**\n\n* Reviewed endpoints, hooks and pages for completion.\n
+
+### 📄 Documentation Addendum – 2025-12-08
+
+Integrated latest fuel prices widget on the Owner dashboard and fixed missing filter parameters for top creditors.
+\n### 📄 Documentation Addendum – 2025-12-09\n\nRefactored Stations page to use new StationCard component with edit/delete controls and floating create button.
+
+### 🖼️ Step 3.9 – Readings Page Table
+
+**Status:** ✅ Done
+**Pages:** `src/pages/dashboard/ReadingsPage.tsx`, `src/components/readings/ReadingsTable.tsx`
+
+**Business Rules Covered:**
+
+* Display nozzle readings with cumulative and delta volumes.
+* Show unit price and total amount per reading.
+
+**Validation Performed:**
+
+* Verified `useReadings` fetches data from `/api/v1/nozzle-readings` via React Query.
+
+### 🖼️ Step 3.10 – Cash Reports Summary View
+
+**Status:** ✅ Done
+**Pages:** `src/pages/dashboard/CashReportsListPage.tsx`, `src/components/reports/CashReportCard.tsx`, `src/components/reports/CashReportTable.tsx`
+
+**Business Rules Covered:**
+
+* Role-based cash report listing
+* Display discrepancy between cash received and sales
+* Allow managers to approve pending reports
+
+**Validation Performed:**
+
+* Verified attendant and manager views load correct data via respective hooks.
+* Approve action triggers `useApproveReconciliation` mutation.
+
+### 🖼️ Step 3.11 – Filterable Sales Reports
+
+**Status:** ✅ Done
+**Pages:** `src/pages/dashboard/ReportsPage.tsx`, `src/components/reports/SalesReportFilters.tsx`
+
+**Business Rules Covered:**
+
+* Owners and managers can view historical sales data
+* Filter by station, fuel type, payment method and date range
+* Group results by day, week, month, station or fuel type
+* Export sales report as CSV or PDF
+
+**Validation Performed:**
+
+* Verified data fetched from `/api/v1/reports/sales` with selected filters
+* CSV and PDF exports triggered proper download

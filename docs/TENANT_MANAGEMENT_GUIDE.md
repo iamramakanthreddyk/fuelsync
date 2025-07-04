@@ -22,17 +22,17 @@ Active ↔ Suspended ↔ Cancelled → Deleted
 When creating a tenant, the system automatically creates:
 
 1. **Owner User**
-   - Email: `owner@{tenant-slug}.com`
+   - Email: `owner@{tenant-slug}.fuelsync.com`
    - Password: `{firstname}@tenant123`
    - Role: Full system access
 
 2. **Manager User**
-   - Email: `manager@{tenant-slug}.com`
+   - Email: `manager@{tenant-slug}.fuelsync.com`
    - Password: `{firstname}@tenant123`
    - Role: Station management, reports
 
 3. **Attendant User**
-   - Email: `attendant@{tenant-slug}.com`
+   - Email: `attendant@{tenant-slug}.fuelsync.com`
    - Password: `{firstname}@tenant123`
    - Role: Basic operations, readings
 

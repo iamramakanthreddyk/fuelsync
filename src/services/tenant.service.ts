@@ -60,7 +60,8 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const tenantSlug = slugify(input.name);
     const ownerName = input.ownerName || `${input.name} Owner`;
-    const ownerEmail = input.ownerEmail || `owner@${tenantSlug}.com`;
+    const ownerEmail =
+      input.ownerEmail || `owner@${tenantSlug}.fuelsync.com`;
     const rawPassword = input.ownerPassword || generatePassword(input.name);
     const passwordHash = await import('bcrypt').then(bcrypt => bcrypt.hash(rawPassword, 10));
 
@@ -71,7 +72,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const ownerId = ownerResult.rows[0].id;
 
-    const managerEmail = `manager@${tenantSlug}.com`;
+    const managerEmail = `manager@${tenantSlug}.fuelsync.com`;
     const managerPassword = generatePassword(`${input.name} Manager`);
     const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
 
@@ -80,7 +81,7 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
       [randomUUID(), tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
     );
 
-    const attendantEmail = `attendant@${tenantSlug}.com`;
+    const attendantEmail = `attendant@${tenantSlug}.fuelsync.com`;
     const attendantPassword = generatePassword(`${input.name} Attendant`);
     const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
 

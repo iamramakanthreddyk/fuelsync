@@ -1,76 +1,63 @@
-import { PoolClient } from 'pg';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { getPlanRules } from '../config/planConfig';
 
+type TxClient = PrismaClient | Prisma.TransactionClient;
 // Helper to fetch tenant plan id using tenant id
-async function fetchPlanId(db: PoolClient, tenantId: string): Promise<string> {
-  const res = await db.query(
-    'SELECT plan_id FROM public.tenants WHERE id = $1',
-    [tenantId]
-  );
-  return res.rows[0]?.plan_id;
+async function fetchPlanId(db: TxClient, tenantId: string): Promise<string> {
+  const tenant = await db.tenant.findFirst({
+    where: { id: tenantId },
+    select: { plan_id: true },
+  });
+  return tenant?.plan_id as string;
 }
 
 // NOTE: The following middleware stubs show the intended logic. Actual routing
 // integration will be implemented in Phase 2.
 
-export async function beforeCreateStation(db: PoolClient, tenantId: string) {
+export async function beforeCreateStation(db: TxClient, tenantId: string) {
   const planId = await fetchPlanId(db, tenantId);
   const rules = getPlanRules(planId);
-
-  // Pseudo count query
-  const countRes = await db.query(
-    'SELECT COUNT(*) FROM public.stations WHERE tenant_id = $1',
-    [tenantId]
-  );
-  if (Number(countRes.rows[0].count) >= rules.maxStations) {
+  const count = await db.station.count({ where: { tenant_id: tenantId } });
+  if (count >= rules.maxStations) {
     throw new Error('Plan limit exceeded: stations');
   }
 }
 
 export async function beforeCreatePump(
-  db: PoolClient,
+  db: TxClient,
   tenantId: string,
   stationId: string
 ) {
   const planId = await fetchPlanId(db, tenantId);
   const rules = getPlanRules(planId);
-
-  // Pseudo count query per station
-  const countRes = await db.query(
-    'SELECT COUNT(*) FROM public.pumps WHERE tenant_id = $1 AND station_id = $2',
-    [tenantId, stationId]
-  );
-  if (Number(countRes.rows[0].count) >= rules.maxPumpsPerStation) {
+  const count = await db.pump.count({
+    where: { tenant_id: tenantId, station_id: stationId },
+  });
+  if (count >= rules.maxPumpsPerStation) {
     throw new Error('Plan limit exceeded: pumps per station');
   }
 }
 
 export async function beforeCreateNozzle(
-  db: PoolClient,
+  db: TxClient,
   tenantId: string,
   pumpId: string
 ) {
   const planId = await fetchPlanId(db, tenantId);
   const rules = getPlanRules(planId);
-
-  const countRes = await db.query(
-    'SELECT COUNT(*) FROM public.nozzles WHERE tenant_id = $1 AND pump_id = $2',
-    [tenantId, pumpId]
-  );
-  if (Number(countRes.rows[0].count) >= rules.maxNozzlesPerPump) {
+  const count = await db.nozzle.count({
+    where: { tenant_id: tenantId, pump_id: pumpId },
+  });
+  if (count >= rules.maxNozzlesPerPump) {
     throw new Error('Plan limit exceeded: nozzles per pump');
   }
 }
 
-export async function beforeCreateUser(db: PoolClient, tenantId: string) {
+export async function beforeCreateUser(db: TxClient, tenantId: string) {
   const planId = await fetchPlanId(db, tenantId);
   const rules = getPlanRules(planId);
-
-  const countRes = await db.query(
-    'SELECT COUNT(*) FROM public.users WHERE tenant_id = $1',
-    [tenantId]
-  );
-  if (Number(countRes.rows[0].count) >= rules.maxEmployees) {
+  const count = await db.user.count({ where: { tenant_id: tenantId } });
+  if (count >= rules.maxEmployees) {
     throw new Error('Plan limit exceeded: users');
   }
 }

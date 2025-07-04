@@ -409,6 +409,27 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/pumps/{id}/settings:
+    get:
+      summary: Get pump settings
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update pump settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/nozzles:
     post:
       summary: Create nozzle
@@ -468,6 +489,27 @@ paths:
               $ref: '#/components/schemas/CreateNozzleRequest'
     delete:
       summary: Delete nozzle
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/nozzles/{id}/settings:
+    get:
+      summary: Get nozzle settings
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update nozzle settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         '200':
           $ref: '#/components/responses/Success'

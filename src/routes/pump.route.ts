@@ -15,6 +15,8 @@ export function createPumpRouter(db: Pool) {
   router.get('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.get('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.put('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
+  router.get('/:id/settings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getSettings);
+  router.put('/:id/settings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.updateSettings);
   router.delete('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 
   return router;

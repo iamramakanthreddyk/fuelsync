@@ -24,11 +24,11 @@ FuelSync has three user roles within each tenant:
 
 When a tenant is created, an owner user is automatically created with:
 
-- **Email**: `owner@tenant-schema-name.com` (underscores replaced with hyphens)
+- **Email**: `owner@tenant-schema-name.fuelsync.com` (underscores replaced with hyphens)
 - **Password**: `tenant123`
 - **Role**: `owner`
 
-For example, if you create a tenant with schema name `acme_fuels`, the owner's email will be `owner@acme-fuels.com`.
+For example, if you create a tenant with schema name `acme_fuels`, the owner's email will be `owner@acme-fuels.fuelsync.com`.
 
 ## User Management APIs
 

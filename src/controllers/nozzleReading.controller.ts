@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { Pool } from 'pg';
 import { createNozzleReading, listNozzleReadings, canCreateNozzleReading } from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
@@ -27,7 +26,7 @@ export function createNozzleReadingHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const query = parseReadingQuery(req.query);
-        const readings = await listNozzleReadings(db, user.tenantId, {
+        const readings = await listNozzleReadings(user.tenantId, {
           nozzleId: query.nozzleId,
           stationId: undefined,
           from: query.startDate,

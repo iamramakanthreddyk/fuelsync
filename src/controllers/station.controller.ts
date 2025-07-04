@@ -153,7 +153,7 @@ export function createStationHandlers(db: Pool) {
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const stationIds = (req.query.stationIds as string)?.split(',') || [];
         if (stationIds.length === 0) return errorResponse(res, 400, 'Station IDs required');
-        const comparison = await getStationComparison(db, tenantId, stationIds, req.query.period as string || 'monthly');
+        const comparison = await getStationComparison(tenantId, stationIds, req.query.period as string || 'monthly');
         successResponse(res, comparison);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

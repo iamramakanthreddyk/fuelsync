@@ -1,36 +1,43 @@
-import { Pool } from 'pg';
-import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
+import { Prisma } from '@prisma/client';
+import prisma from '../utils/prisma';
 import { UserRole } from '../constants/auth';
 import { beforeCreateUser } from '../middleware/planEnforcement';
-import { parseRows } from '../utils/parseDb';
 
 export async function createUser(
-  db: Pool,
   tenantId: string,
   email: string,
   password: string,
   name: string,
   role: UserRole
 ): Promise<string> {
-  const client = await db.connect();
-  try {
-    await beforeCreateUser(client, tenantId);
+  return prisma.$transaction(async tx => {
+    await beforeCreateUser(tx, tenantId);
     const hash = await bcrypt.hash(password, 10);
-    const res = await client.query(
-      'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
-      [randomUUID(), tenantId, email, hash, name, role]
-    );
-    return res.rows[0].id;
-  } finally {
-    client.release();
-  }
+    const user = await tx.user.create({
+      data: {
+        tenant_id: tenantId,
+        email,
+        password_hash: hash,
+        name,
+        role,
+      },
+      select: { id: true },
+    });
+    return user.id;
+  });
 }
 
-export async function listUsers(db: Pool, tenantId: string) {
-  const res = await db.query(
-    'SELECT id, email, name, role, created_at FROM public.users WHERE tenant_id = $1 ORDER BY email',
-    [tenantId]
-  );
-  return parseRows(res.rows);
+export async function listUsers(tenantId: string) {
+  return prisma.user.findMany({
+    where: { tenant_id: tenantId },
+    orderBy: { email: 'asc' },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      created_at: true,
+    },
+  });
 }

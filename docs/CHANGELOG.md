@@ -2862,3 +2862,28 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/*`
 * `docs/openapi.yaml`
 * `docs/STEP_2_56_COMMAND.md`
+## [Step 2.57] – Tenant email convention update
+
+### 🟦 Enhancements
+* Default user emails now use `<role>@<schema>.fuelsync.com` pattern for clarity.
+
+### Files
+* `src/services/tenant.service.ts`
+* `docs/TENANT_CREATION_API.md`
+* `docs/TENANT_MANAGEMENT_GUIDE.md`
+* `TENANT_USER_CREATION_PROCESS.md`
+* `docs/USER_MANAGEMENT.md`
+* `UNIFIED_DB_SETUP.md`
+* `docs/STEP_2_57_COMMAND.md`
+\n## [Step 3.8] – Final QA Audit\n\n### 🟦 Enhancements\n* Verified OpenAPI, backend routes and frontend hooks are aligned.\n* Documented results in `QA_AUDIT_REPORT.md`.\n\n### Files\n* `docs/QA_AUDIT_REPORT.md`\n* `docs/STEP_3_8_COMMAND.md`\n
+
+## [Step 3.9] – Readings page table
+
+### 🟦 Enhancements
+* Refactored readings listing into a structured table with nozzle label, station, volumes and price details.
+* Added `ReadingsTable` component.
+
+### Files
+* `src/components/readings/ReadingsTable.tsx`
+* `src/pages/dashboard/ReadingsPage.tsx`
+* `docs/STEP_3_9_COMMAND.md`
