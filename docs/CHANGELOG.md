@@ -2929,3 +2929,12 @@ Each entry is tied to a step from the implementation index.
 * `src/services/station.service.ts`
 * `src/services/user.service.ts`
 * `docs/STEP_fix_20251211.md`
+
+## [Fix 2025-12-12] – Automated Prisma client generation
+
+### 🟥 Fixes
+* Added a `postinstall` script that runs `prisma generate` during installation.
+
+### Files
+* `package.json`
+* `docs/STEP_fix_20251212.md`

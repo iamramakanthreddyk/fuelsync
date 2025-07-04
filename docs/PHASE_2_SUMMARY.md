@@ -1274,3 +1274,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added explicit types for callback parameters and transaction clients.
 * Replaced `$queryRaw` generics with type assertions to satisfy strict TypeScript.
+
+### 🛠️ Fix 2025-12-12 – Automated Prisma client generation
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/STEP_fix_20251212.md`
+
+**Overview:**
+* Added `postinstall` script to automatically run `prisma generate` on deployment.
