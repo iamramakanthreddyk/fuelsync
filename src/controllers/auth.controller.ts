@@ -126,7 +126,13 @@ export function createAuthController(db: Pool) {
           { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
         );
 
-        successResponse(res, { token, user });
+        let tenantName: string | undefined = undefined;
+        if (user.tenantId) {
+          const tRes = await db.query('SELECT name FROM public.tenants WHERE id = $1', [user.tenantId]);
+          tenantName = tRes.rows[0]?.name;
+        }
+
+        successResponse(res, { token, user: { ...user, tenantName } });
       } catch (error: any) {
         return errorResponse(res, 500, error.message);
       }

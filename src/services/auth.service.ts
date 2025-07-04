@@ -99,7 +99,8 @@ export async function login(db: Pool, email: string, password: string, tenantId?
       id: user.id,
       name: email.split('@')[0], // Use part of email as name if not available
       email: user.email,
-      role: user.role as UserRole
+      role: user.role as UserRole,
+      tenantName: undefined
     }
   };
 }
@@ -134,7 +135,8 @@ export async function loginSuperAdmin(db: Pool, email: string, password: string)
       id: user.id,
       name: email.split('@')[0],
       email: user.email,
-      role: user.role as UserRole
+      role: user.role as UserRole,
+      tenantName: undefined
     }
   };
 }

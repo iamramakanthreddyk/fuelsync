@@ -45,3 +45,18 @@ export function validateCreateNozzle(data: any): NozzleInput {
 
   return result;
 }
+
+export function validateUpdateNozzle(data: any) {
+  const { fuelType, status } = data || {};
+  if (fuelType !== undefined) {
+    if (typeof fuelType !== 'string' || !ALLOWED_FUEL_TYPES.includes(fuelType)) {
+      throw new Error(`fuelType must be one of ${ALLOWED_FUEL_TYPES.join(', ')}`);
+    }
+  }
+  if (status !== undefined) {
+    if (typeof status !== 'string' || !ALLOWED_STATUSES.includes(status)) {
+      throw new Error(`status must be one of ${ALLOWED_STATUSES.join(', ')}`);
+    }
+  }
+  return { fuelType, status };
+}

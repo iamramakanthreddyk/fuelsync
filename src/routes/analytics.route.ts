@@ -13,7 +13,12 @@ export function createAnalyticsRouter(db: Pool) {
   const requireSuperAdmin = requireRole([UserRole.SuperAdmin]);
   
   // Dashboard metrics
-  router.get('/dashboard', authenticateJWT, requireSuperAdmin, handlers.getDashboardMetrics);
+  router.get(
+    '/dashboard',
+    authenticateJWT,
+    requireRole([UserRole.Owner, UserRole.Manager]),
+    handlers.tenantDashboard
+  );
   router.get('/superadmin', authenticateJWT, requireSuperAdmin, handlers.getDashboardMetrics);
   
   // Tenant analytics

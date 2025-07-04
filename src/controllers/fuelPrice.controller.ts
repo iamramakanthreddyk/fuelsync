@@ -43,11 +43,21 @@ export function createFuelPriceHandlers(db: Pool) {
       const filters: any = { tenant_id: tenantId };
       if (query.stationId) filters.station_id = query.stationId;
       if (query.fuelType) filters.fuel_type = query.fuelType;
-      const prices = await prisma.fuelPrice.findMany({
+      const pricesRaw = await prisma.fuelPrice.findMany({
         where: filters,
         orderBy: { valid_from: 'desc' },
         include: { station: { select: { id: true, name: true } } }
       });
+      const prices = pricesRaw.map(p => ({
+        id: p.id,
+        stationId: p.station_id,
+        stationName: p.station?.name || '',
+        fuelType: p.fuel_type,
+        price: p.price,
+        costPrice: p.cost_price,
+        validFrom: p.valid_from,
+        createdAt: p.created_at,
+      }));
       successResponse(res, { prices });
     },
 

@@ -12,10 +12,21 @@ export function createAdminAnalyticsHandlers(db: Pool) {
         const activeTenants = tenantsRes.rows.filter(t => t.status === 'active').length;
         const stationRes = await db.query('SELECT COUNT(*) FROM public.stations');
         const totalStations = parseInt(stationRes.rows[0].count);
-        const salesRes = await db.query(`SELECT COALESCE(SUM(volume_sold),0) as volume, COALESCE(SUM(sale_amount),0) as revenue FROM public.sales`);
+        const salesRes = await db.query(`SELECT COALESCE(SUM(volume),0) as volume, COALESCE(SUM(amount),0) as revenue FROM public.sales`);
         const salesVolume = parseFloat(salesRes.rows[0].volume);
         const totalRevenue = parseFloat(salesRes.rows[0].revenue);
-        successResponse(res, { totalTenants, activeTenants, totalStations, salesVolume, totalRevenue });
+        const reconRes = await db.query(`SELECT COUNT(*) FILTER (WHERE finalized) as finalized, COUNT(*) as total FROM public.day_reconciliations`);
+        successResponse(res, {
+          totalTenants,
+          activeTenants,
+          totalStations,
+          salesVolume,
+          totalRevenue,
+          reconciliations: {
+            finalized: parseInt(reconRes.rows[0].finalized),
+            total: parseInt(reconRes.rows[0].total),
+          },
+        });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

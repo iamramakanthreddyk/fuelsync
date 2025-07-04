@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { getFuelInventory, seedFuelInventory, getFuelInventorySummary } from '../services/fuelInventory.service';
+import { getFuelInventorySummary, getComputedFuelInventory } from '../services/fuelInventory.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 
@@ -13,17 +13,7 @@ export function createFuelInventoryHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         
-        // Check if we need to seed data
-        const inventory = await getFuelInventory(db, tenantId);
-        
-        if (inventory.length === 0) {
-          // Seed some initial data
-          await seedFuelInventory(db, tenantId);
-          // Get the seeded data
-          const seededInventory = await getFuelInventory(db, tenantId);
-          return successResponse(res, seededInventory);
-        }
-        
+        const inventory = await getComputedFuelInventory(db, tenantId);
         return successResponse(res, inventory);
       } catch (err: any) {
         console.error('Error in fuel inventory list:', err);

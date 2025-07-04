@@ -14,3 +14,14 @@ export function validateCreatePump(data: any): PumpInput {
   }
   return { stationId, name, serialNumber };
 }
+
+export function validateUpdatePump(data: any) {
+  const { name, serialNumber } = data || {};
+  if (name !== undefined && typeof name !== 'string') {
+    throw new Error('name must be a string');
+  }
+  if (serialNumber !== undefined && typeof serialNumber !== 'string') {
+    throw new Error('serialNumber must be a string');
+  }
+  return { name, serialNumber };
+}

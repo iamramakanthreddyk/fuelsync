@@ -287,3 +287,23 @@ export async function permanentlyDeleteTenant(db: Pool, id: string): Promise<voi
   await db.query('DELETE FROM public.tenants WHERE id = $1', [id]);
 }
 
+export async function getTenantMetrics(db: Pool, tenantId: string) {
+  const stationRes = await db.query('SELECT COUNT(*) FROM public.stations WHERE tenant_id = $1', [tenantId]);
+  const nozzleRes = await db.query('SELECT COUNT(*) FROM public.nozzles WHERE tenant_id = $1', [tenantId]);
+  const salesRes = await db.query('SELECT COALESCE(SUM(amount),0) as sales FROM public.sales WHERE tenant_id = $1', [tenantId]);
+  const reconRes = await db.query(
+    `SELECT COUNT(*) FILTER (WHERE finalized) as finalized, COUNT(*) as total
+       FROM public.day_reconciliations WHERE tenant_id = $1`,
+    [tenantId]
+  );
+  return {
+    stations: parseInt(stationRes.rows[0].count),
+    nozzles: parseInt(nozzleRes.rows[0].count),
+    totalSales: parseFloat(salesRes.rows[0].sales),
+    reconciliations: {
+      finalized: parseInt(reconRes.rows[0].finalized),
+      total: parseInt(reconRes.rows[0].total),
+    },
+  };
+}
+
