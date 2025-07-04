@@ -9,6 +9,7 @@ import {
   getHourlySales,
   getPeakHours,
   getFuelPerformance,
+  getTenantDashboardMetrics,
 } from '../services/analytics.service';
 
 export function createAnalyticsHandlers(db: Pool) {
@@ -92,6 +93,17 @@ export function createAnalyticsHandlers(db: Pool) {
           recentTenants: formattedTenants,
           tenantsByPlan,
         });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    tenantDashboard: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const data = await getTenantDashboardMetrics(db, tenantId);
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }

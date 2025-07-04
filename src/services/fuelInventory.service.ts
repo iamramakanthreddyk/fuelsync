@@ -12,6 +12,25 @@ export interface FuelInventory {
   lastUpdated: string;
 }
 
+export async function calculateTankLevel(
+  db: Pool,
+  tenantId: string,
+  stationId: string,
+  fuelType: string
+) {
+  const delivered = await db.query(
+    `SELECT COALESCE(SUM(volume),0) as vol FROM public.fuel_deliveries
+      WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3`,
+    [tenantId, stationId, fuelType]
+  );
+  const sold = await db.query(
+    `SELECT COALESCE(SUM(volume),0) as vol FROM public.sales
+      WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3`,
+    [tenantId, stationId, fuelType]
+  );
+  return parseFloat(delivered.rows[0].vol) - parseFloat(sold.rows[0].vol);
+}
+
 export async function getFuelInventory(db: Pool, tenantId: string): Promise<FuelInventory[]> {
   const query = `
     SELECT
@@ -76,6 +95,38 @@ export interface FuelInventorySummary {
   fuelType: string;
   totalVolume: number;
   totalCapacity: number;
+}
+
+export async function getComputedFuelInventory(
+  db: Pool,
+  tenantId: string
+): Promise<FuelInventory[]> {
+  const stations = await db.query(
+    'SELECT id, name FROM public.stations WHERE tenant_id = $1',
+    [tenantId]
+  );
+  const results: FuelInventory[] = [];
+  for (const st of stations.rows) {
+    const fuels = await db.query(
+      `SELECT DISTINCT fuel_type FROM public.nozzles n
+         JOIN public.pumps p ON n.pump_id = p.id
+        WHERE n.tenant_id = $1 AND p.station_id = $2`,
+      [tenantId, st.id]
+    );
+    for (const f of fuels.rows) {
+      const volume = await calculateTankLevel(db, tenantId, st.id, f.fuel_type);
+      results.push({
+        id: `${st.id}-${f.fuel_type}`,
+        stationId: st.id,
+        stationName: st.name,
+        fuelType: f.fuel_type,
+        currentVolume: volume,
+        capacity: 0,
+        lastUpdated: new Date().toISOString(),
+      });
+    }
+  }
+  return results;
 }
 
 export async function getFuelInventorySummary(db: Pool, tenantId: string): Promise<FuelInventorySummary[]> {

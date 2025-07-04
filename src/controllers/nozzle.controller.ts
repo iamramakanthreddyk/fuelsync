@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { validateCreateNozzle } from '../validators/nozzle.validator';
+import { validateCreateNozzle, validateUpdateNozzle } from '../validators/nozzle.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 
@@ -92,7 +92,7 @@ export function createNozzleHandlers(db: Pool) {
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        const { fuelType, status } = req.body;
+        const { fuelType, status } = validateUpdateNozzle(req.body);
         const updated = await prisma.nozzle.updateMany({
           where: { id: req.params.id, tenant_id: tenantId },
           data: {

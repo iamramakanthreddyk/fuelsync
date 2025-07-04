@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant } from '../services/tenant.service';
+import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant, getTenantMetrics } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -65,7 +65,19 @@ export function createAdminTenantHandlers(db: Pool) {
     ...base,
     summary: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
-      successResponse(res, { tenantCount: tenants.length });
+      const results = [] as any[];
+      for (const t of tenants) {
+        const metrics = await getTenantMetrics(db, t.id);
+        results.push({
+          tenantId: t.id,
+          tenantName: t.name,
+          stations: metrics.stations,
+          nozzles: metrics.nozzles,
+          totalSales: metrics.totalSales,
+          reconciliationStatus: `${metrics.reconciliations.finalized}/${metrics.reconciliations.total}`,
+        });
+      }
+      successResponse(res, { tenants: results });
     },
     updateStatus: async (req: Request, res: Response) => {
       try {

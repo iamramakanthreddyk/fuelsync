@@ -2842,3 +2842,23 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `frontend/docs/openapi-v1.yaml`
 * `docs/STEP_fix_20251201.md`
+
+## [Step 2.56] – Backend analytics and inventory completion
+
+### 🟩 Features
+* Added tenant dashboard analytics endpoint and admin tenant summary metrics.
+* Fuel inventory levels now computed from deliveries and nozzle readings.
+
+### 🟦 Enhancements
+* Login and refresh responses include `tenantName`.
+* Fuel price listing exposes `stationName`.
+* Marked test endpoints as internal in OpenAPI.
+
+### Files
+* `src/services/analytics.service.ts`
+* `src/services/fuelInventory.service.ts`
+* `src/services/tenant.service.ts`
+* `src/controllers/*`
+* `src/routes/*`
+* `docs/openapi.yaml`
+* `docs/STEP_2_56_COMMAND.md`

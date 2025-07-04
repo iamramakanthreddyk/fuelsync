@@ -1,5 +1,7 @@
 import prisma from '../utils/prisma';
 import { Prisma } from '@prisma/client';
+import os from 'os';
+import { Pool } from 'pg';
 
 /** Hourly sales metrics for a station */
 export async function getHourlySales(
@@ -64,12 +66,37 @@ export async function getFuelPerformance(
   }[]>(query);
 }
 
-export async function getSystemHealth(db: import('pg').Pool) {
+export async function getSystemHealth(db: Pool) {
+  // simple query to confirm database connectivity
   await db.query('SELECT 1');
+  const memoryUsage = process.memoryUsage().rss / 1024 / 1024; // MB
   return {
     uptime: process.uptime(),
-    responseTime: 0,
-    errorRate: 0,
+    cpuUsage: os.loadavg()[0],
+    memoryUsage,
+    dbHealthy: true,
     activeConnections: db.totalCount,
+  };
+}
+
+export async function getTenantDashboardMetrics(db: Pool, tenantId: string) {
+  const salesRes = await db.query(
+    `SELECT COALESCE(SUM(amount),0) as amount, COALESCE(SUM(volume),0) as volume, COUNT(*) as count
+       FROM public.sales WHERE tenant_id = $1`,
+    [tenantId]
+  );
+  const fuelBreakdownRes = await db.query(
+    `SELECT fuel_type, SUM(volume) as volume FROM public.sales
+       WHERE tenant_id = $1 GROUP BY fuel_type`,
+    [tenantId]
+  );
+  return {
+    totalSales: parseFloat(salesRes.rows[0].amount),
+    totalVolume: parseFloat(salesRes.rows[0].volume),
+    transactionCount: parseInt(salesRes.rows[0].count),
+    fuelBreakdown: fuelBreakdownRes.rows.map(r => ({
+      fuelType: r.fuel_type,
+      volume: parseFloat(r.volume),
+    })),
   };
 }

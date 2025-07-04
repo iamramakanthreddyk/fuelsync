@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
-import { validateCreatePump } from '../validators/pump.validator';
+import { validateCreatePump, validateUpdatePump } from '../validators/pump.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
@@ -90,7 +90,7 @@ export function createPumpHandlers(db: Pool) {
         if (!tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        const { name, serialNumber } = req.body;
+        const { name, serialNumber } = validateUpdatePump(req.body);
         const updated = await prisma.pump.updateMany({
           where: { id: req.params.id, tenant_id: tenantId },
           data: {
