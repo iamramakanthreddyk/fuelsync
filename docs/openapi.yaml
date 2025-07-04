@@ -1134,6 +1134,14 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/dashboard/station-metrics:
+    get:
+      summary: Dashboard station metrics
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/sales-trend:
     get:
       summary: Dashboard sales trend
@@ -2004,6 +2012,30 @@ paths:
         margin:
           type: number
         growth:
+          type: number
+    StationMetric:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        todaySales:
+          type: number
+        monthlySales:
+          type: number
+        salesGrowth:
+          type: number
+        activePumps:
+          type: number
+        totalPumps:
+          type: number
+        status:
+          type: string
+          enum: [active, inactive, maintenance]
+        lastActivity:
+          type: string
+        efficiency:
           type: number
     StationRanking:
       type: object

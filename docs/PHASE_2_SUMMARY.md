@@ -1209,3 +1209,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added deprecated dashboard aliases and new `/tenant/settings` endpoint exposing feature flags.
 * Updated OpenAPI response schemas for comparison, ranking and inventory routes.
+
+### 🛠️ Step 2.55 – Dashboard station metrics endpoint
+**Status:** ✅ Done
+**Files:** `src/services/station.service.ts`, `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`, `docs/openapi.yaml`, `docs/STEP_2_55_COMMAND.md`
+
+**Overview:**
+* New endpoint `/dashboard/station-metrics` provides per-station totals and efficiency.
+* Added `StationMetric` schema in the API specification.

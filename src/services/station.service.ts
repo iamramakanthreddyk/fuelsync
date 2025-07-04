@@ -234,3 +234,44 @@ export async function getStationEfficiency(db: Pool, tenantId: string, stationId
     efficiency: parseFloat(row.efficiency)
   };
 }
+
+export async function getDashboardStationMetrics(db: Pool, tenantId: string) {
+  const query = `
+    SELECT
+      st.id,
+      st.name,
+      st.status,
+      COUNT(p.id) FILTER (WHERE p.status = 'active') AS active_pumps,
+      COUNT(p.id) AS total_pumps,
+      MAX(sa.recorded_at) AS last_activity,
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE THEN sa.amount ELSE 0 END),0) AS today_sales,
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '30 days' THEN sa.amount ELSE 0 END),0) AS monthly_sales,
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '60 days' AND sa.recorded_at < CURRENT_DATE - INTERVAL '30 days' THEN sa.amount ELSE 0 END),0) AS prev_month_sales
+    FROM public.stations st
+    LEFT JOIN public.pumps p ON p.station_id = st.id
+    LEFT JOIN public.sales sa ON sa.station_id = st.id AND sa.tenant_id = $1
+    WHERE st.tenant_id = $1
+    GROUP BY st.id, st.name, st.status
+    ORDER BY st.name`;
+
+  const result = await db.query(query, [tenantId]);
+
+  return result.rows.map(row => {
+    const monthlySales = parseFloat(row.monthly_sales);
+    const prev = parseFloat(row.prev_month_sales);
+    const growth = prev > 0 ? ((monthlySales - prev) / prev) * 100 : null;
+    const activePumps = parseInt(row.active_pumps, 10);
+    return {
+      id: row.id,
+      name: row.name,
+      status: row.status,
+      todaySales: parseFloat(row.today_sales),
+      monthlySales,
+      salesGrowth: growth,
+      activePumps,
+      totalPumps: parseInt(row.total_pumps, 10),
+      lastActivity: row.last_activity,
+      efficiency: activePumps > 0 ? monthlySales / activePumps : 0
+    };
+  });
+}
