@@ -181,6 +181,8 @@ export function createApp() {
   app.use(`${API_PREFIX}/fuel-deliveries`, createDeliveryRouter(pool));
   app.use(`${API_PREFIX}/reconciliation`, createReconciliationRouter(pool));
   app.use(`${API_PREFIX}/sales`, createSalesRouter(pool));
+  app.use(`${API_PREFIX}/tenant/settings`, createSettingsRouter(pool));
+  // deprecated path
   app.use(`${API_PREFIX}/settings`, createSettingsRouter(pool));
   app.use(`${API_PREFIX}/fuel-inventory`, createFuelInventoryRouter(pool));
   app.use(`${API_PREFIX}/alerts`, createAlertsRouter(pool));

@@ -2805,3 +2805,17 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzleReading.service.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_fix_20251128.md`
+
+## [Enhancement - 2025-11-29] – API corrections and feature flags
+
+### 🟦 Enhancements
+* Added deprecated aliases `/dashboard/fuel-types` and `/dashboard/daily-trend`.
+* Introduced `/api/v1/tenant/settings` with feature flags exposure.
+* Updated response schemas for station comparison, ranking and inventory APIs.
+
+### Files
+* `src/routes/dashboard.route.ts`
+* `src/app.ts`
+* `src/controllers/settings.controller.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_54_COMMAND.md`
