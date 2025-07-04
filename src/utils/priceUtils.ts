@@ -14,7 +14,7 @@ export async function getPriceAtTimestamp(
   fuelType: string,
   timestamp: Date
 ): Promise<PriceRecord | null> {
-  const record = await client.fuel_price.findFirst({
+  const record = await client.fuelPrice.findFirst({
     where: {
       tenant_id: tenantId,
       station_id: stationId,

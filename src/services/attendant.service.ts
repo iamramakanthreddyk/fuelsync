@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import prisma from '../utils/prisma';
 import { parseRows } from '../utils/parseDb';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { incrementCreditorBalance } from './creditor.service';
@@ -84,13 +85,13 @@ export async function createCashReport(
         throw new Error('No matching nozzle for fuel type');
       }
       const nozzleId = nozzleRes.rows[0].id;
-      const priceRec = await getPriceAtTimestamp(
-        client,
-        tenantId,
-        stationId,
-        entry.fuelType,
-        date
-      );
+        const priceRec = await getPriceAtTimestamp(
+          prisma,
+          tenantId,
+          stationId,
+          entry.fuelType,
+          date
+        );
       const price = priceRec ? priceRec.price : 0;
       const volume = entry.litres ?? (entry.amount ? entry.amount / price : 0);
       const amount = entry.amount ?? volume * price;
