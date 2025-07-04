@@ -33,13 +33,13 @@ export function createAnalyticsHandlers() {
         });
         const planMap = await prisma.plan.findMany({ select: { id: true, name: true } });
         const distribution = await prisma.tenant.groupBy({ by: ['plan_id'], _count: { _all: true } });
-        const planNameMap = Object.fromEntries(planMap.map(p => [p.id, p.name]));
-        const tenantsByPlan = distribution.map(d => ({
+        const planNameMap = Object.fromEntries(planMap.map((p: { id: string; name: string }) => [p.id, p.name]));
+        const tenantsByPlan = distribution.map((d: { plan_id: string | null; _count: { _all: number } }) => ({
           planName: d.plan_id ? planNameMap[d.plan_id] || d.plan_id : 'Unassigned',
           count: d._count._all,
           percentage: tenantCount > 0 ? parseFloat(((d._count._all / tenantCount) * 100).toFixed(2)) : 0,
         }));
-        const formattedTenants = recentTenants.map(t => ({
+        const formattedTenants = recentTenants.map((t: { id: string; name: string; status: string; created_at: Date }) => ({
           id: t.id,
           name: t.name,
           createdAt: t.created_at.toISOString(),

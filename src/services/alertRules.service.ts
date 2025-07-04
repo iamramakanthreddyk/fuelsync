@@ -22,7 +22,7 @@ export async function checkNoReadings24h(tenantId: string) {
        AND n.status = 'active'
        AND (r.recorded_at IS NULL OR r.recorded_at < NOW() - INTERVAL '24 hours');`;
 
-  const rows = await prisma.$queryRaw<{ nozzle_id: string; station_id: string }[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as { nozzle_id: string; station_id: string }[];
   for (const row of rows) {
     await createAlert(
       tenantId,
@@ -56,7 +56,7 @@ export async function checkNozzlePriceMissing(tenantId: string) {
        AND n.status = 'active'
        AND price IS NULL;`;
 
-  const rows = await prisma.$queryRaw<{ nozzle_id: string; station_id: string; fuel_type: string }[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as { nozzle_id: string; station_id: string; fuel_type: string }[];
   for (const row of rows) {
     await createAlert(
       tenantId,
@@ -79,7 +79,7 @@ export async function checkCreditorsNearLimit(tenantId: string) {
        AND status = 'active'
        AND credit_limit > 0
        AND balance >= credit_limit * 0.9;`;
-  const rows = await prisma.$queryRaw<{ id: string; station_id: string | null; party_name: string }[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as { id: string; station_id: string | null; party_name: string }[];
   for (const row of rows) {
     await createAlert(
       tenantId,
@@ -108,7 +108,7 @@ export async function checkStationInactivity(tenantId: string) {
       ) r ON TRUE
      WHERE st.tenant_id = ${tenantId}
        AND (r.last_read IS NULL OR r.last_read < NOW() - INTERVAL '48 hours');`;
-  const stations = await prisma.$queryRaw<{ id: string }[]>(inactiveQuery);
+  const stations = (await prisma.$queryRaw(inactiveQuery)) as { id: string }[];
   for (const row of stations) {
     await createAlert(tenantId, row.id, 'station_inactive', 'Station inactive for 48h', 'warning');
   }
@@ -119,7 +119,7 @@ export async function checkStationInactivity(tenantId: string) {
      WHERE tenant_id = ${tenantId}
        AND status = 'maintenance'
        AND updated_at < NOW() - INTERVAL '7 days';`;
-  const pumps = await prisma.$queryRaw<{ id: string; station_id: string }[]>(pumpQuery);
+  const pumps = (await prisma.$queryRaw(pumpQuery)) as { id: string; station_id: string }[];
   for (const p of pumps) {
     await createAlert(
       tenantId,
@@ -152,7 +152,7 @@ export async function checkReadingDiscrepancies(tenantId: string) {
      WHERE rn = 1
        AND prev_read IS NOT NULL
        AND (reading - prev_read) > prev_read * 0.2;`;
-  const rows = await prisma.$queryRaw<{ nozzle_id: string; station_id: string; delta: number }[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as { nozzle_id: string; station_id: string; delta: number }[];
   for (const row of rows) {
     await createAlert(
       tenantId,
@@ -178,7 +178,7 @@ export async function checkMissingCashReports(tenantId: string) {
             AND cr.tenant_id = ${tenantId}
             AND cr.date = CURRENT_DATE
        );`;
-  const rows = await prisma.$queryRaw<{ id: string }[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as { id: string }[];
   for (const row of rows) {
     await createAlert(tenantId, row.id, 'missing_cash_report', 'No cash report submitted today', 'warning');
   }

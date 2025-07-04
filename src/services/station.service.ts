@@ -163,7 +163,7 @@ export async function getStationComparison(tenantId: string, stationIds: string[
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
-  const rows = await prisma.$queryRaw<any[]>(query);
+  const rows = (await prisma.$queryRaw(query)) as any[];
   return rows.map((row: any) => ({
     id: row.id,
     name: row.name,

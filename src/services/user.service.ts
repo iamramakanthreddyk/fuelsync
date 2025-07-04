@@ -11,7 +11,7 @@ export async function createUser(
   name: string,
   role: UserRole
 ): Promise<string> {
-  return prisma.$transaction(async tx => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await beforeCreateUser(tx, tenantId);
     const hash = await bcrypt.hash(password, 10);
     const user = await tx.user.create({

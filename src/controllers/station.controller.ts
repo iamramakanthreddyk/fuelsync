@@ -39,7 +39,7 @@ export function createStationHandlers(db: Pool) {
         orderBy: { name: 'asc' },
         include: { _count: { select: { pumps: true } } }
       });
-      let stations = stationsData.map(st => ({
+      let stations = stationsData.map((st: typeof stationsData[number]) => ({
         id: st.id,
         name: st.name,
         status: st.status,
@@ -51,7 +51,7 @@ export function createStationHandlers(db: Pool) {
       }));
       if (includeMetrics) {
         // metrics logic retained via service layer for now
-        const metricsPromises = stations.map(st =>
+        const metricsPromises = stations.map((st: { id: string }) =>
           getStationMetrics(db, tenantId, st.id, 'today').then(m => (st as any).metrics = m)
         );
         await Promise.all(metricsPromises);

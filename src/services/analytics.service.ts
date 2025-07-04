@@ -90,7 +90,7 @@ export async function getTenantDashboardMetrics(tenantId: string) {
     totalSales: Number(aggregates._sum.amount || 0),
     totalVolume: Number(aggregates._sum.volume || 0),
     transactionCount: aggregates._count._all,
-    fuelBreakdown: fuelBreakdown.map(r => ({
+    fuelBreakdown: fuelBreakdown.map((r: typeof fuelBreakdown[number]) => ({
       fuelType: r.fuel_type,
       volume: Number(r._sum.volume || 0),
     })),
