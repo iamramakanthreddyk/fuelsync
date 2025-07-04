@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { Pool } from 'pg';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { createAlert } from './alert.service';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
@@ -44,13 +45,13 @@ export async function createNozzleReading(
       [randomUUID(), tenantId, data.nozzleId, data.reading, data.recordedAt]
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
-    const priceRecord = await getPriceAtTimestamp(
-      client,
-      tenantId,
-      station_id,
-      fuel_type,
-      data.recordedAt
-    );
+      const priceRecord = await getPriceAtTimestamp(
+        prisma,
+        tenantId,
+        station_id,
+        fuel_type,
+        data.recordedAt
+      );
     if (!priceRecord) {
       throw new Error('Fuel price not found');
     }

@@ -2887,3 +2887,25 @@ Each entry is tied to a step from the implementation index.
 * `src/components/readings/ReadingsTable.tsx`
 * `src/pages/dashboard/ReadingsPage.tsx`
 * `docs/STEP_3_9_COMMAND.md`
+
+## [Fix 2025-12-10] – Resolve TypeScript build errors
+
+### 🟥 Fixes
+* Updated middleware and services to consistently use the Prisma client.
+* Added missing imports and explicit types to eliminate `tsc` errors.
+* Corrected property names and plan distribution handling in analytics logic.
+
+### Files
+* `src/controllers/analytics.controller.ts`
+* `src/controllers/dashboard.controller.ts`
+* `src/controllers/nozzleReading.controller.ts`
+* `src/middlewares/checkPlanLimits.ts`
+* `src/routes/station.route.ts`
+* `src/routes/pump.route.ts`
+* `src/routes/nozzle.route.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/services/attendant.service.ts`
+* `src/services/nozzle.service.ts`
+* `src/services/station.service.ts`
+* `src/utils/priceUtils.ts`
+* `docs/STEP_fix_20251210.md`

@@ -251,8 +251,8 @@ export function createDashboardHandlers(db: Pool) {
     },
 
     getSystemHealth: async (_req: Request, res: Response) => {
-      try {
-        const data = await getSystemHealth(db);
+        try {
+        const data = await getSystemHealth();
         successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

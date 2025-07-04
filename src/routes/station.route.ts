@@ -11,7 +11,7 @@ export function createStationRouter(db: Pool) {
   const router = Router();
   const handlers = createStationHandlers(db);
 
-  router.post('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), checkStationLimit(db), handlers.create);
+  router.post('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), checkStationLimit(), handlers.create);
   router.get('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.get('/compare', authenticateJWT, setTenantContext, requireRole([UserRole.Owner]), handlers.compare);
   router.get('/ranking', authenticateJWT, setTenantContext, requireRole([UserRole.Owner]), handlers.ranking);

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Pool } from 'pg';
 import { createNozzleReading, listNozzleReadings, canCreateNozzleReading } from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';

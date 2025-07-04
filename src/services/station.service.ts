@@ -1,5 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import { Prisma } from '@prisma/client';
+import prisma from '../utils/prisma';
 import { beforeCreateStation } from '../middleware/planEnforcement';
 import { parseRows, parseRow } from '../utils/parseDb';
 
@@ -7,7 +9,7 @@ export async function createStation(db: Pool, tenantId: string, name: string, ad
   const client = await db.connect();
   try {
     // Enforce plan limits using tenant id
-    await beforeCreateStation(client, tenantId);
+    await beforeCreateStation(prisma, tenantId);
 
     const res = await client.query<{ id: string }>(
       'INSERT INTO public.stations (id, tenant_id, name, address, updated_at) VALUES ($1,$2,$3,$4,NOW()) RETURNING id',
@@ -162,7 +164,7 @@ export async function getStationComparison(tenantId: string, stationIds: string[
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
   const rows = await prisma.$queryRaw<any[]>(query);
-  return rows.map(row => ({
+  return rows.map((row: any) => ({
     id: row.id,
     name: row.name,
     totalSales: parseFloat(row.total_sales),
@@ -195,7 +197,7 @@ export async function getStationRanking(db: Pool, tenantId: string, metric: stri
   `;
   const result = await db.query(query, [tenantId]);
   return parseRows(
-    result.rows.map(row => ({
+    result.rows.map((row: any) => ({
       rank: parseInt(row.rank),
       id: row.id,
       name: row.name,
@@ -253,7 +255,7 @@ export async function getDashboardStationMetrics(db: Pool, tenantId: string) {
 
   const result = await db.query(query, [tenantId]);
 
-  return result.rows.map(row => {
+  return result.rows.map((row: any) => {
     const monthlySales = parseFloat(row.monthly_sales);
     const prev = parseFloat(row.prev_month_sales);
     const growth = prev > 0 ? ((monthlySales - prev) / prev) * 100 : null;

@@ -23,7 +23,7 @@ export function createAnalyticsHandlers() {
         startOfMonth.setHours(0, 0, 0, 0);
         const signupsThisMonth = await prisma.tenant.count({ where: { created_at: { gte: startOfMonth } } });
         const planCount = await prisma.plan.count();
-        const adminCount = await prisma.admin_user.count();
+        const adminCount = await prisma.adminUser.count();
         const userCount = await prisma.user.count();
         const stationCount = await prisma.station.count();
         const recentTenants = await prisma.tenant.findMany({
@@ -35,7 +35,7 @@ export function createAnalyticsHandlers() {
         const distribution = await prisma.tenant.groupBy({ by: ['plan_id'], _count: { _all: true } });
         const planNameMap = Object.fromEntries(planMap.map(p => [p.id, p.name]));
         const tenantsByPlan = distribution.map(d => ({
-          planName: planNameMap[d.plan_id] || d.plan_id,
+          planName: d.plan_id ? planNameMap[d.plan_id] || d.plan_id : 'Unassigned',
           count: d._count._all,
           percentage: tenantCount > 0 ? parseFloat(((d._count._all / tenantCount) * 100).toFixed(2)) : 0,
         }));

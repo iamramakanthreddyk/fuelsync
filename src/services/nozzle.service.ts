@@ -1,12 +1,13 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
+import prisma from '../utils/prisma';
 import { beforeCreateNozzle } from '../middleware/planEnforcement';
 import { parseRows } from '../utils/parseDb';
 
 export async function createNozzle(db: Pool, tenantId: string, pumpId: string, nozzleNumber: number, fuelType: string): Promise<string> {
   const client = await db.connect();
   try {
-    await beforeCreateNozzle(client, tenantId, pumpId);
+    await beforeCreateNozzle(prisma, tenantId, pumpId);
     const res = await client.query<{ id: string }>(
       'INSERT INTO public.nozzles (id, tenant_id, pump_id, nozzle_number, fuel_type, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
       [randomUUID(), tenantId, pumpId, nozzleNumber, fuelType]
