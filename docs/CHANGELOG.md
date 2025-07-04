@@ -2819,3 +2819,16 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/settings.controller.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_54_COMMAND.md`
+
+## [Feature - 2025-11-30] – Dashboard station metrics endpoint
+
+### 🟩 Features
+* Added `/api/v1/dashboard/station-metrics` to retrieve metrics for all stations.
+* Introduced `StationMetric` schema in OpenAPI.
+
+### Files
+* `src/services/station.service.ts`
+* `src/controllers/dashboard.controller.ts`
+* `src/routes/dashboard.route.ts`
+* `docs/openapi.yaml`
+* `docs/STEP_2_55_COMMAND.md`

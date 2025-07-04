@@ -15,6 +15,7 @@ export function createDashboardRouter(db: Pool) {
   // deprecated: use /fuel-breakdown
   router.get('/fuel-types', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getFuelTypeBreakdown);
   router.get('/top-creditors', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getTopCreditors);
+  router.get('/station-metrics', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getStationMetrics);
   router.get('/sales-trend', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySalesTrend);
   // deprecated: use /sales-trend
   router.get('/daily-trend', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySalesTrend);

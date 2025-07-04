@@ -4,6 +4,7 @@ import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
 import { getSystemHealth } from '../services/analytics.service';
+import { getDashboardStationMetrics } from '../services/station.service';
 
 export function createDashboardHandlers(db: Pool) {
   return {
@@ -233,6 +234,17 @@ export function createDashboardHandlers(db: Pool) {
         }));
 
         successResponse(res, trend);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    getStationMetrics: async (_req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const data = await getDashboardStationMetrics(db, tenantId);
+        successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
