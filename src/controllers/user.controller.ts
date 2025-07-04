@@ -26,7 +26,9 @@ export function createUserHandlers(db: Pool) {
           },
           orderBy: { created_at: 'desc' }
         });
-
+        if (users.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, { users });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

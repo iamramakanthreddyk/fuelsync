@@ -14,6 +14,9 @@ export function createFuelInventoryHandlers(db: Pool) {
         }
         
         const inventory = await getComputedFuelInventory(db, tenantId);
+        if (inventory.length === 0) {
+          return successResponse(res, []);
+        }
         return successResponse(res, inventory);
       } catch (err: any) {
         console.error('Error in fuel inventory list:', err);

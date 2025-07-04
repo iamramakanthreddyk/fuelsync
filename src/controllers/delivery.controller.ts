@@ -27,6 +27,9 @@ export function createDeliveryHandlers(db: Pool) {
       }
       const query = parseDeliveryQuery(req.query);
       const deliveries = await listFuelDeliveries(db, tenantId, query);
+      if (deliveries.length === 0) {
+        return successResponse(res, []);
+      }
       successResponse(res, { deliveries });
     },
     inventory: async (req: Request, res: Response) => {

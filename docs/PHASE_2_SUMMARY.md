@@ -1281,3 +1281,24 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added `postinstall` script to automatically run `prisma generate` on deployment.
+
+### 🛠️ Fix 2025-12-13 – Handle empty dashboard results
+**Status:** ✅ Done
+**Files:** `src/controllers/dashboard.controller.ts`, `docs/STEP_fix_20251213.md`
+
+**Overview:**
+* Dashboard payment and creditor endpoints now return an empty array when no records exist.
+
+### 🛠️ Fix 2025-12-14 – Uniform dashboard empty handling
+**Status:** ✅ Done
+**Files:** `src/controllers/dashboard.controller.ts`, `docs/STEP_fix_20251214.md`
+
+**Overview:**
+* Added explicit empty-row checks to all dashboard endpoints for consistency.
+
+### 🛠️ Fix 2025-12-15 – Explicit empty list handling
+**Status:** ✅ Done
+**Files:** `src/controllers/*`, `docs/STEP_fix_20251215.md`
+
+**Overview:**
+* Added `rows.length === 0` checks to all list endpoints so they return an empty array instead of an object with zero records.

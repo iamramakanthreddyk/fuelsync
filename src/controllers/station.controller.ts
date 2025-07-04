@@ -39,6 +39,9 @@ export function createStationHandlers(db: Pool) {
         orderBy: { name: 'asc' },
         include: { _count: { select: { pumps: true } } }
       });
+      if (stationsData.length === 0) {
+        return successResponse(res, []);
+      }
       let stations = stationsData.map((st: typeof stationsData[number]) => ({
         id: st.id,
         name: st.name,
