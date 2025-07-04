@@ -53,6 +53,9 @@ export function createNozzleHandlers(db: Pool) {
         },
         orderBy: { nozzle_number: 'asc' }
       });
+      if (nozzles.length === 0) {
+        return successResponse(res, []);
+      }
       successResponse(res, { nozzles });
     },
     get: async (req: Request, res: Response) => {

@@ -33,6 +33,9 @@ export function createNozzleReadingHandlers(db: Pool) {
           from: query.startDate,
           to: query.endDate
         });
+        if (readings.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, { readings });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

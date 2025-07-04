@@ -2938,3 +2938,30 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `package.json`
 * `docs/STEP_fix_20251212.md`
+
+## [Fix 2025-12-13] – Handle empty dashboard results
+
+### 🟥 Fixes
+* Dashboard endpoints now return an empty array instead of a 500 error when no records exist.
+
+### Files
+* `src/controllers/dashboard.controller.ts`
+* `docs/STEP_fix_20251213.md`
+
+## [Fix 2025-12-14] – Uniform dashboard empty handling
+
+### 🟥 Fixes
+* All dashboard endpoints now return an empty array when no records exist.
+
+### Files
+* `src/controllers/dashboard.controller.ts`
+* `docs/STEP_fix_20251214.md`
+
+## [Fix 2025-12-15] – Uniform empty lists across endpoints
+
+### 🟥 Fixes
+* List endpoints for stations, pumps, nozzles, readings, deliveries and more now explicitly return an empty array when no records exist.
+
+### Files
+* `src/controllers/*.ts`
+* `docs/STEP_fix_20251215.md`

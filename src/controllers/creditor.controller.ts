@@ -45,6 +45,9 @@ export function createCreditorHandlers(db: Pool) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const creditors = await listCreditors(db, tenantId);
+      if (creditors.length === 0) {
+        return successResponse(res, []);
+      }
       successResponse(res, { creditors });
     },
 
@@ -130,6 +133,9 @@ export function createCreditorHandlers(db: Pool) {
         }
         const query = parsePaymentQuery(req.query);
         const payments = await listCreditPayments(db, tenantId, query);
+        if (payments.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, { payments });
       } catch (err: any) {
         if (err instanceof ServiceError) {

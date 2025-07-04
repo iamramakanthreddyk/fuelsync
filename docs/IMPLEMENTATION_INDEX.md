@@ -239,3 +239,6 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-12-10 | TypeScript build fixes | ✅ Done | `src/controllers/analytics.controller.ts`, `src/controllers/dashboard.controller.ts`, `src/controllers/nozzleReading.controller.ts`, `src/middlewares/checkPlanLimits.ts`, `src/routes/station.route.ts`, `src/routes/pump.route.ts`, `src/routes/nozzle.route.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `src/services/nozzle.service.ts`, `src/services/station.service.ts`, `src/utils/priceUtils.ts` | `docs/STEP_fix_20251210.md` |
 | fix | 2025-12-11 | Explicit typing cleanup | ✅ Done | src/controllers/*, src/services/* | docs/STEP_fix_20251211.md |
 | fix | 2025-12-12 | Automated Prisma client generation | ✅ Done | `package.json` | `docs/STEP_fix_20251212.md` |
+| fix | 2025-12-13 | Handle empty dashboard results | ✅ Done | `src/controllers/dashboard.controller.ts` | `docs/STEP_fix_20251213.md` |
+| fix | 2025-12-14 | Uniform dashboard empty handling | ✅ Done | `src/controllers/dashboard.controller.ts` | `docs/STEP_fix_20251214.md` |
+| fix | 2025-12-15 | Explicit empty list handling | ✅ Done | `src/controllers/*` | `docs/STEP_fix_20251215.md` |

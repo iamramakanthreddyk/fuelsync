@@ -100,6 +100,9 @@ export function createDashboardHandlers(db: Pool) {
 
         params.push(tenantId);
         const result = await db.query(query, params);
+        if (result.rows.length === 0) {
+          return successResponse(res, []);
+        }
         const totalAmount = result.rows.reduce((sum, row) => sum + parseFloat(row.amount), 0);
 
         const breakdown = result.rows.map(row => ({
@@ -152,6 +155,9 @@ export function createDashboardHandlers(db: Pool) {
 
         const params2 = stationId ? [stationId, tenantId] : [tenantId];
         const result = await db.query(query, params2);
+        if (result.rows.length === 0) {
+          return successResponse(res, []);
+        }
 
         const breakdown = result.rows.map(row => ({
           fuelType: row.fuel_type,
@@ -191,6 +197,9 @@ export function createDashboardHandlers(db: Pool) {
 
         const params = stationId ? [tenantId, stationId, tenantId, limit] : [tenantId, tenantId, limit];
         const result = await db.query(query, params);
+        if (result.rows.length === 0) {
+          return successResponse(res, []);
+        }
 
         const topCreditors = result.rows.map(row => ({
           id: row.id,
@@ -226,6 +235,9 @@ export function createDashboardHandlers(db: Pool) {
 
         const params3 = stationId ? [stationId, tenantId] : [tenantId];
         const result = await db.query(query, params3);
+        if (result.rows.length === 0) {
+          return successResponse(res, []);
+        }
 
         const trend = result.rows.map(row => ({
           date: row.date,

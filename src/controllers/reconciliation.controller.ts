@@ -38,6 +38,9 @@ export function createReconciliationHandlers(db: Pool) {
         }
         const { stationId } = req.query as { stationId?: string };
         const history = await listReconciliations(db, user.tenantId, stationId);
+        if (history.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, history);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

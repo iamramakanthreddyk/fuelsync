@@ -18,6 +18,9 @@ export function createAlertsHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const unreadOnly = req.query.unreadOnly === 'true';
         const alerts = await getAlerts(db, tenantId, stationId, unreadOnly);
+        if (alerts.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, alerts);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);

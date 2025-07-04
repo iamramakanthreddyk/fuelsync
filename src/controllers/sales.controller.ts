@@ -25,6 +25,9 @@ export function createSalesHandlers(db: Pool) {
           }
         }
         const sales = await listSales(db, user.tenantId, query);
+        if (sales.length === 0) {
+          return successResponse(res, []);
+        }
         successResponse(res, { sales });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);

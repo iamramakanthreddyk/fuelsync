@@ -9,6 +9,9 @@ export function createTenantHandlers(db: Pool) {
   return {
     list: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
+      if (tenants.length === 0) {
+        return successResponse(res, []);
+      }
       successResponse(res, { tenants });
     },
     create: async (req: Request, res: Response) => {
