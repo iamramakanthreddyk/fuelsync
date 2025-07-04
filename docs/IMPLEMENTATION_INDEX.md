@@ -217,3 +217,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-26 | Unified fuel inventory queries | ✅ Done | `src/services/fuelInventory.service.ts`, `src/services/inventory.service.ts`, `src/services/delivery.service.ts`, `src/controllers/fuelInventory.controller.ts`, `src/controllers/delivery.controller.ts` | `docs/STEP_fix_20251126.md` |
 | fix | 2025-11-27 | Dashboard station filter handling | ✅ Done | `src/utils/normalizeStationId.ts`, controllers updated | `docs/STEP_fix_20251127.md` |
 | fix | 2025-11-28 | Previous reading in nozzle listing | ✅ Done | `src/services/nozzleReading.service.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20251128.md` |
+| 2     | 2.54 | API corrections and feature flags | ✅ Done | `src/routes/dashboard.route.ts`, `src/app.ts`, `src/controllers/settings.controller.ts`, `docs/openapi.yaml` | `docs/STEP_2_54_COMMAND.md` |

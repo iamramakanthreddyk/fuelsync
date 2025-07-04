@@ -1117,6 +1117,15 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
+  /api/v1/dashboard/fuel-types:
+    get:
+      deprecated: true
+      summary: Legacy fuel breakdown
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
   /api/v1/dashboard/top-creditors:
     get:
       summary: Dashboard top creditors
@@ -1128,6 +1137,15 @@ paths:
   /api/v1/dashboard/sales-trend:
     get:
       summary: Dashboard sales trend
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/dashboard/daily-trend:
+    get:
+      deprecated: true
+      summary: Legacy sales trend
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -1384,7 +1402,26 @@ paths:
       summary: Current part inventory
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Inventory items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InventoryItem'
+              example:
+                data:
+                  - id: "inv1"
+                    stationId: "st1"
+                    stationName: "Station A"
+                    fuelType: "petrol"
+                    currentStock: 800
+                    minimumLevel: 500
+                    lastUpdated: "2025-11-28T10:00:00Z"
+                    stockStatus: "medium"
         default:
           $ref: '#/components/responses/Error'
   /api/v1/inventory/alerts:
@@ -1392,7 +1429,26 @@ paths:
       summary: Low stock alerts
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Inventory alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Alert'
+              example:
+                data:
+                  - id: "al1"
+                    stationId: "st1"
+                    stationName: "Station A"
+                    alertType: "low_inventory"
+                    message: "Low petrol inventory"
+                    severity: "warning"
+                    isRead: false
+                    createdAt: "2025-11-28T09:00:00Z"
         default:
           $ref: '#/components/responses/Error'
   /api/v1/inventory/update:
@@ -1400,7 +1456,18 @@ paths:
       summary: Update inventory counts
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Update status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: success
         default:
           $ref: '#/components/responses/Error'
       requestBody:
@@ -1408,7 +1475,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InventoryUpdateRequest'
   /api/v1/reports/financial/export:
     get:
       summary: Export financial report
@@ -1425,16 +1492,39 @@ paths:
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/settings:
+  /api/v1/tenant/settings:
     get:
-      summary: Retrieve tenant settings
+      summary: Retrieve tenant settings and feature flags
       responses:
         '200':
           $ref: '#/components/responses/Success'
         default:
           $ref: '#/components/responses/Error'
     post:
-      summary: Update tenant settings
+      summary: Update tenant settings or feature flag
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /api/v1/settings:
+    get:
+      deprecated: true
+      summary: Legacy tenant settings
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      deprecated: true
+      summary: Legacy update tenant settings
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -1459,7 +1549,24 @@ paths:
       summary: Compare station performance
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Station comparison metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StationComparison'
+              example:
+                data:
+                  - id: "st1"
+                    stationName: "Station A"
+                    sales: 12000
+                    volume: 4500
+                    transactions: 200
+                    growth: 5
         default:
           $ref: '#/components/responses/Error'
   /api/v1/stations/ranking:
@@ -1467,7 +1574,24 @@ paths:
       summary: Station ranking report
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Ranked station metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StationRanking'
+              example:
+                data:
+                  - rank: 1
+                    id: "st1"
+                    name: "Station A"
+                    sales: 15000
+                    volume: 5000
+                    transactionCount: 220
         default:
           $ref: '#/components/responses/Error'
   /api/docs/swagger.json:
@@ -2110,6 +2234,36 @@ paths:
         lastUpdated:
           type: string
           format: date-time
+    InventoryItem:
+      type: object
+      properties:
+        id:
+          type: string
+        stationId:
+          type: string
+        stationName:
+          type: string
+        fuelType:
+          type: string
+        currentStock:
+          type: number
+        minimumLevel:
+          type: number
+        lastUpdated:
+          type: string
+          format: date-time
+        stockStatus:
+          type: string
+    InventoryUpdateRequest:
+      type: object
+      required: [stationId, fuelType, newStock]
+      properties:
+        stationId:
+          type: string
+        fuelType:
+          type: string
+        newStock:
+          type: number
     FuelPrice:
       type: object
       properties:

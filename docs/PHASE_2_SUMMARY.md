@@ -1201,3 +1201,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * `GET /api/v1/nozzle-readings` now returns `previousReading` by computing a window function over all readings.
 * OpenAPI schema updated accordingly.
+
+### 🛠️ Step 2.54 – API corrections and feature flags
+**Status:** ✅ Done
+**Files:** `src/routes/dashboard.route.ts`, `src/app.ts`, `src/controllers/settings.controller.ts`, `docs/openapi.yaml`, `docs/STEP_2_54_COMMAND.md`
+
+**Overview:**
+* Added deprecated dashboard aliases and new `/tenant/settings` endpoint exposing feature flags.
+* Updated OpenAPI response schemas for comparison, ranking and inventory routes.
