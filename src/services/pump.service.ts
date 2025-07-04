@@ -8,7 +8,7 @@ export async function createPump(
   name: string,
   serialNumber?: string
 ): Promise<string> {
-  return prisma.$transaction(async tx => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await beforeCreatePump(tx, tenantId, stationId);
     const pump = await tx.pump.create({
       data: {
@@ -35,7 +35,7 @@ export async function listPumps(
     orderBy: { name: 'asc' },
     include: { _count: { select: { nozzles: true } } },
   });
-  return pumps.map(p => ({
+  return pumps.map((p: typeof pumps[number]) => ({
     id: p.id,
     station_id: p.station_id,
     name: p.name,

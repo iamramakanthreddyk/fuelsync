@@ -48,7 +48,7 @@ export function createFuelPriceHandlers(db: Pool) {
         orderBy: { valid_from: 'desc' },
         include: { station: { select: { id: true, name: true } } }
       });
-      const prices = pricesRaw.map(p => ({
+      const prices = pricesRaw.map((p: typeof pricesRaw[number]) => ({
         id: p.id,
         stationId: p.station_id,
         stationName: p.station?.name || '',

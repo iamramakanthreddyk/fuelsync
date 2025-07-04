@@ -150,7 +150,7 @@ export async function listNozzleReadings(
     FROM ordered o
     ${where}
     ORDER BY recorded_at DESC`;
-  const rows = await prisma.$queryRawUnsafe<any[]>(sql, ...params);
+  const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
   return rows;
 }
 

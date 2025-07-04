@@ -43,12 +43,12 @@ export function createPumpHandlers(db: Pool) {
         orderBy: { name: 'asc' },
         include: { _count: { select: { nozzles: true } } }
       });
-      successResponse(res, {
-        pumps: pumps.map(p => ({
-          ...p,
-          nozzleCount: p._count.nozzles
-        }))
-      });
+        successResponse(res, {
+          pumps: pumps.map((p: typeof pumps[number]) => ({
+            ...p,
+            nozzleCount: p._count.nozzles
+          }))
+        });
     },
     get: async (req: Request, res: Response) => {
       try {

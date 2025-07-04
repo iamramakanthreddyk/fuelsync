@@ -1266,3 +1266,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Resolved compilation errors by aligning Prisma usage and imports.
 
+
+### 🛠️ Fix 2025-12-11 – Explicit typing cleanup
+**Status:** ✅ Done
+**Files:** `docs/STEP_fix_20251211.md`
+
+**Overview:**
+* Added explicit types for callback parameters and transaction clients.
+* Replaced `$queryRaw` generics with type assertions to satisfy strict TypeScript.

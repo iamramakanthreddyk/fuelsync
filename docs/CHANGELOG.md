@@ -2909,3 +2909,23 @@ Each entry is tied to a step from the implementation index.
 * `src/services/station.service.ts`
 * `src/utils/priceUtils.ts`
 * `docs/STEP_fix_20251210.md`
+
+## [Fix 2025-12-11] – Explicit typing cleanup
+
+### 🟥 Fixes
+* Added explicit types for callback parameters to avoid `implicit any` errors.
+* Replaced generic `$queryRaw` usage with type assertions.
+* Typed transaction callbacks with Prisma clients.
+
+### Files
+* `src/controllers/analytics.controller.ts`
+* `src/controllers/fuelPrice.controller.ts`
+* `src/controllers/pump.controller.ts`
+* `src/controllers/station.controller.ts`
+* `src/services/alertRules.service.ts`
+* `src/services/analytics.service.ts`
+* `src/services/nozzleReading.service.ts`
+* `src/services/pump.service.ts`
+* `src/services/station.service.ts`
+* `src/services/user.service.ts`
+* `docs/STEP_fix_20251211.md`
