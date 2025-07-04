@@ -1217,3 +1217,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * New endpoint `/dashboard/station-metrics` provides per-station totals and efficiency.
 * Added `StationMetric` schema in the API specification.
+
+### 🛠️ Fix 2025-12-01 – Alert parameter naming alignment
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `docs/STEP_fix_20251201.md`
+
+**Overview:**
+* Changed path parameter `alertId` to `id` for consistency with implemented routes.

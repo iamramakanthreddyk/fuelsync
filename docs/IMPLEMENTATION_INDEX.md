@@ -219,3 +219,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-11-28 | Previous reading in nozzle listing | ✅ Done | `src/services/nozzleReading.service.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20251128.md` |
 | 2     | 2.54 | API corrections and feature flags | ✅ Done | `src/routes/dashboard.route.ts`, `src/app.ts`, `src/controllers/settings.controller.ts`, `docs/openapi.yaml` | `docs/STEP_2_54_COMMAND.md` |
 | 2     | 2.55 | Dashboard station metrics endpoint | ✅ Done | `src/services/station.service.ts`, `src/controllers/dashboard.controller.ts`, `src/routes/dashboard.route.ts`, `docs/openapi.yaml` | `PHASE_2_SUMMARY.md#step-2.55` |
+| fix | 2025-12-01 | Alert parameter naming alignment | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml` | `docs/STEP_fix_20251201.md` |

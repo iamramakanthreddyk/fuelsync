@@ -664,11 +664,11 @@ paths:
                     $ref: '#/components/schemas/AlertSummary'
         default:
           $ref: '#/components/responses/Error'
-  /api/v1/alerts/{alertId}:
+  /api/v1/alerts/{id}:
     delete:
       summary: Delete an alert by ID
       parameters:
-        - name: alertId
+        - name: id
           in: path
           required: true
           schema:
