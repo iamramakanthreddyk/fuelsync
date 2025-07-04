@@ -59,12 +59,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Alert'
-  /alerts/{alertId}/read:
+  /alerts/{id}/read:
     patch:
       tags: [Alerts]
       summary: Mark alert as read
       parameters:
-        - name: alertId
+        - name: id
           in: path
           required: true
           schema:
@@ -72,12 +72,12 @@ paths:
       responses:
         '200':
           description: Alert marked as read
-  /alerts/{alertId}:
+  /alerts/{id}:
     delete:
       tags: [Alerts]
       summary: Dismiss alert
       parameters:
-        - name: alertId
+        - name: id
           in: path
           required: true
           schema:

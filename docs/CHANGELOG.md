@@ -2832,3 +2832,13 @@ Each entry is tied to a step from the implementation index.
 * `src/routes/dashboard.route.ts`
 * `docs/openapi.yaml`
 * `docs/STEP_2_55_COMMAND.md`
+
+## [Fix - 2025-12-01] – Alert parameter naming alignment
+
+### 🟥 Fixes
+* Renamed path parameter `alertId` to `id` for alert deletion and read routes.
+
+### Files
+* `docs/openapi.yaml`
+* `frontend/docs/openapi-v1.yaml`
+* `docs/STEP_fix_20251201.md`
