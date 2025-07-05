@@ -48,11 +48,11 @@ export function createDashboardHandlers(db: Pool) {
         const row = result.rows[0];
 
         successResponse(res, {
-          totalSales: parseFloat(row.total_sales),
+          totalRevenue: parseFloat(row.total_sales),
           totalProfit: parseFloat(row.total_profit),
           profitMargin: parseFloat(row.profit_margin),
           totalVolume: parseFloat(row.total_volume),
-          transactionCount: parseInt(row.transaction_count),
+          salesCount: parseInt(row.transaction_count, 10),
           period: range
         });
       } catch (err: any) {
