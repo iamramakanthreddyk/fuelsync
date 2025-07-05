@@ -50,7 +50,7 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
-    "prisma": "^6.10.1",
-    "@types/node": "^20.2.5"
+    "@types/node": "^20.19.4",
+    "prisma": "^6.10.1"
   }
 }
