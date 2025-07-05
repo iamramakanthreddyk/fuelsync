@@ -2965,3 +2965,13 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/controllers/*.ts`
 * `docs/STEP_fix_20251215.md`
+
+## [Fix 2025-12-16] – Include Node type definitions
+
+### 🟥 Fixes
+* Added `@types/node` as a dev dependency so the TypeScript build can find Node typings.
+
+### Files
+* `package.json`
+* `package-lock.json`
+* `docs/STEP_fix_20251216.md`

@@ -1302,3 +1302,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added `rows.length === 0` checks to all list endpoints so they return an empty array instead of an object with zero records.
+
+### 🛠️ Fix 2025-12-16 – Node typings for TypeScript
+**Status:** ✅ Done
+**Files:** `package.json`, `package-lock.json`, `docs/STEP_fix_20251216.md`
+
+**Overview:**
+* Added `@types/node` to devDependencies so `tsc` succeeds without missing type errors.
