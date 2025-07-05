@@ -2993,3 +2993,14 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/utils/priceUtils.ts`
 * `docs/STEP_fix_20251218.md`
+
+## [Fix 2025-12-19] – Station list typing and price lookup
+
+### 🟥 Fixes
+* Passed the transaction client to `getPriceAtTimestamp` in `createCashReport`.
+* Cast station listing results to `any[]` to allow appending metrics.
+
+### Files
+* `src/services/attendant.service.ts`
+* `src/services/station.service.ts`
+* `docs/STEP_fix_20251219.md`
