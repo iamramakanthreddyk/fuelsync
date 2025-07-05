@@ -2,7 +2,7 @@ export interface NozzleReadingInput {
   nozzleId: string;
   reading: number;
   recordedAt: Date;
-  paymentMethod?: 'cash' | 'card' | 'upi' | 'credit';
+  paymentMethod: 'cash' | 'card' | 'upi' | 'credit';
   creditorId?: string;
 }
 
@@ -11,6 +11,7 @@ export interface ReadingQuery {
   nozzleId?: string;
   from?: Date;
   to?: Date;
+  limit?: number;
 }
 
 export function validateCreateNozzleReading(data: any): NozzleReadingInput {
@@ -26,7 +27,7 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   if (!recordedAt || isNaN(ts.getTime())) {
     throw new Error('recordedAt invalid');
   }
-  const result: NozzleReadingInput = { nozzleId, reading: readingNum, recordedAt: ts };
+  const result: NozzleReadingInput = { nozzleId, reading: readingNum, recordedAt: ts, paymentMethod: 'cash' };
   
   if (paymentMethod && ['cash', 'card', 'upi', 'credit'].includes(paymentMethod)) {
     result.paymentMethod = paymentMethod as 'cash' | 'card' | 'upi' | 'credit';
@@ -34,12 +35,11 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   
   if (creditorId && typeof creditorId === 'string') {
     result.creditorId = creditorId;
-    // Default to credit payment method if creditor is specified
     if (!result.paymentMethod) {
       result.paymentMethod = 'credit';
     }
   }
-  
+
   return result;
 }
 
@@ -47,10 +47,11 @@ export interface ReadingQueryParsed {
   nozzleId?: string;
   startDate?: Date;
   endDate?: Date;
+  limit?: number;
 }
 
 export function parseReadingQuery(query: any): ReadingQueryParsed {
-  const { nozzleId, startDate, endDate, from, to } = query || {};
+  const { nozzleId, startDate, endDate, from, to, limit } = query || {};
   const result: ReadingQueryParsed = {};
   
   if (nozzleId && typeof nozzleId === 'string') {
@@ -69,6 +70,11 @@ export function parseReadingQuery(query: any): ReadingQueryParsed {
     const d = new Date(end);
     if (!isNaN(d.getTime())) result.endDate = d;
   }
-  
+
+  if (limit) {
+    const n = parseInt(limit, 10);
+    if (!isNaN(n) && n > 0) result.limit = n;
+  }
+
   return result;
 }

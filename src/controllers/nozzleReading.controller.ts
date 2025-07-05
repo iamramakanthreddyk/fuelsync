@@ -31,7 +31,8 @@ export function createNozzleReadingHandlers(db: Pool) {
           nozzleId: query.nozzleId,
           stationId: undefined,
           from: query.startDate,
-          to: query.endDate
+          to: query.endDate,
+          limit: query.limit,
         });
         if (readings.length === 0) {
           return successResponse(res, []);
@@ -49,7 +50,11 @@ export function createNozzleReadingHandlers(db: Pool) {
           return errorResponse(res, 400, 'nozzleId required');
         }
         const result = await canCreateNozzleReading(db, user.tenantId, nozzleId);
-        successResponse(res, { canCreate: result.allowed, reason: result.reason });
+        successResponse(res, {
+          canCreate: result.allowed,
+          reason: result.reason,
+          missingPrice: (result as any).missingPrice,
+        });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
