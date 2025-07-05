@@ -37,9 +37,9 @@ export async function createTestDb(retries = 5): Promise<void> {
   await client.query(publicSql);
 
   await client.query(
-    `INSERT INTO public.plans (id, name, config_json)
+    `INSERT INTO public.plans (id, name, features)
      VALUES ($1, $2, $3)`,
-    [randomUUID(), 'basic', '{}']
+    [randomUUID(), 'basic', '[]']
   );
 
   await client.end();

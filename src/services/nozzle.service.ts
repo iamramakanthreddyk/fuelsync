@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import prisma from '../utils/prisma';
-import { beforeCreateNozzle } from '../middleware/planEnforcement';
+import { beforeCreateNozzle } from '../middlewares/planEnforcement';
 import { parseRows } from '../utils/parseDb';
 
 export async function createNozzle(

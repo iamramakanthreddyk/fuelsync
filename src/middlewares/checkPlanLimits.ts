@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../utils/prisma';
-import { beforeCreateStation, beforeCreatePump, beforeCreateNozzle } from '../middleware/planEnforcement';
+import { beforeCreateStation, beforeCreatePump, beforeCreateNozzle } from './planEnforcement';
 
 export function checkStationLimit() {
   return async (req: Request, res: Response, next: NextFunction) => {

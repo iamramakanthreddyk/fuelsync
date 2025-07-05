@@ -39,7 +39,7 @@ function parseOpenApiEndpoints(doc) {
 }
 
 function main() {
-  const brainText = fs.readFileSync('backend_brain.md', 'utf8');
+  const brainText = fs.readFileSync('docs/backend_brain.md', 'utf8');
   const openapiText = fs.readFileSync('docs/openapi.yaml', 'utf8');
   const mdEndpoints = parseBrainEndpoints(brainText);
   const spec = yaml.load(openapiText);

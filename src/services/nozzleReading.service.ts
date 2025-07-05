@@ -39,10 +39,11 @@ export async function createNozzleReading(
       throw new Error('Day already finalized for this station');
     }
 
+    const readingId = randomUUID();
     const readingRes = await client.query<{ id: string }>(
       'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
       [
-        randomUUID(),
+        readingId,
         tenantId,
         data.nozzleId,
         data.reading,
@@ -89,11 +90,12 @@ export async function createNozzleReading(
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }
     await client.query(
-      'INSERT INTO public.sales (id, tenant_id, nozzle_id, station_id, volume, fuel_type, fuel_price, amount, payment_method, creditor_id, created_by, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW())',
+      'INSERT INTO public.sales (id, tenant_id, nozzle_id, reading_id, station_id, volume, fuel_type, fuel_price, amount, payment_method, creditor_id, created_by, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,NOW())',
       [
         randomUUID(),
         tenantId,
         data.nozzleId,
+        readingId,
         station_id,
         volumeSold,
         fuel_type,
@@ -144,17 +146,35 @@ export async function listNozzleReadings(
       SELECT
         nr.id,
         nr.nozzle_id,
+        n.nozzle_number,
+        p.id AS pump_id,
+        p.name AS pump_name,
+        s.id AS station_id,
+        s.name AS station_name,
         nr.reading,
         nr.recorded_at,
-        p.station_id,
         LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading
       FROM public.nozzle_readings nr
       JOIN public.nozzles n ON nr.nozzle_id = n.id
       JOIN public.pumps p ON n.pump_id = p.id
+      JOIN public.stations s ON p.station_id = s.id
       WHERE nr.tenant_id = $1
     )
-    SELECT id, nozzle_id, reading, recorded_at, previous_reading
+    SELECT
+      o.id,
+      o.nozzle_id,
+      o.nozzle_number,
+      o.pump_id,
+      o.pump_name,
+      o.station_id,
+      o.station_name,
+      o.reading,
+      o.recorded_at,
+      o.previous_reading,
+      u.name AS recorded_by
     FROM ordered o
+    LEFT JOIN public.sales sa ON sa.reading_id = o.id
+    LEFT JOIN public.users u ON sa.created_by = u.id
     ${where}
     ORDER BY recorded_at DESC${limitClause}`;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
@@ -199,4 +219,48 @@ export async function canCreateNozzleReading(
   }
 
   return { allowed: true } as const;
+}
+
+export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
+  const res = await db.query(
+    `SELECT id, nozzle_id, reading, recorded_at, payment_method, creditor_id
+       FROM public.nozzle_readings
+      WHERE id = $1 AND tenant_id = $2`,
+    [id, tenantId]
+  );
+  return res.rows[0] || null;
+}
+
+export async function updateNozzleReading(
+  db: Pool,
+  tenantId: string,
+  id: string,
+  data: Partial<NozzleReadingInput>
+) {
+  const fields: string[] = [];
+  const values: any[] = [id, tenantId];
+  let idx = 3;
+  if (data.reading !== undefined) {
+    fields.push(`reading = $${idx++}`);
+    values.push(data.reading);
+  }
+  if (data.recordedAt !== undefined) {
+    fields.push(`recorded_at = $${idx++}`);
+    values.push(data.recordedAt);
+  }
+  if (data.paymentMethod) {
+    fields.push(`payment_method = $${idx++}`);
+    values.push(data.paymentMethod);
+  }
+  if (data.creditorId !== undefined) {
+    fields.push(`creditor_id = $${idx++}`);
+    values.push(data.creditorId);
+  }
+  if (fields.length === 0) {
+    return null;
+  }
+  const sql = `UPDATE public.nozzle_readings SET ${fields.join(", ")}, updated_at = NOW()
+               WHERE id = $1 AND tenant_id = $2 RETURNING id`;
+  const res = await db.query<{ id: string }>(sql, values);
+  return res.rowCount ? res.rows[0].id : null;
 }

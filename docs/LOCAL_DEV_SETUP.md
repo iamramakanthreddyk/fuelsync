@@ -60,7 +60,7 @@ credentials to authenticate and test routes.
 
 ## 5. Run Unit Tests
 
-Install dependencies and execute the Jest test suites. **Start PostgreSQL first** using `./scripts/start-dev-db.sh` (Docker) or `sudo service postgresql start` if installed locally. Jest's global setup will then create and seed the `fuelsync_test` database automatically.
+Install dependencies and execute the Jest test suites. The `npm test` command will automatically launch the Docker database if it isn't running and wait for a connection before invoking Jest.
 
 ```bash
 npm install
@@ -68,5 +68,4 @@ npm test
 ```
 
 All tests should pass if the local database is configured correctly.
-If you see `Skipping tests: unable to provision test DB`, make sure PostgreSQL is
-installed or start the dev database container and run the tests again.
+If you see `Skipping tests: unable to provision test DB`, ensure Docker is installed or that PostgreSQL is running locally before retrying `npm test`.

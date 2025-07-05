@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { createNozzleReading, listNozzleReadings, canCreateNozzleReading } from '../services/nozzleReading.service';
+import {
+  createNozzleReading,
+  listNozzleReadings,
+  canCreateNozzleReading,
+  getNozzleReading,
+  updateNozzleReading,
+} from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -55,6 +61,38 @@ export function createNozzleReadingHandlers(db: Pool) {
           reason: result.reason,
           missingPrice: (result as any).missingPrice,
         });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    get: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        const id = req.params.id;
+        if (!user?.tenantId || !id) {
+          return errorResponse(res, 400, 'id required');
+        }
+        const reading = await getNozzleReading(db, user.tenantId, id);
+        if (!reading) {
+          return errorResponse(res, 404, 'Reading not found');
+        }
+        successResponse(res, reading);
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    update: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        const id = req.params.id;
+        if (!user?.tenantId || !id) {
+          return errorResponse(res, 400, 'id required');
+        }
+        const updatedId = await updateNozzleReading(db, user.tenantId, id, req.body);
+        if (!updatedId) {
+          return errorResponse(res, 400, 'No fields to update');
+        }
+        successResponse(res, { id: updatedId });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

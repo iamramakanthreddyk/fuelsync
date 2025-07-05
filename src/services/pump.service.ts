@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../utils/prisma';
-import { beforeCreatePump } from '../middleware/planEnforcement';
+import { beforeCreatePump } from '../middlewares/planEnforcement';
 
 export async function createPump(
   tenantId: string,

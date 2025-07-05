@@ -25,10 +25,15 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
   const where = conds.length ? `AND ${conds.join(' AND ')}` : '';
   const limit = query.limit || 50;
   const offset = ((query.page || 1) - 1) * limit;
-  const sql = `SELECT s.id, s.nozzle_id, s.created_by as user_id, s.volume, s.amount, s.recorded_at, s.payment_method
+  const sql = `SELECT s.id, s.nozzle_id, s.station_id, s.fuel_type, s.fuel_price,
+                      s.volume, s.amount, s.payment_method, s.status, s.recorded_at,
+                      p.id AS pump_id, p.name AS pump_name,
+                      st.name AS station_name,
+                      n.nozzle_number
                FROM public.sales s
                JOIN public.nozzles n ON s.nozzle_id = n.id
                JOIN public.pumps p ON n.pump_id = p.id
+               JOIN public.stations st ON p.station_id = st.id
                WHERE s.tenant_id = $1 ${where}
                ORDER BY s.recorded_at DESC
                LIMIT $${idx++} OFFSET $${idx++}`;
@@ -38,7 +43,8 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
     res.rows.map(r => ({
       ...r,
       volume: parseFloat(r.volume),
-      amount: parseFloat(r.amount)
+      amount: parseFloat(r.amount),
+      fuel_price: r.fuel_price !== undefined ? parseFloat(r.fuel_price) : undefined
     }))
   );
 }

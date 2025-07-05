@@ -3018,3 +3018,15 @@ Each entry is tied to a step from the implementation index.
 * `src/services/nozzleReading.service.ts`
 * `README.md`
 * `docs/STEP_fix_20251220.md`
+
+## [Fix 2026-07-15] – Reading meta fields
+
+### 🟥 Fixes
+* Insert `reading_id` when creating sales.
+* `listNozzleReadings` joins pumps, stations and users to return `nozzle_number` and `recorded_by`.
+
+### Files
+* `src/services/nozzleReading.service.ts`
+* `src/api/api-contract.ts`
+* `src/api/services/readingsService.ts`
+* `docs/STEP_fix_20260715_COMMAND.md`

@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { Prisma } from '@prisma/client';
 import prisma from '../utils/prisma';
-import { beforeCreateStation } from '../middleware/planEnforcement';
+import { beforeCreateStation } from '../middlewares/planEnforcement';
 import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function createStation(

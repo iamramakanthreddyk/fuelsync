@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 import prisma from '../utils/prisma';
 import { UserRole } from '../constants/auth';
-import { beforeCreateUser } from '../middleware/planEnforcement';
+import { beforeCreateUser } from '../middlewares/planEnforcement';
 
 export async function createUser(
   tenantId: string,

@@ -25,7 +25,8 @@
     "setup-azure-db": "node scripts/setup-azure-db.js",
     "azure-migrate-cash": "node scripts/apply-cash-reports-azure.js",
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
-    "test": "echo \"Tests not available in this environment\" && exit 0",
+    "test": "ts-node scripts/start-db-and-test.ts",
+    "test:unit": "jest -c jest.config.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -50,7 +51,11 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.2.5",
+    "jest": "^30.0.4",
     "prisma": "^6.10.1",
-    "@types/node": "^20.2.5"
+    "supertest": "^7.1.1",
+    "ts-jest": "^29.4.0"
   }
 }

@@ -247,3 +247,10 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-12-18 | Prisma price helper typing | ✅ Done | `src/utils/priceUtils.ts` | `docs/STEP_fix_20251218.md` |
 | fix | 2025-12-19 | Station list typing and price lookup | ✅ Done | `src/services/attendant.service.ts`, `src/services/station.service.ts` | `docs/STEP_fix_20251219.md` |
 | fix | 2025-12-20 | Apply documented Prisma price helper | ✅ Done | `src/utils/priceUtils.ts`, `src/services/attendant.service.ts`, `src/services/nozzleReading.service.ts`, `README.md` | `docs/STEP_fix_20251220.md` |
+| audit | 2026-07-12 | Backend–frontend sync audit | ✅ Done | `docs/FRONTEND_BACKEND_SYNC_AUDIT_20260712.md`, `backend/__tests__/integration/openapiRoutes.test.ts` | `docs/STEP_audit_20260712_COMMAND.md` |
+| fix | 2026-07-13 | Shared API types & validation | ✅ Done | `shared/apiTypes.ts`, `backend/__tests__/integration/api-contract.test.ts`, `src/api/client.ts`, `src/api/fuel-inventory.ts` | `docs/STEP_fix_20260713_COMMAND.md` |
+| fix | 2026-07-14 | Test DB setup fallback | ✅ Done | `docs/STEP_fix_20260714_COMMAND.md` |
+| fix | 2026-07-15 | Reading detail & edit pages | ✅ Done | `src/pages/dashboard/ReadingDetailPage.tsx`, `src/pages/dashboard/EditReadingPage.tsx` | `docs/STEP_fix_20260715.md` |
+| fix | 2026-07-15 | Reading meta fields | ✅ Done | `src/services/nozzleReading.service.ts`, `src/api/api-contract.ts`, `src/api/services/readingsService.ts` | `docs/STEP_fix_20260715_COMMAND.md` |
+| fix | 2026-07-15 | Pumps listing default | ✅ Done | `src/hooks/api/usePumps.ts` | `docs/STEP_fix_20260715_COMMAND.md` |
+| 3     | 3.16 | Owner analytics dashboard | ✅ Done | `src/pages/dashboard/AnalyticsPage.tsx` | `PHASE_3_SUMMARY.md#step-3.16` |
