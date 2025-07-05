@@ -1323,3 +1323,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Updated `getPriceAtTimestamp` to accept `PrismaClient` directly, resolving build errors when called from services.
+
+### 🛠️ Fix 2025-12-19 – Station list typing and price lookup
+**Status:** ✅ Done
+**Files:** `src/services/attendant.service.ts`, `src/services/station.service.ts`, `docs/STEP_fix_20251219.md`
+
+**Overview:**
+* Passed the pg transaction client to `getPriceAtTimestamp` in cash report creation.
+* Cast station listing results to `any[]` so metrics can be attached without type errors.

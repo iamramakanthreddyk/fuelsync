@@ -81,7 +81,7 @@ export async function listStations(
     attendantCount: 0,
     pumpCount: st._count.pumps,
     createdAt: st.created_at,
-  }));
+  })) as any[];
   if (!includeMetrics) return result;
   for (const st of result) {
     st.metrics = await getStationMetrics(_db, tenantId, st.id, 'today');

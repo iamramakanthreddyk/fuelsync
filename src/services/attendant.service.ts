@@ -1,6 +1,5 @@
 import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
-import prisma from '../utils/prisma';
 import { parseRows } from '../utils/parseDb';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { incrementCreditorBalance } from './creditor.service';
@@ -86,7 +85,7 @@ export async function createCashReport(
       }
       const nozzleId = nozzleRes.rows[0].id;
         const priceRec = await getPriceAtTimestamp(
-          prisma,
+          client,
           tenantId,
           stationId,
           entry.fuelType,
