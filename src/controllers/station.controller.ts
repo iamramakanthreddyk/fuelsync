@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import prisma from '../utils/prisma';
-import { getStationMetrics, getStationPerformance, getStationComparison, getStationRanking, getStationEfficiency } from '../services/station.service';
+import { createStation, getStationMetrics, getStationPerformance, getStationComparison, getStationRanking, getStationEfficiency } from '../services/station.service';
 import { validateCreateStation, validateUpdateStation } from '../validators/station.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -15,15 +15,8 @@ export function createStationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateStation(req.body);
-        const station = await prisma.station.create({
-          data: {
-            tenant_id: tenantId,
-            name: data.name,
-            address: data.address || null
-          },
-          select: { id: true }
-        });
-        successResponse(res, { id: station.id }, undefined, 201);
+        const id = await createStation(db, tenantId, data.name, data.address);
+        successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { Pool } from 'pg';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
@@ -41,17 +40,24 @@ export async function createNozzleReading(
     }
 
     const readingRes = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING id',
-      [randomUUID(), tenantId, data.nozzleId, data.reading, data.recordedAt]
-    );
-    const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(2));
-      const priceRecord = await getPriceAtTimestamp(
-        prisma,
+      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
+      [
+        randomUUID(),
         tenantId,
-        station_id,
-        fuel_type,
-        data.recordedAt
-      );
+        data.nozzleId,
+        data.reading,
+        data.recordedAt,
+        data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+      ]
+    );
+    const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(3));
+    const priceRecord = await getPriceAtTimestamp(
+      client,
+      tenantId,
+      station_id,
+      fuel_type,
+      data.recordedAt
+    );
     if (!priceRecord) {
       throw new Error('Fuel price not found');
     }
@@ -133,6 +139,7 @@ export async function listNozzleReadings(
     params.push(query.to);
   }
   const where = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
+  const limitClause = query.limit ? ` LIMIT ${parseInt(String(query.limit), 10)}` : '';
   const sql = `WITH ordered AS (
       SELECT
         nr.id,
@@ -149,7 +156,7 @@ export async function listNozzleReadings(
     SELECT id, nozzle_id, reading, recorded_at, previous_reading
     FROM ordered o
     ${where}
-    ORDER BY recorded_at DESC`;
+    ORDER BY recorded_at DESC${limitClause}`;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
   return rows;
 }
@@ -188,7 +195,7 @@ export async function canCreateNozzleReading(
   );
 
   if (!priceRes.rowCount) {
-    return { allowed: false, reason: 'Active price missing' } as const;
+    return { allowed: false, reason: 'Active price missing', missingPrice: true } as const;
   }
 
   return { allowed: true } as const;

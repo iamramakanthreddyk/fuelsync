@@ -1,7 +1,7 @@
 export interface PumpInput {
   stationId: string;
   name: string;
-  serialNumber?: string;
+  serialNumber: string;
 }
 
 export function validateCreatePump(data: any): PumpInput {
@@ -11,6 +11,9 @@ export function validateCreatePump(data: any): PumpInput {
   }
   if (!name || typeof name !== 'string') {
     throw new Error('name required');
+  }
+  if (!serialNumber || typeof serialNumber !== 'string') {
+    throw new Error('serialNumber required');
   }
   return { stationId, name, serialNumber };
 }

@@ -6,6 +6,7 @@ import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
 import { getPumpSettings, updatePumpSettings } from '../services/pumpSettings.service';
+import { createPump } from '../services/pump.service';
 
 export function createPumpHandlers(db: Pool) {
   return {
@@ -16,14 +17,28 @@ export function createPumpHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreatePump(req.body);
-        const pump = await prisma.pump.create({
-          data: {
-            tenant_id: tenantId,
-            station_id: data.stationId,
-            name: data.name,
-            serial_number: data.serialNumber || null
-          }
+        const id = await createPump(
+          tenantId,
+          data.stationId,
+          data.name,
+          data.serialNumber
+        );
+        const record = await prisma.pump.findUnique({
+          where: { id },
+          include: { _count: { select: { nozzles: true } } }
         });
+        if (!record) {
+          return errorResponse(res, 500, 'Pump creation failed');
+        }
+        const pump = {
+          id: record.id,
+          stationId: record.station_id,
+          name: record.name,
+          serialNumber: record.serial_number,
+          status: record.status as 'active' | 'inactive' | 'maintenance',
+          createdAt: record.created_at,
+          nozzleCount: record._count.nozzles
+        };
         successResponse(res, { pump }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
