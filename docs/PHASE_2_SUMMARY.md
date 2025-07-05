@@ -1331,3 +1331,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Passed the pg transaction client to `getPriceAtTimestamp` in cash report creation.
 * Cast station listing results to `any[]` so metrics can be attached without type errors.
+
+### 🛠️ Fix 2025-12-20 – Apply documented Prisma price helper
+**Status:** ✅ Done
+**Files:** `src/utils/priceUtils.ts`, `src/services/attendant.service.ts`, `src/services/nozzleReading.service.ts`, `README.md`, `docs/STEP_fix_20251220.md`
+
+**Overview:**
+* Converted `getPriceAtTimestamp` to use `PrismaClient`.
+* Services now pass the Prisma instance for price lookups.
+* README links to the local Postgres setup guide.

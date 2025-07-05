@@ -3004,3 +3004,17 @@ Each entry is tied to a step from the implementation index.
 * `src/services/attendant.service.ts`
 * `src/services/station.service.ts`
 * `docs/STEP_fix_20251219.md`
+
+## [Fix 2025-12-20] – Apply documented Prisma price helper
+
+### 🟥 Fixes
+* Converted `getPriceAtTimestamp` to use `PrismaClient` and Prisma queries.
+* Updated attendant and nozzle reading services to pass the Prisma instance.
+* Linked local setup instructions from the README.
+
+### Files
+* `src/utils/priceUtils.ts`
+* `src/services/attendant.service.ts`
+* `src/services/nozzleReading.service.ts`
+* `README.md`
+* `docs/STEP_fix_20251220.md`

@@ -52,7 +52,7 @@ export async function createNozzleReading(
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(3));
     const priceRecord = await getPriceAtTimestamp(
-      client,
+      prisma,
       tenantId,
       station_id,
       fuel_type,
