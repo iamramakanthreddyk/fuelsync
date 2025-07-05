@@ -1309,3 +1309,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added `@types/node` to devDependencies so `tsc` succeeds without missing type errors.
+
+### 🛠️ Fix 2025-12-17 – Station metrics compile fix
+**Status:** ✅ Done
+**Files:** `src/services/station.service.ts`, `docs/STEP_fix_20251217.md`
+
+**Overview:**
+* Cast station listing results to `any[]` so the `metrics` property can be assigned without compile errors.

@@ -2975,3 +2975,12 @@ Each entry is tied to a step from the implementation index.
 * `package.json`
 * `package-lock.json`
 * `docs/STEP_fix_20251216.md`
+
+## [Fix 2025-12-17] – Station metrics compile fix
+
+### 🟥 Fixes
+* Cast station listing results to `any[]` so the `metrics` property can be assigned without TypeScript errors.
+
+### Files
+* `src/services/station.service.ts`
+* `docs/STEP_fix_20251217.md`

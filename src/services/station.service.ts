@@ -71,7 +71,7 @@ export async function listStations(db: Pool, tenantId: string, includeMetrics = 
     [tenantId]
   );
 
-  const stations = parseRows(res.rows);
+  const stations = parseRows(res.rows) as any[];
   if (!includeMetrics) return stations;
 
   for (const st of stations) {
