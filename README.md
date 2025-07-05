@@ -46,8 +46,9 @@ sudo service postgresql start
 ## Additional Documentation
 
 - [SERVER_README.md](SERVER_README.md) – how to start the API server and run quick login tests
- - [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues
- - [docs/SCRIPTS_GUIDE.md](docs/SCRIPTS_GUIDE.md) – overview of helper scripts
+- [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues
+- [docs/SCRIPTS_GUIDE.md](docs/SCRIPTS_GUIDE.md) – overview of helper scripts
+- [docs/LOCAL_DEV_SETUP.md](docs/LOCAL_DEV_SETUP.md) – create your own Postgres database without Docker
 
 ## Deploying to Azure
 

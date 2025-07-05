@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { parseRows } from '../utils/parseDb';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { incrementCreditorBalance } from './creditor.service';
+import prisma from '../utils/prisma';
 
 export async function listUserStations(db: Pool, tenantId: string, userId: string) {
   const res = await db.query(
@@ -85,7 +86,7 @@ export async function createCashReport(
       }
       const nozzleId = nozzleRes.rows[0].id;
         const priceRec = await getPriceAtTimestamp(
-          client,
+          prisma,
           tenantId,
           stationId,
           entry.fuelType,
