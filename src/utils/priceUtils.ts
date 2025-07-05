@@ -1,6 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-
-type TxClient = PrismaClient | Prisma.TransactionClient;
+import { PrismaClient } from '@prisma/client';
 
 export interface PriceRecord {
   price: number;
@@ -8,7 +6,7 @@ export interface PriceRecord {
 }
 
 export async function getPriceAtTimestamp(
-  client: TxClient,
+  client: PrismaClient,
   tenantId: string,
   stationId: string,
   fuelType: string,

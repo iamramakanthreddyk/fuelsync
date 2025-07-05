@@ -244,3 +244,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-12-15 | Explicit empty list handling | ✅ Done | `src/controllers/*` | `docs/STEP_fix_20251215.md` |
 | fix | 2025-12-16 | Node types for build | ✅ Done | `package.json` | `docs/STEP_fix_20251216.md` |
 | fix | 2025-12-17 | Station metrics compile fix | ✅ Done | `src/services/station.service.ts` | `docs/STEP_fix_20251217.md` |
+| fix | 2025-12-18 | Prisma price helper typing | ✅ Done | `src/utils/priceUtils.ts` | `docs/STEP_fix_20251218.md` |

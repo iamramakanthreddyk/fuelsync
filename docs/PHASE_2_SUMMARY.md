@@ -1316,3 +1316,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Cast station listing results to `any[]` so the `metrics` property can be assigned without compile errors.
+
+### 🛠️ Fix 2025-12-18 – Prisma price helper typing
+**Status:** ✅ Done
+**Files:** `src/utils/priceUtils.ts`, `docs/STEP_fix_20251218.md`
+
+**Overview:**
+* Updated `getPriceAtTimestamp` to accept `PrismaClient` directly, resolving build errors when called from services.

@@ -2984,3 +2984,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/station.service.ts`
 * `docs/STEP_fix_20251217.md`
+
+## [Fix 2025-12-18] – Prisma price helper typing
+
+### 🟥 Fixes
+* Changed `getPriceAtTimestamp` to accept `PrismaClient` so service calls compile.
+
+### Files
+* `src/utils/priceUtils.ts`
+* `docs/STEP_fix_20251218.md`
