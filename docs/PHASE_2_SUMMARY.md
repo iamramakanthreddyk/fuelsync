@@ -1340,3 +1340,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Converted `getPriceAtTimestamp` to use `PrismaClient`.
 * Services now pass the Prisma instance for price lookups.
 * README links to the local Postgres setup guide.
+
+### 🛠️ Fix 2026-07-16 – Azure deployment docs
+**Status:** ✅ Done
+**Files:** `docs/AZURE_DEPLOYMENT_GUIDE.md`, `docs/AZURE_DEV_SETUP.md`, `README.md`, `docs/STEP_fix_20260716_COMMAND.md`
+
+**Overview:**
+* Documented environment variables and Azure setup script usage.
+* Added a developer guide for connecting to an Azure database.
+* Linked both guides from the README.
