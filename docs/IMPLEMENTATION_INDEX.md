@@ -256,3 +256,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 3     | 3.16 | Owner analytics dashboard | ✅ Done | `src/pages/dashboard/AnalyticsPage.tsx` | `PHASE_3_SUMMARY.md#step-3.16` |
 | fix | 2026-07-16 | Azure deployment docs | ✅ Done | `docs/AZURE_DEPLOYMENT_GUIDE.md`, `docs/AZURE_DEV_SETUP.md`, `README.md` | `docs/STEP_fix_20260716_COMMAND.md` |
 | fix | 2026-07-17 | Dashboard station access | ✅ Done | `src/controllers/dashboard.controller.ts`, `tests/dashboard.controller.test.ts` | `docs/STEP_fix_20260717_COMMAND.md` |
+| fix | 2026-07-18 | OpenAPI server path | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `docs/openapi-spec.yaml` | `docs/STEP_fix_20260718_COMMAND.md` |
