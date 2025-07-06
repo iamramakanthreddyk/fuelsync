@@ -2689,7 +2689,7 @@ Each entry is tied to a step from the implementation index.
 
 ### Files
 * `docs/openapi.yaml`
-* `docs/missing/COMPLETE_API_SPEC.yaml`
+* `docs/missing/COMPLETE_API_SPEC.yaml` (historical reference)
 * `src/controllers/fuelPrice.controller.ts`
 * `docs/STEP_fix_20251120.md`
 
