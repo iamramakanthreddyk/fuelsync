@@ -20,7 +20,10 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
   }
   if (query.endDate) {
     conds.push(`s.recorded_at <= $${idx++}`);
-    params.push(query.endDate);
+    // Add end of day to include the entire end date
+    const endDate = new Date(query.endDate);
+    endDate.setHours(23, 59, 59, 999);
+    params.push(endDate);
   }
   const where = conds.length ? `AND ${conds.join(' AND ')}` : '';
   const limit = query.limit || 50;
