@@ -158,19 +158,20 @@ export async function listAlerts(db: Pool, tenantId: string, stationId?: string,
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const query = `
     SELECT a.id, a.station_id, st.name AS station_name, a.alert_type, a.message, a.severity, a.is_read, a.created_at
-      FROM ${tenantId}.alerts a
-      LEFT JOIN ${tenantId}.stations st ON a.station_id = st.id
-      ${where}
+      FROM public.alerts a
+      LEFT JOIN public.stations st ON a.station_id = st.id
+      WHERE a.tenant_id = $${idx++} ${conditions.length ? 'AND ' + conditions.join(' AND ') : ''}
       ORDER BY a.created_at DESC
       LIMIT 50`;
+  params.unshift(tenantId);
   const res = await db.query(query, params);
   return parseRows(res.rows);
 }
 
 export async function acknowledgeAlert(db: Pool, tenantId: string, alertId: string): Promise<boolean> {
   const res = await db.query(
-    `UPDATE ${tenantId}.alerts SET is_read = TRUE WHERE id = $1 RETURNING id`,
-    [alertId]
+    `UPDATE public.alerts SET is_read = TRUE WHERE id = $1 AND tenant_id = $2 RETURNING id`,
+    [alertId, tenantId]
   );
   return (res.rowCount ?? 0) > 0;
 }
