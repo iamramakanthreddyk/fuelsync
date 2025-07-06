@@ -60,7 +60,7 @@ export async function createNozzleReading(
       data.recordedAt
     );
     if (!priceRecord) {
-      throw new Error('Fuel price not found');
+      throw new Error(`Fuel price not found for ${fuel_type} at this station. Please set fuel prices before recording readings.`);
     }
     const { price, validFrom } = priceRecord;
     const threshold = new Date(data.recordedAt);
@@ -171,10 +171,16 @@ export async function listNozzleReadings(
       o.reading,
       o.recorded_at,
       o.previous_reading,
-      u.name AS recorded_by
+      u.name AS recorded_by,
+      n.fuel_type,
+      sa.payment_method,
+      sa.volume,
+      sa.amount,
+      sa.fuel_price
     FROM ordered o
     LEFT JOIN public.sales sa ON sa.reading_id = o.id
     LEFT JOIN public.users u ON sa.created_by = u.id
+    LEFT JOIN public.nozzles n ON o.nozzle_id = n.id
     ${where}
     ORDER BY recorded_at DESC${limitClause}`;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
@@ -204,6 +210,7 @@ export async function canCreateNozzleReading(
     return { allowed: false, reason: 'Nozzle inactive' } as const;
   }
 
+  // Check for fuel price - fuel prices are per station, not per fuel type
   const priceRes = await db.query<{ id: string }>(
     `SELECT id FROM public.fuel_prices
        WHERE station_id = $1 AND fuel_type = $2
@@ -213,8 +220,11 @@ export async function canCreateNozzleReading(
        LIMIT 1`,
     [station_id, fuel_type, tenantId]
   );
+  
+  console.log(`[NOZZLE-READING] Price check for station ${station_id}, fuel ${fuel_type}, tenant ${tenantId}: ${priceRes.rowCount} rows`);
 
   if (!priceRes.rowCount) {
+    console.log(`[NOZZLE-READING] No active price found for station ${station_id}, fuel type ${fuel_type}`);
     return { allowed: false, reason: 'Active price missing', missingPrice: true } as const;
   }
 
@@ -223,9 +233,30 @@ export async function canCreateNozzleReading(
 
 export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
   const res = await db.query(
-    `SELECT id, nozzle_id, reading, recorded_at, payment_method, creditor_id
-       FROM public.nozzle_readings
-      WHERE id = $1 AND tenant_id = $2`,
+    `SELECT 
+       nr.id,
+       nr.nozzle_id,
+       n.nozzle_number,
+       p.id AS pump_id,
+       p.name AS pump_name,
+       s.id AS station_id,
+       s.name AS station_name,
+       nr.reading,
+       nr.recorded_at,
+       nr.payment_method,
+       nr.creditor_id,
+       n.fuel_type,
+       u.name AS recorded_by,
+       sa.volume,
+       sa.amount,
+       sa.fuel_price
+     FROM public.nozzle_readings nr
+     JOIN public.nozzles n ON nr.nozzle_id = n.id
+     JOIN public.pumps p ON n.pump_id = p.id
+     JOIN public.stations s ON p.station_id = s.id
+     LEFT JOIN public.sales sa ON sa.reading_id = nr.id
+     LEFT JOIN public.users u ON sa.created_by = u.id
+     WHERE nr.id = $1 AND nr.tenant_id = $2`,
     [id, tenantId]
   );
   return res.rows[0] || null;

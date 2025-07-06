@@ -93,7 +93,10 @@ export function createStationHandlers(db: Pool) {
         const data = validateUpdateStation(req.body);
         const updated = await prisma.station.updateMany({
           where: { id: req.params.stationId, tenant_id: tenantId },
-          data: { name: data.name || undefined }
+          data: {
+            ...(data.name ? { name: data.name } : {}),
+            ...(data.address ? { address: data.address } : {})
+          }
         });
         if (!updated.count) return errorResponse(res, 404, 'Station not found');
         const station = await prisma.station.findUnique({

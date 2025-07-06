@@ -12,9 +12,9 @@ export function validateCreateStation(data: any): StationInput {
 }
 
 export function validateUpdateStation(data: any): StationInput {
-  const { name } = data || {};
-  if (!name) {
+  const { name, address } = data || {};
+  if (!name && !address) {
     throw new Error('No update fields');
   }
-  return { name };
+  return { name, address };
 }
