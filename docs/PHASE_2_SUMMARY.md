@@ -1349,3 +1349,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Documented environment variables and Azure setup script usage.
 * Added a developer guide for connecting to an Azure database.
 * Linked both guides from the README.
+
+### 🛠️ Fix 2026-07-17 – Dashboard station access
+**Status:** ✅ Done
+**Files:** `src/controllers/dashboard.controller.ts`, `tests/dashboard.controller.test.ts`, `docs/STEP_fix_20260717_COMMAND.md`
+
+**Overview:**
+* Added `user_stations` check to all dashboard endpoints with `stationId`.
+* Handlers return a 403 response when the user lacks access.
+* Added unit tests for the new validation logic.
