@@ -18,6 +18,16 @@ export function createFuelPriceHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateFuelPrice(req.body);
+        const validFrom = data.validFrom || new Date();
+        await prisma.fuelPrice.updateMany({
+          where: {
+            tenant_id: tenantId,
+            station_id: data.stationId,
+            fuel_type: data.fuelType,
+            effective_to: null
+          },
+          data: { effective_to: validFrom }
+        });
         const price = await prisma.fuelPrice.create({
           data: {
             tenant_id: tenantId,
@@ -25,7 +35,8 @@ export function createFuelPriceHandlers(db: Pool) {
             fuel_type: data.fuelType,
             price: data.price,
             cost_price: data.costPrice || null,
-            valid_from: data.validFrom || new Date()
+            valid_from: validFrom,
+            effective_to: data.effectiveTo || null
           },
           select: { id: true }
         });
@@ -56,6 +67,7 @@ export function createFuelPriceHandlers(db: Pool) {
         price: p.price,
         costPrice: p.cost_price,
         validFrom: p.valid_from,
+        effectiveTo: p.effective_to ?? undefined,
         createdAt: p.created_at,
       }));
       successResponse(res, { prices });
@@ -75,7 +87,8 @@ export function createFuelPriceHandlers(db: Pool) {
             fuel_type: data.fuelType,
             price: data.price,
             cost_price: data.costPrice || null,
-            valid_from: data.validFrom || new Date()
+            valid_from: data.validFrom || new Date(),
+            effective_to: data.effectiveTo || null
           }
         });
         if (!updated.count) return errorResponse(res, 404, 'Price not found');

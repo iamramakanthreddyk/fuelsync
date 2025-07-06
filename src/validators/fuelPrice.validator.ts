@@ -3,7 +3,8 @@ export interface FuelPriceInput {
   fuelType: string;
   price: number;
   costPrice?: number;
-  validFrom: Date;
+  validFrom?: Date;
+  effectiveTo?: Date;
 }
 
 export interface FuelPriceQuery {
@@ -12,7 +13,7 @@ export interface FuelPriceQuery {
 }
 
 export function validateCreateFuelPrice(data: any): FuelPriceInput {
-  const { stationId, fuelType, price, costPrice, validFrom } = data || {};
+  const { stationId, fuelType, price, costPrice, validFrom, effectiveTo } = data || {};
   if (!stationId || typeof stationId !== 'string') {
     throw new Error('stationId required');
   }
@@ -30,11 +31,30 @@ export function validateCreateFuelPrice(data: any): FuelPriceInput {
       throw new Error('costPrice must be >= 0');
     }
   }
-  const ts = new Date(validFrom);
-  if (!validFrom || isNaN(ts.getTime())) {
-    throw new Error('validFrom invalid');
+  let validFromDate: Date;
+  if (validFrom) {
+    const ts = new Date(validFrom);
+    if (isNaN(ts.getTime())) {
+      throw new Error('validFrom invalid');
+    }
+    validFromDate = ts;
+  } else {
+    validFromDate = new Date();
   }
-  return { stationId, fuelType, price: priceNum, costPrice: costPriceNum, validFrom: ts };
+
+  let effectiveToDate: Date | undefined;
+  if (effectiveTo !== undefined && effectiveTo !== null) {
+    const et = new Date(effectiveTo);
+    if (isNaN(et.getTime())) {
+      throw new Error('effectiveTo invalid');
+    }
+    if (et <= validFromDate) {
+      throw new Error('effectiveTo must be later than validFrom');
+    }
+    effectiveToDate = et;
+  }
+
+  return { stationId, fuelType, price: priceNum, costPrice: costPriceNum, validFrom: validFromDate, effectiveTo: effectiveToDate };
 }
 
 export function parseFuelPriceQuery(query: any): FuelPriceQuery {

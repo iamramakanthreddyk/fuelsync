@@ -7,10 +7,22 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
   const client = await db.connect();
   try {
     await client.query('BEGIN');
+    const validFrom = input.validFrom || new Date();
+
+    await client.query(
+      `UPDATE public.fuel_prices
+         SET effective_to = $1, updated_at = NOW()
+       WHERE tenant_id = $2
+         AND station_id = $3
+         AND fuel_type = $4
+         AND effective_to IS NULL`,
+      [validFrom, tenantId, input.stationId, input.fuelType]
+    );
+
     const res = await client.query<{ id: string }>(
-      `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from, updated_at)
-       VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id`,
-      [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, input.validFrom || new Date()]
+      `INSERT INTO public.fuel_prices (id, tenant_id, station_id, fuel_type, price, valid_from, effective_to, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
+      [randomUUID(), tenantId, input.stationId, input.fuelType, input.price, validFrom, input.effectiveTo]
     );
     await client.query('COMMIT');
     return res.rows[0].id;
@@ -24,8 +36,8 @@ export async function createFuelPrice(db: Pool, tenantId: string, input: FuelPri
 
 export async function updateFuelPrice(db: Pool, tenantId: string, id: string, input: FuelPriceInput): Promise<void> {
   await db.query(
-    'UPDATE public.fuel_prices SET station_id = $2, fuel_type = $3, price = $4, valid_from = $5 WHERE id = $1 AND tenant_id = $6',
-    [id, input.stationId, input.fuelType, input.price, input.validFrom, tenantId]
+    'UPDATE public.fuel_prices SET station_id = $2, fuel_type = $3, price = $4, valid_from = $5, effective_to = $6 WHERE id = $1 AND tenant_id = $7',
+    [id, input.stationId, input.fuelType, input.price, input.validFrom, input.effectiveTo, tenantId]
   );
 }
 
@@ -48,7 +60,7 @@ export async function listFuelPrices(db: Pool, tenantId: string, query: FuelPric
   conds.push(`tenant_id = $${idx++}`);
   params.push(tenantId);
   const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
-  const sql = `SELECT id, station_id, fuel_type, price, valid_from, created_at
+  const sql = `SELECT id, station_id, fuel_type, price, valid_from, effective_to, created_at
                FROM public.fuel_prices
                ${where}
                ORDER BY valid_from DESC`;

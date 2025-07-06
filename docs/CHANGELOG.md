@@ -3055,3 +3055,26 @@ Each entry is tied to a step from the implementation index.
 * `src/controllers/dashboard.controller.ts`
 * `tests/dashboard.controller.test.ts`
 * `docs/STEP_fix_20260717_COMMAND.md`
+
+## [Fix 2026-07-18] – Fuel price effective dates
+
+### 🟥 Fixes
+* `validFrom` in fuel price validation defaults to the current timestamp.
+* `effectiveTo` can now be provided and must be later than `validFrom`.
+
+### Files
+* `backend/src/validators/fuelPrice.validator.ts`
+* `backend/src/controllers/fuelPrice.controller.ts`
+* `backend/src/services/fuelPrice.service.ts`
+* `src/api/api-contract.ts`
+* `docs/STEP_fix_20260718_COMMAND.md`
+
+## [Fix 2026-07-19] – Fuel price range override
+
+### 🟥 Fixes
+* Inserting a new price now closes the previous active range by setting its `effective_to` to the new price's `valid_from`.
+
+### Files
+* `backend/src/controllers/fuelPrice.controller.ts`
+* `backend/src/services/fuelPrice.service.ts`
+* `docs/STEP_fix_20260719_COMMAND.md`
