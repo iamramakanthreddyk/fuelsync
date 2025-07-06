@@ -21,11 +21,11 @@ export function createNozzleHandlers(db: Pool) {
             tenant_id: tenantId,
             pump_id: data.pumpId,
             nozzle_number: data.nozzleNumber,
-            fuel_type: data.fuelType
-          },
-          select: { id: true }
+            fuel_type: data.fuelType,
+            status: data.status || 'active'
+          }
         });
-        successResponse(res, { id: nozzle.id }, undefined, 201);
+        successResponse(res, nozzle, undefined, 201);
       } catch (err: any) {
         if (
           err instanceof PrismaClientKnownRequestError &&
