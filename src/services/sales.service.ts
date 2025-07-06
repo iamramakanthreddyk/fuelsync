@@ -31,10 +31,10 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
                       st.name AS station_name,
                       n.nozzle_number
                FROM public.sales s
-               JOIN public.nozzles n ON s.nozzle_id = n.id
-               JOIN public.pumps p ON n.pump_id = p.id
-               JOIN public.stations st ON p.station_id = st.id
-               WHERE s.tenant_id = $1 ${where}
+               JOIN public.nozzles n ON s.nozzle_id = n.id AND n.tenant_id = $1
+               JOIN public.pumps p ON n.pump_id = p.id AND p.tenant_id = $1
+               JOIN public.stations st ON p.station_id = st.id AND st.tenant_id = $1
+               WHERE 1=1 ${where}
                ORDER BY s.recorded_at DESC
                LIMIT $${idx++} OFFSET $${idx++}`;
   params.push(limit, offset);
@@ -60,9 +60,9 @@ export async function salesAnalytics(db: Pool, tenantId: string, stationId?: str
   const groupColumn = groupBy === 'station' ? 'p.station_id' : 'p.id';
   const sql = `SELECT ${groupColumn} as key, SUM(s.volume) as volume, SUM(s.amount) as amount
                FROM public.sales s
-               JOIN public.nozzles n ON s.nozzle_id = n.id
-               JOIN public.pumps p ON n.pump_id = p.id
-               WHERE s.tenant_id = $1 ${where}
+               JOIN public.nozzles n ON s.nozzle_id = n.id AND n.tenant_id = $1
+               JOIN public.pumps p ON n.pump_id = p.id AND p.tenant_id = $1
+               WHERE 1=1 ${where}
                GROUP BY ${groupColumn}
                ORDER BY amount DESC`;
   const res = await db.query(sql, params);
