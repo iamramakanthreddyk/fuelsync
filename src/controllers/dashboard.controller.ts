@@ -10,8 +10,18 @@ export function createDashboardHandlers(db: Pool) {
   return {
     getSalesSummary: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = req.user;
+        const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
+        if (stationId) {
+          const access = await db.query(
+            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            [user?.userId, stationId, tenantId]
+          );
+          if (!access.rowCount) {
+            return errorResponse(res, 403, 'Station access denied');
+          }
+        }
         const range = (req.query.range as string) || 'monthly';
 
         let dateFilter = '';
@@ -62,8 +72,18 @@ export function createDashboardHandlers(db: Pool) {
 
     getPaymentMethodBreakdown: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = req.user;
+        const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
+        if (stationId) {
+          const access = await db.query(
+            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            [user?.userId, stationId, tenantId]
+          );
+          if (!access.rowCount) {
+            return errorResponse(res, 403, 'Station access denied');
+          }
+        }
         const dateFrom = req.query.dateFrom as string | undefined;
         const dateTo = req.query.dateTo as string | undefined;
 
@@ -119,8 +139,18 @@ export function createDashboardHandlers(db: Pool) {
 
     getFuelTypeBreakdown: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = req.user;
+        const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
+        if (stationId) {
+          const access = await db.query(
+            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            [user?.userId, stationId, tenantId]
+          );
+          if (!access.rowCount) {
+            return errorResponse(res, 403, 'Station access denied');
+          }
+        }
         const period = (req.query.period as string) || 'monthly';
 
         let dateFilter = '';
@@ -173,8 +203,18 @@ export function createDashboardHandlers(db: Pool) {
 
     getTopCreditors: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = req.user;
+        const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
+        if (stationId) {
+          const access = await db.query(
+            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            [user?.userId, stationId, tenantId]
+          );
+          if (!access.rowCount) {
+            return errorResponse(res, 403, 'Station access denied');
+          }
+        }
         const limit = parseInt(req.query.limit as string) || 5;
 
         const query = `
@@ -216,8 +256,18 @@ export function createDashboardHandlers(db: Pool) {
 
     getDailySalesTrend: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = req.user;
+        const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
+        if (stationId) {
+          const access = await db.query(
+            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            [user?.userId, stationId, tenantId]
+          );
+          if (!access.rowCount) {
+            return errorResponse(res, 403, 'Station access denied');
+          }
+        }
         const days = parseInt(req.query.days as string) || 7;
 
         const query = `
