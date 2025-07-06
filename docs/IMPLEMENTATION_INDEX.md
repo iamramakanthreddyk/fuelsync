@@ -260,3 +260,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-07-19 | Fuel price range override | ✅ Done | `backend/src/controllers/fuelPrice.controller.ts`, `backend/src/services/fuelPrice.service.ts` | `docs/STEP_fix_20260719_COMMAND.md` |
 | fix | 2026-07-23 | Attendant pages use role APIs | ✅ Done | `src/pages/dashboard/*` | `docs/STEP_fix_20260723_COMMAND.md` |
 | fix | 2026-07-22 | Fuel price service tests | ✅ Done | `backend/tests/fuelPrice.service.test.ts` | `docs/STEP_fix_20260722_COMMAND.md` |
+| fix | 2026-07-18 | OpenAPI server path | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `docs/openapi-spec.yaml` | `docs/STEP_fix_20260718_COMMAND.md` |

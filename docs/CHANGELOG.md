@@ -3078,3 +3078,15 @@ Each entry is tied to a step from the implementation index.
 * `backend/src/controllers/fuelPrice.controller.ts`
 * `backend/src/services/fuelPrice.service.ts`
 * `docs/STEP_fix_20260719_COMMAND.md`
+## [Fix 2026-07-18] – OpenAPI server path
+
+### 🟥 Fixes
+* `docs/openapi.yaml` and `frontend/docs/openapi-v1.yaml` now reference `/api/v1`
+  under the `servers` section.
+* Generated `docs/openapi-spec.yaml` for test consumption.
+
+### Files
+* `docs/openapi.yaml`
+* `frontend/docs/openapi-v1.yaml`
+* `docs/openapi-spec.yaml`
+* `docs/STEP_fix_20260718_COMMAND.md`
