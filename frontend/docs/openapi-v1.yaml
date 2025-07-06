@@ -4,7 +4,7 @@ info:
   description: API specification for FuelSync fuel station management system
   version: 1.0.0
 servers:
-  - url: /api/v1
+  - url: /v1
     description: API base URL
 security:
   - bearerAuth: []
