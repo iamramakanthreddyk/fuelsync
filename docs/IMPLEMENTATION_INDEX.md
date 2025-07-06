@@ -254,3 +254,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-07-15 | Reading meta fields | ✅ Done | `src/services/nozzleReading.service.ts`, `src/api/api-contract.ts`, `src/api/services/readingsService.ts` | `docs/STEP_fix_20260715_COMMAND.md` |
 | fix | 2026-07-15 | Pumps listing default | ✅ Done | `src/hooks/api/usePumps.ts` | `docs/STEP_fix_20260715_COMMAND.md` |
 | 3     | 3.16 | Owner analytics dashboard | ✅ Done | `src/pages/dashboard/AnalyticsPage.tsx` | `PHASE_3_SUMMARY.md#step-3.16` |
+| fix | 2026-07-16 | Azure deployment docs | ✅ Done | `docs/AZURE_DEPLOYMENT_GUIDE.md`, `docs/AZURE_DEV_SETUP.md`, `README.md` | `docs/STEP_fix_20260716_COMMAND.md` |

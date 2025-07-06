@@ -49,6 +49,8 @@ sudo service postgresql start
 - [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues
 - [docs/SCRIPTS_GUIDE.md](docs/SCRIPTS_GUIDE.md) – overview of helper scripts
 - [docs/LOCAL_DEV_SETUP.md](docs/LOCAL_DEV_SETUP.md) – create your own Postgres database without Docker
+- [docs/AZURE_DEPLOYMENT_GUIDE.md](docs/AZURE_DEPLOYMENT_GUIDE.md) – production database setup on Azure
+- [docs/AZURE_DEV_SETUP.md](docs/AZURE_DEV_SETUP.md) – connect a local server to an Azure database
 
 ## Deploying to Azure
 
