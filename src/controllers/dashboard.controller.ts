@@ -40,7 +40,7 @@ export function createDashboardHandlers(db: Pool) {
             break;
         }
 
-        const stationFilter = stationId ? `AND p.station_id = $1` : '';
+        const stationFilter = stationId ? `AND s.station_id = $1` : '';
         const query = `
           SELECT
             COALESCE(SUM(s.amount), 0) as total_sales,
@@ -49,8 +49,6 @@ export function createDashboardHandlers(db: Pool) {
             COUNT(s.id) as transaction_count,
             CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
           FROM public.sales s
-          JOIN public.nozzles n ON s.nozzle_id = n.id
-          JOIN public.pumps p ON n.pump_id = p.id
           WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
         `;
         const params = stationId ? [stationId, tenantId] : [tenantId];

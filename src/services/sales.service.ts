@@ -11,7 +11,7 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
     params.push(query.nozzleId);
   }
   if (query.stationId) {
-    conds.push(`p.station_id = $${idx++}`);
+    conds.push(`s.station_id = $${idx++}`);
     params.push(query.stationId);
   }
   if (query.startDate) {
