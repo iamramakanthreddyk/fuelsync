@@ -147,12 +147,14 @@ export async function listNozzleReadings(
         nr.id,
         nr.nozzle_id,
         n.nozzle_number,
+        n.fuel_type,
         p.id AS pump_id,
         p.name AS pump_name,
         s.id AS station_id,
         s.name AS station_name,
         nr.reading,
         nr.recorded_at,
+        nr.payment_method,
         LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading
       FROM public.nozzle_readings nr
       JOIN public.nozzles n ON nr.nozzle_id = n.id
@@ -164,25 +166,24 @@ export async function listNozzleReadings(
       o.id,
       o.nozzle_id,
       o.nozzle_number,
+      o.fuel_type,
       o.pump_id,
       o.pump_name,
       o.station_id,
       o.station_name,
       o.reading,
       o.recorded_at,
+      o.payment_method,
       o.previous_reading,
-      u.name AS recorded_by,
-      n.fuel_type,
-      sa.payment_method,
+      COALESCE(u.name, 'System') AS recorded_by,
       sa.volume,
       sa.amount,
       sa.fuel_price
     FROM ordered o
     LEFT JOIN public.sales sa ON sa.reading_id = o.id
     LEFT JOIN public.users u ON sa.created_by = u.id
-    LEFT JOIN public.nozzles n ON o.nozzle_id = n.id
     ${where}
-    ORDER BY recorded_at DESC${limitClause}`;
+    ORDER BY o.recorded_at DESC${limitClause}`;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
   return rows;
 }

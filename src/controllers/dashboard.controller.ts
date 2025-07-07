@@ -44,10 +44,8 @@ export function createDashboardHandlers(db: Pool) {
         const query = `
           SELECT
             COALESCE(SUM(s.amount), 0) as total_sales,
-            COALESCE(SUM(s.profit), 0) as total_profit,
             COALESCE(SUM(s.volume), 0) as total_volume,
-            COUNT(s.id) as transaction_count,
-            CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
+            COUNT(s.id) as transaction_count
           FROM public.sales s
           WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
         `;
@@ -57,8 +55,6 @@ export function createDashboardHandlers(db: Pool) {
 
         successResponse(res, {
           totalRevenue: parseFloat(row.total_sales),
-          totalProfit: parseFloat(row.total_profit),
-          profitMargin: parseFloat(row.profit_margin),
           totalVolume: parseFloat(row.total_volume),
           salesCount: parseInt(row.transaction_count, 10),
           period: range
