@@ -59,6 +59,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Alert'
+    post:
+      tags: [Alerts]
+      summary: Create alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlertRequest'
+      responses:
+        '201':
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+  /alerts/summary:
+    get:
+      tags: [Alerts]
+      summary: Alert counts by severity
+      responses:
+        '200':
+          description: Alert summary
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
   /alerts/{id}/read:
     patch:
       tags: [Alerts]
@@ -425,6 +454,30 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DailySalesTrend'
+  /dashboard/station-metrics:
+    get:
+      tags: [Dashboard]
+      summary: Get station metrics
+      responses:
+        '200':
+          description: Station metrics list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationMetric'
+  /dashboard/system-health:
+    get:
+      tags: [Dashboard]
+      summary: Get system health
+      responses:
+        '200':
+          description: System health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealth'
 
   /fuel-deliveries:
     get:
@@ -484,6 +537,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelInventory'
+  /fuel-inventory/summary:
+    get:
+      tags: [Fuel Inventory]
+      summary: Aggregate inventory totals by fuel type
+      responses:
+        '200':
+          description: Fuel inventory summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelInventorySummary'
 
   /fuel-prices:
     get:
@@ -719,6 +785,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReconciliationRecord'
+  /reconciliation/{stationId}:
+    get:
+      tags: [Reconciliation]
+      summary: Get reconciliation summary for station and date
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationRecord'
+  /reconciliation/{id}/approve:
+    post:
+      tags: [Reconciliation]
+      summary: Approve reconciliation record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation approved
   /reconciliation/daily-summary:
     get:
       tags: [Reconciliation]
@@ -743,6 +844,69 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DailyReadingSummary'
+  /reconciliation/differences:
+    get:
+      tags: [Reconciliation]
+      summary: List reconciliation differences
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [match, over, short]
+      responses:
+        '200':
+          description: Differences list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReconciliationDifference'
+  /reconciliation/differences/summary:
+    get:
+      tags: [Reconciliation]
+      summary: Summary of reconciliation discrepancies
+      responses:
+        '200':
+          description: Discrepancy summary
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+  /reconciliation/differences/{id}:
+    get:
+      tags: [Reconciliation]
+      summary: Get reconciliation difference by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation difference detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationDifference'
 
   /reports/sales:
     get:
@@ -847,6 +1011,23 @@ paths:
       responses:
         '200':
           description: Report scheduled
+  /reports/daily-sales:
+    get:
+      tags: [Reports]
+      summary: Get consolidated daily sales
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Daily sales report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailySalesReport'
 
   /sales:
     get:
@@ -2383,3 +2564,77 @@ components:
       properties:
         newPassword:
           type: string
+    CreateAlertRequest:
+      type: object
+      required: [alertType, message]
+      properties:
+        stationId:
+          type: string
+        alertType:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum: [info, warning, critical]
+    FuelInventorySummary:
+      type: object
+      properties:
+        fuelType:
+          type: string
+        totalVolume:
+          type: number
+        totalCapacity:
+          type: number
+    StationMetric:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        todaySales:
+          type: number
+        monthlySales:
+          type: number
+        salesGrowth:
+          type: number
+        activePumps:
+          type: integer
+        totalPumps:
+          type: integer
+        lastActivity:
+          type: string
+          format: date-time
+        efficiency:
+          type: number
+    SystemHealth:
+      type: object
+      properties:
+        uptime:
+          type: number
+        cpuUsage:
+          type: number
+        memoryUsage:
+          type: number
+        dbHealthy:
+          type: boolean
+    ReconciliationDifference:
+      type: object
+      properties:
+        id:
+          type: string
+        stationId:
+          type: string
+        stationName:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [match, over, short]
+        amount:
+          type: number
