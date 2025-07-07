@@ -1,15 +1,15 @@
 -- Create reconciliation_diff table to track differences between reported and actual cash
 CREATE TABLE IF NOT EXISTS public.reconciliation_diff (
   id TEXT PRIMARY KEY,
-  tenant_id TEXT NOT NULL REFERENCES public.tenants(id),
-  station_id TEXT NOT NULL REFERENCES public.stations(id),
+  tenant_id TEXT NOT NULL,
+  station_id TEXT NOT NULL,
   date DATE NOT NULL,
   reported_cash NUMERIC(10,2) NOT NULL DEFAULT 0,
   actual_cash NUMERIC(10,2) NOT NULL DEFAULT 0,
   difference NUMERIC(10,2) NOT NULL DEFAULT 0,
   status TEXT NOT NULL CHECK (status IN ('match', 'over', 'short')),
-  cash_report_id TEXT REFERENCES public.cash_reports(id),
-  reconciliation_id TEXT REFERENCES public.day_reconciliations(id),
+  cash_report_id TEXT,
+  reconciliation_id TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

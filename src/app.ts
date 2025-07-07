@@ -14,6 +14,7 @@ import { createCreditorRouter } from './routes/creditor.route';
 import { createCreditPaymentRouter } from './routes/creditPayment.route';
 import { createDeliveryRouter } from './routes/delivery.route';
 import { createReconciliationRouter } from './routes/reconciliation.route';
+import { createReconciliationDiffRoutes } from './routes/reconciliationDiff.route';
 import { createSalesRouter } from './routes/sales.route';
 import { createSettingsRouter } from './routes/settings.route';
 import { createFuelInventoryRouter } from './routes/fuelInventory.route';
@@ -181,6 +182,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/credit-payments`, createCreditPaymentRouter(pool));
   app.use(`${API_PREFIX}/fuel-deliveries`, createDeliveryRouter(pool));
   app.use(`${API_PREFIX}/reconciliation`, createReconciliationRouter(pool));
+  app.use(`${API_PREFIX}/reconciliation`, createReconciliationDiffRoutes(pool));
   app.use(`${API_PREFIX}/sales`, createSalesRouter(pool));
   app.use(`${API_PREFIX}/tenant/settings`, createSettingsRouter(pool));
   // deprecated path

@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { parseRows } from '../utils/parseDb';
 import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { incrementCreditorBalance } from './creditor.service';
+import { createAlert } from './alert.service';
 import prisma from '../utils/prisma';
 
 export async function listUserStations(db: Pool, tenantId: string, userId: string) {
