@@ -34,9 +34,9 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
                       st.name AS station_name,
                       n.nozzle_number
                FROM public.sales s
-               JOIN public.nozzles n ON s.nozzle_id = n.id
-               JOIN public.pumps p ON n.pump_id = p.id
-               JOIN public.stations st ON p.station_id = st.id
+               LEFT JOIN public.nozzles n ON s.nozzle_id = n.id
+               LEFT JOIN public.pumps p ON n.pump_id = p.id
+               LEFT JOIN public.stations st ON s.station_id = st.id
                WHERE s.tenant_id = $1 ${where}
                ORDER BY s.recorded_at DESC
                LIMIT $${idx++} OFFSET $${idx++}`;

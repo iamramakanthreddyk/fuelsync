@@ -89,7 +89,7 @@ export function createDashboardHandlers(db: Pool) {
         const params: any[] = [];
         let idx = 1;
         if (stationId) {
-          conds.push(`p.station_id = $${idx++}`);
+          conds.push(`s.station_id = $${idx++}`);
           params.push(stationId);
         }
         if (dateFrom) {
@@ -108,10 +108,7 @@ export function createDashboardHandlers(db: Pool) {
             SUM(s.amount) as amount,
             COUNT(*) as count
           FROM public.sales s
-          JOIN public.nozzles n ON s.nozzle_id = n.id
-          JOIN public.pumps p ON n.pump_id = p.id
-          ${where}
-          AND s.tenant_id = $${idx++}
+          ${where ? where + ' AND' : 'WHERE'} s.tenant_id = $${idx++}
           GROUP BY s.payment_method
           ORDER BY amount DESC
         `;
@@ -167,15 +164,13 @@ export function createDashboardHandlers(db: Pool) {
             break;
         }
 
-        const stationFilter = stationId ? `AND p.station_id = $1` : '';
+        const stationFilter = stationId ? `AND s.station_id = $1` : '';
         const query = `
           SELECT
             s.fuel_type,
             SUM(s.volume) as volume,
             SUM(s.amount) as amount
           FROM public.sales s
-          JOIN public.nozzles n ON s.nozzle_id = n.id
-          JOIN public.pumps p ON n.pump_id = p.id
           WHERE s.tenant_id = $${stationId ? 2 : 1} ${dateFilter} ${stationFilter}
           GROUP BY s.fuel_type
           ORDER BY amount DESC
@@ -274,9 +269,7 @@ export function createDashboardHandlers(db: Pool) {
             SUM(s.amount) as amount,
             SUM(s.volume) as volume
           FROM public.sales s
-          JOIN public.nozzles n ON s.nozzle_id = n.id
-          JOIN public.pumps p ON n.pump_id = p.id
-          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days' ${stationId ? 'AND p.station_id = $1' : ''} AND s.tenant_id = $${stationId ? 2 : 1}
+          WHERE s.recorded_at >= CURRENT_DATE - INTERVAL '${days} days' ${stationId ? 'AND s.station_id = $1' : ''} AND s.tenant_id = $${stationId ? 2 : 1}
           GROUP BY DATE(s.recorded_at)
           ORDER BY date ASC
         `;

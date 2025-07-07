@@ -14,8 +14,8 @@ export function createAttendantRouter(db: Pool) {
   router.get('/pumps', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.pumps);
   router.get('/nozzles', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.nozzles);
   router.get('/creditors', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.creditors);
-  router.post('/cash-report', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.cashReport);
-  router.get('/cash-reports', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.cashReports);
+  router.post('/cash-report', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.cashReport);
+  router.get('/cash-reports', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.cashReports);
   router.get('/alerts', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.alerts);
   router.put('/alerts/:id/acknowledge', authenticateJWT, setTenantContext, requireRole([UserRole.Attendant]), handlers.acknowledgeAlert);
 
