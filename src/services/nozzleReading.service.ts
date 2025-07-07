@@ -159,48 +159,33 @@ export async function listNozzleReadings(
   }
   const where = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
   const limitClause = query.limit ? ` LIMIT ${parseInt(String(query.limit), 10)}` : '';
-  const sql = `WITH ordered AS (
-      SELECT
-        nr.id,
-        nr.nozzle_id,
-        n.nozzle_number,
-        n.fuel_type,
-        p.id AS pump_id,
-        p.name AS pump_name,
-        s.id AS station_id,
-        s.name AS station_name,
-        nr.reading,
-        nr.recorded_at,
-        nr.payment_method,
-        LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading
-      FROM public.nozzle_readings nr
-      JOIN public.nozzles n ON nr.nozzle_id = n.id
-      JOIN public.pumps p ON n.pump_id = p.id
-      JOIN public.stations s ON p.station_id = s.id
-      WHERE nr.tenant_id = $1
-    )
+  const sql = `
     SELECT
-      o.id,
-      o.nozzle_id,
-      o.nozzle_number,
-      o.fuel_type,
-      o.pump_id,
-      o.pump_name,
-      o.station_id,
-      o.station_name,
-      o.reading,
-      o.recorded_at,
-      o.payment_method,
-      o.previous_reading,
+      nr.id,
+      nr.nozzle_id,
+      COALESCE(n.nozzle_number, 0) as nozzle_number,
+      COALESCE(n.fuel_type, 'unknown') as fuel_type,
+      COALESCE(p.id, '') as pump_id,
+      COALESCE(p.name, 'Unknown Pump') as pump_name,
+      COALESCE(s.id, '') as station_id,
+      COALESCE(s.name, 'Unknown Station') as station_name,
+      nr.reading,
+      nr.recorded_at,
+      COALESCE(nr.payment_method, 'cash') as payment_method,
+      LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading,
       COALESCE(u.name, 'System') AS recorded_by,
-      sa.volume,
-      sa.amount,
-      sa.fuel_price
-    FROM ordered o
-    LEFT JOIN public.sales sa ON sa.reading_id = o.id
+      COALESCE(sa.volume, 0) as volume,
+      COALESCE(sa.amount, 0) as amount,
+      COALESCE(sa.fuel_price, 0) as fuel_price
+    FROM public.nozzle_readings nr
+    LEFT JOIN public.nozzles n ON nr.nozzle_id = n.id
+    LEFT JOIN public.pumps p ON n.pump_id = p.id
+    LEFT JOIN public.stations s ON p.station_id = s.id
+    LEFT JOIN public.sales sa ON sa.reading_id = nr.id
     LEFT JOIN public.users u ON sa.created_by = u.id
-    ${where}
-    ORDER BY o.recorded_at DESC${limitClause}`;
+    WHERE nr.tenant_id = $1 ${where.replace('o.', 'nr.')}
+    ORDER BY nr.recorded_at DESC${limitClause}
+  `;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
   return rows;
 }

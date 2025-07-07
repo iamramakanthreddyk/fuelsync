@@ -146,6 +146,50 @@ export function createReconciliationHandlers(db: Pool) {
       }
     },
 
+    run: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const { stationId, date } = req.body || {};
+        if (!stationId || !date) {
+          return errorResponse(res, 400, 'stationId and date required');
+        }
+        const reconciliationDate = new Date(date);
+        if (isNaN(reconciliationDate.getTime())) {
+          return errorResponse(res, 400, 'Invalid date');
+        }
+        const result = await runReconciliation(db, user.tenantId, stationId, reconciliationDate);
+        successResponse(res, result);
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+
+    getById: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const { id } = req.params;
+        const result = await db.query(
+          `SELECT dr.*, s.name as station_name 
+           FROM public.day_reconciliations dr
+           JOIN public.stations s ON dr.station_id = s.id
+           WHERE dr.id = $1 AND dr.tenant_id = $2`,
+          [id, user.tenantId]
+        );
+        if (!result.rowCount) {
+          return errorResponse(res, 404, 'Reconciliation not found');
+        }
+        successResponse(res, result.rows[0]);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
     approve: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;

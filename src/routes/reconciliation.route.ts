@@ -9,10 +9,12 @@ export function createReconciliationRouter(db: Pool) {
   const router = Router();
   const handlers = createReconciliationHandlers(db);
 
+  router.post('/run', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.run);
+  router.get('/list', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
+  router.get('/:id', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getById);
   router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
-  router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.get('/daily-summary', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
-  router.get('/:stationId', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
+  router.get('/:stationId/:date', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.post('/:id/approve', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.approve);
 
   return router;

@@ -53,11 +53,11 @@ export function createAttendantHandlers(db: Pool) {
     cashReport: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        const { stationId, date, cashAmount, creditEntries } = req.body || {};
-        if (!user?.tenantId || !user.userId || !stationId || !date) {
-          return errorResponse(res, 400, 'stationId and date required');
+        const { stationId, reportDate, cashAmount, cardAmount, upiAmount, shift, creditEntries } = req.body || {};
+        if (!user?.tenantId || !user.userId || !stationId || !reportDate) {
+          return errorResponse(res, 400, 'stationId and reportDate required');
         }
-        const dt = new Date(date);
+        const dt = new Date(reportDate);
         if (isNaN(dt.getTime())) {
           return errorResponse(res, 400, 'Invalid date');
         }
@@ -68,6 +68,9 @@ export function createAttendantHandlers(db: Pool) {
           stationId,
           dt,
           Number(cashAmount || 0),
+          Number(cardAmount || 0),
+          Number(upiAmount || 0),
+          shift || null,
           Array.isArray(creditEntries) ? creditEntries : []
         );
         successResponse(res, { id }, undefined, 201);
