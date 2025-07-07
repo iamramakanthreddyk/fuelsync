@@ -3100,3 +3100,10 @@ Each entry is tied to a step from the implementation index.
 * Attendant dashboard and new reading pages no longer hit owner-only endpoints.
 * Updated attendant journey documentation.
 * `docs/STEP_fix_20260725_COMMAND.md`
+
+## [Fix 2026-07-26] – Simplify seed data
+
+### 🟥 Fixes
+* `scripts/seed-data.js` now only inserts two superadmin users and exits on error.
+* Constructs `DATABASE_URL` from individual DB vars when missing.
+* `docs/STEP_fix_20260726_COMMAND.md`

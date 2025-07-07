@@ -264,3 +264,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-07-22 | Fuel price service tests | ✅ Done | `backend/tests/fuelPrice.service.test.ts` | `docs/STEP_fix_20260722_COMMAND.md` |
 | fix | 2026-07-24 | Mobile sidebar toggle | ✅ Done | `src/components/layout/*` | `docs/STEP_fix_20260724_COMMAND.md` |
 | fix | 2026-07-25 | SuperAdmin sidebar toggle | ✅ Done | `src/components/layout/Header.tsx` | `docs/STEP_fix_20260725_COMMAND.md` |
+| fix | 2026-07-26 | Simplify seed script | ✅ Done | `scripts/seed-data.js` | `docs/STEP_fix_20260726_COMMAND.md` |
