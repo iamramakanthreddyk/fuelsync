@@ -40,7 +40,7 @@ export async function runReconciliation(
   tenantId: string,
   stationId: string,
   date: Date
-): Promise<ReconciliationTotals> {
+): Promise<ReconciliationTotals & { reconciliationId: string }> {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
@@ -72,19 +72,52 @@ export async function runReconciliation(
       [stationId, date, tenantId]
     );
     const row = totals.rows[0];
+    const reconciliationId = existing.rowCount ? existing.rows[0].id : randomUUID();
+    
     if (existing.rowCount) {
       await client.query(
         `UPDATE public.day_reconciliations
            SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6, finalized=true, updated_at=NOW()
          WHERE id=$1 AND tenant_id = $7`,
-        [existing.rows[0].id, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total, tenantId]
+        [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total, tenantId]
       );
     } else {
       await client.query(
         `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized, updated_at)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,true,NOW())`,
-        [randomUUID(), tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
+        [reconciliationId, tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
       );
+    }
+    
+    // Check for cash reports on this date and create reconciliation diff if found
+    const cashReportRes = await client.query(
+      `SELECT id, cash_amount FROM public.cash_reports 
+       WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
+      [stationId, date, tenantId]
+    );
+    
+    if (cashReportRes.rowCount) {
+      const cashReport = cashReportRes.rows[0];
+      const reportedCash = parseFloat(cashReport.cash_amount);
+      const actualCash = parseFloat(row.cash_total);
+      const difference = reportedCash - actualCash;
+      const status = difference === 0 ? 'match' : (difference > 0 ? 'over' : 'short');
+      
+      // Check if reconciliation diff already exists
+      const diffRes = await client.query(
+        `SELECT id FROM public.reconciliation_diff 
+         WHERE cash_report_id = $1 AND reconciliation_id = $2`,
+        [cashReport.id, reconciliationId]
+      );
+      
+      if (!diffRes.rowCount) {
+        await client.query(
+          `INSERT INTO public.reconciliation_diff 
+           (id, tenant_id, station_id, date, reported_cash, actual_cash, difference, status, cash_report_id, reconciliation_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          [randomUUID(), tenantId, stationId, date, reportedCash, actualCash, difference, status, cashReport.id, reconciliationId]
+        );
+      }
     }
     await client.query('COMMIT');
     return {
@@ -93,6 +126,7 @@ export async function runReconciliation(
       cardTotal: Number(row.card_total),
       upiTotal: Number(row.upi_total),
       creditTotal: Number(row.credit_total),
+      reconciliationId
     };
   } catch (err) {
     await client.query('ROLLBACK');

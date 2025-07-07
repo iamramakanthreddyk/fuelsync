@@ -24,6 +24,23 @@ export async function createNozzleReading(
     if (data.reading < Number(lastReading)) {
       throw new Error('Reading must be >= last reading');
     }
+    
+    // Prevent duplicate readings (same value entered again)
+    if (data.reading === Number(lastReading)) {
+      throw new Error('Reading must be greater than the last reading. Duplicate readings are not allowed.');
+    }
+    
+    // Check for backdated readings (only allow if user is manager or owner)
+    const lastReadingDate = lastRes.rows[0]?.recorded_at;
+    if (lastReadingDate && new Date(data.recordedAt) < new Date(lastReadingDate)) {
+      // Get user role
+      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
+      const role = userRole.rows[0]?.role;
+      
+      if (role !== 'manager' && role !== 'owner') {
+        throw new Error('Backdated readings can only be entered by managers or owners.');
+      }
+    }
 
     const nozzleInfo = await client.query<{ fuel_type: string; station_id: string }>(
       'SELECT n.fuel_type, p.station_id FROM public.nozzles n JOIN public.pumps p ON n.pump_id = p.id WHERE n.id = $1 AND n.tenant_id = $2',

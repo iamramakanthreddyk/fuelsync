@@ -67,6 +67,9 @@ export async function createCashReport(
   stationId: string,
   date: Date,
   cashAmount: number,
+  cardAmount: number = 0,
+  upiAmount: number = 0,
+  shift: 'morning' | 'afternoon' | 'night' | null = null,
   creditEntries: CreditEntry[] = []
 ) {
   const client = await db.connect();
@@ -115,11 +118,43 @@ export async function createCashReport(
       await incrementCreditorBalance(client, tenantId, entry.creditorId, amount);
       totalCredit += amount;
     }
+    const cashReportId = randomUUID();
     const res = await client.query<{ id: string }>(
-      `INSERT INTO public.cash_reports (id, tenant_id, station_id, user_id, date, cash_amount, credit_amount, updated_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
-      [randomUUID(), tenantId, stationId, userId, date, cashAmount, totalCredit]
+      `INSERT INTO public.cash_reports (id, tenant_id, station_id, user_id, date, cash_amount, card_amount, upi_amount, credit_amount, shift, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW()) RETURNING id`,
+      [cashReportId, tenantId, stationId, userId, date, cashAmount, cardAmount, upiAmount, totalCredit, shift]
     );
+    
+    // Calculate actual cash from sales for reconciliation
+    const salesRes = await client.query<{ cash_total: number }>(
+      `SELECT COALESCE(SUM(CASE WHEN payment_method='cash' THEN amount ELSE 0 END), 0) as cash_total
+       FROM public.sales
+       WHERE station_id = $1 AND DATE(recorded_at) = $2 AND tenant_id = $3`,
+      [stationId, date, tenantId]
+    );
+    
+    const actualCash = parseFloat(salesRes.rows[0]?.cash_total || '0');
+    const difference = cashAmount - actualCash;
+    const status = difference === 0 ? 'match' : (difference > 0 ? 'over' : 'short');
+    
+    // Create reconciliation diff record
+    await client.query(
+      `INSERT INTO public.reconciliation_diff (id, tenant_id, station_id, date, reported_cash, actual_cash, difference, status, cash_report_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [randomUUID(), tenantId, stationId, date, cashAmount, actualCash, difference, status, cashReportId]
+    );
+    
+    // Create alert if difference exceeds threshold (e.g., 5% of actual cash or 1000, whichever is less)
+    const threshold = Math.min(actualCash * 0.05, 1000);
+    if (Math.abs(difference) > threshold) {
+      await createAlert(
+        tenantId,
+        stationId,
+        'cash_discrepancy',
+        `Cash discrepancy detected: ${difference > 0 ? 'Over-reported' : 'Under-reported'} by ${Math.abs(difference).toFixed(2)}`,
+        'warning'
+      );
+    }
     await client.query('COMMIT');
     return res.rows[0].id;
   } catch (err) {
