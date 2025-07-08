@@ -3100,3 +3100,10 @@ Each entry is tied to a step from the implementation index.
 * Attendant dashboard and new reading pages no longer hit owner-only endpoints.
 * Updated attendant journey documentation.
 * `docs/STEP_fix_20260725_COMMAND.md`
+
+## [Fix 2026-07-26] – Update OpenAPI tests
+
+### 🟥 Fixes
+* Integration tests load `docs/openapi.yaml` instead of the removed `openapi-spec.yaml`.
+* Removed custom route prefix stripping so endpoints are tested at `/api/v1`.
+* `docs/STEP_fix_20260726_COMMAND.md`

@@ -1380,3 +1380,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added unit tests to ensure overlapping ranges throw errors and open ranges are closed when a new price is created.
+
+### 🛠️ Fix 2026-07-26 – OpenAPI contract tests
+**Status:** ✅ Done
+**Files:** `__tests__/integration/api-contract.test.ts`, `__tests__/integration/openapiRoutes.test.ts`, `docs/STEP_fix_20260726_COMMAND.md`
+
+**Overview:**
+* Tests reference `docs/openapi.yaml` and hit `/api/v1` routes directly.
