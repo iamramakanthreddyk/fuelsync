@@ -13,10 +13,10 @@ export function createReconciliationRouter(db: Pool) {
   router.post('/run', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.run);
   router.get('/list', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.list);
   router.get('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getById);
-  router.post('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
-  router.get('/daily-summary', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
-  router.get('/:stationId/:date', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
-  router.post('/:id/approve', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.approve);
+  router.post('/', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.create);
+  router.get('/daily-summary', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
+  router.get('/:stationId/:date', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
+  router.post('/:id/approve', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.approve);
 
   return router;
 }
