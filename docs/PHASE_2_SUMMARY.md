@@ -1380,3 +1380,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added unit tests to ensure overlapping ranges throw errors and open ranges are closed when a new price is created.
+
+### 🛠️ Fix 2026-07-26 – Simplify seed data
+**Status:** ✅ Done
+**Files:** `scripts/seed-data.js`, `docs/STEP_fix_20260726_COMMAND.md`
+
+**Overview:**
+* The seed script now derives `DATABASE_URL` from separate DB variables when missing.
+* It seeds only two superadmin users and exits with an error code on failure.
