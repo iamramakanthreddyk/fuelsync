@@ -177,7 +177,6 @@ export function createApp() {
   app.use(`${API_PREFIX}/pumps`, createPumpRouter(pool));
   app.use(`${API_PREFIX}/nozzles`, createNozzleRouter(pool));
   app.use(`${API_PREFIX}/nozzle-readings`, createNozzleReadingRouter(pool));
-  app.use(`${API_PREFIX}/readings`, createNozzleReadingRouter(pool));
   app.use(`${API_PREFIX}/fuel-prices`, createFuelPriceRouter(pool));
   app.use(`${API_PREFIX}/creditors`, createCreditorRouter(pool));
   app.use(`${API_PREFIX}/credit-payments`, createCreditPaymentRouter(pool));
