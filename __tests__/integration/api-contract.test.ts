@@ -6,7 +6,7 @@ import path from 'path';
 
 describe('API contract', () => {
   const app = createApp();
-  const specPath = path.resolve(__dirname, '../../docs/openapi-spec.yaml');
+  const specPath = path.resolve(__dirname, '../../docs/openapi.yaml');
   const doc = yaml.load(fs.readFileSync(specPath, 'utf8')) as any;
 
   for (const [route, methods] of Object.entries<any>(doc.paths || {})) {
@@ -14,7 +14,7 @@ describe('API contract', () => {
     if (route.includes('{')) continue;
     for (const [method] of Object.entries<any>(methods)) {
       test(`${method.toUpperCase()} ${route} responds`, async () => {
-        const url = route.replace('/api', '');
+        const url = route;
         const res = await (request(app) as any)[method](url);
         expect(res.status).not.toBe(404);
       });
