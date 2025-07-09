@@ -17,6 +17,9 @@ export function createNozzleRouter(db: Pool) {
   router.put('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.update);
   router.get('/:id/settings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getSettings);
   router.put('/:id/settings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.updateSettings);
+  
+  // Add can-create-reading endpoint
+  router.get('/:id/can-create-reading', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.canCreateReading);
   router.delete('/:id', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.remove);
 
   return router;

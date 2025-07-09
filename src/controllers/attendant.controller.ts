@@ -16,6 +16,14 @@ import { normalizeStationId } from '../utils/normalizeStationId';
 
 export function createAttendantHandlers(db: Pool) {
   return {
+    healthCheck: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        return successResponse(res, { status: 'ok', user });
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
     stations: async (req: Request, res: Response) => {
       const user = req.user;
       if (!user?.tenantId || !user.userId) {
@@ -52,9 +60,19 @@ export function createAttendantHandlers(db: Pool) {
     },
     cashReport: async (req: Request, res: Response) => {
       try {
+        console.log('[CASH-REPORT-CONTROLLER] Request body:', req.body);
+        console.log('[CASH-REPORT-CONTROLLER] User:', req.user);
+        
         const user = req.user;
         const { stationId, reportDate, cashAmount, cardAmount, upiAmount, shift, creditEntries } = req.body || {};
+        
         if (!user?.tenantId || !user.userId || !stationId || !reportDate) {
+          console.log('[CASH-REPORT-CONTROLLER] Missing required fields:', { 
+            tenantId: user?.tenantId, 
+            userId: user?.userId, 
+            stationId, 
+            reportDate 
+          });
           return errorResponse(res, 400, 'stationId and reportDate required');
         }
         const dt = new Date(reportDate);

@@ -6,6 +6,7 @@ import { validateCreateNozzle, validateUpdateNozzle } from '../validators/nozzle
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { getNozzleSettings, updateNozzleSettings } from '../services/nozzleSettings.service';
+import { canCreateNozzleReading } from '../services/nozzleReading.service';
 
 export function createNozzleHandlers(db: Pool) {
   return {
@@ -127,6 +128,23 @@ export function createNozzleHandlers(db: Pool) {
       await updateNozzleSettings(db, req.params.id, req.body);
       const settings = await getNozzleSettings(db, req.params.id);
       successResponse(res, { settings });
+    },
+    canCreateReading: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        const nozzleId = req.params.id;
+        if (!user?.tenantId || !nozzleId) {
+          return errorResponse(res, 400, 'nozzleId required');
+        }
+        const result = await canCreateNozzleReading(db, user.tenantId, nozzleId);
+        successResponse(res, {
+          canCreate: result.allowed,
+          reason: result.reason,
+          missingPrice: (result as any).missingPrice,
+        });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
     },
   };
 }

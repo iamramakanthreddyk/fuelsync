@@ -73,8 +73,20 @@ export async function createCashReport(
   shift: 'morning' | 'afternoon' | 'night' | null = null,
   creditEntries: CreditEntry[] = []
 ) {
-  const client = await db.connect();
+  console.log('[CASH-REPORT] Creating cash report with params:', {
+    tenantId,
+    userId,
+    stationId,
+    date,
+    cashAmount,
+    cardAmount,
+    upiAmount,
+    shift
+  });
   try {
+    console.log('[CASH-REPORT] Connecting to database...');
+    const client = await db.connect();
+    try {
     await client.query('BEGIN');
     let totalCredit = 0;
     for (const entry of creditEntries) {
@@ -89,13 +101,21 @@ export async function createCashReport(
         throw new Error('No matching nozzle for fuel type');
       }
       const nozzleId = nozzleRes.rows[0].id;
-        const priceRec = await getPriceAtTimestamp(
-          prisma,
-          tenantId,
-          stationId,
-          entry.fuelType,
-          date
-        );
+        console.log('[CASH-REPORT] Getting price for fuel type:', entry.fuelType);
+        let priceRec;
+        try {
+          priceRec = await getPriceAtTimestamp(
+            prisma,
+            tenantId,
+            stationId,
+            entry.fuelType,
+            date
+          );
+          console.log('[CASH-REPORT] Price record:', priceRec);
+        } catch (priceErr) {
+          console.error('[CASH-REPORT] Error getting price:', priceErr);
+          priceRec = null;
+        }
       const price = priceRec ? priceRec.price : 0;
       const volume = entry.litres ?? (entry.amount ? entry.amount / price : 0);
       const amount = entry.amount ?? volume * price;
@@ -159,10 +179,15 @@ export async function createCashReport(
     await client.query('COMMIT');
     return res.rows[0].id;
   } catch (err) {
+    console.error('[CASH-REPORT] Transaction error:', err);
     await client.query('ROLLBACK');
     throw err;
   } finally {
     client.release();
+  }
+  } catch (err) {
+    console.error('[CASH-REPORT] Database connection error:', err);
+    throw err;
   }
 }
 
