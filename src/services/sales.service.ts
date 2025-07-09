@@ -32,7 +32,8 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
                       s.volume, s.amount, s.payment_method, s.status, s.recorded_at,
                       p.id AS pump_id, p.name AS pump_name,
                       st.name AS station_name,
-                      n.nozzle_number
+                      n.nozzle_number,
+                      s.fuel_price AS price_per_liter
                FROM public.sales s
                LEFT JOIN public.nozzles n ON s.nozzle_id = n.id
                LEFT JOIN public.pumps p ON n.pump_id = p.id
@@ -42,14 +43,25 @@ export async function listSales(db: Pool, tenantId: string, query: SalesQuery) {
                LIMIT $${idx++} OFFSET $${idx++}`;
   params.push(limit, offset);
   const res = await db.query(sql, params);
-  return parseRows(
-    res.rows.map(r => ({
-      ...r,
-      volume: parseFloat(r.volume),
-      amount: parseFloat(r.amount),
-      fuel_price: r.fuel_price !== undefined ? parseFloat(r.fuel_price) : undefined
-    }))
-  );
+  // Transform the rows to ensure all required fields are present
+  const transformedRows = res.rows.map(r => ({
+    ...r,
+    volume: parseFloat(r.volume),
+    amount: parseFloat(r.amount),
+    fuel_price: r.fuel_price !== undefined ? parseFloat(r.fuel_price) : undefined,
+    // Ensure these fields are explicitly included in the response
+    station_name: r.station_name || 'Unknown Station',
+    pump_name: r.pump_name || 'Unknown Pump',
+    nozzle_number: r.nozzle_number || 'N/A',
+    price_per_liter: r.price_per_liter !== undefined ? parseFloat(r.price_per_liter) : (r.fuel_price !== undefined ? parseFloat(r.fuel_price) : 0)
+  }));
+  
+  // Log the first row to verify the fields are present
+  if (transformedRows.length > 0) {
+    console.log('[SALES-SERVICE] Sample transformed row:', JSON.stringify(transformedRows[0]));
+  }
+  
+  return parseRows(transformedRows);
 }
 
 export async function salesAnalytics(db: Pool, tenantId: string, stationId?: string, groupBy: string = 'station') {

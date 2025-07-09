@@ -20,7 +20,16 @@ export function createSalesHandlers(db: Pool) {
         if (sales.length === 0) {
           return successResponse(res, []);
         }
-        successResponse(res, { sales });
+        // Ensure all required fields are present in the response
+        const enrichedSales = sales.map(sale => ({
+          ...sale,
+          stationName: sale.station_name || sale.stationName || 'Unknown Station',
+          pumpName: sale.pump_name || sale.pumpName || 'Unknown Pump',
+          nozzleNumber: sale.nozzle_number || sale.nozzleNumber || 'N/A',
+          fuelPrice: sale.price_per_liter || sale.fuel_price || 0
+        }));
+        
+        successResponse(res, { sales: enrichedSales });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
