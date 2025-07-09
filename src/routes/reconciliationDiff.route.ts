@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { Pool } from 'pg';
-import { authenticateJWT } from '../middleware/auth';
-import { setTenantContext } from '../middleware/tenant';
-import { requireRole } from '../middleware/role';
-import { UserRole } from '../types/auth';
+import { authenticateJWT } from '../middlewares/authenticateJWT';
+import { setTenantContext } from '../middlewares/setTenantContext';
+import { requireRole } from '../middlewares/requireRole';
+import { UserRole } from '../constants/auth';
 import { createReconciliationDiffHandlers } from '../controllers/reconciliationDiff.controller';
 
 export function createReconciliationDiffRoutes(db: Pool): Router {
@@ -20,5 +20,4 @@ export function createReconciliationDiffRoutes(db: Pool): Router {
   router.get('/differences/summary', handlers.getSummary);
   router.get('/differences/:id', handlers.getById);
 
-  return router;
-}
+  return router;}

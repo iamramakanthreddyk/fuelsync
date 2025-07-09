@@ -20,7 +20,7 @@ const res = {
 
 describe('nozzle.controller.create', () => {
   test('returns 409 on duplicate nozzle', async () => {
-    const error = new PrismaClientKnownRequestError('Duplicate', 'P2002', '1');
+    const error = new PrismaClientKnownRequestError('Duplicate', { code: 'P2002', clientVersion: '1' });
     (prisma.nozzle.create as jest.Mock).mockRejectedValueOnce(error);
 
     await handlers.create(req, res);

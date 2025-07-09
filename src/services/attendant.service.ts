@@ -134,7 +134,7 @@ export async function createCashReport(
       [stationId, date, tenantId]
     );
     
-    const actualCash = parseFloat(salesRes.rows[0]?.cash_total || '0');
+    const actualCash = Number(salesRes.rows[0]?.cash_total ?? 0);
     const difference = cashAmount - actualCash;
     const status = difference === 0 ? 'match' : (difference > 0 ? 'over' : 'short');
     

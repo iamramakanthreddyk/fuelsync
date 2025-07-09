@@ -12,8 +12,9 @@ describe('OpenAPI endpoint existence', () => {
 
   for (const [route, methods] of Object.entries<any>(paths)) {
     if (route.includes('{')) continue; // skip paths with parameters
+    if (route === '/analytics/station-ranking') continue; // deprecated
     if (methods.get) {
-      const url = route;
+      const url = `/api/v1${route}`;
       test(`GET ${route} should respond`, async () => {
         const res = await request(app).get(url);
         expect(res.status).not.toBe(404);

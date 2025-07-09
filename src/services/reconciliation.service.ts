@@ -99,7 +99,7 @@ export async function runReconciliation(
     if (cashReportRes.rowCount) {
       const cashReport = cashReportRes.rows[0];
       const reportedCash = parseFloat(cashReport.cash_amount);
-      const actualCash = parseFloat(row.cash_total);
+      const actualCash = Number(row.cash_total);
       const difference = reportedCash - actualCash;
       const status = difference === 0 ? 'match' : (difference > 0 ? 'over' : 'short');
       
