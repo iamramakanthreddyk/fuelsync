@@ -16,8 +16,8 @@ export async function createNozzleReading(
   const client = await db.connect();
   try {
     await client.query('BEGIN');
-    const lastRes = await client.query<{ reading: number }>(
-      'SELECT reading FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 ORDER BY recorded_at DESC LIMIT 1',
+    const lastRes = await client.query<{ reading: number; recorded_at: Date }>(
+      'SELECT reading, recorded_at FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 ORDER BY recorded_at DESC LIMIT 1',
       [data.nozzleId, tenantId]
     );
     const lastReading = lastRes.rows[0]?.reading ?? 0;
@@ -152,7 +152,9 @@ export async function listNozzleReadings(
     filters.push(`o.recorded_at <= $${idx++}`);
     params.push(query.to);
   }
-  const where = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
+  const filterClause = filters.length
+    ? ' AND ' + filters.join(' AND ').replace(/o\./g, 'nr.')
+    : '';
   const limitClause = query.limit ? ` LIMIT ${parseInt(String(query.limit), 10)}` : '';
   const sql = `
     SELECT
@@ -178,7 +180,7 @@ export async function listNozzleReadings(
     LEFT JOIN public.stations s ON p.station_id = s.id
     LEFT JOIN public.sales sa ON sa.reading_id = nr.id
     LEFT JOIN public.users u ON sa.created_by = u.id
-    WHERE nr.tenant_id = $1 ${where.replace('o.', 'nr.')}
+    WHERE nr.tenant_id = $1${filterClause}
     ORDER BY nr.recorded_at DESC${limitClause}
   `;
   const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];

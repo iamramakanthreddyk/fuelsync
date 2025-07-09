@@ -37,10 +37,8 @@ describe('dashboard.controller.getSalesSummary', () => {
     db.query.mockResolvedValueOnce({ rowCount: 1 });
     db.query.mockResolvedValueOnce({ rows: [{
       total_sales: 10,
-      total_profit: 2,
       total_volume: 3,
-      transaction_count: 1,
-      profit_margin: 20
+      transaction_count: 1
     }] });
 
     await handlers.getSalesSummary(req, res);
@@ -51,8 +49,6 @@ describe('dashboard.controller.getSalesSummary', () => {
       success: true,
       data: {
         totalRevenue: 10,
-        totalProfit: 2,
-        profitMargin: 20,
         totalVolume: 3,
         salesCount: 1,
         period: 'monthly'

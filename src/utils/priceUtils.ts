@@ -14,13 +14,13 @@ export async function getPriceAtTimestamp(
 ): Promise<PriceRecord | null> {
   const record = await prisma.fuelPrice.findFirst({
     where: {
-      tenantId: tenantId,
-      stationId: stationId,
-      fuelType: fuelType,
-      validFrom: { lte: timestamp },
+      tenant_id: tenantId,
+      station_id: stationId,
+      fuel_type: fuelType,
+      valid_from: { lte: timestamp },
     },
-    orderBy: { validFrom: 'desc' },
+    orderBy: { valid_from: 'desc' },
   });
   if (!record) return null;
-  return { price: Number(record.price), validFrom: record.validFrom };
+  return { price: Number(record.price), validFrom: record.valid_from };
 }

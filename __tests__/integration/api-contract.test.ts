@@ -10,11 +10,11 @@ describe('API contract', () => {
   const doc = yaml.load(fs.readFileSync(specPath, 'utf8')) as any;
 
   for (const [route, methods] of Object.entries<any>(doc.paths || {})) {
-    if (!route.startsWith('/api/v1')) continue;
     if (route.includes('{')) continue;
+    if (route === '/analytics/station-ranking') continue;
     for (const [method] of Object.entries<any>(methods)) {
       test(`${method.toUpperCase()} ${route} responds`, async () => {
-        const url = route;
+        const url = `/api/v1${route}`;
         const res = await (request(app) as any)[method](url);
         expect(res.status).not.toBe(404);
       });

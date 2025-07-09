@@ -3113,3 +3113,38 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Nozzle readings no longer fail when a price is older than seven days.
 * `docs/STEP_fix_20260727_COMMAND.md`
+
+## [Fix 2026-07-28] – Expand service and controller tests
+
+### 🟥 Fixes
+* Added unit tests for station controller and inventory service.
+* `docs/STEP_fix_20260728_COMMAND.md`
+\n## [Fix 2026-07-29] – Validate all controller factories\n\n### 🟥 Fixes\n* Added test ensuring every controller exposes a handler factory.\n* `docs/STEP_fix_20260729_COMMAND.md`
+
+## [Fix 2026-07-30] – Resolve unit test failures
+
+### 🟥 Fixes
+* Provisioned local Postgres for tests and updated controller export test.
+* Adjusted service and middleware tests to reflect current logic.
+* Added @types packages for supertest and js-yaml.
+* `docs/STEP_fix_20260730_COMMAND.md`
+
+## [Fix 2026-07-31] – Type corrections for tests
+
+### 🟥 Fixes
+* Included `recorded_at` in nozzle reading queries to resolve compilation errors.
+* Replaced `parseFloat` with `Number` when comparing reconciliation cash totals.
+* Updated `readings.service.test.ts` for the new `listNozzleReadings` API.
+* `docs/STEP_fix_20260731_COMMAND.md`
+
+## [Fix 2026-08-01] – Restore passing unit tests
+
+### 🟥 Fixes
+* Installed project dependencies so Jest is available.
+* Added a local Postgres setup and password to run tests.
+* Corrected `priceUtils` to use snake_case fields and updated its unit test.
+* Adjusted dashboard summary test to match the current response shape.
+* Mocked Prisma client in readings service test to avoid real DB queries.
+* Updated versioning and OpenAPI tests to hit `/api/v1` routes and skip a deprecated path.
+* Fixed actual cash calculation in attendant service.
+* `docs/STEP_fix_20260801_COMMAND.md`
