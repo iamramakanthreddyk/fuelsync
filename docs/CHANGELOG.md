@@ -3156,3 +3156,31 @@ Each entry is tied to a step from the implementation index.
 * Clarified README instructions to set the `postgres` user password when installing PostgreSQL.
 * Ensures `npm run test:unit` can create the test database without manual intervention.
 * `docs/STEP_fix_20260802_COMMAND.md`
+
+## [Fix 2026-08-03] – Sync OpenAPI with controllers
+
+### 🟥 Fixes
+* Documented missing endpoints including sales analytics, fuel delivery inventory and reconciliation helpers.
+* OpenAPI paths now cover all pump, nozzle and tenant routes.
+* `docs/STEP_fix_20260803_COMMAND.md`
+
+## [Fix 2026-08-04] – Complete admin routes in OpenAPI
+
+### 🟥 Fixes
+* Added missing `/admin/dashboard` and `/admin/analytics` paths.
+* Documented tenant settings management endpoints.
+* `docs/STEP_fix_20260804_COMMAND.md`
+
+## [Fix 2026-08-05] – Audit OpenAPI after sales update
+
+### 🟥 Fixes
+* Verified all controller routes exist in `docs/openapi.yaml` after recent sales service changes.
+* Confirmed inventory, pumps, nozzle readings, analytics and admin paths are documented.
+* `docs/STEP_fix_20260805_COMMAND.md`
+
+## [Fix 2026-08-06] – Re-audit OpenAPI after controller updates
+
+### 🟥 Fixes
+* Added `scripts/audit-openapi-spec.ts` to compare router paths with the specification.
+* Rechecked all routers and found the spec already lists every route.
+* Documented the verification and test attempt in `STEP_fix_20260806.md`.

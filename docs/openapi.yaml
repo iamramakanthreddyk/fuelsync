@@ -565,6 +565,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/FuelDelivery'
 
+  /fuel-deliveries/inventory:
+    get:
+      tags: [Fuel Deliveries]
+      summary: Get current inventory from deliveries
+      responses:
+        '200':
+          description: Delivery inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelInventory'
   /fuel-inventory:
     get:
       tags: [Fuel Inventory]
@@ -655,6 +668,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/FuelPrice'
 
+  /fuel-prices/validate/{stationId}:
+    get:
+      tags: [Fuel Prices]
+      summary: Validate fuel prices for a station
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Validation result
+  /fuel-prices/missing:
+    get:
+      tags: [Fuel Prices]
+      summary: Get stations with missing prices
+      responses:
+        '200':
+          description: Stations missing prices
   /nozzles:
     get:
       tags: [Nozzles]
@@ -802,6 +835,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/Pump'
 
+  /pumps/{pumpId}/settings:
+    get:
+      tags: [Pumps]
+      summary: Get pump settings
+      parameters:
+        - name: pumpId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pump settings
+          content:
+            application/json:
+              schema:
+                type: object
+    put:
+      tags: [Pumps]
+      summary: Update pump settings
+      parameters:
+        - name: pumpId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Pump settings updated
+          content:
+            application/json:
+              schema:
+                type: object
   /nozzle-readings:
     get:
       tags: [Readings]
@@ -842,6 +914,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/NozzleReading'
 
+  /nozzle-readings/can-create/{nozzleId}:
+    get:
+      tags: [Readings]
+      summary: Check if a new reading can be created
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Creation allowed
+  /nozzle-readings/{id}:
+    get:
+      tags: [Readings]
+      summary: Get nozzle reading by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Nozzle reading
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleReading'
+    put:
+      tags: [Readings]
+      summary: Update nozzle reading
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReadingRequest'
+      responses:
+        '200':
+          description: Nozzle reading updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleReading'
   /reconciliation:
     get:
       tags: [Reconciliation]
@@ -876,7 +1000,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReconciliationRecord'
-  /reconciliation/{stationId}:
+  /reconciliation/{stationId}/{date}:
     get:
       tags: [Reconciliation]
       summary: Get reconciliation summary for station and date
@@ -887,7 +1011,7 @@ paths:
           schema:
             type: string
         - name: date
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -999,6 +1123,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReconciliationDifference'
 
+  /reconciliation/{id}:
+    get:
+      tags: [Reconciliation]
+      summary: Get reconciliation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationRecord'
+  /reconciliation/create:
+    post:
+      tags: [Reconciliation]
+      summary: Create reconciliation record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReconciliationRequest'
+      responses:
+        '201':
+          description: Reconciliation record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationRecord'
   /reports/sales:
     get:
       tags: [Reports]
@@ -1102,6 +1260,18 @@ paths:
       responses:
         '200':
           description: Report scheduled
+  /reports/financial/export:
+    get:
+      tags: [Reports]
+      summary: Export financial report
+      responses:
+        '200':
+          description: Financial CSV
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
   /reports/daily-sales:
     get:
       tags: [Reports]
@@ -1154,6 +1324,33 @@ paths:
                     items:
                       $ref: '#/components/schemas/Sale'
 
+  /sales/analytics:
+    get:
+      tags: [Sales]
+      summary: Get sales analytics
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum: [station, pump]
+            default: station
+      responses:
+        '200':
+          description: Sales analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analytics:
+                    type: array
+                    items:
+                      type: object
   /stations:
     get:
       tags: [Stations]
@@ -1315,6 +1512,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuperAdminSummary'
+  /admin/dashboard:
+    get:
+      tags: [Super Admin]
+      summary: Get platform dashboard metrics
+      responses:
+        '200':
+          description: Platform metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuperAdminSummary'
+  /admin/analytics:
+    get:
+      tags: [Super Admin]
+      summary: Get platform analytics overview
+      responses:
+        '200':
+          description: Platform analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuperAdminSummary'
   /admin/plans:
     get:
       tags: [Super Admin]
@@ -1379,6 +1598,42 @@ paths:
       responses:
         '200':
           description: Plan deleted
+  /admin/tenants/summary:
+    get:
+      tags: [Super Admin]
+      summary: Get tenant summary metrics
+      responses:
+        '200':
+          description: Tenant summary data
+  /tenants:
+    get:
+      tags: [Super Admin]
+      summary: List tenants
+      responses:
+        '200':
+          description: List of tenants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+    post:
+      tags: [Super Admin]
+      summary: Create tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
   /admin/tenants:
     get:
       tags: [Super Admin]
@@ -1448,6 +1703,71 @@ paths:
       responses:
         '200':
           description: Tenant deleted
+  /admin/tenants/{tenantId}/settings:
+    get:
+      tags: [Super Admin]
+      summary: List tenant settings
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Settings list
+          content:
+            application/json:
+              schema:
+                type: object
+  /admin/tenants/{tenantId}/settings/{key}:
+    get:
+      tags: [Super Admin]
+      summary: Get tenant setting
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Setting details
+          content:
+            application/json:
+              schema:
+                type: object
+    put:
+      tags: [Super Admin]
+      summary: Update tenant setting
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+      responses:
+        '200':
+          description: Setting updated
   /admin/users:
     get:
       tags: [Super Admin]
