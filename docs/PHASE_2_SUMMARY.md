@@ -1430,3 +1430,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Mocked Prisma in readings tests to prevent raw query failures.
 * Updated integration tests to use `/api/v1` routes and skip an obsolete analytics endpoint.
 * Adjusted attendant service cash parsing logic.
+
+### 🛠️ Fix 2026-08-02 – Document Postgres password setup
+**Status:** ✅ Done
+**Files:** `README.md`, `docs/STEP_fix_20260802_COMMAND.md`
+
+**Overview:**
+* Added explicit `psql` command to set the `postgres` password in the manual setup section.
+* Verified tests succeed when PostgreSQL is installed and running.

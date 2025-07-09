@@ -3148,3 +3148,11 @@ Each entry is tied to a step from the implementation index.
 * Updated versioning and OpenAPI tests to hit `/api/v1` routes and skip a deprecated path.
 * Fixed actual cash calculation in attendant service.
 * `docs/STEP_fix_20260801_COMMAND.md`
+
+
+## [Fix 2026-08-02] – Document Postgres password setup
+
+### 🟥 Fixes
+* Clarified README instructions to set the `postgres` user password when installing PostgreSQL.
+* Ensures `npm run test:unit` can create the test database without manual intervention.
+* `docs/STEP_fix_20260802_COMMAND.md`

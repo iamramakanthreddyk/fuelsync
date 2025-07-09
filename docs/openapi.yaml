@@ -213,25 +213,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelPerformance'
-  /analytics/station-ranking:
-    get:
-      tags: [Analytics]
-      summary: Get station ranking
-      parameters:
-        - name: period
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Station ranking data
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StationRanking'
   /analytics/superadmin:
     get:
       tags: [Analytics]
@@ -243,6 +224,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuperAdminAnalytics'
+
+  /analytics/tenant/{id}:
+    get:
+      tags: [Analytics]
+      summary: Get tenant analytics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tenant analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantAnalytics'
 
   /creditors:
     get:
@@ -408,6 +407,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelTypeBreakdown'
+
+  /dashboard/fuel-types:
+    get:
+      tags: [Dashboard]
+      summary: Get fuel type breakdown (deprecated)
+      deprecated: true
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fuel type breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelTypeBreakdown'
   /dashboard/top-creditors:
     get:
       tags: [Dashboard]
@@ -435,6 +462,30 @@ paths:
     get:
       tags: [Dashboard]
       summary: Get daily sales trend
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 7
+        - name: stationId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Daily sales trend
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailySalesTrend'
+  /dashboard/daily-trend:
+    get:
+      tags: [Dashboard]
+      summary: Get daily sales trend (deprecated)
+      deprecated: true
       parameters:
         - name: days
           in: query
@@ -657,6 +708,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Nozzle'
+
+  /nozzles/{nozzleId}/settings:
+    get:
+      tags: [Nozzles]
+      summary: Get nozzle settings
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Nozzle settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleSettings'
+    put:
+      tags: [Nozzles]
+      summary: Update nozzle settings
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NozzleSettings'
+      responses:
+        '200':
+          description: Nozzle settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleSettings'
 
   /pumps:
     get:
@@ -1098,6 +1189,120 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Station'
+
+  /stations/compare:
+    get:
+      tags: [Stations]
+      summary: Compare stations
+      parameters:
+        - name: stationIds
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: monthly
+      responses:
+        '200':
+          description: Comparison data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationComparison'
+
+  /stations/ranking:
+    get:
+      tags: [Stations]
+      summary: Get station ranking
+      parameters:
+        - name: metric
+          in: query
+          schema:
+            type: string
+            default: sales
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: monthly
+      responses:
+        '200':
+          description: Station ranking
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationRanking'
+
+  /stations/{stationId}/metrics:
+    get:
+      tags: [Stations]
+      summary: Get station metrics
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: today
+      responses:
+        '200':
+          description: Station metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMetrics'
+
+  /stations/{stationId}/performance:
+    get:
+      tags: [Stations]
+      summary: Get station performance
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: range
+          in: query
+          schema:
+            type: string
+            default: monthly
+      responses:
+        '200':
+          description: Station performance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationPerformance'
+
+  /stations/{stationId}/efficiency:
+    get:
+      tags: [Stations]
+      summary: Get station efficiency
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Station efficiency
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationEfficiency'
 
   /analytics/dashboard:
     get:
@@ -1789,6 +1994,48 @@ components:
           type: number
         rank:
           type: number
+
+    StationMetrics:
+      type: object
+      properties:
+        totalSales:
+          type: number
+        totalVolume:
+          type: number
+        transactionCount:
+          type: integer
+
+    StationPerformance:
+      type: object
+      properties:
+        totalSales:
+          type: number
+        totalVolume:
+          type: number
+        transactionCount:
+          type: integer
+        previousSales:
+          type: number
+        previousVolume:
+          type: number
+        growth:
+          type: number
+
+    StationEfficiency:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        efficiency:
+          type: number
+
+    TenantAnalytics:
+      type: object
+
+    NozzleSettings:
+      type: object
     SuperAdminAnalytics:
       type: object
       properties:

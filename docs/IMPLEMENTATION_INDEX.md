@@ -271,3 +271,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-07-30 | Resolve unit test failures | ✅ Done | `tests/controllersExist.test.ts`, `tests/inventory.service.test.ts`, `tests/nozzle.controller.test.ts`, `tests/planEnforcement.test.ts` | `docs/STEP_fix_20260730_COMMAND.md` |
 | fix | 2026-07-31 | Type corrections for tests | ✅ Done | `src/services/nozzleReading.service.ts`, `src/services/reconciliation.service.ts`, `tests/readings.service.test.ts` | `docs/STEP_fix_20260731_COMMAND.md` |
 | fix | 2026-08-01 | Restore passing unit tests | ✅ Done | `src/utils/priceUtils.ts`, `src/services/attendant.service.ts`, `tests/**/*.test.ts`, `__tests__/integration/*` | `docs/STEP_fix_20260801_COMMAND.md` |
+| fix | 2026-08-02 | Document Postgres password setup | ✅ Done | `README.md` | `docs/STEP_fix_20260802_COMMAND.md` |

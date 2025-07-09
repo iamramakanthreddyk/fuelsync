@@ -41,6 +41,7 @@ run the tests again. As a fallback, install and start Postgres manually:
 ```bash
 sudo apt-get update && sudo apt-get install -y postgresql
 sudo service postgresql start
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 ```
 
 ## Additional Documentation
