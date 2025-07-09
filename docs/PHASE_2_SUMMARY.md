@@ -1387,3 +1387,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Tests reference `docs/openapi.yaml` and hit `/api/v1` routes directly.
+
+### 🛠️ Fix 2026-07-27 – Remove outdated price restriction
+**Status:** ✅ Done
+**Files:** `src/services/nozzleReading.service.ts`, `docs/STEP_fix_20260727_COMMAND.md`
+
+**Overview:**
+* Removed the 7‑day fuel price validity check so older prices can still be used when recording readings.

@@ -3107,3 +3107,9 @@ Each entry is tied to a step from the implementation index.
 * Integration tests load `docs/openapi.yaml` instead of the removed `openapi-spec.yaml`.
 * Removed custom route prefix stripping so endpoints are tested at `/api/v1`.
 * `docs/STEP_fix_20260726_COMMAND.md`
+
+## [Fix 2026-07-27] – Remove outdated price restriction
+
+### 🟥 Fixes
+* Nozzle readings no longer fail when a price is older than seven days.
+* `docs/STEP_fix_20260727_COMMAND.md`
