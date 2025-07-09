@@ -1438,3 +1438,36 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added explicit `psql` command to set the `postgres` password in the manual setup section.
 * Verified tests succeed when PostgreSQL is installed and running.
+
+### 🛠️ Fix 2026-08-03 – Sync OpenAPI with controllers
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20260803_COMMAND.md`
+
+**Overview:**
+* Audited all backend routers and added missing paths to the OpenAPI spec.
+* Documented analytics, delivery inventory, pump settings and reconciliation endpoints.
+
+### 🛠️ Fix 2026-08-04 – Complete admin OpenAPI routes
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20260804_COMMAND.md`
+
+**Overview:**
+* Added `/admin/dashboard` and `/admin/analytics` paths.
+* Documented tenant settings management endpoints for Super Admin.
+
+### 🛠️ Fix 2026-08-05 – Audit OpenAPI after sales update
+**Status:** ✅ Done
+**Files:** `docs/STEP_fix_20260805_COMMAND.md`
+
+**Overview:**
+* Checked all routers for coverage in the OpenAPI file after the sales service refactor.
+* No missing paths were found; documentation remains accurate.
+
+### 🛠️ Fix 2026-08-06 – Re-audit OpenAPI after controller updates
+**Status:** ✅ Done
+**Files:** `scripts/audit-openapi-spec.ts`, `docs/STEP_fix_20260806_COMMAND.md`
+
+**Overview:**
+* Introduced a small audit script to list routes missing from the spec.
+* Running the script showed the documentation already covers all paths.
+* Test execution still fails because `docker-compose` is unavailable.
