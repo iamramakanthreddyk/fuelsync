@@ -265,3 +265,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-07-24 | Mobile sidebar toggle | ✅ Done | `src/components/layout/*` | `docs/STEP_fix_20260724_COMMAND.md` |
 | fix | 2026-07-25 | SuperAdmin sidebar toggle | ✅ Done | `src/components/layout/Header.tsx` | `docs/STEP_fix_20260725_COMMAND.md` |
 | fix | 2026-07-26 | Update OpenAPI test paths | ✅ Done | `__tests__/integration/api-contract.test.ts`, `__tests__/integration/openapiRoutes.test.ts` | `docs/STEP_fix_20260726_COMMAND.md` |
+| fix | 2026-07-27 | Remove outdated price restriction | ✅ Done | `src/services/nozzleReading.service.ts` | `docs/STEP_fix_20260727_COMMAND.md` |

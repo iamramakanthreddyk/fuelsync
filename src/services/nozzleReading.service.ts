@@ -79,12 +79,7 @@ export async function createNozzleReading(
     if (!priceRecord) {
       throw new Error(`Fuel price not found for ${fuel_type} at this station. Please set fuel prices before recording readings.`);
     }
-    const { price, validFrom } = priceRecord;
-    const threshold = new Date(data.recordedAt);
-    threshold.setDate(threshold.getDate() - 7);
-    if (validFrom < threshold) {
-      throw new Error('Fuel price outdated');
-    }
+    const { price } = priceRecord;
     const saleAmount = parseFloat((volumeSold * price).toFixed(2));
     if (data.creditorId) {
       const creditor = await getCreditorById(client, tenantId, data.creditorId);
