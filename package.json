@@ -22,6 +22,7 @@
     "db:seed-data": "node scripts/seed-data.js",
     "add-yearly-price": "node scripts/add-yearly-price.js",
     "check-db": "node scripts/check-db-connection.js",
+    "check-azure-db": "node scripts/check-azure-db.js",
     "setup-azure-db": "node scripts/setup-azure-db.js",
     "azure-migrate-cash": "node scripts/apply-cash-reports-azure.js",
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",

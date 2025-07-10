@@ -101,25 +101,57 @@ export function createApp() {
     successResponse(res, { body: req.body }, 'Login endpoint working');
   });
   
-  // Health check endpoint
+  // Enhanced health check endpoint with detailed diagnostics
   app.get('/health', async (_req, res) => {
     try {
       const { testConnection } = await import('./utils/db');
+      console.log('[HEALTH] Running database connection test...');
       const dbResult = await testConnection();
+      
+      // Get system information
+      const systemInfo = {
+        nodeVersion: process.version,
+        platform: process.platform,
+        arch: process.arch,
+        memory: process.memoryUsage(),
+        uptime: process.uptime(),
+        cpus: require('os').cpus().length
+      };
+      
+      // Get environment variables (filtered for security)
+      const envVars = {
+        NODE_ENV: process.env.NODE_ENV,
+        DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT_SET',
+        DB_USER: process.env.DB_USER ? 'SET' : 'NOT_SET',
+        DB_NAME: process.env.DB_NAME ? 'SET' : 'NOT_SET',
+        DB_PORT: process.env.DB_PORT || '5432',
+        POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
+        DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
+        PORT: process.env.PORT || '3003'
+      };
+      
+      // Check if we're running in Azure
+      const isAzure = process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID || false;
+      
       successResponse(res, {
-        status: 'ok',
+        status: dbResult.success ? 'ok' : 'database_error',
         database: dbResult.success ? 'connected' : 'failed',
         dbDetails: dbResult,
         env: process.env.NODE_ENV,
-        envVars: {
-          DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT_SET',
-          DB_USER: process.env.DB_USER ? 'SET' : 'NOT_SET',
-          DB_NAME: process.env.DB_NAME ? 'SET' : 'NOT_SET'
-        },
+        isAzure,
+        system: systemInfo,
+        envVars,
         timestamp: new Date().toISOString()
       });
+      
+      console.log('[HEALTH] Health check completed with status:', dbResult.success ? 'ok' : 'database_error');
     } catch (err: any) {
-      errorResponse(res, 500, err.message);
+      console.error('[HEALTH] Health check failed with error:', err);
+      errorResponse(res, 500, {
+        message: err.message,
+        stack: err.stack,
+        timestamp: new Date().toISOString()
+      });
     }
   });
   
