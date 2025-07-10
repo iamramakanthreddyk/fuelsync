@@ -3192,3 +3192,11 @@ Each entry is tied to a step from the implementation index.
 * Added operationIds, error response schemas and pagination parameters.
 * Authentication routes now explicitly disable security.
 * `docs/STEP_fix_20260807_COMMAND.md`
+
+## [Fix 2026-08-08] – SuperAdmin analytics metrics
+
+### 🟥 Fixes
+* Expanded `/analytics/superadmin` to provide overview, revenue and usage metrics.
+* Updated `SuperAdminAnalytics` schema and docs.
+* `docs/STEP_fix_20260808_COMMAND.md`
+
