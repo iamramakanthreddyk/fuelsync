@@ -1471,3 +1471,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Introduced a small audit script to list routes missing from the spec.
 * Running the script showed the documentation already covers all paths.
 * Test execution still fails because `docker-compose` is unavailable.
+
+### 🛠️ Fix 2026-08-07 – Clean OpenAPI specification
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `scripts/addOperationIds.js`, `docs/STEP_fix_20260807_COMMAND.md`
+
+**Overview:**
+* Removed deprecated endpoints and generated operationIds for every route.
+* Added reusable error and pagination components and updated all operations.
+* Authentication endpoints now bypass global security.

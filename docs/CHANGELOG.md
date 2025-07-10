@@ -3184,3 +3184,11 @@ Each entry is tied to a step from the implementation index.
 * Added `scripts/audit-openapi-spec.ts` to compare router paths with the specification.
 * Rechecked all routers and found the spec already lists every route.
 * Documented the verification and test attempt in `STEP_fix_20260806.md`.
+
+## [Fix 2026-08-07] – Clean OpenAPI specification
+
+### 🟥 Fixes
+* Removed deprecated endpoints and unified enums.
+* Added operationIds, error response schemas and pagination parameters.
+* Authentication routes now explicitly disable security.
+* `docs/STEP_fix_20260807_COMMAND.md`
