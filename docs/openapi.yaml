@@ -5492,15 +5492,57 @@ components:
     SuperAdminAnalytics:
       type: object
       properties:
+        overview:
+          type: object
+          properties:
+            totalTenants:
+              type: number
+            totalRevenue:
+              type: number
+            totalStations:
+              type: number
+            growth:
+              type: number
+        tenantMetrics:
+          type: object
+          properties:
+            activeTenants:
+              type: number
+            trialTenants:
+              type: number
+            suspendedTenants:
+              type: number
+            monthlyGrowth:
+              type: number
+        revenueMetrics:
+          type: object
+          properties:
+            mrr:
+              type: number
+            arr:
+              type: number
+            churnRate:
+              type: number
+            averageRevenuePerTenant:
+              type: number
+        usageMetrics:
+          type: object
+          properties:
+            totalUsers:
+              type: number
+            totalStations:
+              type: number
+            totalTransactions:
+              type: number
+            averageStationsPerTenant:
+              type: number
         totalTenants:
           type: number
         activeTenants:
           type: number
-        totalStations:
+        totalRevenue:
           type: number
         salesVolume:
-          type: number
-        totalRevenue:
           type: number
         monthlyGrowth:
           type: array
@@ -5526,6 +5568,29 @@ components:
                 type: number
               revenue:
                 type: number
+        tenantCount:
+          type: number
+        activeTenantCount:
+          type: number
+        totalUsers:
+          type: number
+        signupsThisMonth:
+          type: number
+        tenantsByPlan:
+          type: array
+          items:
+            type: object
+            properties:
+              planName:
+                type: string
+              count:
+                type: number
+              percentage:
+                type: number
+        recentTenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
     Creditor:
       type: object
       properties:

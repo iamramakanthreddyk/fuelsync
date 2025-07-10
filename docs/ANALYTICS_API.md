@@ -11,36 +11,55 @@ GET /api/v1/analytics/superadmin
 **Response:**
 ```json
 {
+  "overview": {
+    "totalTenants": 4,
+    "totalRevenue": 12000,
+    "totalStations": 12,
+    "growth": 10
+  },
+  "tenantMetrics": {
+    "activeTenants": 3,
+    "trialTenants": 0,
+    "suspendedTenants": 1,
+    "monthlyGrowth": 2
+  },
+  "revenueMetrics": {
+    "mrr": 0,
+    "arr": 0,
+    "churnRate": 0,
+    "averageRevenuePerTenant": 3000
+  },
+  "usageMetrics": {
+    "totalUsers": 12,
+    "totalStations": 12,
+    "totalTransactions": 50,
+    "averageStationsPerTenant": 3
+  },
+  "totalTenants": 4,
+  "activeTenants": 3,
+  "totalRevenue": 12000,
+  "salesVolume": 40000,
+  "monthlyGrowth": [
+    { "month": "2024-06", "tenants": 2, "revenue": 2000 }
+  ],
+  "topTenants": [
+    { "id": "uuid", "name": "Test Tenant", "stationsCount": 3, "revenue": 5000 }
+  ],
   "tenantCount": 4,
   "activeTenantCount": 3,
-  "planCount": 3,
-  "adminCount": 3,
-  "userCount": 12,
-  "stationCount": 12,
+  "totalUsers": 12,
+  "signupsThisMonth": 1,
+  "tenantsByPlan": [
+    { "planName": "Enterprise Plan", "count": 2, "percentage": 50 }
+  ],
   "recentTenants": [
     {
       "id": "uuid",
       "name": "Test Tenant",
-      // "schema_name": "test_tenant", -- deprecated
       "status": "active",
       "created_at": "2023-01-01T00:00:00Z"
     }
-  ],
-  "planDistribution": [
-    {
-      "plan_name": "Enterprise Plan",
-      "tenant_count": "2"
-    },
-    {
-      "plan_name": "Basic Plan",
-      "tenant_count": "1"
-    }
-  ],
-  "summary": {
-    "tenants": 4,
-    "users": 12,
-    "stations": 12
-  }
+  ]
 }
 ```
 
