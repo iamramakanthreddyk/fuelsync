@@ -10,29 +10,29 @@ export function createUserRouter(db: Pool) {
   const handlers = createUserHandlers(db);
   
   // Middleware to ensure proper roles
-  const requireOwnerOrManager = requireRole([UserRole.Owner, UserRole.Manager]);
-  const requireOwner = requireRole([UserRole.Owner]);
+  const requireOwnerOrManagerOrSuperAdmin = requireRole([UserRole.Owner, UserRole.Manager, UserRole.SuperAdmin]);
+  const requireOwnerOrSuperAdmin = requireRole([UserRole.Owner, UserRole.SuperAdmin]);
   
   // List users
-  router.get('/', authenticateJWT, requireOwnerOrManager, handlers.list);
+  router.get('/', authenticateJWT, requireOwnerOrManagerOrSuperAdmin, handlers.list);
   
   // Get user by ID
-  router.get('/:userId', authenticateJWT, requireOwnerOrManager, handlers.get);
+  router.get('/:userId', authenticateJWT, requireOwnerOrManagerOrSuperAdmin, handlers.get);
   
-  // Create user (owner only)
-  router.post('/', authenticateJWT, requireOwner, handlers.create);
+  // Create user
+  router.post('/', authenticateJWT, requireOwnerOrSuperAdmin, handlers.create);
   
-  // Update user (owner only)
-  router.put('/:userId', authenticateJWT, requireOwner, handlers.update);
+  // Update user
+  router.put('/:userId', authenticateJWT, requireOwnerOrSuperAdmin, handlers.update);
   
   // Change password (user can change their own password)
   router.post('/:userId/change-password', authenticateJWT, handlers.changePassword);
   
-  // Reset password (owner only)
-  router.post('/:userId/reset-password', authenticateJWT, requireOwner, handlers.resetPassword);
+  // Reset password
+  router.post('/:userId/reset-password', authenticateJWT, requireOwnerOrSuperAdmin, handlers.resetPassword);
   
-  // Delete user (owner only)
-  router.delete('/:userId', authenticateJWT, requireOwner, handlers.delete);
+  // Delete user
+  router.delete('/:userId', authenticateJWT, requireOwnerOrSuperAdmin, handlers.delete);
   
   return router;
 }

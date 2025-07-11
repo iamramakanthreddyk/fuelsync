@@ -11,6 +11,44 @@ export function createUserHandlers(db: Pool) {
     list: async (req: Request, res: Response) => {
       try {
         const user = req.user;
+        
+        // SuperAdmin can access all users or users from specific tenant
+        if (user?.role === 'superadmin') {
+          const tenantId = req.query.tenantId as string;
+          
+          if (tenantId) {
+            // SuperAdmin requesting users from specific tenant
+            const users = await prisma.user.findMany({
+              where: { tenant_id: tenantId },
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                created_at: true,
+                tenant_id: true
+              },
+              orderBy: { created_at: 'desc' }
+            });
+            return successResponse(res, { users });
+          } else {
+            // SuperAdmin requesting all users across all tenants
+            const users = await prisma.user.findMany({
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                created_at: true,
+                tenant_id: true
+              },
+              orderBy: { created_at: 'desc' }
+            });
+            return successResponse(res, { users });
+          }
+        }
+        
+        // Regular tenant users
         if (!user?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
@@ -26,9 +64,7 @@ export function createUserHandlers(db: Pool) {
           },
           orderBy: { created_at: 'desc' }
         });
-        if (users.length === 0) {
-          return successResponse(res, []);
-        }
+        
         successResponse(res, { users });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
@@ -39,11 +75,34 @@ export function createUserHandlers(db: Pool) {
     get: async (req: Request, res: Response) => {
       try {
         const auth = req.user;
+        const userId = req.params.userId;
+        
+        // SuperAdmin can access any user
+        if (auth?.role === 'superadmin') {
+          const userRecord = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              role: true,
+              created_at: true,
+              tenant_id: true
+            }
+          });
+
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          return successResponse(res, userRecord);
+        }
+        
+        // Regular tenant users
         if (!auth?.tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
 
-        const userId = req.params.userId;
         const userRecord = await prisma.user.findFirst({
           where: { id: userId, tenant_id: auth.tenantId },
           select: {
