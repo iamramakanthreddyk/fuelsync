@@ -26,7 +26,7 @@
     "setup-azure-db": "node scripts/setup-azure-db.js",
     "azure-migrate-cash": "node scripts/apply-cash-reports-azure.js",
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
-    "test": "ts-node scripts/start-db-and-test.ts",
+    "test:docker": "ts-node scripts/start-db-and-test.ts",
     "test:unit": "jest -c jest.config.ts",
     "postinstall": "prisma generate"
   },
