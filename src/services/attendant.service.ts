@@ -158,23 +158,33 @@ export async function createCashReport(
     const difference = cashAmount - actualCash;
     const status = difference === 0 ? 'match' : (difference > 0 ? 'over' : 'short');
     
-    // Create reconciliation diff record
-    await client.query(
-      `INSERT INTO public.reconciliation_diff (id, tenant_id, station_id, date, reported_cash, actual_cash, difference, status, cash_report_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [randomUUID(), tenantId, stationId, date, cashAmount, actualCash, difference, status, cashReportId]
-    );
+    // Create reconciliation diff record (if table exists)
+    try {
+      await client.query(
+        `INSERT INTO public.reconciliation_diff (id, tenant_id, station_id, date, reported_cash, actual_cash, difference, status, cash_report_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [randomUUID(), tenantId, stationId, date, cashAmount, actualCash, difference, status, cashReportId]
+      );
+    } catch (diffErr) {
+      console.warn('[CASH-REPORT] Could not create reconciliation diff record:', diffErr);
+      // Continue without failing the entire transaction
+    }
     
     // Create alert if difference exceeds threshold (e.g., 5% of actual cash or 1000, whichever is less)
-    const threshold = Math.min(actualCash * 0.05, 1000);
-    if (Math.abs(difference) > threshold) {
-      await createAlert(
-        tenantId,
-        stationId,
-        'cash_discrepancy',
-        `Cash discrepancy detected: ${difference > 0 ? 'Over-reported' : 'Under-reported'} by ${Math.abs(difference).toFixed(2)}`,
-        'warning'
-      );
+    try {
+      const threshold = Math.min(actualCash * 0.05, 1000);
+      if (Math.abs(difference) > threshold) {
+        await createAlert(
+          tenantId,
+          stationId,
+          'cash_discrepancy',
+          `Cash discrepancy detected: ${difference > 0 ? 'Over-reported' : 'Under-reported'} by ${Math.abs(difference).toFixed(2)}`,
+          'warning'
+        );
+      }
+    } catch (alertErr) {
+      console.warn('[CASH-REPORT] Could not create alert:', alertErr);
+      // Continue without failing the entire transaction
     }
     await client.query('COMMIT');
     return res.rows[0].id;
@@ -191,17 +201,52 @@ export async function createCashReport(
   }
 }
 
-export async function listCashReports(db: Pool, tenantId: string, userId: string) {
-  const res = await db.query(
-    `SELECT cr.id, cr.station_id, s.name AS station_name, cr.date, cr.cash_amount, cr.credit_amount
-       FROM public.cash_reports cr
-       JOIN public.stations s ON cr.station_id = s.id
-      WHERE cr.tenant_id = $1 AND cr.user_id = $2
-      ORDER BY cr.date DESC
-      LIMIT 30`,
-    [tenantId, userId]
-  );
-  return parseRows(res.rows);
+export async function listCashReports(db: Pool, tenantId: string, userId: string, userRole?: string) {
+  try {
+    // First check if cash_reports table exists
+    const tableCheck = await db.query(
+      `SELECT EXISTS (
+         SELECT FROM information_schema.tables 
+         WHERE table_schema = 'public' 
+         AND table_name = 'cash_reports'
+       )`
+    );
+    
+    if (!tableCheck.rows[0]?.exists) {
+      console.log('[CASH-REPORTS] cash_reports table does not exist');
+      return [];
+    }
+    
+    // Owners and Managers can see all cash reports in their tenant
+    // Attendants can only see their own cash reports
+    const whereClause = (userRole === 'owner' || userRole === 'manager') 
+      ? 'WHERE cr.tenant_id = $1'
+      : 'WHERE cr.tenant_id = $1 AND cr.user_id = $2';
+    
+    const params = (userRole === 'owner' || userRole === 'manager') 
+      ? [tenantId] 
+      : [tenantId, userId];
+    
+    const res = await db.query(
+      `SELECT cr.id, cr.station_id, s.name AS station_name, cr.date, cr.cash_amount, 
+              COALESCE(cr.credit_amount, 0) as credit_amount,
+              COALESCE(cr.card_amount, 0) as card_amount,
+              COALESCE(cr.upi_amount, 0) as upi_amount,
+              u.name as created_by_name
+         FROM public.cash_reports cr
+         JOIN public.stations s ON cr.station_id = s.id
+         LEFT JOIN public.users u ON cr.user_id = u.id
+        ${whereClause}
+        ORDER BY cr.date DESC
+        LIMIT 30`,
+      params
+    );
+    return parseRows(res.rows);
+  } catch (err) {
+    console.error('[CASH-REPORTS] Error listing cash reports:', err);
+    // Return empty array if table doesn't exist or has issues
+    return [];
+  }
 }
 
 export async function listAlerts(db: Pool, tenantId: string, stationId?: string, unreadOnly: boolean = false) {

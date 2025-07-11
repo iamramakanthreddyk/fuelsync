@@ -97,12 +97,17 @@ export function createAttendantHandlers(db: Pool) {
       }
     },
     cashReports: async (req: Request, res: Response) => {
-      const user = req.user;
-      if (!user?.tenantId || !user.userId) {
-        return errorResponse(res, 400, 'Missing tenant context');
+      try {
+        const user = req.user;
+        if (!user?.tenantId || !user.userId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        const reports = await listCashReports(db, user.tenantId, user.userId, user.role);
+        successResponse(res, { reports });
+      } catch (err: any) {
+        console.error('[CASH-REPORTS-CONTROLLER] Error:', err);
+        return errorResponse(res, 500, 'Unable to fetch cash reports');
       }
-      const reports = await listCashReports(db, user.tenantId, user.userId);
-      successResponse(res, { reports });
     },
     alerts: async (req: Request, res: Response) => {
       const user = req.user;
