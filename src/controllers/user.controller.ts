@@ -128,11 +128,7 @@ export function createUserHandlers(db: Pool) {
     create: async (req: Request, res: Response) => {
       try {
         const auth = req.user;
-        if (!auth?.tenantId) {
-          return errorResponse(res, 400, 'Tenant context is required');
-        }
-        
-        const { email, password, name, role } = req.body;
+        const { email, password, name, role, tenantId: bodyTenantId } = req.body;
         
         // Validate input
         if (!email || !password || !name || !role) {
@@ -144,16 +140,30 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 400, 'Role must be owner, manager, or attendant');
         }
         
-        // Check if email already exists
+        // Determine tenant ID
+        let targetTenantId;
+        if (auth?.role === 'superadmin') {
+          // SuperAdmin must specify tenantId in request body
+          if (!bodyTenantId) {
+            return errorResponse(res, 400, 'tenantId is required for SuperAdmin');
+          }
+          targetTenantId = bodyTenantId;
+        } else {
+          // Regular users use their own tenant context
+          if (!auth?.tenantId) {
+            return errorResponse(res, 400, 'Tenant context is required');
+          }
+          targetTenantId = auth.tenantId;
+        }
+        
+        // Check if email already exists in the target tenant
         const existingUser = await prisma.user.findFirst({
-          where: { tenant_id: auth.tenantId, email }
+          where: { tenant_id: targetTenantId, email }
         });
 
         if (existingUser) {
           return errorResponse(res, 400, 'Email already in use');
         }
-
-        const tenantId = auth.tenantId;
         
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
@@ -161,7 +171,7 @@ export function createUserHandlers(db: Pool) {
         // Create user
         const newUser = await prisma.user.create({
           data: {
-            tenant_id: tenantId,
+            tenant_id: targetTenantId,
             email,
             password_hash: passwordHash,
             name,
@@ -172,7 +182,8 @@ export function createUserHandlers(db: Pool) {
             email: true,
             name: true,
             role: true,
-            created_at: true
+            created_at: true,
+            tenant_id: true
           }
         });
 
