@@ -197,10 +197,6 @@ export function createUserHandlers(db: Pool) {
     update: async (req: Request, res: Response) => {
       try {
         const auth = req.user;
-        if (!auth?.tenantId) {
-          return errorResponse(res, 400, 'Tenant context is required');
-        }
-        
         const userId = req.params.userId;
         const { name, role } = req.body;
         
@@ -212,6 +208,40 @@ export function createUserHandlers(db: Pool) {
         // Validate role if provided
         if (role && !['owner', 'manager', 'attendant'].includes(role)) {
           return errorResponse(res, 400, 'Role must be owner, manager, or attendant');
+        }
+        
+        // SuperAdmin can update any user
+        if (auth?.role === 'superadmin') {
+          const updated = await prisma.user.updateMany({
+            where: { id: userId },
+            data: {
+              ...(name ? { name } : {}),
+              ...(role ? { role } : {})
+            }
+          });
+
+          if (!updated.count) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          const userRecord = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              role: true,
+              created_at: true,
+              tenant_id: true
+            }
+          });
+
+          return successResponse(res, userRecord);
+        }
+        
+        // Regular tenant users
+        if (!auth?.tenantId) {
+          return errorResponse(res, 400, 'Tenant context is required');
         }
         
         const updated = await prisma.user.updateMany({
@@ -295,17 +325,43 @@ export function createUserHandlers(db: Pool) {
     // Reset password (for admin/owner)
     resetPassword: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
-        if (!tenantId) {
-          return errorResponse(res, 400, 'Tenant context is required');
-        }
-        
+        const auth = req.user;
         const userId = req.params.userId;
         const { newPassword } = req.body;
         
         // Validate input
         if (!newPassword) {
           return errorResponse(res, 400, 'New password is required');
+        }
+        
+        // SuperAdmin can reset any user's password
+        if (auth?.role === 'superadmin') {
+          // Check if user exists
+          const userResult = await db.query(
+            'SELECT id FROM public.users WHERE id = $1',
+            [userId]
+          );
+          
+          if (userResult.rows.length === 0) {
+            return errorResponse(res, 404, 'User not found');
+          }
+          
+          // Hash new password
+          const newPasswordHash = await bcrypt.hash(newPassword, 10);
+          
+          // Update password
+          await db.query(
+            'UPDATE public.users SET password_hash = $1 WHERE id = $2',
+            [newPasswordHash, userId]
+          );
+          
+          return successResponse(res, {}, 'Password reset successfully');
+        }
+        
+        // Regular tenant users
+        const tenantId = auth?.tenantId;
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Tenant context is required');
         }
         
         // Check if user exists
@@ -336,12 +392,51 @@ export function createUserHandlers(db: Pool) {
     // Delete user
     delete: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const auth = req.user;
+        const userId = req.params.userId;
+        
+        // SuperAdmin can delete any user
+        if (auth?.role === 'superadmin') {
+          // Get user info first
+          const userResult = await db.query(
+            'SELECT tenant_id, role FROM public.users WHERE id = $1',
+            [userId]
+          );
+          
+          if (userResult.rows.length === 0) {
+            return errorResponse(res, 404, 'User not found');
+          }
+          
+          const userTenantId = userResult.rows[0].tenant_id;
+          const userRole = userResult.rows[0].role;
+          
+          // Check if user is the last owner in their tenant
+          if (userRole === 'owner') {
+            const ownerResult = await db.query(
+              "SELECT COUNT(*) FROM public.users WHERE role = 'owner' AND tenant_id = $1",
+              [userTenantId]
+            );
+            
+            const ownerCount = parseInt(ownerResult.rows[0].count);
+            if (ownerCount <= 1) {
+              return errorResponse(res, 400, 'Cannot delete the last owner of a tenant');
+            }
+          }
+          
+          // Delete user
+          const result = await db.query(
+            'DELETE FROM public.users WHERE id = $1 RETURNING id',
+            [userId]
+          );
+          
+          return successResponse(res, {}, 'User deleted successfully');
+        }
+        
+        // Regular tenant users
+        const tenantId = auth?.tenantId;
         if (!tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
-        
-        const userId = req.params.userId;
         
         // Check if user is the last owner
         const ownerResult = await db.query(
