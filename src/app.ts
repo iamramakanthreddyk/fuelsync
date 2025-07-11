@@ -147,11 +147,7 @@ export function createApp() {
       console.log('[HEALTH] Health check completed with status:', dbResult.success ? 'ok' : 'database_error');
     } catch (err: any) {
       console.error('[HEALTH] Health check failed with error:', err);
-      errorResponse(res, 500, {
-        message: err.message,
-        stack: err.stack,
-        timestamp: new Date().toISOString()
-      });
+      errorResponse(res, 500, err.message || 'Health check failed');
     }
   });
   
