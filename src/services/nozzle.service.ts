@@ -49,13 +49,28 @@ export async function listNozzles(
   tenantId: string,
   pumpId?: string
 ) {
-  const nozzles = await prisma.nozzle.findMany({
-    where: {
-      tenant_id: tenantId,
-      ...(pumpId ? { pump_id: pumpId } : {}),
-    },
-    orderBy: { nozzle_number: 'asc' },
-  });
+  // Get nozzles with their latest reading
+  const sql = `
+    SELECT 
+      n.*,
+      p.name as pump_name,
+      (
+        SELECT reading 
+        FROM public.nozzle_readings nr 
+        WHERE nr.nozzle_id = n.id 
+        AND nr.tenant_id = n.tenant_id
+        ORDER BY nr.recorded_at DESC 
+        LIMIT 1
+      ) as last_reading
+    FROM public.nozzles n
+    LEFT JOIN public.pumps p ON n.pump_id = p.id
+    WHERE n.tenant_id = $1
+    ${pumpId ? 'AND n.pump_id = $2' : ''}
+    ORDER BY n.nozzle_number ASC
+  `;
+  
+  const params = pumpId ? [tenantId, pumpId] : [tenantId];
+  const nozzles = await prisma.$queryRawUnsafe(sql, ...params);
   return parseRows(nozzles as any);
 }
 
