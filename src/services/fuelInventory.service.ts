@@ -127,15 +127,25 @@ export async function getComputedFuelInventory(
     });
     for (const f of fuels) {
       const volume = await calculateTankLevel(db, tenantId, st.id, f.fuel_type);
+      const inv = await prisma.fuelInventory.findFirst({
+        where: { tenant_id: tenantId, station_id: st.id, fuel_type: f.fuel_type },
+        select: { minimum_level: true },
+      });
+      const minimumLevel = Number(inv?.minimum_level ?? 0);
+      const status = volume <= minimumLevel
+        ? 'critical'
+        : volume <= minimumLevel * 1.5
+        ? 'low'
+        : 'normal';
       results.push({
         id: `${st.id}-${f.fuel_type}`,
         stationId: st.id,
         stationName: st.name,
         fuelType: f.fuel_type,
         currentVolume: volume,
-        capacity: 0,
-        minimumLevel: 0,
-        status: 'normal',
+        capacity: minimumLevel,
+        minimumLevel,
+        status,
         lastUpdated: new Date().toISOString(),
       });
     }
