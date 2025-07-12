@@ -282,3 +282,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-09 | User updatedAt field | ✅ Done | `src/controllers/user.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260809_COMMAND.md` |
 | fix | 2026-08-10 | ReconciliationRecord contract alignment | ✅ Done | `src/services/reconciliation.service.ts`, migrations | `docs/STEP_fix_20260810_COMMAND.md` |
 | fix | 2026-08-11 | Reconciliation request cleanup | ✅ Done | `src/controllers/reconciliation.controller.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml` | `docs/STEP_fix_20260811_COMMAND.md` |
+| fix | 2026-08-12 | Expanded domain fields | ✅ Done | `src/controllers/nozzle.controller.ts`, `src/services/nozzleReading.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/services/fuelInventory.service.ts`, `docs/openapi.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260812_COMMAND.md` |
+| fix | 2026-08-13 | Display field adjustments | ✅ Done | `src/services/nozzleReading.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/services/fuelInventory.service.ts`, `docs/openapi.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260813_COMMAND.md` |

@@ -10,6 +10,8 @@ export interface FuelInventory {
   fuelType: string;
   currentVolume: number;
   capacity: number;
+  minimumLevel: number;
+  status: string;
   lastUpdated: string;
 }
 
@@ -40,15 +42,25 @@ export async function getFuelInventory(
       include: { station: { select: { name: true } } },
       orderBy: [{ station: { name: 'asc' } }, { fuel_type: 'asc' }],
     });
-    return items.map(i => ({
-      id: i.id,
-      stationId: i.station_id,
-      stationName: (i as any).station.name,
-      fuelType: i.fuel_type,
-      currentVolume: Number(i.current_stock),
-      capacity: Number(i.minimum_level),
-      lastUpdated: i.last_updated.toISOString(),
-    }));
+    return items.map(i => {
+      const status =
+        Number(i.current_stock) <= Number(i.minimum_level)
+          ? 'critical'
+          : Number(i.current_stock) <= Number(i.minimum_level) * 1.5
+          ? 'low'
+          : 'normal';
+      return {
+        id: i.id,
+        stationId: i.station_id,
+        stationName: (i as any).station.name,
+        fuelType: i.fuel_type,
+        currentVolume: Number(i.current_stock),
+        capacity: Number(i.minimum_level),
+        minimumLevel: Number(i.minimum_level),
+        status,
+        lastUpdated: i.last_updated.toISOString(),
+      };
+    });
   } catch (error) {
     console.error('Error fetching fuel inventory:', error);
     return [];

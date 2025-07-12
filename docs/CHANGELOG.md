@@ -2875,7 +2875,17 @@ Each entry is tied to a step from the implementation index.
 * `docs/USER_MANAGEMENT.md`
 * `UNIFIED_DB_SETUP.md`
 * `docs/STEP_2_57_COMMAND.md`
-\n## [Step 3.8] – Final QA Audit\n\n### 🟦 Enhancements\n* Verified OpenAPI, backend routes and frontend hooks are aligned.\n* Documented results in `QA_AUDIT_REPORT.md`.\n\n### Files\n* `docs/QA_AUDIT_REPORT.md`\n* `docs/STEP_3_8_COMMAND.md`\n
+
+## [Step 3.8] – Final QA Audit
+
+### 🟦 Enhancements
+* Verified OpenAPI, backend routes and frontend hooks are aligned.
+* Documented results in `QA_AUDIT_REPORT.md`.
+
+### Files
+* `docs/QA_AUDIT_REPORT.md`
+* `docs/STEP_3_8_COMMAND.md`
+
 
 ## [Step 3.9] – Readings page table
 
@@ -3119,7 +3129,12 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Added unit tests for station controller and inventory service.
 * `docs/STEP_fix_20260728_COMMAND.md`
-\n## [Fix 2026-07-29] – Validate all controller factories\n\n### 🟥 Fixes\n* Added test ensuring every controller exposes a handler factory.\n* `docs/STEP_fix_20260729_COMMAND.md`
+
+## [Fix 2026-07-29] – Validate all controller factories
+
+### 🟥 Fixes
+* Added test ensuring every controller exposes a handler factory.
+* `docs/STEP_fix_20260729_COMMAND.md`
 
 ## [Fix 2026-07-30] – Resolve unit test failures
 
@@ -3233,3 +3248,11 @@ Each entry is tied to a step from the implementation index.
 * `docs/openapi.yaml`
 * `package.json`
 * `docs/STEP_2_58_COMMAND.md`
+
+## [Fix 2026-08-12] – Expanded domain fields
+
+### 🟦 Enhancements
+* Nozzle reading, fuel price, inventory and nozzle responses now include additional display fields.
+* OpenAPI and generated API types updated.
+* `docs/STEP_fix_20260812_COMMAND.md`
+\n## [Fix 2026-08-13] – Display field adjustments\n\n### 🟦 Enhancements\n* Corrected fuel inventory status logic and added enum to OpenAPI.\n* Fuel price isActive now checks validFrom date.\n* Nozzle reading queries compute volume and amount when sales data is absent.\n* Regenerated API types.\n* `docs/STEP_fix_20260813_COMMAND.md`\n

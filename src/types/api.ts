@@ -1919,6 +1919,9 @@ export interface components {
             /** @enum {string} */
             fuelType?: "petrol" | "diesel" | "premium";
             capacity?: number;
+            minimumLevel?: number;
+            /** @enum {string} */
+            status?: "normal" | "low" | "critical";
             currentVolume?: number;
             /** Format: date-time */
             lastUpdated?: string;
@@ -1929,6 +1932,8 @@ export interface components {
             /** @enum {string} */
             fuelType?: "petrol" | "diesel" | "premium";
             price?: number;
+            stationName?: string;
+            isActive?: boolean;
             /** Format: date-time */
             validFrom?: string;
             /** Format: date-time */
@@ -1948,6 +1953,7 @@ export interface components {
         Nozzle: {
             id?: string;
             pumpId?: string;
+            pumpName?: string;
             nozzleNumber?: number;
             /** @enum {string} */
             fuelType?: "petrol" | "diesel" | "premium";
@@ -1987,6 +1993,14 @@ export interface components {
             /** @enum {string} */
             paymentMethod?: "cash" | "card" | "upi" | "credit" | "bank_transfer" | "check";
             creditorId?: string;
+            nozzleNumber?: number;
+            previousReading?: number;
+            volume?: number;
+            amount?: number;
+            pricePerLitre?: number;
+            fuelType?: string;
+            stationName?: string;
+            attendantName?: string;
             /** Format: date-time */
             createdAt?: string;
         };

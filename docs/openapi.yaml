@@ -5793,6 +5793,14 @@ components:
             - premium
         capacity:
           type: number
+        minimumLevel:
+          type: number
+        status:
+          type: string
+          enum:
+            - normal
+            - low
+            - critical
         currentVolume:
           type: number
         lastUpdated:
@@ -5813,6 +5821,10 @@ components:
             - premium
         price:
           type: number
+        stationName:
+          type: string
+        isActive:
+          type: boolean
         validFrom:
           type: string
           format: date-time
@@ -5850,6 +5862,8 @@ components:
         id:
           type: string
         pumpId:
+          type: string
+        pumpName:
           type: string
         nozzleNumber:
           type: number
@@ -5942,6 +5956,22 @@ components:
             - bank_transfer
             - check
         creditorId:
+          type: string
+        nozzleNumber:
+          type: number
+        previousReading:
+          type: number
+        volume:
+          type: number
+        amount:
+          type: number
+        pricePerLitre:
+          type: number
+        fuelType:
+          type: string
+        stationName:
+          type: string
+        attendantName:
           type: string
         createdAt:
           type: string
