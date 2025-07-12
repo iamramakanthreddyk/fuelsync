@@ -3200,3 +3200,10 @@ Each entry is tied to a step from the implementation index.
 * Updated `SuperAdminAnalytics` schema and docs.
 * `docs/STEP_fix_20260808_COMMAND.md`
 
+
+## [Fix 2026-08-09] – User updatedAt field
+
+### 🟥 Fixes
+* Added `updatedAt` to `User` schema and API responses.
+* Documented absence of `isActive` and `permissions` fields.
+* `docs/STEP_fix_20260809_COMMAND.md`

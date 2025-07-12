@@ -278,3 +278,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-06 | Re-audit OpenAPI after controller updates | ✅ Done | `scripts/audit-openapi-spec.ts` | `docs/STEP_fix_20260806_COMMAND.md` |
 | fix | 2026-08-07 | Clean OpenAPI specification | ✅ Done | `docs/openapi.yaml`, `scripts/addOperationIds.js` | `docs/STEP_fix_20260807_COMMAND.md` |
 | fix | 2026-08-08 | SuperAdmin analytics metrics | ✅ Done | `src/services/analytics.service.ts`, `src/controllers/analytics.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260808_COMMAND.md` |
+| fix | 2026-08-09 | User updatedAt field | ✅ Done | `src/controllers/user.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260809_COMMAND.md` |
