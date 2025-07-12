@@ -6004,18 +6004,12 @@ components:
       required:
         - stationId
         - date
-        - totalExpected
-        - cashReceived
         - managerConfirmation
       properties:
         stationId:
           type: string
         date:
           type: string
-        totalExpected:
-          type: number
-        cashReceived:
-          type: number
         reconciliationNotes:
           type: string
         managerConfirmation:

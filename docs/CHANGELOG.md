@@ -3214,3 +3214,10 @@ Each entry is tied to a step from the implementation index.
 * Replaced cash-based fields with `openingReading`, `closingReading` and `variance`.
 * Updated schema templates and service logic to compute readings from nozzle data.
 * `docs/STEP_fix_20260810_COMMAND.md`
+
+## [Fix 2026-08-11] – Reconciliation request cleanup
+
+### 🟥 Fixes
+* Removed obsolete cash fields from `CreateReconciliationRequest` schema.
+* Controller now expects `date` field when creating reconciliations.
+* `docs/STEP_fix_20260811_COMMAND.md`

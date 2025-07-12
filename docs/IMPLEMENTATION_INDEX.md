@@ -280,3 +280,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-08 | SuperAdmin analytics metrics | ✅ Done | `src/services/analytics.service.ts`, `src/controllers/analytics.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260808_COMMAND.md` |
 | fix | 2026-08-09 | User updatedAt field | ✅ Done | `src/controllers/user.controller.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260809_COMMAND.md` |
 | fix | 2026-08-10 | ReconciliationRecord contract alignment | ✅ Done | `src/services/reconciliation.service.ts`, migrations | `docs/STEP_fix_20260810_COMMAND.md` |
+| fix | 2026-08-11 | Reconciliation request cleanup | ✅ Done | `src/controllers/reconciliation.controller.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml` | `docs/STEP_fix_20260811_COMMAND.md` |
