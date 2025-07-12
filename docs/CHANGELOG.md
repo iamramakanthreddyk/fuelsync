@@ -3221,3 +3221,15 @@ Each entry is tied to a step from the implementation index.
 * Removed obsolete cash fields from `CreateReconciliationRequest` schema.
 * Controller now expects `date` field when creating reconciliations.
 * `docs/STEP_fix_20260811_COMMAND.md`
+
+## [Step 2.58] – API type generation
+
+### 🟦 Enhancements
+* Generated TypeScript types from `docs/openapi.yaml` using `openapi-typescript`.
+* Added placeholder schemas for daily sales reporting and installed the generator as a dev dependency.
+
+### Files
+* `src/types/api.ts`
+* `docs/openapi.yaml`
+* `package.json`
+* `docs/STEP_2_58_COMMAND.md`

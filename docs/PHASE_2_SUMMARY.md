@@ -1507,3 +1507,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Removed `totalExpected` and `cashReceived` from request schema.
 * Create handler now expects a `date` field to trigger reconciliation.
+
+### 🛠️ Step 2.58 – API type generation
+**Status:** ✅ Done
+**Files:** `src/types/api.ts`, `package.json`, `docs/openapi.yaml`, `docs/STEP_2_58_COMMAND.md`
+
+**Overview:**
+* Added placeholder schemas for daily sales reporting so the spec validates.
+* Generated TypeScript API definitions via `openapi-typescript`.
