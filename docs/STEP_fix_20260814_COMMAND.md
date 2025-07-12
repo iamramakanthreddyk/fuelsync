@@ -1,6 +1,8 @@
 # STEP_fix_20260814_COMMAND.md
 ## Project Context Summary
-The user update endpoint did not verify whether the updated user actually existed after calling `prisma.user.findUnique`. This caused TypeScript errors and allowed null values to be returned.
+Two issues were identified:
+1. The user update endpoint did not verify whether the updated user actually existed after calling `prisma.user.findUnique`.
+2. The computed fuel inventory API always returned status `normal` because the minimum level for each station and fuel type was not retrieved.
 
 ## Steps Already Implemented
 - Fixes through `2026-08-13` recorded in `IMPLEMENTATION_INDEX.md`.
@@ -9,6 +11,7 @@ The user update endpoint did not verify whether the updated user actually existe
 - After each `prisma.user.findUnique` call in `user.controller.ts` update logic, check if a record was found.
 - Return `errorResponse(res, 404, 'User not found')` when the record is missing.
 - Ensure both SuperAdmin and tenant update paths include this check.
+- In `fuelInventory.service.ts` fetch each station's `minimum_level` in `getComputedFuelInventory` and compute the status based on the retrieved value.
 - Run `npm run build` to verify successful compilation.
 
 ## Required Documentation Updates
