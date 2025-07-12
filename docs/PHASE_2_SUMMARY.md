@@ -1481,3 +1481,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Added reusable error and pagination components and updated all operations.
 * Authentication endpoints now bypass global security.
 \n### 🛠️ Fix 2026-08-08 – SuperAdmin analytics metrics\n**Status:** ✅ Done\n**Files:** `src/services/analytics.service.ts`, `src/controllers/analytics.controller.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20260808_COMMAND.md`\n\n**Overview:**\n* Extended super admin dashboard data with revenue, usage and tenant metrics.\n* Documentation updated to reflect new response format.\n
+
+### 🛠️ Fix 2026-08-09 – User updatedAt field
+**Status:** ✅ Done
+**Files:** `src/controllers/user.controller.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20260809_COMMAND.md`
+
+**Overview:**
+* Exposed `updatedAt` from the database in user API responses.
+* Added `updatedAt` to the `User` schema.
+* Confirmed `isActive` and `permissions` are not stored in the schema.

@@ -26,11 +26,22 @@ export function createUserHandlers(db: Pool) {
                 name: true,
                 role: true,
                 created_at: true,
+                updated_at: true,
                 tenant_id: true
               },
               orderBy: { created_at: 'desc' }
             });
-            return successResponse(res, { users });
+            return successResponse(res, {
+              users: users.map(u => ({
+                id: u.id,
+                email: u.email,
+                name: u.name,
+                role: u.role,
+                tenantId: u.tenant_id,
+                createdAt: u.created_at,
+                updatedAt: u.updated_at
+              }))
+            });
           } else {
             // SuperAdmin requesting all users across all tenants
             const users = await prisma.user.findMany({
@@ -40,11 +51,22 @@ export function createUserHandlers(db: Pool) {
                 name: true,
                 role: true,
                 created_at: true,
+                updated_at: true,
                 tenant_id: true
               },
               orderBy: { created_at: 'desc' }
             });
-            return successResponse(res, { users });
+            return successResponse(res, {
+              users: users.map(u => ({
+                id: u.id,
+                email: u.email,
+                name: u.name,
+                role: u.role,
+                tenantId: u.tenant_id,
+                createdAt: u.created_at,
+                updatedAt: u.updated_at
+              }))
+            });
           }
         }
         
@@ -60,12 +82,22 @@ export function createUserHandlers(db: Pool) {
             email: true,
             name: true,
             role: true,
-            created_at: true
+            created_at: true,
+            updated_at: true
           },
           orderBy: { created_at: 'desc' }
         });
-        
-        successResponse(res, { users });
+
+        successResponse(res, {
+          users: users.map(u => ({
+            id: u.id,
+            email: u.email,
+            name: u.name,
+            role: u.role,
+            createdAt: u.created_at,
+            updatedAt: u.updated_at
+          }))
+        });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -87,6 +119,7 @@ export function createUserHandlers(db: Pool) {
               name: true,
               role: true,
               created_at: true,
+              updated_at: true,
               tenant_id: true
             }
           });
@@ -95,7 +128,15 @@ export function createUserHandlers(db: Pool) {
             return errorResponse(res, 404, 'User not found');
           }
 
-          return successResponse(res, userRecord);
+          return successResponse(res, {
+            id: userRecord.id,
+            email: userRecord.email,
+            name: userRecord.name,
+            role: userRecord.role,
+            tenantId: userRecord.tenant_id,
+            createdAt: userRecord.created_at,
+            updatedAt: userRecord.updated_at
+          });
         }
         
         // Regular tenant users
@@ -110,7 +151,8 @@ export function createUserHandlers(db: Pool) {
             email: true,
             name: true,
             role: true,
-            created_at: true
+            created_at: true,
+            updated_at: true
           }
         });
 
@@ -118,7 +160,14 @@ export function createUserHandlers(db: Pool) {
           return errorResponse(res, 404, 'User not found');
         }
 
-        successResponse(res, userRecord);
+        successResponse(res, {
+          id: userRecord.id,
+          email: userRecord.email,
+          name: userRecord.name,
+          role: userRecord.role,
+          createdAt: userRecord.created_at,
+          updatedAt: userRecord.updated_at
+        });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -183,11 +232,20 @@ export function createUserHandlers(db: Pool) {
             name: true,
             role: true,
             created_at: true,
+            updated_at: true,
             tenant_id: true
           }
         });
 
-        res.status(201).json(newUser);
+        res.status(201).json({
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role,
+          tenantId: newUser.tenant_id,
+          createdAt: newUser.created_at,
+          updatedAt: newUser.updated_at
+        });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
@@ -232,11 +290,20 @@ export function createUserHandlers(db: Pool) {
               name: true,
               role: true,
               created_at: true,
+              updated_at: true,
               tenant_id: true
             }
           });
 
-          return successResponse(res, userRecord);
+          return successResponse(res, {
+            id: userRecord.id,
+            email: userRecord.email,
+            name: userRecord.name,
+            role: userRecord.role,
+            tenantId: userRecord.tenant_id,
+            createdAt: userRecord.created_at,
+            updatedAt: userRecord.updated_at
+          });
         }
         
         // Regular tenant users
@@ -263,11 +330,19 @@ export function createUserHandlers(db: Pool) {
             email: true,
             name: true,
             role: true,
-            created_at: true
+            created_at: true,
+            updated_at: true
           }
         });
 
-        successResponse(res, userRecord);
+        successResponse(res, {
+          id: userRecord.id,
+          email: userRecord.email,
+          name: userRecord.name,
+          role: userRecord.role,
+          createdAt: userRecord.created_at,
+          updatedAt: userRecord.updated_at
+        });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
