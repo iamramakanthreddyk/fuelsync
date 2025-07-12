@@ -15,7 +15,10 @@ export function createDashboardHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
           const access = await db.query(
-            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            `SELECT 1
+               FROM public.user_stations us
+               JOIN public.stations s ON s.id = us.station_id
+              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
             [user?.userId, stationId, tenantId]
           );
           if (!access.rowCount) {
@@ -71,7 +74,10 @@ export function createDashboardHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
           const access = await db.query(
-            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            `SELECT 1
+               FROM public.user_stations us
+               JOIN public.stations s ON s.id = us.station_id
+              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
             [user?.userId, stationId, tenantId]
           );
           if (!access.rowCount) {
@@ -135,7 +141,10 @@ export function createDashboardHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
           const access = await db.query(
-            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            `SELECT 1
+               FROM public.user_stations us
+               JOIN public.stations s ON s.id = us.station_id
+              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
             [user?.userId, stationId, tenantId]
           );
           if (!access.rowCount) {
@@ -197,7 +206,10 @@ export function createDashboardHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
           const access = await db.query(
-            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            `SELECT 1
+               FROM public.user_stations us
+               JOIN public.stations s ON s.id = us.station_id
+              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
             [user?.userId, stationId, tenantId]
           );
           if (!access.rowCount) {
@@ -250,7 +262,10 @@ export function createDashboardHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
           const access = await db.query(
-            `SELECT 1 FROM public.user_stations WHERE user_id = $1 AND station_id = $2 AND tenant_id = $3`,
+            `SELECT 1
+               FROM public.user_stations us
+               JOIN public.stations s ON s.id = us.station_id
+              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
             [user?.userId, stationId, tenantId]
           );
           if (!access.rowCount) {

@@ -1534,3 +1534,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added a 404 check after fetching updated user records for both SuperAdmin and tenant paths.
 * Fuel inventory status now derives from the configured minimum level.
+
+### 🛠️ Fix 2026-08-15 – Station access query fix
+**Status:** ✅ Done
+**Files:** `src/controllers/dashboard.controller.ts`, `src/middlewares/checkStationAccess.ts`, `src/controllers/sales.controller.ts`, `docs/STEP_fix_20260815_COMMAND.md`
+
+**Overview:**
+* Dashboard and middleware access checks now join stations to verify `tenant_id`.
+* Sales endpoints validate station access again.
