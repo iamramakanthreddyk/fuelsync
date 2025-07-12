@@ -6113,6 +6113,55 @@ components:
               type: number
             credit:
               type: number
+    NozzleSales:
+      type: object
+      properties:
+        nozzleId:
+          type: string
+        nozzleNumber:
+          type: number
+        fuelType:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        readingsCount:
+          type: integer
+    PumpSales:
+      type: object
+      properties:
+        pumpId:
+          type: string
+        pumpName:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        nozzles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NozzleSales'
+    StationSales:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        pumps:
+          type: array
+          items:
+            $ref: '#/components/schemas/PumpSales'
+    DailySalesReport:
+      type: array
+      items:
+        $ref: '#/components/schemas/StationSales'
     ExportReportRequest:
       type: object
       required:

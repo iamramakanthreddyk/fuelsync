@@ -222,6 +222,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-12-01 | Alert parameter naming alignment | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml` | `docs/STEP_fix_20251201.md` |
 | 2     | 2.56 | Backend analytics and inventory completion | ✅ Done | `src/services/analytics.service.ts`, `src/services/fuelInventory.service.ts`, `src/services/tenant.service.ts`, `src/controllers`, `src/routes`, `docs/openapi.yaml` | `docs/STEP_2_56_COMMAND.md` |
 | 2     | 2.57 | Tenant email convention update | ✅ Done | `src/services/tenant.service.ts`, `docs/TENANT_CREATION_API.md`, `docs/TENANT_MANAGEMENT_GUIDE.md`, `TENANT_USER_CREATION_PROCESS.md`, `docs/USER_MANAGEMENT.md`, `UNIFIED_DB_SETUP.md` | `docs/STEP_2_57_COMMAND.md` |
+| 2     | 2.58 | API type generation from spec | ✅ Done | `src/types/api.ts`, `package.json`, `docs/openapi.yaml` | `docs/STEP_2_58_COMMAND.md` |
 | fix | 2025-12-02 | Frontend hooks OpenAPI alignment | ✅ Done | src/api/* | docs/STEP_fix_20251202.md |
 | fix | 2025-12-03 | Remove deprecated dashboard API usage | ✅ Done | src/api/dashboard.ts, dashboard components | docs/STEP_fix_20251203.md |
 | fix | 2025-12-04 | API service and hook consistency | ✅ Done | src/hooks/useDashboard.ts, fuelsync/src/routes/auth.route.ts | docs/STEP_fix_20251204.md |
