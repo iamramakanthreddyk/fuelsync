@@ -1499,3 +1499,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Added `opening_reading`, `closing_reading` and `variance` columns.
 * Service now computes readings from nozzle data and stores them.
 * Documentation updated to reflect new response fields.
+
+### 🛠️ Fix 2026-08-11 – Reconciliation request cleanup
+**Status:** ✅ Done
+**Files:** `src/controllers/reconciliation.controller.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `docs/STEP_fix_20260811_COMMAND.md`
+
+**Overview:**
+* Removed `totalExpected` and `cashReceived` from request schema.
+* Create handler now expects a `date` field to trigger reconciliation.

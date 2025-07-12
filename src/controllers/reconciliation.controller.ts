@@ -16,15 +16,15 @@ export function createReconciliationHandlers(db: Pool) {
         if (!user?.tenantId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        const { stationId, reconciliationDate } = req.body || {};
-        if (!stationId || !reconciliationDate) {
-          return errorResponse(res, 400, 'stationId and reconciliationDate required');
+        const { stationId, date } = req.body || {};
+        if (!stationId || !date) {
+          return errorResponse(res, 400, 'stationId and date required');
         }
-        const date = new Date(reconciliationDate);
-        if (isNaN(date.getTime())) {
-          return errorResponse(res, 400, 'Invalid reconciliationDate');
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+          return errorResponse(res, 400, 'Invalid date');
         }
-        const summary = await runReconciliation(db, user.tenantId, stationId, date);
+        const summary = await runReconciliation(db, user.tenantId, stationId, parsedDate);
         successResponse(res, { summary }, undefined, 201);
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
