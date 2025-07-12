@@ -1567,3 +1567,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Documented the SQL used to aggregate nozzle readings.
 * Explained the variance formula and cash difference logic.
 * Highlighted the single reconciliation per day policy and listed key endpoints.
+
+### 🛠️ Fix 2026-08-19 – Add lastReading to nozzle list
+**Status:** ✅ Done
+**Files:** `src/services/nozzle.service.ts`, `docs/STEP_fix_20260819_COMMAND.md`
+
+**Overview:**
+* `listNozzles` now joins the latest nozzle reading and exposes `last_reading`.
