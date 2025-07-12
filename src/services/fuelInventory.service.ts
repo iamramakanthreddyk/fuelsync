@@ -134,6 +134,8 @@ export async function getComputedFuelInventory(
         fuelType: f.fuel_type,
         currentVolume: volume,
         capacity: 0,
+        minimumLevel: 0,
+        status: 'normal',
         lastUpdated: new Date().toISOString(),
       });
     }
