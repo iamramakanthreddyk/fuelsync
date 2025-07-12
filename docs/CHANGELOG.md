@@ -3270,3 +3270,17 @@ Each entry is tied to a step from the implementation index.
 * Owners no longer require `user_stations` entries to access their tenant's stations.
 * Middleware and controllers rely on new `hasStationAccess` helper.
 * `docs/STEP_fix_20260816_COMMAND.md`
+
+## [Fix 2026-08-17] – Add reconciliation readings columns
+
+### 🟥 Fixes
+* Added migration to include `opening_reading`, `closing_reading` and `variance` in `day_reconciliations`.
+* Updated Prisma schema and regenerated client.
+* `docs/STEP_fix_20260817_COMMAND.md`
+
+## [Fix 2026-08-18] – Reconciliation documentation update
+
+### 🟦 Enhancements
+* Added `RECONCILIATION_API.md` to clarify SQL logic, variance meaning and cash difference rules.
+* Phase summary updated with documentation link.
+* `docs/STEP_fix_20260818_COMMAND.md`
