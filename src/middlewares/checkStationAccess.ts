@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { Request, Response, NextFunction } from 'express';
+import { hasStationAccess } from '../utils/hasStationAccess';
 
 export function checkStationAccess(db: Pool) {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -8,14 +9,8 @@ export function checkStationAccess(db: Pool) {
     if (!user || !user.tenantId || !stationId) {
       return res.status(403).json({ status: 'error', code: 'FORBIDDEN', message: 'Station access denied' });
     }
-    const result = await db.query(
-      `SELECT 1
-         FROM public.user_stations us
-         JOIN public.stations s ON s.id = us.station_id
-        WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-      [user.userId, stationId, user.tenantId]
-    );
-    if (!result.rowCount) {
+    const allowed = await hasStationAccess(db, user, stationId);
+    if (!allowed) {
       return res.status(403).json({ status: 'error', code: 'FORBIDDEN', message: 'Station access denied' });
     }
     next();

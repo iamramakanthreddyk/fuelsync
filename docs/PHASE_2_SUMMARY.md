@@ -1542,3 +1542,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Dashboard and middleware access checks now join stations to verify `tenant_id`.
 * Sales endpoints validate station access again.
+
+### 🛠️ Fix 2026-08-16 – Owner station access
+**Status:** ✅ Done
+**Files:** `src/middlewares/checkStationAccess.ts`, `src/controllers/dashboard.controller.ts`, `src/controllers/sales.controller.ts`, `src/utils/hasStationAccess.ts`, `docs/STEP_fix_20260816_COMMAND.md`
+
+**Overview:**
+* Owners automatically access stations in their tenant without `user_stations` mappings.
+* Shared helper validates access for all roles.

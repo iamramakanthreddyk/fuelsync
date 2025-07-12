@@ -4,6 +4,7 @@ import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
 import { getSystemHealth } from '../services/analytics.service';
+import { hasStationAccess } from '../utils/hasStationAccess';
 import { getDashboardStationMetrics } from '../services/station.service';
 
 export function createDashboardHandlers(db: Pool) {
@@ -14,14 +15,8 @@ export function createDashboardHandlers(db: Pool) {
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user?.userId, stationId, tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user!, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
@@ -73,14 +68,8 @@ export function createDashboardHandlers(db: Pool) {
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user?.userId, stationId, tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user!, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
@@ -140,14 +129,8 @@ export function createDashboardHandlers(db: Pool) {
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user?.userId, stationId, tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user!, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
@@ -205,14 +188,8 @@ export function createDashboardHandlers(db: Pool) {
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user?.userId, stationId, tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user!, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
@@ -261,14 +238,8 @@ export function createDashboardHandlers(db: Pool) {
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user?.userId, stationId, tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user!, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
