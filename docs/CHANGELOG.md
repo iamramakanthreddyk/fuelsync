@@ -3207,3 +3207,10 @@ Each entry is tied to a step from the implementation index.
 * Added `updatedAt` to `User` schema and API responses.
 * Documented absence of `isActive` and `permissions` fields.
 * `docs/STEP_fix_20260809_COMMAND.md`
+
+## [Fix 2026-08-10] – ReconciliationRecord contract alignment
+
+### 🟥 Fixes
+* Replaced cash-based fields with `openingReading`, `closingReading` and `variance`.
+* Updated schema templates and service logic to compute readings from nozzle data.
+* `docs/STEP_fix_20260810_COMMAND.md`

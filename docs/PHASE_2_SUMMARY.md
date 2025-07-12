@@ -1490,3 +1490,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Exposed `updatedAt` from the database in user API responses.
 * Added `updatedAt` to the `User` schema.
 * Confirmed `isActive` and `permissions` are not stored in the schema.
+
+### 🛠️ Fix 2026-08-10 – ReconciliationRecord contract alignment
+**Status:** ✅ Done
+**Files:** `src/services/reconciliation.service.ts`, `migrations/schema/*`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `docs/STEP_fix_20260810_COMMAND.md`
+
+**Overview:**
+* Added `opening_reading`, `closing_reading` and `variance` columns.
+* Service now computes readings from nozzle data and stores them.
+* Documentation updated to reflect new response fields.

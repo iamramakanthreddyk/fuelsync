@@ -2,12 +2,15 @@ import { Pool, PoolClient } from 'pg';
 import { randomUUID } from 'crypto';
 import { parseRows, parseRow } from '../utils/parseDb';
 
-export interface ReconciliationTotals {
+export interface ReconciliationRecordResult {
   totalSales: number;
   cashTotal: number;
   cardTotal: number;
   upiTotal: number;
   creditTotal: number;
+  openingReading: number;
+  closingReading: number;
+  variance: number;
 }
 
 export async function isDayFinalized(
@@ -40,7 +43,7 @@ export async function runReconciliation(
   tenantId: string,
   stationId: string,
   date: Date
-): Promise<ReconciliationTotals & { reconciliationId: string }> {
+): Promise<ReconciliationRecordResult & { reconciliationId: string }> {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
@@ -72,20 +75,59 @@ export async function runReconciliation(
       [stationId, date, tenantId]
     );
     const row = totals.rows[0];
+
+    const volumeRes = await client.query<{ total_volume: number }>(
+      `SELECT COALESCE(SUM(s.volume),0) AS total_volume
+       FROM public.sales s
+       JOIN public.nozzles n ON s.nozzle_id = n.id
+       JOIN public.pumps p ON n.pump_id = p.id
+       WHERE p.station_id = $1 AND DATE(s.recorded_at) = $2 AND s.tenant_id = $3`,
+      [stationId, date, tenantId]
+    );
+
+    const readingRes = await client.query<{
+      opening_reading: number;
+      closing_reading: number;
+    }>(
+      `SELECT
+         SUM(opening_reading) AS opening_reading,
+         SUM(closing_reading) AS closing_reading
+       FROM (
+         SELECT MIN(nr.reading) AS opening_reading, MAX(nr.reading) AS closing_reading
+           FROM public.nozzle_readings nr
+           JOIN public.nozzles n ON nr.nozzle_id = n.id
+           JOIN public.pumps p ON n.pump_id = p.id
+          WHERE p.station_id = $1
+            AND DATE(nr.recorded_at) = $2
+            AND nr.tenant_id = $3
+          GROUP BY nr.nozzle_id
+       ) r`,
+      [stationId, date, tenantId]
+    );
+
+    const openingReading = Number(readingRes.rows[0]?.opening_reading || 0);
+    const closingReading = Number(readingRes.rows[0]?.closing_reading || 0);
+    const totalVolume = Number(volumeRes.rows[0]?.total_volume || 0);
+    const variance = closingReading - openingReading - totalVolume;
     const reconciliationId = existing.rowCount ? existing.rows[0].id : randomUUID();
     
     if (existing.rowCount) {
       await client.query(
         `UPDATE public.day_reconciliations
-           SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6, finalized=true, updated_at=NOW()
-         WHERE id=$1 AND tenant_id = $7`,
-        [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total, tenantId]
+           SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6,
+               opening_reading=$7, closing_reading=$8, variance=$9,
+               finalized=true, updated_at=NOW()
+         WHERE id=$1 AND tenant_id = $10`,
+        [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
+         openingReading, closingReading, variance, tenantId]
       );
     } else {
       await client.query(
-        `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,true,NOW())`,
-        [reconciliationId, tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total]
+        `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
+         opening_reading, closing_reading, variance, finalized, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,true,NOW())`,
+        [reconciliationId, tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
+         openingReading, closingReading, variance]
       );
     }
     
@@ -126,6 +168,9 @@ export async function runReconciliation(
       cardTotal: Number(row.card_total),
       upiTotal: Number(row.upi_total),
       creditTotal: Number(row.credit_total),
+      openingReading,
+      closingReading,
+      variance,
       reconciliationId
     };
   } catch (err) {
@@ -143,7 +188,8 @@ export async function getReconciliation(
   date: Date
 ) {
   const res = await db.query(
-    `SELECT station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized
+    `SELECT station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
+            opening_reading, closing_reading, variance, finalized
      FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
     [stationId, date, tenantId]
   );
@@ -157,7 +203,8 @@ export async function listReconciliations(
 ) {
   const params: any[] = [tenantId];
   let idx = 2;
-  let query = `SELECT id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total, finalized
+  let query = `SELECT id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
+               opening_reading, closing_reading, variance, finalized
                FROM public.day_reconciliations WHERE tenant_id = $1`;
   if (stationId) {
     query += ` AND station_id = $${idx++}`;
