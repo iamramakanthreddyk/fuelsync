@@ -5,6 +5,7 @@ import { listSales, salesAnalytics } from '../services/sales.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
+import { hasStationAccess } from '../utils/hasStationAccess';
 
 export function createSalesHandlers(db: Pool) {
   return {
@@ -16,14 +17,8 @@ export function createSalesHandlers(db: Pool) {
         }
         const query = parseSalesQuery(req.query);
         if (query.stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user.userId, query.stationId, user.tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user, query.stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }
@@ -55,14 +50,8 @@ export function createSalesHandlers(db: Pool) {
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const groupBy = (req.query.groupBy as string) || 'station';
         if (stationId) {
-          const access = await db.query(
-            `SELECT 1
-               FROM public.user_stations us
-               JOIN public.stations s ON s.id = us.station_id
-              WHERE us.user_id = $1 AND us.station_id = $2 AND s.tenant_id = $3`,
-            [user.userId, stationId, user.tenantId]
-          );
-          if (!access.rowCount) {
+          const allowed = await hasStationAccess(db, user, stationId);
+          if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
         }

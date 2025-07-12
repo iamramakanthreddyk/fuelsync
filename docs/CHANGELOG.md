@@ -3263,3 +3263,10 @@ Each entry is tied to a step from the implementation index.
 * Access checks joined `user_stations` with `stations` to verify `tenant_id`.
 * Re-enabled station validation in sales controllers.
 * `docs/STEP_fix_20260815_COMMAND.md`
+
+## [Fix 2026-08-16] – Owner station access
+
+### 🟥 Fixes
+* Owners no longer require `user_stations` entries to access their tenant's stations.
+* Middleware and controllers rely on new `hasStationAccess` helper.
+* `docs/STEP_fix_20260816_COMMAND.md`
