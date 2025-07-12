@@ -3284,3 +3284,9 @@ Each entry is tied to a step from the implementation index.
 * Added `RECONCILIATION_API.md` to clarify SQL logic, variance meaning and cash difference rules.
 * Phase summary updated with documentation link.
 * `docs/STEP_fix_20260818_COMMAND.md`
+
+## [Fix 2026-08-19] – Add lastReading to nozzle list
+
+### 🟥 Fixes
+* `listNozzles` now returns each nozzle's latest reading as `last_reading`.
+* `docs/STEP_fix_20260819_COMMAND.md`
