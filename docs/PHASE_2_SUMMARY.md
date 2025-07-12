@@ -1515,3 +1515,15 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added placeholder schemas for daily sales reporting so the spec validates.
 * Generated TypeScript API definitions via `openapi-typescript`.
+
+### 🛠️ Fix 2026-08-12 – Expanded domain fields
+**Status:** ✅ Done
+**Files:** `src/controllers/nozzle.controller.ts`, `src/services/nozzleReading.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/services/fuelInventory.service.ts`, `docs/openapi.yaml`, `src/types/api.ts`, `docs/STEP_fix_20260812_COMMAND.md`
+
+**Overview:**
+* Added pumpName to nozzle responses.
+* Nozzle reading endpoints now return nozzleNumber, previousReading, volume, amount, pricePerLitre, fuelType, stationName and attendantName.
+* Fuel price listing includes stationName and isActive flag.
+* Fuel inventory now reports minimumLevel and status.
+* Regenerated TypeScript API types.
+\n### 🛠️ Fix 2026-08-13 – Display field adjustments\n**Status:** ✅ Done\n**Files:** `src/services/fuelInventory.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/services/nozzleReading.service.ts`, `docs/openapi.yaml`, `src/types/api.ts`, `docs/STEP_fix_20260813_COMMAND.md`\n\n**Overview:**\n* Adjusted inventory status levels and added enum to the spec.\n* Active price calculation now considers validFrom.\n* Queries compute volume and amount directly from readings.\n* Regenerated API definitions.\n

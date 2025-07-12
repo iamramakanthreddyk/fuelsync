@@ -159,21 +159,21 @@ export async function listNozzleReadings(
   const sql = `
     SELECT
       nr.id,
-      nr.nozzle_id,
-      COALESCE(n.nozzle_number, 0) as nozzle_number,
-      COALESCE(n.fuel_type, 'unknown') as fuel_type,
-      COALESCE(p.id, '') as pump_id,
-      COALESCE(p.name, 'Unknown Pump') as pump_name,
-      COALESCE(s.id, '') as station_id,
-      COALESCE(s.name, 'Unknown Station') as station_name,
+      nr.nozzle_id AS "nozzleId",
+      COALESCE(n.nozzle_number, 0) AS "nozzleNumber",
+      COALESCE(n.fuel_type, 'unknown') AS "fuelType",
+      COALESCE(p.id, '') AS "pumpId",
+      COALESCE(p.name, 'Unknown Pump') AS "pumpName",
+      COALESCE(s.id, '') AS "stationId",
+      COALESCE(s.name, 'Unknown Station') AS "stationName",
       nr.reading,
-      nr.recorded_at,
-      COALESCE(nr.payment_method, 'cash') as payment_method,
-      LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS previous_reading,
-      COALESCE(u.name, 'System') AS recorded_by,
-      COALESCE(sa.volume, 0) as volume,
-      COALESCE(sa.amount, 0) as amount,
-      COALESCE(sa.fuel_price, 0) as fuel_price
+      nr.recorded_at AS "recordedAt",
+      COALESCE(nr.payment_method, 'cash') AS "paymentMethod",
+      LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
+      COALESCE(u.name, 'System') AS "attendantName",
+      (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) AS "volume",
+      COALESCE(sa.fuel_price, 0) AS "pricePerLitre",
+      (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) * COALESCE(sa.fuel_price, 0) AS "amount"
     FROM public.nozzle_readings nr
     LEFT JOIN public.nozzles n ON nr.nozzle_id = n.id
     LEFT JOIN public.pumps p ON n.pump_id = p.id
@@ -233,23 +233,24 @@ export async function canCreateNozzleReading(
 
 export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
   const res = await db.query(
-    `SELECT 
+    `SELECT
        nr.id,
-       nr.nozzle_id,
-       n.nozzle_number,
-       p.id AS pump_id,
-       p.name AS pump_name,
-       s.id AS station_id,
-       s.name AS station_name,
+       nr.nozzle_id AS "nozzleId",
+       n.nozzle_number AS "nozzleNumber",
+       p.id AS "pumpId",
+       p.name AS "pumpName",
+       s.id AS "stationId",
+       s.name AS "stationName",
        nr.reading,
-       nr.recorded_at,
-       nr.payment_method,
+       nr.recorded_at AS "recordedAt",
+       nr.payment_method AS "paymentMethod",
        nr.creditor_id,
-       n.fuel_type,
-       u.name AS recorded_by,
-       sa.volume,
-       sa.amount,
-       sa.fuel_price
+       n.fuel_type AS "fuelType",
+       u.name AS "attendantName",
+       LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
+       (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) AS "volume",
+       sa.fuel_price AS "pricePerLitre",
+       (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) * sa.fuel_price AS "amount"
      FROM public.nozzle_readings nr
      JOIN public.nozzles n ON nr.nozzle_id = n.id
      JOIN public.pumps p ON n.pump_id = p.id

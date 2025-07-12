@@ -68,6 +68,9 @@ export function createFuelPriceHandlers(db: Pool) {
         costPrice: p.cost_price,
         validFrom: p.valid_from,
         effectiveTo: p.effective_to ?? undefined,
+        isActive:
+          (!p.valid_from || new Date(p.valid_from) <= new Date()) &&
+          (!p.effective_to || new Date(p.effective_to) > new Date()),
         createdAt: p.created_at,
       }));
       successResponse(res, { prices });

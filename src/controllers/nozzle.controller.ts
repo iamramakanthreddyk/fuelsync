@@ -47,16 +47,26 @@ export function createNozzleHandlers(db: Pool) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
       const pumpId = req.query.pumpId as string | undefined;
-      const nozzles = await prisma.nozzle.findMany({
+      const nozzlesRaw = await prisma.nozzle.findMany({
         where: {
           tenant_id: tenantId,
           ...(pumpId ? { pump_id: pumpId } : {})
         },
+        include: { pump: { select: { name: true } } },
         orderBy: { nozzle_number: 'asc' }
       });
-      if (nozzles.length === 0) {
+      if (nozzlesRaw.length === 0) {
         return successResponse(res, []);
       }
+      const nozzles = nozzlesRaw.map(n => ({
+        id: n.id,
+        pumpId: n.pump_id,
+        pumpName: n.pump?.name || '',
+        nozzleNumber: n.nozzle_number,
+        fuelType: n.fuel_type,
+        status: n.status,
+        createdAt: n.created_at
+      }));
       successResponse(res, { nozzles });
     },
     get: async (req: Request, res: Response) => {
@@ -66,12 +76,23 @@ export function createNozzleHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const nozzle = await prisma.nozzle.findFirst({
-          where: { id: req.params.id, tenant_id: tenantId }
+          where: { id: req.params.id, tenant_id: tenantId },
+          include: { pump: { select: { name: true } } }
         });
         if (!nozzle) {
           return errorResponse(res, 404, 'Nozzle not found');
         }
-        successResponse(res, { nozzle });
+        successResponse(res, {
+          nozzle: {
+            id: nozzle.id,
+            pumpId: nozzle.pump_id,
+            pumpName: nozzle.pump?.name || '',
+            nozzleNumber: nozzle.nozzle_number,
+            fuelType: nozzle.fuel_type,
+            status: nozzle.status,
+            createdAt: nozzle.created_at,
+          }
+        });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }
