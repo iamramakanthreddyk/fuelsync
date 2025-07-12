@@ -361,6 +361,9 @@ model DayReconciliation {
   card_total   Decimal? @default(0)
   upi_total    Decimal? @default(0)
   credit_total Decimal? @default(0)
+  opening_reading Decimal? @default(0)
+  closing_reading Decimal? @default(0)
+  variance       Decimal? @default(0)
   finalized    Boolean  @default(false)
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt

@@ -1550,3 +1550,20 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Owners automatically access stations in their tenant without `user_stations` mappings.
 * Shared helper validates access for all roles.
+
+### 🛠️ Fix 2026-08-17 – Add reconciliation readings columns
+**Status:** ✅ Done
+**Files:** `migrations/schema/012_add_day_reconciliation_readings.sql`, `prisma/schema.prisma`, `docs/STEP_fix_20260817_COMMAND.md`
+
+**Overview:**
+* Added missing fields to `day_reconciliations` table for existing databases.
+* Prisma schema aligned and client regenerated.
+
+### 🛠️ Fix 2026-08-18 – Reconciliation docs clarification
+**Status:** ✅ Done
+**Files:** `docs/RECONCILIATION_API.md`, `docs/STEP_fix_20260818_COMMAND.md`
+
+**Overview:**
+* Documented the SQL used to aggregate nozzle readings.
+* Explained the variance formula and cash difference logic.
+* Highlighted the single reconciliation per day policy and listed key endpoints.
