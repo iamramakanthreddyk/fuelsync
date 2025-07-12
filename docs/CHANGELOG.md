@@ -3256,3 +3256,10 @@ Each entry is tied to a step from the implementation index.
 * OpenAPI and generated API types updated.
 * `docs/STEP_fix_20260812_COMMAND.md`
 \n## [Fix 2026-08-13] – Display field adjustments\n\n### 🟦 Enhancements\n* Corrected fuel inventory status logic and added enum to OpenAPI.\n* Fuel price isActive now checks validFrom date.\n* Nozzle reading queries compute volume and amount when sales data is absent.\n* Regenerated API types.\n* `docs/STEP_fix_20260813_COMMAND.md`\n\n## [Fix 2026-08-14] – Validate user existence on update\n\n### 🟥 Fixes\n* Return 404 when updated user does not exist in both SuperAdmin and tenant paths.\n* Fuel inventory status now uses each station's minimum level when computing results.\n* `docs/STEP_fix_20260814_COMMAND.md`\n
+
+## [Fix 2026-08-15] – Station access query fix
+
+### 🟥 Fixes
+* Access checks joined `user_stations` with `stations` to verify `tenant_id`.
+* Re-enabled station validation in sales controllers.
+* `docs/STEP_fix_20260815_COMMAND.md`
