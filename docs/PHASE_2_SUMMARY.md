@@ -1527,3 +1527,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Fuel inventory now reports minimumLevel and status.
 * Regenerated TypeScript API types.
 \n### 🛠️ Fix 2026-08-13 – Display field adjustments\n**Status:** ✅ Done\n**Files:** `src/services/fuelInventory.service.ts`, `src/controllers/fuelPrice.controller.ts`, `src/services/nozzleReading.service.ts`, `docs/openapi.yaml`, `src/types/api.ts`, `docs/STEP_fix_20260813_COMMAND.md`\n\n**Overview:**\n* Adjusted inventory status levels and added enum to the spec.\n* Active price calculation now considers validFrom.\n* Queries compute volume and amount directly from readings.\n* Regenerated API definitions.\n
+\n### 🛠️ Fix 2026-08-14 – Validate user existence on update
+**Status:** ✅ Done
+**Files:** `src/controllers/user.controller.ts`, `docs/STEP_fix_20260814_COMMAND.md`
+
+**Overview:**
+* Added a 404 check after fetching updated user records for both SuperAdmin and tenant paths.

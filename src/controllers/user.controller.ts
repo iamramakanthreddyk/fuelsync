@@ -128,6 +128,26 @@ export function createUserHandlers(db: Pool) {
             return errorResponse(res, 404, 'User not found');
           }
 
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
+
           return successResponse(res, {
             id: userRecord.id,
             email: userRecord.email,
@@ -294,6 +314,9 @@ export function createUserHandlers(db: Pool) {
               tenant_id: true
             }
           });
+          if (!userRecord) {
+            return errorResponse(res, 404, 'User not found');
+          }
 
           return successResponse(res, {
             id: userRecord.id,
@@ -334,6 +357,10 @@ export function createUserHandlers(db: Pool) {
             updated_at: true
           }
         });
+
+        if (!userRecord) {
+          return errorResponse(res, 404, 'User not found');
+        }
 
         successResponse(res, {
           id: userRecord.id,
