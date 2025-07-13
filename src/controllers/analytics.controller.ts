@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../utils/prisma';
+import pool from '../utils/db';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
@@ -20,8 +21,8 @@ export function createAnalyticsHandlers() {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const period = (req.query.period as string) || 'month';
-        // Remove the null parameter since it's not needed with Prisma
-        const data = await getStationRanking(undefined, tenantId, 'sales', period);
+        // Pass the pool instance to the function
+        const data = await getStationRanking(pool, tenantId, 'sales', period);
         successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
