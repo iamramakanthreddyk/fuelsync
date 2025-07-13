@@ -2,7 +2,7 @@ export interface NozzleReadingInput {
   nozzleId: string;
   reading: number;
   recordedAt: Date;
-  paymentMethod: 'cash' | 'card' | 'upi' | 'credit';
+  paymentMethod: 'cash' | 'card' | 'upi' | 'credit' | 'bank_transfer' | 'check';
   creditorId?: string;
 }
 
@@ -29,8 +29,8 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   }
   const result: NozzleReadingInput = { nozzleId, reading: readingNum, recordedAt: ts, paymentMethod: 'cash' };
   
-  if (paymentMethod && ['cash', 'card', 'upi', 'credit'].includes(paymentMethod)) {
-    result.paymentMethod = paymentMethod as 'cash' | 'card' | 'upi' | 'credit';
+  if (paymentMethod && ['cash', 'card', 'upi', 'credit', 'bank_transfer', 'check'].includes(paymentMethod)) {
+    result.paymentMethod = paymentMethod as 'cash' | 'card' | 'upi' | 'credit' | 'bank_transfer' | 'check';
   }
   
   if (creditorId && typeof creditorId === 'string') {

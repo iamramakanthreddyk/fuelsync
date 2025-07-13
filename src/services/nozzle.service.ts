@@ -49,11 +49,13 @@ export async function listNozzles(
   tenantId: string,
   pumpId?: string
 ) {
-  // Get nozzles with their latest reading
+  // Get nozzles with their latest reading and station information
   const sql = `
     SELECT 
       n.*,
       p.name as pump_name,
+      p.station_id,
+      s.name as station_name,
       (
         SELECT reading 
         FROM public.nozzle_readings nr 
@@ -64,6 +66,7 @@ export async function listNozzles(
       ) as last_reading
     FROM public.nozzles n
     LEFT JOIN public.pumps p ON n.pump_id = p.id
+    LEFT JOIN public.stations s ON p.station_id = s.id
     WHERE n.tenant_id = $1
     ${pumpId ? 'AND n.pump_id = $2' : ''}
     ORDER BY n.nozzle_number ASC
