@@ -10,33 +10,80 @@ export async function getHourlySales(
   dateTo: Date
 ) {
   const query = Prisma.sql`
-    SELECT date_trunc('hour', recorded_at) AS hour,
-           SUM(volume) AS "salesVolume",
-           SUM(amount) AS "salesAmount"
+    SELECT 
+      date_trunc('hour', recorded_at) AS hour,
+      EXTRACT(HOUR FROM recorded_at) AS hour_num,
+      SUM(volume) AS "salesVolume",
+      SUM(amount) AS "salesAmount",
+      COUNT(*) AS "transactionCount"
     FROM "sales"
     WHERE tenant_id = ${tenantId}
       AND station_id = ${stationId}
       AND recorded_at >= ${dateFrom}
       AND recorded_at <= ${dateTo}
-    GROUP BY 1
+    GROUP BY 1, 2
     ORDER BY 1`;
   
-  return prisma.$queryRaw<{ hour: Date; salesVolume: number; salesAmount: number }[]>(query);
+  const results = await prisma.$queryRaw<{ 
+    hour: Date; 
+    hour_num: number;
+    salesVolume: number; 
+    salesAmount: number;
+    transactionCount: number;
+  }[]>(query);
+  
+  // Format the results for the frontend
+  return results.map(row => ({
+    hour: row.hour_num,
+    date: row.hour.toISOString().split('T')[0],
+    revenue: parseFloat(row.salesAmount.toString()),
+    volume: parseFloat(row.salesVolume.toString()),
+    salesCount: parseInt(row.transactionCount.toString()),
+    // Add aliases for compatibility
+    sales: parseFloat(row.salesAmount.toString())
+  }));
 }
 
 /** Peak sales hour for a station */
 export async function getPeakHours(tenantId: string, stationId: string) {
   const query = Prisma.sql`
-    SELECT to_char(date_trunc('hour', recorded_at), 'HH24:MI') AS hour,
-           SUM(volume) AS "salesVolume"
+    SELECT 
+      EXTRACT(HOUR FROM recorded_at) AS hour_num,
+      to_char(date_trunc('hour', recorded_at), 'HH24:MI') AS hour,
+      SUM(volume) AS "salesVolume",
+      SUM(amount) AS "salesAmount",
+      COUNT(*) AS "transactionCount",
+      CASE 
+        WHEN EXTRACT(HOUR FROM recorded_at) < 12 THEN 'Morning'
+        WHEN EXTRACT(HOUR FROM recorded_at) < 17 THEN 'Afternoon'
+        ELSE 'Evening'
+      END AS time_of_day
     FROM "sales"
     WHERE tenant_id = ${tenantId}
       AND station_id = ${stationId}
-    GROUP BY 1
-    ORDER BY "salesVolume" DESC
-    LIMIT 1`;
+    GROUP BY 1, 2, 5
+    ORDER BY "salesAmount" DESC
+    LIMIT 5`;
   
-  return prisma.$queryRaw<{ hour: string; salesVolume: number }[]>(query);
+  const results = await prisma.$queryRaw<{ 
+    hour_num: number;
+    hour: string; 
+    salesVolume: number;
+    salesAmount: number;
+    transactionCount: number;
+    time_of_day: string;
+  }[]>(query);
+  
+  // Format the results for the frontend
+  return results.map(row => ({
+    hour: row.hour_num,
+    timeRange: `${row.hour} (${row.time_of_day})`,
+    avgSales: parseFloat(row.salesAmount.toString()),
+    avgVolume: parseFloat(row.salesVolume.toString()),
+    averageRevenue: parseFloat(row.salesAmount.toString()),
+    averageVolume: parseFloat(row.salesVolume.toString()),
+    averageSalesCount: parseInt(row.transactionCount.toString())
+  }));
 }
 
 /** Fuel performance for a station over a date range */
@@ -46,23 +93,91 @@ export async function getFuelPerformance(
   dateFrom: Date,
   dateTo: Date
 ) {
-  const query = Prisma.sql`
-    SELECT fuel_type AS "fuelType",
-           SUM(volume) AS "totalSalesVolume",
-           SUM(amount) AS "totalSalesAmount"
+  // Get current period data
+  const currentQuery = Prisma.sql`
+    SELECT 
+      fuel_type AS "fuelType",
+      SUM(volume) AS "totalSalesVolume",
+      SUM(amount) AS "totalSalesAmount",
+      COUNT(*) AS "salesCount",
+      CASE WHEN SUM(volume) > 0 THEN SUM(amount) / SUM(volume) ELSE 0 END AS "averagePrice"
     FROM "sales"
     WHERE tenant_id = ${tenantId}
       AND station_id = ${stationId}
       AND recorded_at >= ${dateFrom}
       AND recorded_at <= ${dateTo}
     GROUP BY fuel_type
-    ORDER BY fuel_type`;
+    ORDER BY "totalSalesAmount" DESC`;
   
-  return prisma.$queryRaw<{
-    fuelType: string;
-    totalSalesVolume: number;
-    totalSalesAmount: number;
-  }[]>(query);
+  // Calculate the previous period (same duration, just shifted back)
+  const duration = dateTo.getTime() - dateFrom.getTime();
+  const prevDateTo = new Date(dateFrom.getTime());
+  const prevDateFrom = new Date(dateFrom.getTime() - duration);
+  
+  // Get previous period data
+  const previousQuery = Prisma.sql`
+    SELECT 
+      fuel_type AS "fuelType",
+      SUM(volume) AS "prevSalesVolume",
+      SUM(amount) AS "prevSalesAmount"
+    FROM "sales"
+    WHERE tenant_id = ${tenantId}
+      AND station_id = ${stationId}
+      AND recorded_at >= ${prevDateFrom}
+      AND recorded_at <= ${prevDateTo}
+    GROUP BY fuel_type`;
+  
+  // Execute both queries
+  const [currentResults, previousResults] = await Promise.all([
+    prisma.$queryRaw<{
+      fuelType: string;
+      totalSalesVolume: number;
+      totalSalesAmount: number;
+      salesCount: number;
+      averagePrice: number;
+    }[]>(currentQuery),
+    prisma.$queryRaw<{
+      fuelType: string;
+      prevSalesVolume: number;
+      prevSalesAmount: number;
+    }[]>(previousQuery)
+  ]);
+  
+  // Create a map of previous data by fuel type
+  const prevDataMap = new Map();
+  for (const row of previousResults) {
+    prevDataMap.set(row.fuelType, {
+      prevSalesVolume: parseFloat(row.prevSalesVolume.toString()),
+      prevSalesAmount: parseFloat(row.prevSalesAmount.toString())
+    });
+  }
+  
+  // Combine current and previous data with growth calculations
+  return currentResults.map(row => {
+    const prevData = prevDataMap.get(row.fuelType) || { prevSalesVolume: 0, prevSalesAmount: 0 };
+    const currentAmount = parseFloat(row.totalSalesAmount.toString());
+    const prevAmount = prevData.prevSalesAmount;
+    
+    // Calculate growth percentage
+    const growth = prevAmount > 0 ? ((currentAmount - prevAmount) / prevAmount) * 100 : 0;
+    
+    // Estimate margin (this is a placeholder - real margin would need cost data)
+    const estimatedMargin = 15; // 15% margin as a placeholder
+    
+    return {
+      fuelType: row.fuelType,
+      volume: parseFloat(row.totalSalesVolume.toString()),
+      revenue: parseFloat(row.totalSalesAmount.toString()),
+      sales: parseFloat(row.totalSalesAmount.toString()),
+      salesCount: parseInt(row.salesCount.toString()),
+      averagePrice: parseFloat(row.averagePrice.toString()),
+      growth: parseFloat(growth.toFixed(2)),
+      margin: estimatedMargin,
+      // Keep original fields for backward compatibility
+      totalSalesVolume: parseFloat(row.totalSalesVolume.toString()),
+      totalSalesAmount: parseFloat(row.totalSalesAmount.toString())
+    };
+  });
 }
 
 export async function getSystemHealth() {

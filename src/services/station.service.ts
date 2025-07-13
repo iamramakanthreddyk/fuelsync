@@ -160,8 +160,12 @@ export async function getStationPerformance(
 }
 
 export async function getStationComparison(tenantId: string, stationIds: string[], period: string) {
-  const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
-  const query = Prisma.sql`
+  // Calculate current and previous periods
+  const currentInterval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
+  const previousInterval = period === 'monthly' ? '60 days' : period === 'weekly' ? '14 days' : '2 days';
+  
+  // Query for current period data
+  const currentQuery = Prisma.sql`
     SELECT
       st.id,
       st.name,
@@ -173,21 +177,81 @@ export async function getStationComparison(tenantId: string, stationIds: string[
       CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
-      AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
+      AND s.recorded_at >= CURRENT_DATE - INTERVAL '${currentInterval}'
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
-  const rows = (await prisma.$queryRaw(query)) as any[];
-  return rows.map((row: any) => ({
-    id: row.id,
-    name: row.name,
-    totalSales: parseFloat(row.total_sales),
-    totalProfit: parseFloat(row.total_profit),
-    totalVolume: parseFloat(row.total_volume),
-    transactionCount: parseInt(row.transaction_count),
-    avgTransaction: parseFloat(row.avg_transaction),
-    profitMargin: parseFloat(row.profit_margin),
-  }));
+  
+  // Query for previous period data
+  const previousQuery = Prisma.sql`
+    SELECT
+      st.id,
+      COALESCE(SUM(s.amount), 0) as prev_sales,
+      COALESCE(SUM(s.volume), 0) as prev_volume,
+      COUNT(s.id) as prev_transactions
+    FROM stations st
+    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
+      AND s.recorded_at >= CURRENT_DATE - INTERVAL '${previousInterval}'
+      AND s.recorded_at < CURRENT_DATE - INTERVAL '${currentInterval}'
+    WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
+    GROUP BY st.id`;
+  
+  // Execute both queries
+  const [currentRows, previousRows] = await Promise.all([
+    prisma.$queryRaw(currentQuery) as Promise<any[]>,
+    prisma.$queryRaw(previousQuery) as Promise<any[]>
+  ]);
+  
+  // Create a map of previous period data by station ID
+  const prevDataMap = new Map();
+  for (const row of previousRows) {
+    prevDataMap.set(row.id, {
+      prevSales: parseFloat(row.prev_sales),
+      prevVolume: parseFloat(row.prev_volume),
+      prevTransactions: parseInt(row.prev_transactions)
+    });
+  }
+  
+  // Combine current and previous data with growth calculations
+  return currentRows.map((row: any) => {
+    const prevData = prevDataMap.get(row.id) || { prevSales: 0, prevVolume: 0, prevTransactions: 0 };
+    const currentSales = parseFloat(row.total_sales);
+    const currentVolume = parseFloat(row.total_volume);
+    const currentTransactions = parseInt(row.transaction_count);
+    
+    // Calculate growth percentages
+    const salesGrowth = prevData.prevSales > 0 ? ((currentSales - prevData.prevSales) / prevData.prevSales) * 100 : 0;
+    const volumeGrowth = prevData.prevVolume > 0 ? ((currentVolume - prevData.prevVolume) / prevData.prevVolume) * 100 : 0;
+    const transactionsGrowth = prevData.prevTransactions > 0 ? 
+      ((currentTransactions - prevData.prevTransactions) / prevData.prevTransactions) * 100 : 0;
+    
+    return {
+      id: row.id,
+      stationId: row.id,
+      name: row.name,
+      stationName: row.name,
+      sales: currentSales,
+      volume: currentVolume,
+      transactions: currentTransactions,
+      growth: salesGrowth, // Use sales growth as the primary growth indicator
+      period: period,
+      // Include growth metrics for all dimensions
+      salesGrowth: salesGrowth,
+      volumeGrowth: volumeGrowth,
+      transactionsGrowth: transactionsGrowth,
+      // Previous period data
+      previousSales: prevData.prevSales,
+      previousVolume: prevData.prevVolume,
+      previousTransactions: prevData.prevTransactions,
+      // Keep original fields for backward compatibility
+      totalSales: currentSales,
+      totalProfit: parseFloat(row.total_profit),
+      totalVolume: currentVolume,
+      transactionCount: currentTransactions,
+      avgTransaction: parseFloat(row.avg_transaction),
+      profitMargin: parseFloat(row.profit_margin),
+    };
+  });
 }
 
 export async function getStationRanking(

@@ -3,7 +3,7 @@ import prisma from '../utils/prisma';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
-import { getStationComparison } from '../services/station.service';
+import { getStationComparison, getStationRanking } from '../services/station.service';
 // Frontend analytics endpoints handler
 import {
   getHourlySales,
@@ -15,6 +15,18 @@ import {
 
 export function createAnalyticsHandlers() {
   return {
+    stationRanking: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+        const period = (req.query.period as string) || 'month';
+        const data = await getStationRanking(null, tenantId, 'sales', period);
+        successResponse(res, data);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+    
     getDashboardMetrics: async (_req: Request, res: Response) => {
       try {
         const data = await getSuperAdminAnalytics();

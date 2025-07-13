@@ -25,6 +25,7 @@ export function createAnalyticsRouter() {
 
   // Station comparison for owners
   router.get('/station-comparison', authenticateJWT, requireRole([UserRole.Owner]), handlers.stationComparison);
+  router.get('/station-ranking', authenticateJWT, requireRole([UserRole.Owner]), handlers.stationRanking);
 
   router.get('/hourly-sales', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.hourlySales);
   router.get('/peak-hours', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.peakHours);
