@@ -20,7 +20,8 @@ export function createAnalyticsHandlers() {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const period = (req.query.period as string) || 'month';
-        const data = await getStationRanking(null, tenantId, 'sales', period);
+        // Remove the null parameter since it's not needed with Prisma
+        const data = await getStationRanking(undefined, tenantId, 'sales', period);
         successResponse(res, data);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
