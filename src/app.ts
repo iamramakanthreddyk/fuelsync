@@ -25,6 +25,7 @@ import { createReportsRouter } from './routes/reports.route';
 import { createAnalyticsRouter } from './routes/analytics.route';
 import { createAlertsRouter } from './routes/alerts.route';
 import { createAttendantRouter } from "./routes/attendant.route";
+import { createAttendanceRouter } from "./routes/attendance.route";
 import { createSetupStatusRouter } from './routes/setupStatus.route';
 import { createDailySalesRouter } from './routes/dailySales.route';
 import docsRouter from './routes/docs.route';
@@ -225,6 +226,8 @@ export function createApp() {
   app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter());
   app.use(`${API_PREFIX}`, createSetupStatusRouter(pool));
   app.use(`${API_PREFIX}/attendant`, createAttendantRouter(pool));
+  app.use(`${API_PREFIX}/attendance`, createAttendanceRouter(pool));
+  app.use(`${API_PREFIX}/shifts`, createAttendanceRouter(pool));
 
   app.use('*', (_req, res) => {
     return errorResponse(res, 404, 'Route not found');
