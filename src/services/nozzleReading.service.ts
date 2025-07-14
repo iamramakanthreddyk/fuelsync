@@ -394,7 +394,7 @@ export async function voidNozzleReading(
       [userId]
     );
     
-    if (!userRes.rowCount) {
+    if (!userRes.rowCount || userRes.rowCount === 0) {
       throw new Error('Invalid user');
     }
     
@@ -413,7 +413,7 @@ export async function voidNozzleReading(
     );
     
     // If there are sales records, mark them as voided too
-    if (salesRes.rowCount > 0) {
+    if (salesRes.rowCount && salesRes.rowCount > 0) {
       await client.query(
         'UPDATE public.sales SET status = $1, updated_at = NOW() WHERE reading_id = $2 AND tenant_id = $3',
         ['voided', id, tenantId]
