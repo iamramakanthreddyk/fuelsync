@@ -388,11 +388,21 @@ export async function voidNozzleReading(
       [id, tenantId]
     );
     
-    // Create an audit record
+    // Check if user exists (since we don't have foreign key constraints)
+    const userRes = await client.query<{ id: string }>(
+      'SELECT id FROM public.users WHERE id = $1',
+      [userId]
+    );
+    
+    if (!userRes.rowCount) {
+      throw new Error('Invalid user');
+    }
+    
+    // Create an audit record with UUID generation
     await client.query(
       `INSERT INTO public.reading_audit_log (
         id, tenant_id, reading_id, action, reason, performed_by, created_at
-      ) VALUES (uuid_generate_v4(), $1, $2, 'void', $3, $4, NOW())`,
+      ) VALUES (gen_random_uuid(), $1, $2, 'void', $3, $4, NOW())`,
       [tenantId, id, reason, userId]
     );
     
