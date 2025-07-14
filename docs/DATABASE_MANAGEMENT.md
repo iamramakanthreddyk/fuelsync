@@ -167,6 +167,9 @@ Run pending migrations with:
 ```bash
 node scripts/migrate.js up
 ```
+This will apply any pending files, including `20250714_add_reading_audit.sql`,
+which adds a `status` column to `nozzle_readings` and creates the
+`reading_audit_log` table.
 
 The migration runner records applied versions in `public.schema_migrations`.
 Never modify existing files—always create a new migration.

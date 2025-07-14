@@ -3305,3 +3305,12 @@ Each entry is tied to a step from the implementation index.
 * Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
+
+## [Fix 2026-08-22] – Migration usage note
+
+### 🟥 Fixes
+* Added documentation to run `node scripts/migrate.js up` so
+  `20250714_add_reading_audit.sql` is applied.
+* Clarified that this migration introduces a `status` column and the
+  `reading_audit_log` table.
+* `docs/STEP_fix_20260822_COMMAND.md`
