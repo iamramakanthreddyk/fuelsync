@@ -290,3 +290,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-17 | Reconciliation readings columns | ✅ Done | `migrations/schema/012_add_day_reconciliation_readings.sql`, `prisma/schema.prisma` | `docs/STEP_fix_20260817_COMMAND.md` |
 | fix | 2026-08-18 | Reconciliation docs clarification | ✅ Done | `docs/RECONCILIATION_API.md` | `docs/STEP_fix_20260818_COMMAND.md` |
 | fix | 2026-08-19 | Nozzle lastReading field | ✅ Done | `src/services/nozzle.service.ts` | `docs/STEP_fix_20260819_COMMAND.md` |
+| fix | 2026-08-20 | Void nozzle reading workflow | ✅ Done | `migrations/schema/20250714_add_reading_audit.sql`, `src/services/nozzleReading.service.ts`, `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `docs/READING_CORRECTION_WORKFLOW.md` | `docs/STEP_fix_20260820_COMMAND.md` |

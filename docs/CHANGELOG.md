@@ -3290,3 +3290,11 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * `listNozzles` now returns each nozzle's latest reading as `last_reading`.
 * `docs/STEP_fix_20260819_COMMAND.md`
+
+## [Fix 2026-08-20] – Void reading workflow
+
+### 🟥 Fixes
+* Added `status` column to `nozzle_readings` and created `reading_audit_log` table for void actions.
+* New endpoint `POST /v1/nozzle-readings/:id/void` marks readings and sales as voided.
+* Documented the process in `READING_CORRECTION_WORKFLOW.md`.
+* `docs/STEP_fix_20260820_COMMAND.md`
