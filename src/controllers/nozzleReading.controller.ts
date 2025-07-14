@@ -6,6 +6,7 @@ import {
   canCreateNozzleReading,
   getNozzleReading,
   updateNozzleReading,
+  voidNozzleReading,
 } from '../services/nozzleReading.service';
 import { validateCreateNozzleReading, parseReadingQuery } from '../validators/nozzleReading.validator';
 import { errorResponse } from '../utils/errorResponse';
@@ -88,11 +89,43 @@ export function createNozzleReadingHandlers(db: Pool) {
         if (!user?.tenantId || !id) {
           return errorResponse(res, 400, 'id required');
         }
+        
+        // Only allow managers and owners to update readings
+        if (user.role !== 'manager' && user.role !== 'owner') {
+          return errorResponse(res, 403, 'Only managers and owners can update readings');
+        }
+        
         const updatedId = await updateNozzleReading(db, user.tenantId, id, req.body);
         if (!updatedId) {
           return errorResponse(res, 400, 'No fields to update');
         }
         successResponse(res, { id: updatedId });
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
+    },
+    
+    voidReading: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        const id = req.params.id;
+        const { reason } = req.body;
+        
+        if (!user?.tenantId || !id) {
+          return errorResponse(res, 400, 'id required');
+        }
+        
+        if (!reason) {
+          return errorResponse(res, 400, 'reason required');
+        }
+        
+        // Only allow managers and owners to void readings
+        if (user.role !== 'manager' && user.role !== 'owner') {
+          return errorResponse(res, 403, 'Only managers and owners can void readings');
+        }
+        
+        const result = await voidNozzleReading(db, user.tenantId, id, reason, user.userId);
+        successResponse(res, { id: result.id, status: 'voided' });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
       }

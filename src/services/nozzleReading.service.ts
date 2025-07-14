@@ -354,3 +354,68 @@ export async function updateNozzleReading(
   const res = await db.query<{ id: string }>(sql, values);
   return res.rowCount ? res.rows[0].id : null;
 }
+
+/**
+ * Void a nozzle reading (mark as invalid)
+ * This creates an audit trail and marks the reading as voided
+ */
+export async function voidNozzleReading(
+  db: Pool,
+  tenantId: string,
+  id: string,
+  reason: string,
+  userId: string
+) {
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+    
+    // First, check if the reading exists
+    const readingRes = await client.query<{ id: string, nozzle_id: string, reading: number, recorded_at: Date }>(
+      'SELECT id, nozzle_id, reading, recorded_at FROM public.nozzle_readings WHERE id = $1 AND tenant_id = $2',
+      [id, tenantId]
+    );
+    
+    if (!readingRes.rowCount) {
+      throw new Error('Reading not found');
+    }
+    
+    const reading = readingRes.rows[0];
+    
+    // Check if there are any sales records associated with this reading
+    const salesRes = await client.query<{ id: string }>(
+      'SELECT id FROM public.sales WHERE reading_id = $1 AND tenant_id = $2',
+      [id, tenantId]
+    );
+    
+    // Create an audit record
+    await client.query(
+      `INSERT INTO public.reading_audit_log (
+        id, tenant_id, reading_id, action, reason, performed_by, created_at
+      ) VALUES (uuid_generate_v4(), $1, $2, 'void', $3, $4, NOW())`,
+      [tenantId, id, reason, userId]
+    );
+    
+    // Mark the reading as voided
+    await client.query(
+      'UPDATE public.nozzle_readings SET status = $1, updated_at = NOW() WHERE id = $2 AND tenant_id = $3',
+      ['voided', id, tenantId]
+    );
+    
+    // If there are sales records, mark them as voided too
+    if (salesRes.rowCount > 0) {
+      await client.query(
+        'UPDATE public.sales SET status = $1, updated_at = NOW() WHERE reading_id = $2 AND tenant_id = $3',
+        ['voided', id, tenantId]
+      );
+    }
+    
+    await client.query('COMMIT');
+    return { id, status: 'voided' };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
