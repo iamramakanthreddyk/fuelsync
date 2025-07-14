@@ -3298,3 +3298,10 @@ Each entry is tied to a step from the implementation index.
 * New endpoint `POST /v1/nozzle-readings/:id/void` marks readings and sales as voided.
 * Documented the process in `READING_CORRECTION_WORKFLOW.md`.
 * `docs/STEP_fix_20260820_COMMAND.md`
+
+## [Fix 2026-08-21] – OpenAPI void endpoint
+
+### 🟥 Fixes
+* Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
+* Regenerated TypeScript API definitions.
+* `docs/STEP_fix_20260821_COMMAND.md`

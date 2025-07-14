@@ -2332,6 +2332,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: putnozzlereadingsByid
+  /nozzle-readings/{id}/void:
+    post:
+      tags:
+        - Readings
+      summary: Void nozzle reading
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+              required:
+                - reason
+      responses:
+        '200':
+          description: Reading voided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleReading'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postnozzlereadingsByidVoid
   /reconciliation:
     get:
       tags:

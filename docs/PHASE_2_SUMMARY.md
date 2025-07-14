@@ -1574,3 +1574,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * `listNozzles` now joins the latest nozzle reading and exposes `last_reading`.
+
+### 🛠️ Fix 2026-08-21 – OpenAPI void endpoint
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `docs/STEP_fix_20260821_COMMAND.md`
+
+**Overview:**
+* Added missing specification for voiding nozzle readings.
+* Regenerated API type definitions.
