@@ -274,7 +274,7 @@ export async function canCreateNozzleReading(
     console.log(`[NOZZLE-READING] No active price found for station ${station_id}, fuel type ${fuel_type}`);
     
     // Check if there are prices but they're not active yet (future dated)
-    if (allPricesRes.rowCount > 0) {
+    if (allPricesRes.rowCount && allPricesRes.rowCount > 0) {
       const futurePrices = allPricesRes.rows.filter(r => new Date(r.valid_from) > new Date());
       if (futurePrices.length > 0) {
         console.log(`[NOZZLE-READING] Found ${futurePrices.length} future prices. Earliest valid from:`, 
