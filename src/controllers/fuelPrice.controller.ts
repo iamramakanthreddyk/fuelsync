@@ -8,6 +8,7 @@ import {
 } from '../services/fuelPriceValidation.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { toStandardDateTime } from '../utils/dateUtils';
 
 export function createFuelPriceHandlers(db: Pool) {
   return {
@@ -18,7 +19,8 @@ export function createFuelPriceHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreateFuelPrice(req.body);
-        const validFrom = data.validFrom || new Date();
+        // Standardize the validFrom date to start of day
+        const validFrom = data.validFrom ? toStandardDateTime(data.validFrom, true) : toStandardDateTime(new Date(), true);
         await prisma.fuelPrice.updateMany({
           where: {
             tenant_id: tenantId,
@@ -36,7 +38,7 @@ export function createFuelPriceHandlers(db: Pool) {
             price: data.price,
             cost_price: data.costPrice || null,
             valid_from: validFrom,
-            effective_to: data.effectiveTo || null
+            effective_to: data.effectiveTo ? toStandardDateTime(data.effectiveTo, false) : null
           },
           select: { id: true }
         });

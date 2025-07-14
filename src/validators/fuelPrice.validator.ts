@@ -12,6 +12,8 @@ export interface FuelPriceQuery {
   fuelType?: string;
 }
 
+import { toStandardDateTime } from '../utils/dateUtils';
+
 export function validateCreateFuelPrice(data: any): FuelPriceInput {
   const { stationId, fuelType, price, costPrice, validFrom, effectiveTo } = data || {};
   if (!stationId || typeof stationId !== 'string') {
@@ -33,25 +35,27 @@ export function validateCreateFuelPrice(data: any): FuelPriceInput {
   }
   let validFromDate: Date;
   if (validFrom) {
-    const ts = new Date(validFrom);
-    if (isNaN(ts.getTime())) {
+    try {
+      // Standardize to start of day
+      validFromDate = toStandardDateTime(validFrom, true);
+    } catch (err) {
       throw new Error('validFrom invalid');
     }
-    validFromDate = ts;
   } else {
-    validFromDate = new Date();
+    validFromDate = toStandardDateTime(new Date(), true);
   }
 
   let effectiveToDate: Date | undefined;
   if (effectiveTo !== undefined && effectiveTo !== null) {
-    const et = new Date(effectiveTo);
-    if (isNaN(et.getTime())) {
+    try {
+      // Standardize to end of day
+      effectiveToDate = toStandardDateTime(effectiveTo, false);
+    } catch (err) {
       throw new Error('effectiveTo invalid');
     }
-    if (et <= validFromDate) {
+    if (effectiveToDate <= validFromDate) {
       throw new Error('effectiveTo must be later than validFrom');
     }
-    effectiveToDate = et;
   }
 
   return { stationId, fuelType, price: priceNum, costPrice: costPriceNum, validFrom: validFromDate, effectiveTo: effectiveToDate };

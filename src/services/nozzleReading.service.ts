@@ -5,6 +5,7 @@ import { createAlert } from './alert.service';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
 import { isDayFinalized } from './reconciliation.service';
+import { toStandardDate, toStandardDateTime } from '../utils/dateUtils';
 import prisma from '../utils/prisma';
 
 export async function createNozzleReading(
@@ -69,6 +70,11 @@ export async function createNozzleReading(
       ]
     );
     const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(3));
+    
+    // Use standardized date handling
+    const dateOnly = toStandardDate(data.recordedAt);
+    console.log(`[NOZZLE-READING] Looking for price using date: ${dateOnly} for fuel type: ${fuel_type}`);
+    
     const priceRecord = await getPriceAtTimestamp(
       prisma,
       tenantId,
@@ -76,8 +82,22 @@ export async function createNozzleReading(
       fuel_type,
       data.recordedAt
     );
+    
     if (!priceRecord) {
-      throw new Error(`Fuel price not found for ${fuel_type} at this station. Please set fuel prices before recording readings.`);
+      // Try to find any price for this fuel type to provide better error message
+      const anyPrice = await prisma.fuelPrice.findFirst({
+        where: {
+          tenant_id: tenantId,
+          station_id: station_id,
+          fuel_type: fuel_type
+        }
+      });
+      
+      if (anyPrice) {
+        throw new Error(`Fuel price for ${fuel_type} exists but is not valid for ${dateOnly}. The price is valid from ${anyPrice.valid_from.toISOString().split('T')[0]}.`);
+      } else {
+        throw new Error(`Fuel price not found for ${fuel_type} at this station. Please set fuel prices before recording readings.`);
+      }
     }
     const { price } = priceRecord;
     const saleAmount = parseFloat((volumeSold * price).toFixed(2));
@@ -211,20 +231,58 @@ export async function canCreateNozzleReading(
   }
 
   // Check for fuel price - fuel prices are per station, not per fuel type
+  console.log(`[NOZZLE-READING] Checking for fuel prices with params:`, {
+    stationId: station_id,
+    fuelType: fuel_type,
+    tenantId
+  });
+  
+  // First, check for any prices regardless of date to see if they exist
+  const allPricesRes = await db.query<{ id: string, price: number, valid_from: Date, effective_to: Date | null }>(
+    `SELECT id, price, valid_from, effective_to FROM public.fuel_prices
+       WHERE station_id = $1 AND fuel_type = $2
+         AND tenant_id = $3`,
+    [station_id, fuel_type, tenantId]
+  );
+  
+  console.log(`[NOZZLE-READING] Found ${allPricesRes.rowCount} total prices for this station/fuel:`, 
+    allPricesRes.rows.map(r => ({
+      id: r.id,
+      price: r.price,
+      validFrom: r.valid_from,
+      effectiveTo: r.effective_to
+    })));
+  
+  // Now check for active prices (valid now)
+  // Use standardized date handling
+  const today = toStandardDate(new Date());
   const priceRes = await db.query<{ id: string }>(
     `SELECT id FROM public.fuel_prices
        WHERE station_id = $1 AND fuel_type = $2
          AND tenant_id = $3
-         AND valid_from <= NOW()
-         AND (effective_to IS NULL OR effective_to > NOW())
+         AND DATE(valid_from) <= DATE(NOW())
+         AND (effective_to IS NULL OR DATE(effective_to) > DATE(NOW()))
        LIMIT 1`,
     [station_id, fuel_type, tenantId]
   );
+  
+  console.log(`[NOZZLE-READING] Using today's date for comparison: ${today}`);
   
   console.log(`[NOZZLE-READING] Price check for station ${station_id}, fuel ${fuel_type}, tenant ${tenantId}: ${priceRes.rowCount} rows`);
 
   if (!priceRes.rowCount) {
     console.log(`[NOZZLE-READING] No active price found for station ${station_id}, fuel type ${fuel_type}`);
+    
+    // Check if there are prices but they're not active yet (future dated)
+    if (allPricesRes.rowCount > 0) {
+      const futurePrices = allPricesRes.rows.filter(r => new Date(r.valid_from) > new Date());
+      if (futurePrices.length > 0) {
+        console.log(`[NOZZLE-READING] Found ${futurePrices.length} future prices. Earliest valid from:`, 
+          futurePrices.sort((a, b) => new Date(a.valid_from).getTime() - new Date(b.valid_from).getTime())[0].valid_from);
+        return { allowed: false, reason: 'Fuel price exists but is not yet active', missingPrice: true } as const;
+      }
+    }
+    
     return { allowed: false, reason: 'Active price missing', missingPrice: true } as const;
   }
 
