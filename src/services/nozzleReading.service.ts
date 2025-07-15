@@ -69,7 +69,8 @@ export async function createNozzleReading(
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
       ]
     );
-    const volumeSold = parseFloat((data.reading - Number(lastReading)).toFixed(3));
+    // Ensure lastReading is treated as 0 if it's null or undefined
+    const volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
     
     // Use standardized date handling
     const dateOnly = toStandardDate(data.recordedAt);
@@ -191,9 +192,9 @@ export async function listNozzleReadings(
       COALESCE(nr.payment_method, 'cash') AS "paymentMethod",
       LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
       COALESCE(u.name, 'System') AS "attendantName",
-      (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) AS "volume",
+      (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) AS "volume",
       COALESCE(sa.fuel_price, 0) AS "pricePerLitre",
-      (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) * COALESCE(sa.fuel_price, 0) AS "amount"
+      (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) * COALESCE(sa.fuel_price, 0) AS "amount"
     FROM public.nozzle_readings nr
     LEFT JOIN public.nozzles n ON nr.nozzle_id = n.id
     LEFT JOIN public.pumps p ON n.pump_id = p.id
@@ -306,9 +307,9 @@ export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
        n.fuel_type AS "fuelType",
        u.name AS "attendantName",
        LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
-       (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) AS "volume",
+       (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) AS "volume",
        sa.fuel_price AS "pricePerLitre",
-       (nr.reading - LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at)) * sa.fuel_price AS "amount"
+       (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) * COALESCE(sa.fuel_price, 0) AS "amount"
      FROM public.nozzle_readings nr
      JOIN public.nozzles n ON nr.nozzle_id = n.id
      JOIN public.pumps p ON n.pump_id = p.id
