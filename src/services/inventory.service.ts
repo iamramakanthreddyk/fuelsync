@@ -46,13 +46,69 @@ export async function getInventory(db: Pool, tenantId: string, stationId?: strin
   );
 }
 
-export async function updateInventory(db: Pool, tenantId: string, stationId: string, fuelType: string, newStock: number) {
-  const query = `
-    UPDATE public.fuel_inventory
-    SET current_stock = $4, last_updated = NOW()
+export async function updateInventory(
+  db: Pool, 
+  tenantId: string, 
+  stationId: string, 
+  fuelType: string, 
+  newStock: number,
+  capacity?: number,
+  minimumLevel?: number
+) {
+  // Check if the inventory record exists
+  const checkExistsQuery = `
+    SELECT id FROM public.fuel_inventory
     WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
   `;
-  await db.query(query, [tenantId, stationId, fuelType, newStock]);
+  const existsResult = await db.query(checkExistsQuery, [tenantId, stationId, fuelType]);
+  
+  if (existsResult.rowCount === 0) {
+    // Create a new inventory record if it doesn't exist
+    const insertQuery = `
+      INSERT INTO public.fuel_inventory (id, tenant_id, station_id, fuel_type, current_stock, minimum_level, last_updated)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+    `;
+    await db.query(insertQuery, [
+      randomUUID(), 
+      tenantId, 
+      stationId, 
+      fuelType, 
+      newStock, 
+      minimumLevel || 1000
+    ]);
+  } else {
+    // Update existing inventory record
+    let query;
+    let params;
+    
+    if (capacity !== undefined && minimumLevel !== undefined) {
+      // Update stock, capacity, and minimum level
+      query = `
+        UPDATE public.fuel_inventory
+        SET current_stock = $4, minimum_level = $5, last_updated = NOW()
+        WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
+      `;
+      params = [tenantId, stationId, fuelType, newStock, minimumLevel];
+    } else if (minimumLevel !== undefined) {
+      // Update stock and minimum level
+      query = `
+        UPDATE public.fuel_inventory
+        SET current_stock = $4, minimum_level = $5, last_updated = NOW()
+        WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
+      `;
+      params = [tenantId, stationId, fuelType, newStock, minimumLevel];
+    } else {
+      // Update only stock
+      query = `
+        UPDATE public.fuel_inventory
+        SET current_stock = $4, last_updated = NOW()
+        WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
+      `;
+      params = [tenantId, stationId, fuelType, newStock];
+    }
+    
+    await db.query(query, params);
+  }
   
   // Check if stock is low and create alert
   const checkQuery = `

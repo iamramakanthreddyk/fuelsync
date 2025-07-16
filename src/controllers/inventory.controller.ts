@@ -25,12 +25,12 @@ export function createInventoryHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         
-        const { stationId, fuelType, newStock } = req.body;
+        const { stationId, fuelType, newStock, capacity, minimumLevel } = req.body;
         if (!stationId || !fuelType || newStock === undefined) {
           return errorResponse(res, 400, 'stationId, fuelType, and newStock are required');
         }
         
-        await updateInventory(db, tenantId, stationId, fuelType, newStock);
+        await updateInventory(db, tenantId, stationId, fuelType, newStock, capacity, minimumLevel);
         successResponse(res, { status: 'success' });
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
