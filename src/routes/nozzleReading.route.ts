@@ -9,7 +9,6 @@ export function createNozzleReadingRouter(db: Pool) {
   const handlers = createNozzleReadingHandlers(db);
 
   router.post('/', authenticateJWT, setTenantContext, handlers.create);
-  router.post('/reset-meter', authenticateJWT, setTenantContext, handlers.resetMeter);
   router.get('/', authenticateJWT, setTenantContext, handlers.list);
   router.get('/can-create/:nozzleId', authenticateJWT, setTenantContext, handlers.canCreate);
   router.get('/:id', authenticateJWT, setTenantContext, handlers.get);
