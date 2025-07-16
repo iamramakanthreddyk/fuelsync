@@ -22,13 +22,13 @@ export async function createNozzleReading(
       [data.nozzleId, tenantId]
     );
     const lastReading = lastRes.rows[0]?.reading ?? 0;
-    if (data.reading < Number(lastReading)) {
-      throw new Error('Reading must be >= last reading');
-    }
     
-    // Prevent duplicate readings (same value entered again)
+    // Debug log to help diagnose the issue
+    console.log(`[NOZZLE-READING] Last reading: ${lastReading}, New reading: ${data.reading}`);
+    
+    // Only check for duplicate readings
     if (data.reading === Number(lastReading)) {
-      throw new Error('Reading must be greater than the last reading. Duplicate readings are not allowed.');
+      throw new Error('Reading must be different from the last reading. Duplicate readings are not allowed.');
     }
     
     // Check for backdated readings (only allow if user is manager or owner)
@@ -69,7 +69,9 @@ export async function createNozzleReading(
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
       ]
     );
-    // Ensure lastReading is treated as 0 if it's null or undefined
+    // Calculate volume sold
+    // Always use the difference between readings, even if the new reading is lower
+    // This ensures that 800 after 500 will work correctly (800-500=300)
     const volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
     
     // Use standardized date handling
