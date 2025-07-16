@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && npx prisma generate",
     "postinstall": "npm run build",
-    "start": "node dist/src/app.js",
+    "start": "npx prisma generate && node dist/src/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
     "migrate:down": "node scripts/migrate.js down",
