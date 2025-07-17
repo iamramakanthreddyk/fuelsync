@@ -8,8 +8,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "preinstall": "chmod +x node_modules/.bin/prisma || true",
     "postinstall": "npx prisma generate",
+    "prestart": "echo Skipping prisma generate (already done at build time)",
     "build": "tsc",
     "start": "node dist/src/app.js",
     "dev": "ts-node src/app.ts",
