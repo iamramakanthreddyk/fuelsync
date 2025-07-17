@@ -8,8 +8,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "postinstall": "prisma generate",
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/src/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",

@@ -3341,3 +3341,11 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Added `chmod +x` step in Dockerfile for Prisma binary.
 * `docs/STEP_fix_20260826_COMMAND.md`
+
+## [Fix 2026-08-27] – CI build and deploy workflow
+
+### 🟥 Fixes
+* Removed Prisma `postinstall` script.
+* Build step runs `npx prisma generate && tsc`.
+* Added deployment workflow `deploy.yml` using `azure/webapps-deploy`.
+* `docs/STEP_fix_20260827_COMMAND.md`

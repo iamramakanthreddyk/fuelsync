@@ -1623,3 +1623,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added `chmod +x` for Prisma binary during Docker build to prevent permission errors.
+
+### 🛠️ Fix 2026-08-27 – CI build and deploy workflow
+**Status:** ✅ Done
+**Files:** `package.json`, `.github/workflows/deploy.yml`, `docs/STEP_fix_20260827_COMMAND.md`
+
+**Overview:**
+* Moved Prisma client generation to the CI build step with `npm run build`.
+* Removed `postinstall` to avoid runtime permission errors.
+* New `deploy.yml` workflow zips the compiled app and deploys via `azure/webapps-deploy`.
