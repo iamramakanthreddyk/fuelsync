@@ -1608,3 +1608,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Simplified deployment by generating Prisma in `postinstall` only.
 * Removed the `prestart` hook and obsolete GitHub workflow using `azure/login`.
 * Production start script runs `node dist/src/app.js`.
+
+### 🛠️ Fix 2026-08-25 – Azure WebApp deployment workflow
+**Status:** ✅ Done
+**Files:** `.github/workflows/azure-webapp.yml`, `docs/STEP_fix_20260825_COMMAND.md`
+
+**Overview:**
+* Replaced container deployment with zip-based workflow using `azure/webapps-deploy`.
+* Removed obsolete `docker-azure.yml`.

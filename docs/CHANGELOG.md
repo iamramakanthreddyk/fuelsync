@@ -3328,3 +3328,10 @@ Each entry is tied to a step from the implementation index.
 * Production start script uses `node dist/src/app.js`.
 * Deleted obsolete workflow `main_fuelsync.yml`.
 * `docs/STEP_fix_20260824_COMMAND.md`
+
+## [Fix 2026-08-25] – Azure WebApp deployment workflow
+
+### 🟥 Fixes
+* Removed Docker-based workflow `docker-azure.yml`.
+* Added Node deployment workflow `azure-webapp.yml` using `azure/webapps-deploy`.
+* `docs/STEP_fix_20260825_COMMAND.md`
