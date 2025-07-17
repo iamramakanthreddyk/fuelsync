@@ -3305,3 +3305,10 @@ Each entry is tied to a step from the implementation index.
 * Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
+
+## [Fix 2026-08-22] – Ensure Prisma readiness on start
+
+### 🟥 Fixes
+* Added `prestart` script to fix Prisma CLI permissions and generate the client.
+* Default server port is now `8080`.
+* `docs/STEP_fix_20260822_COMMAND.md`
