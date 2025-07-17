@@ -229,6 +229,21 @@ export function createApp() {
   app.use(`${API_PREFIX}/attendance`, createAttendanceRouter(pool));
   app.use(`${API_PREFIX}/shifts`, createAttendanceRouter(pool));
 
+  // Redirect root requests to the frontend application
+  app.get('/', (req, res) => {
+    // Check if this is a browser request (not an API call)
+    const userAgent = req.headers['user-agent'] || '';
+    const isBrowser = userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari');
+    
+    if (isBrowser) {
+      // Redirect to the frontend URL
+      return res.redirect('https://lovable.dev/projects/41d4becc-24d9-42ae-bc7f-22a429130814');
+    }
+    
+    // For API calls, return a message
+    return successResponse(res, { message: 'FuelSync API Server' });
+  });
+  
   app.use('*', (_req, res) => {
     return errorResponse(res, 404, 'Route not found');
   });

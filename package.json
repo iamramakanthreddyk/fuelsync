@@ -4,9 +4,9 @@
   "description": "FuelSync Hub Backend API",
   "main": "dist/app.js",
   "scripts": {
-    "build": "tsc && npx prisma generate",
-    "postinstall": "npm run build",
-    "start": "npx prisma generate && node dist/src/app.js",
+    "build": "tsc",
+    "postinstall": "npx --no-install prisma generate",
+    "start": "node dist/src/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
     "migrate:down": "node scripts/migrate.js down",
