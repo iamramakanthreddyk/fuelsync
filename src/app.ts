@@ -128,7 +128,7 @@ export function createApp() {
         DB_PORT: process.env.DB_PORT || '5432',
         POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
         DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
-        PORT: process.env.PORT || '3003'
+        PORT: process.env.PORT || '8080'
       };
       
       // Check if we're running in Azure
@@ -258,7 +258,7 @@ export default app;
 
 // For local development
 if (require.main === module) {
-  const port = process.env.PORT || 3003;
+  const port = process.env.PORT || 8080;
   app.listen(port, () => {
     console.log(`FuelSync API listening on ${port}`);
   });
