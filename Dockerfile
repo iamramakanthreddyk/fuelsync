@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
+# Ensure Prisma CLI is executable
+RUN chmod +x ./node_modules/.bin/prisma
+
 # Copy source code
 COPY . .
 

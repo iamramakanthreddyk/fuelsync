@@ -3335,3 +3335,9 @@ Each entry is tied to a step from the implementation index.
 * Removed Docker-based workflow `docker-azure.yml`.
 * Added Node deployment workflow `azure-webapp.yml` using `azure/webapps-deploy`.
 * `docs/STEP_fix_20260825_COMMAND.md`
+
+## [Fix 2026-08-26] – Prisma CLI permission
+
+### 🟥 Fixes
+* Added `chmod +x` step in Dockerfile for Prisma binary.
+* `docs/STEP_fix_20260826_COMMAND.md`
