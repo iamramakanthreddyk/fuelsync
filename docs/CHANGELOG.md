@@ -3312,3 +3312,11 @@ Each entry is tied to a step from the implementation index.
 * Added `prestart` script to fix Prisma CLI permissions and generate the client.
 * Default server port is now `8080`.
 * `docs/STEP_fix_20260822_COMMAND.md`
+
+## [Fix 2026-08-23] – Dockerfile deployment and health check
+
+### 🟥 Fixes
+* Added Dockerfile with Node 22 Alpine and Prisma client generation.
+* Updated start scripts and created `server.js` with Prisma `/health` endpoint.
+* Introduced optional GitHub workflow for Docker deployments.
+* `docs/STEP_fix_20260823_COMMAND.md`

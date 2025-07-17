@@ -293,3 +293,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-20 | Void nozzle reading workflow | ✅ Done | `migrations/schema/20250714_add_reading_audit.sql`, `src/services/nozzleReading.service.ts`, `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `docs/READING_CORRECTION_WORKFLOW.md` | `docs/STEP_fix_20260820_COMMAND.md` |
 | fix | 2026-08-21 | Document void reading API | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260821_COMMAND.md` |
 | fix | 2026-08-22 | Ensure Prisma readiness on start | ✅ Done | `package.json`, `src/app.ts` | `docs/STEP_fix_20260822_COMMAND.md` |
+| fix | 2026-08-23 | Dockerfile deployment and health check | ✅ Done | `Dockerfile`, `package.json`, `server.js`, `src/app.ts` | `docs/STEP_fix_20260823_COMMAND.md` |
