@@ -296,3 +296,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-23 | Dockerfile deployment and health check | ✅ Done | `Dockerfile`, `package.json`, `server.js`, `src/app.ts` | `docs/STEP_fix_20260823_COMMAND.md` |
 | fix | 2026-08-24 | Azure Oryx deployment cleanup | ✅ Done | `package.json`, `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20260824_COMMAND.md` |
 | fix | 2026-08-25 | Azure WebApp deployment workflow | ✅ Done | `.github/workflows/azure-webapp.yml`, removed `docker-azure.yml` | `docs/STEP_fix_20260825_COMMAND.md` |
+| fix | 2026-08-26 | Prisma CLI permission fix | ✅ Done | `Dockerfile` | `docs/STEP_fix_20260826_COMMAND.md` |

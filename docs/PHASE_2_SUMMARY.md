@@ -1616,3 +1616,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Replaced container deployment with zip-based workflow using `azure/webapps-deploy`.
 * Removed obsolete `docker-azure.yml`.
+
+### 🛠️ Fix 2026-08-26 – Prisma CLI permission
+**Status:** ✅ Done
+**Files:** `Dockerfile`, `docs/STEP_fix_20260826_COMMAND.md`
+
+**Overview:**
+* Added `chmod +x` for Prisma binary during Docker build to prevent permission errors.
