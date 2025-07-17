@@ -1599,3 +1599,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Introduced custom Dockerfile using Node 22 Alpine with Prisma generation.
 * Start script now launches `server.js` which exposes a Prisma-based `/health` endpoint.
 * Added GitHub Actions workflow to build and deploy the container.
+
+### 🛠️ Fix 2026-08-24 – Azure Oryx deployment cleanup
+**Status:** ✅ Done
+**Files:** `package.json`, `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20260824_COMMAND.md`
+
+**Overview:**
+* Simplified deployment by generating Prisma in `postinstall` only.
+* Removed the `prestart` hook and obsolete GitHub workflow using `azure/login`.
+* Production start script runs `node dist/src/app.js`.
