@@ -1582,3 +1582,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added missing specification for voiding nozzle readings.
 * Regenerated API type definitions.
+
+### 🛠️ Fix 2026-08-22 – Ensure Prisma readiness on start
+**Status:** ✅ Done
+**Files:** `package.json`, `src/app.ts`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Added a `prestart` script that fixes Prisma CLI permissions and runs `npx prisma generate` before starting the server.
+* Default port updated to `8080`.
