@@ -1590,3 +1590,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added a `prestart` script that fixes Prisma CLI permissions and runs `npx prisma generate` before starting the server.
 * Default port updated to `8080`.
+
+### 🛠️ Fix 2026-08-23 – Dockerfile deployment and health check
+**Status:** ✅ Done
+**Files:** `Dockerfile`, `package.json`, `server.js`, `src/app.ts`, `docs/STEP_fix_20260823_COMMAND.md`
+
+**Overview:**
+* Introduced custom Dockerfile using Node 22 Alpine with Prisma generation.
+* Start script now launches `server.js` which exposes a Prisma-based `/health` endpoint.
+* Added GitHub Actions workflow to build and deploy the container.

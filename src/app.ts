@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pool from './utils/db';
+import prisma from './utils/prisma';
 import { createAuthRouter } from './routes/auth.route';
 import { createAdminAuthRouter } from './routes/adminAuth.route';
 import { createAdminApiRouter } from './routes/adminApi.router';
@@ -105,9 +106,9 @@ export function createApp() {
   // Enhanced health check endpoint with detailed diagnostics
   app.get('/health', async (_req, res) => {
     try {
-      const { testConnection } = await import('./utils/db');
-      console.log('[HEALTH] Running database connection test...');
-      const dbResult = await testConnection();
+      console.log('[HEALTH] Running Prisma connection test...');
+      await prisma.$queryRaw`SELECT 1`;
+      const dbResult = { success: true };
       
       // Get system information
       const systemInfo = {

@@ -9,9 +9,9 @@
   },
   "scripts": {
     "postinstall": "npx prisma generate",
-    "prestart": "echo Skipping prisma generate (already done at build time)",
+    "prestart": "npx prisma generate",
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "start": "node server.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
     "migrate:down": "node scripts/migrate.js down",
