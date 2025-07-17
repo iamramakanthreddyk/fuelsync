@@ -2,11 +2,15 @@
   "name": "fuelsync-backend",
   "version": "1.0.0",
   "description": "FuelSync Hub Backend API",
-  "main": "dist/app.js",
+  "main": "dist/src/app.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
+    "preinstall": "chmod +x ./node_modules/.bin/prisma || true",
+    "postinstall": "npx prisma generate",
     "build": "tsc",
-    "postinstall": "npx --no-install prisma generate",
-    "prestart": "npx prisma generate",
     "start": "node dist/src/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
