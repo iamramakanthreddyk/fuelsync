@@ -3305,3 +3305,11 @@ Each entry is tied to a step from the implementation index.
 * Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
+
+## [Fix 2026-08-22] – Azure start script and port
+
+### 🟥 Fixes
+* `package.json` now builds Prisma client and runs the compiled server.
+* Server defaults to `process.env.PORT` or `8080` to satisfy Azure.
+* `docs/STEP_fix_20260822_COMMAND.md`
+
