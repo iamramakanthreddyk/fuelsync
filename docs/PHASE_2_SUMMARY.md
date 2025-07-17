@@ -1582,3 +1582,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added missing specification for voiding nozzle readings.
 * Regenerated API type definitions.
+
+### 🛠️ Fix 2026-08-22 – Azure start script and port
+**Status:** ✅ Done
+**Files:** `package.json`, `src/app.ts`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Production build now runs `prisma generate`.
+* Server defaults to port 8080 for Azure compatibility.
+
