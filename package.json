@@ -8,7 +8,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "preinstall": "chmod +x ./node_modules/.bin/prisma || true",
+    "preinstall": "chmod +x node_modules/.bin/prisma || true",
     "postinstall": "npx prisma generate",
     "build": "tsc",
     "start": "node dist/src/app.js",
@@ -39,12 +39,6 @@
   "dependencies": {
     "@prisma/client": "^6.10.1",
     "prisma": "^6.10.1",
-    "@types/bcrypt": "^5.0.0",
-    "@types/cors": "^2.8.13",
-    "@types/express": "^4.17.17",
-    "@types/jsonwebtoken": "^9.0.2",
-    "@types/pg": "^8.10.1",
-    "@types/swagger-ui-express": "^4.1.8",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
@@ -59,10 +53,16 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.2.5",
+    "@types/pg": "^8.10.1",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^30.0.4",
     "openapi-typescript": "^7.8.0",
     "supertest": "^7.1.1",
