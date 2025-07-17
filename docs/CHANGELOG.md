@@ -3320,3 +3320,11 @@ Each entry is tied to a step from the implementation index.
 * Updated start scripts and created `server.js` with Prisma `/health` endpoint.
 * Introduced optional GitHub workflow for Docker deployments.
 * `docs/STEP_fix_20260823_COMMAND.md`
+
+## [Fix 2026-08-24] – Azure Oryx deployment cleanup
+
+### 🟥 Fixes
+* `postinstall` now runs `prisma generate` and `prestart` was removed.
+* Production start script uses `node dist/src/app.js`.
+* Deleted obsolete workflow `main_fuelsync.yml`.
+* `docs/STEP_fix_20260824_COMMAND.md`
