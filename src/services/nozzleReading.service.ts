@@ -28,17 +28,8 @@ export async function createNozzleReading(
       throw new Error('Reading must be different from the last reading. Duplicate readings are not allowed.');
     }
     
-    // Check if reading is less than last reading (meter reset)
-    if (data.reading < Number(lastReading)) {
-      // Get user role to check if they can do meter resets
-      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
-      const role = userRole.rows[0]?.role;
-      
-      // Only managers and owners can do meter resets
-      if (role !== 'manager' && role !== 'owner') {
-        throw new Error('Reading must be greater than the last reading. Only managers and owners can reset meters.');
-      }
-    }
+    // No need to check if reading is less than last reading
+    // Allow any reading that is different from the last one
     
     // Check for backdated readings (only allow if user is manager or owner)
     const lastReadingDate = lastRes.rows[0]?.recorded_at;
@@ -78,15 +69,8 @@ export async function createNozzleReading(
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
       ]
     );
-    // Calculate volume sold
-    let volumeSold;
-    if (data.reading < Number(lastReading)) {
-      // This is a meter reset - use the new reading as the volume
-      volumeSold = parseFloat(data.reading.toFixed(3));
-    } else {
-      // Normal case - subtract last reading
-      volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
-    }
+    // Calculate volume sold - always use the difference between readings
+    const volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
     
     // Use standardized date handling
     const dateOnly = toStandardDate(data.recordedAt);

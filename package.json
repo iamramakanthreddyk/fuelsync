@@ -5,6 +5,8 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
+    "postinstall": "chmod +x node_modules/.bin/prisma && npx --no-install prisma generate",
+    "prestart": "chmod +x node_modules/.bin/prisma && npx prisma generate",
     "start": "node dist/src/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
@@ -28,11 +30,11 @@
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
     "test:docker": "ts-node scripts/start-db-and-test.ts",
     "test:unit": "jest -c jest.config.ts",
-    "postinstall": "prisma generate",
     "fix-null-amounts": "node scripts/fix-null-amounts.js"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
+    "prisma": "^6.10.1",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
@@ -59,7 +61,6 @@
     "@types/supertest": "^6.0.3",
     "jest": "^30.0.4",
     "openapi-typescript": "^7.8.0",
-    "prisma": "^6.10.1",
     "supertest": "^7.1.1",
     "ts-jest": "^29.4.0"
   }
