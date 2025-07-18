@@ -3339,3 +3339,9 @@ Each entry is tied to a step from the implementation index.
 * `postinstall` now calls this script so deployments work with just environment variables.
 * Updated Render deployment guide with automatic setup details.
 * `docs/STEP_fix_20260826_COMMAND.md`
+## [Fix 2026-08-25] – Login tenant header removal
+
+### 🟥 Fixes
+* Login no longer reads `x-tenant-id`; tenant is determined by the user's email.
+* OpenAPI updated so `/auth/login` has no tenant header requirement.
+* `docs/STEP_fix_20260825_COMMAND.md`
