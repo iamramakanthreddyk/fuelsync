@@ -1582,3 +1582,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added missing specification for voiding nozzle readings.
 * Regenerated API type definitions.
+
+### 🛠️ Fix 2026-08-22 – Azure deployment zip fix
+**Status:** ✅ Done
+**Files:** `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Updated the CI workflow to zip only built application files for Azure deployment.
+

@@ -3305,3 +3305,9 @@ Each entry is tied to a step from the implementation index.
 * Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
+
+## [Fix 2026-08-22] – Azure deployment zip fix
+
+### 🟥 Fixes
+* GitHub Actions workflow now packages only built files for Azure deployment.
+* `docs/STEP_fix_20260822_COMMAND.md`
