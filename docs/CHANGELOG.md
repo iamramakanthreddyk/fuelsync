@@ -3318,3 +3318,9 @@ Each entry is tied to a step from the implementation index.
 * Configured TypeScript to compile `src/` directly into `dist/`.
 * Start script now runs `node dist/app.js`.
 * `docs/STEP_fix_20260823_COMMAND.md`
+
+## [Fix 2026-08-24] – DB connection debug logs
+
+### 🟥 Fixes
+* Added database connection test logs in the login controller to aid troubleshooting.
+* `docs/STEP_fix_20260824_COMMAND.md`

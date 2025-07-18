@@ -1596,3 +1596,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Compiles TypeScript from `src/` directly into `dist/` and runs `node dist/app.js`.
+
+### 🛠️ Fix 2026-08-24 – DB connection debug logs
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `docs/STEP_fix_20260824_COMMAND.md`
+
+**Overview:**
+* Added testConnection logging inside the login route to verify database connectivity on each login attempt.
