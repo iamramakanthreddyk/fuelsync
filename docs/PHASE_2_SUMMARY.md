@@ -1590,3 +1590,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Updated the CI workflow to zip only built application files for Azure deployment.
 
+
+### 🛠️ Fix 2026-08-23 – Station ranking alias bug
+**Status:** ✅ Done
+**Files:** `src/services/station.service.ts`, `docs/STEP_fix_20260823_COMMAND.md`
+
+**Overview:**
+* Station ranking query referenced an alias in the `RANK()` expression, causing a 500 error.
+* Updated the SQL to use base columns for ranking and sorting.

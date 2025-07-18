@@ -3311,3 +3311,9 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * GitHub Actions workflow now packages only built files for Azure deployment.
 * `docs/STEP_fix_20260822_COMMAND.md`
+
+## [Fix 2026-08-23] – Station ranking alias bug
+
+### 🟥 Fixes
+* Corrected `getStationRanking` query to use base columns in ranking calculations.
+* `docs/STEP_fix_20260823_COMMAND.md`
