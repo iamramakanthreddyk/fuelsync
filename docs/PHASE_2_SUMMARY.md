@@ -1582,3 +1582,17 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Added missing specification for voiding nozzle readings.
 * Regenerated API type definitions.
+
+### 🛠️ Fix 2026-08-22 – Compile before start
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Added a `prestart` script so deployments run `npm run build` automatically.
+
+### 🛠️ Fix 2026-08-23 – Flatten build output
+**Status:** ✅ Done
+**Files:** `tsconfig.json`, `package.json`, `docs/STEP_fix_20260823_COMMAND.md`
+
+**Overview:**
+* Compiles TypeScript from `src/` directly into `dist/` and runs `node dist/app.js`.

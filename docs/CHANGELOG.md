@@ -3305,3 +3305,16 @@ Each entry is tied to a step from the implementation index.
 * Documented `POST /v1/nozzle-readings/{id}/void` in both OpenAPI specs.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
+
+## [Fix 2026-08-22] – Compile before start
+
+### 🟥 Fixes
+* Added `prestart` script so production deployments compile sources before running.
+* `docs/STEP_fix_20260822_COMMAND.md`
+
+## [Fix 2026-08-23] – Flatten build output
+
+### 🟥 Fixes
+* Configured TypeScript to compile `src/` directly into `dist/`.
+* Start script now runs `node dist/app.js`.
+* `docs/STEP_fix_20260823_COMMAND.md`

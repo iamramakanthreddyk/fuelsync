@@ -5,7 +5,8 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "prestart": "npm run build",
+    "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
     "migrate:down": "node scripts/migrate.js down",
