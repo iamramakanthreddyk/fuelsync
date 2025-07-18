@@ -4,6 +4,7 @@ import { login, loginSuperAdmin } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { JWT_SECRET, REFRESH_TOKEN_EXPIRES_IN } from '../constants/auth';
+import { testConnection } from '../utils/db';
 
 export function createAuthController(db: Pool) {
   return {
@@ -12,7 +13,22 @@ export function createAuthController(db: Pool) {
       const tenantId = req.headers['x-tenant-id'] as string | undefined;
       
       console.log(`[AUTH] Login attempt for email: ${email}, tenantId: ${tenantId || 'none'}`);
-      
+
+      try {
+        const dbCheck = await testConnection();
+        if (dbCheck.success) {
+          console.log('[AUTH] Database connection verified', {
+            time: dbCheck.time,
+            database: dbCheck.database,
+            pool: dbCheck.poolStats,
+          });
+        } else {
+          console.error('[AUTH] Database connection test failed', dbCheck);
+        }
+      } catch (connErr) {
+        console.error('[AUTH] Error testing database connection', connErr);
+      }
+
       try {
         // Check if user exists before attempting login
         let userExists = false;
