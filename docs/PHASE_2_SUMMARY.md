@@ -1603,3 +1603,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added testConnection logging inside the login route to verify database connectivity on each login attempt.
+
+### 🛠️ Fix 2026-08-25 – Login tenant header removal
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20260825_COMMAND.md`
+
+**Overview:**
+* Login no longer expects the `x-tenant-id` header. The tenant is derived from the user's email and the OpenAPI spec was updated accordingly.
