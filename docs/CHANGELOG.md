@@ -3325,6 +3325,20 @@ Each entry is tied to a step from the implementation index.
 * Added database connection test logs in the login controller to aid troubleshooting.
 * `docs/STEP_fix_20260824_COMMAND.md`
 
+## [Fix 2026-08-25] – Render DB setup automation
+
+### 🟥 Fixes
+* `postinstall` now runs pending migrations after generating Prisma client.
+* Added Render deployment guide documenting initial database setup.
+* `docs/STEP_fix_20260825_COMMAND.md`
+
+## [Fix 2026-08-26] – Automatic DB bootstrap
+
+### 🟥 Fixes
+* New script `ensure-db-init.js` installs the schema on fresh databases before applying migrations.
+* `postinstall` now calls this script so deployments work with just environment variables.
+* Updated Render deployment guide with automatic setup details.
+* `docs/STEP_fix_20260826_COMMAND.md`
 ## [Fix 2026-08-25] – Login tenant header removal
 
 ### 🟥 Fixes
