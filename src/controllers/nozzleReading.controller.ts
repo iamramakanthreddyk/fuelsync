@@ -30,22 +30,34 @@ export function createNozzleReadingHandlers(db: Pool) {
     list: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        if (!user?.tenantId) {
-          return errorResponse(res, 400, 'Missing tenant context');
+        if (!user?.tenantId || typeof user.tenantId !== 'string' || user.tenantId.trim() === '') {
+          return errorResponse(res, 400, 'Missing or invalid tenant context');
         }
+        
         const query = parseReadingQuery(req.query);
-        const readings = await listNozzleReadings(user.tenantId, {
-          nozzleId: query.nozzleId,
-          stationId: undefined,
-          from: query.startDate,
-          to: query.endDate,
-          limit: query.limit,
-        });
-        if (readings.length === 0) {
-          return successResponse(res, []);
+        
+        try {
+          const readings = await listNozzleReadings(user.tenantId, {
+            nozzleId: query.nozzleId,
+            stationId: req.query.stationId as string || undefined,
+            from: query.startDate,
+            to: query.endDate,
+            limit: query.limit,
+          });
+          
+          if (readings.length === 0) {
+            return successResponse(res, []);
+          }
+          successResponse(res, { readings });
+        } catch (dbError: any) {
+          console.error('[NOZZLE-READING] Database error:', dbError);
+          if (dbError.message && dbError.message.includes('invalid input syntax for type uuid')) {
+            return errorResponse(res, 400, 'Invalid UUID format in request parameters');
+          }
+          throw dbError; // Re-throw for the outer catch block
         }
-        successResponse(res, { readings });
       } catch (err: any) {
+        console.error('[NOZZLE-READING] Error listing readings:', err);
         return errorResponse(res, 400, err.message);
       }
     },

@@ -51,11 +51,18 @@ export interface ReadingQueryParsed {
 }
 
 export function parseReadingQuery(query: any): ReadingQueryParsed {
-  const { nozzleId, startDate, endDate, from, to, limit } = query || {};
+  const { nozzleId, startDate, endDate, from, to, limit, stationId } = query || {};
   const result: ReadingQueryParsed = {};
   
-  if (nozzleId && typeof nozzleId === 'string') {
-    result.nozzleId = nozzleId;
+  // Validate nozzleId is a non-empty string
+  if (nozzleId && typeof nozzleId === 'string' && nozzleId.trim() !== '') {
+    // Basic UUID format validation
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (uuidRegex.test(nozzleId)) {
+      result.nozzleId = nozzleId;
+    } else {
+      console.warn(`[READING-VALIDATOR] Invalid nozzleId format: ${nozzleId}`);
+    }
   }
   
   // Handle both startDate/endDate and from/to formats
@@ -72,7 +79,7 @@ export function parseReadingQuery(query: any): ReadingQueryParsed {
   }
 
   if (limit) {
-    const n = parseInt(limit, 10);
+    const n = parseInt(limit as string, 10);
     if (!isNaN(n) && n > 0) result.limit = n;
   }
 

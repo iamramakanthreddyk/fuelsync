@@ -170,14 +170,19 @@ export async function listNozzleReadings(
   tenantId: string,
   query: ReadingQuery
 ) {
+  // Validate tenantId is a valid UUID
+  if (!tenantId || typeof tenantId !== 'string' || tenantId.trim() === '') {
+    throw new Error('Invalid tenant ID');
+  }
+  
   const params: any[] = [tenantId];
   let idx = 2;
   const filters: string[] = [];
-  if (query.nozzleId) {
+  if (query.nozzleId && typeof query.nozzleId === 'string' && query.nozzleId.trim() !== '') {
     filters.push(`o.nozzle_id = $${idx++}`);
     params.push(query.nozzleId);
   }
-  if (query.stationId) {
+  if (query.stationId && typeof query.stationId === 'string' && query.stationId.trim() !== '') {
     filters.push(`o.station_id = $${idx++}`);
     params.push(query.stationId);
   }
