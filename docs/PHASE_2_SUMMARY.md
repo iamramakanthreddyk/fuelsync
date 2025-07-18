@@ -1603,3 +1603,20 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Added testConnection logging inside the login route to verify database connectivity on each login attempt.
+
+### 🛠️ Fix 2026-08-25 – Render DB setup automation
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/RENDER_DEPLOYMENT_GUIDE.md`, `docs/STEP_fix_20260825_COMMAND.md`
+
+**Overview:**
+* `postinstall` now applies pending migrations after generating the Prisma client.
+* Added deployment guide for provisioning a Render database and running `npm run setup-db` once.
+
+### 🛠️ Fix 2026-08-26 – Automatic DB bootstrap
+**Status:** ✅ Done
+**Files:** `package.json`, `scripts/ensure-db-init.js`, `docs/RENDER_DEPLOYMENT_GUIDE.md`, `docs/STEP_fix_20260826_COMMAND.md`
+
+**Overview:**
+* `ensure-db-init.js` checks for an existing schema and executes `setup-unified-db.js` if necessary.
+* `postinstall` uses this script so new environments start with just the database variables set.
+* Updated Render deployment guide to mention this automation works with Azure as well.
