@@ -45,9 +45,7 @@ export function createNozzleReadingHandlers(db: Pool) {
             limit: query.limit,
           });
           
-          if (readings.length === 0) {
-            return successResponse(res, []);
-          }
+          // Always return readings in a consistent format
           successResponse(res, { readings });
         } catch (dbError: any) {
           console.error('[NOZZLE-READING] Database error:', dbError);
