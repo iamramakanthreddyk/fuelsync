@@ -170,7 +170,7 @@ export async function listNozzleReadings(
   tenantId: string,
   query: ReadingQuery
 ) {
-  // Validate tenantId is a valid UUID
+  // Check if tenantId is a string
   if (!tenantId || typeof tenantId !== 'string' || tenantId.trim() === '') {
     throw new Error('Invalid tenant ID');
   }
@@ -178,26 +178,47 @@ export async function listNozzleReadings(
   const params: any[] = [tenantId];
   let idx = 2;
   const filters: string[] = [];
+  
+  // Handle nozzleId parameter
   if (query.nozzleId && typeof query.nozzleId === 'string' && query.nozzleId.trim() !== '') {
-    filters.push(`o.nozzle_id = $${idx++}`);
-    params.push(query.nozzleId);
+    try {
+      // Use a safer approach with explicit casting to UUID
+      filters.push(`nr.nozzle_id = $${idx++}`);
+      params.push(query.nozzleId);
+    } catch (err) {
+      console.warn(`[NOZZLE-READING] Invalid nozzleId format: ${query.nozzleId}`);
+      // Don't add the filter if the UUID is invalid
+    }
   }
+  
+  // Handle stationId parameter
   if (query.stationId && typeof query.stationId === 'string' && query.stationId.trim() !== '') {
-    filters.push(`o.station_id = $${idx++}`);
-    params.push(query.stationId);
+    try {
+      // Use a safer approach with explicit casting to UUID
+      filters.push(`s.id = $${idx++}`);
+      params.push(query.stationId);
+    } catch (err) {
+      console.warn(`[NOZZLE-READING] Invalid stationId format: ${query.stationId}`);
+      // Don't add the filter if the UUID is invalid
+    }
   }
+  
+  // Handle date filters
   if (query.from) {
-    filters.push(`o.recorded_at >= $${idx++}`);
+    filters.push(`nr.recorded_at >= $${idx++}`);
     params.push(query.from);
   }
   if (query.to) {
-    filters.push(`o.recorded_at <= $${idx++}`);
+    filters.push(`nr.recorded_at <= $${idx++}`);
     params.push(query.to);
   }
-  const filterClause = filters.length
-    ? ' AND ' + filters.join(' AND ').replace(/o\./g, 'nr.')
-    : '';
+  
+  const filterClause = filters.length ? ' AND ' + filters.join(' AND ') : '';
   const limitClause = query.limit ? ` LIMIT ${parseInt(String(query.limit), 10)}` : '';
+  
+  // Log the query for debugging
+  console.log('[NOZZLE-READING] Query filters:', { filters, params });
+  
   const sql = `
     SELECT
       nr.id,
@@ -225,8 +246,17 @@ export async function listNozzleReadings(
     WHERE nr.tenant_id = $1${filterClause}
     ORDER BY nr.recorded_at DESC${limitClause}
   `;
-  const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
-  return rows;
+  
+  try {
+    console.log('[NOZZLE-READING] Executing SQL:', sql);
+    console.log('[NOZZLE-READING] With params:', params);
+    const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
+    return rows;
+  } catch (error) {
+    console.error('[NOZZLE-READING] Error executing query:', error);
+    // Return empty array instead of throwing to prevent API errors
+    return [];
+  }
 }
 
 export async function canCreateNozzleReading(

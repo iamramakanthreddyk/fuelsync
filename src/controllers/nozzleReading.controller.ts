@@ -51,10 +51,8 @@ export function createNozzleReadingHandlers(db: Pool) {
           successResponse(res, { readings });
         } catch (dbError: any) {
           console.error('[NOZZLE-READING] Database error:', dbError);
-          if (dbError.message && dbError.message.includes('invalid input syntax for type uuid')) {
-            return errorResponse(res, 400, 'Invalid UUID format in request parameters');
-          }
-          throw dbError; // Re-throw for the outer catch block
+          // Let the outer catch block handle all errors
+          throw dbError;
         }
       } catch (err: any) {
         console.error('[NOZZLE-READING] Error listing readings:', err);
