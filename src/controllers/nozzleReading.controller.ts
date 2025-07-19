@@ -39,7 +39,7 @@ export function createNozzleReadingHandlers(db: Pool) {
         try {
           const readings = await listNozzleReadings(user.tenantId, {
             nozzleId: query.nozzleId,
-            stationId: req.query.stationId as string || undefined,
+            stationId: query.stationId,
             from: query.startDate,
             to: query.endDate,
             limit: query.limit,

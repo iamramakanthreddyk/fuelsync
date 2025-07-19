@@ -5,31 +5,61 @@ import { isDateFinalized } from './reconciliation.service';
 import { parseRows, parseRow } from '../utils/parseDb';
 
 export async function createCreditor(db: Pool, tenantId: string, input: CreditorInput): Promise<string> {
+  // Check if station exists if stationId is provided
+  if (input.stationId) {
+    const stationCheck = await db.query(
+      'SELECT id FROM public.stations WHERE id = $1 AND tenant_id = $2',
+      [input.stationId, tenantId]
+    );
+    if (stationCheck.rowCount === 0) {
+      throw new Error('Invalid station ID');
+    }
+  }
+  
   const res = await db.query<{ id: string }>(
-    `INSERT INTO public.creditors (id, tenant_id, party_name, contact_number, address, credit_limit, updated_at)
-     VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id`,
-    [randomUUID(), tenantId, input.partyName, input.contactNumber || null, input.address || null, input.creditLimit || 0]
+    `INSERT INTO public.creditors (id, tenant_id, party_name, contact_number, address, credit_limit, station_id, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id`,
+    [randomUUID(), tenantId, input.partyName, input.contactNumber || null, input.address || null, input.creditLimit || 0, input.stationId || null]
   );
   return res.rows[0].id;
 }
 
-export async function listCreditors(db: Pool, tenantId: string) {
-  const res = await db.query(
-    'SELECT id, party_name, contact_number, address, credit_limit, status, created_at FROM public.creditors WHERE tenant_id = $1 ORDER BY party_name',
-    [tenantId]
-  );
+export async function listCreditors(db: Pool, tenantId: string, stationId?: string) {
+  let query = 'SELECT c.id, c.party_name, c.contact_number, c.address, c.credit_limit, c.status, c.created_at, c.station_id, s.name as station_name FROM public.creditors c LEFT JOIN public.stations s ON c.station_id = s.id WHERE c.tenant_id = $1';
+  const params = [tenantId];
+  
+  // Filter by station if provided
+  if (stationId) {
+    query += ' AND (c.station_id = $2 OR c.station_id IS NULL)';
+    params.push(stationId);
+  }
+  
+  query += ' ORDER BY c.party_name';
+  const res = await db.query(query, params);
   return parseRows(res.rows);
 }
 
 export async function updateCreditor(db: Pool, tenantId: string, id: string, input: CreditorInput) {
+  // Check if station exists if stationId is provided
+  if (input.stationId) {
+    const stationCheck = await db.query(
+      'SELECT id FROM public.stations WHERE id = $1 AND tenant_id = $2',
+      [input.stationId, tenantId]
+    );
+    if (stationCheck.rowCount === 0) {
+      throw new Error('Invalid station ID');
+    }
+  }
+  
   await db.query(
     `UPDATE public.creditors SET
       party_name = COALESCE($2, party_name),
       contact_number = COALESCE($3, contact_number),
       address = COALESCE($4, address),
-      credit_limit = COALESCE($5, credit_limit)
-     WHERE id = $1 AND tenant_id = $6`,
-    [id, input.partyName || null, input.contactNumber || null, input.address || null, input.creditLimit, tenantId]
+      credit_limit = COALESCE($5, credit_limit),
+      station_id = COALESCE($6, station_id)
+     WHERE id = $1 AND tenant_id = $7`,
+    [id, input.partyName || null, input.contactNumber || null, input.address || null, input.creditLimit, input.stationId, tenantId]
   );
 }
 

@@ -113,7 +113,11 @@ export async function getStationMetrics(
   stationId: string,
   period: string
 ) {
-  const where: Prisma.SaleWhereInput = { station_id: stationId, tenant_id: tenantId };
+  const where: Prisma.SaleWhereInput = { 
+    station_id: stationId, 
+    tenant_id: tenantId,
+    status: 'posted' // Only count posted sales
+  };
   if (period === 'today') {
     where.recorded_at = { gte: new Date(new Date().setHours(0, 0, 0, 0)) };
   } else if (period === 'monthly') {
@@ -138,7 +142,11 @@ export async function getStationPerformance(
   range: string
 ) {
   const current = await getStationMetrics(db, tenantId, stationId, range);
-  let prevWhere: Prisma.SaleWhereInput = { station_id: stationId, tenant_id: tenantId };
+  let prevWhere: Prisma.SaleWhereInput = { 
+    station_id: stationId, 
+    tenant_id: tenantId,
+    status: 'posted' // Only count posted sales
+  };
   if (range === 'monthly') {
     const start = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
     const end = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -173,11 +181,12 @@ export async function getStationComparison(tenantId: string, stationIds: string[
       COALESCE(SUM(s.profit), 0) as total_profit,
       COALESCE(SUM(s.volume), 0) as total_volume,
       COUNT(s.id) as transaction_count,
-      COALESCE(AVG(s.amount), 0) as avg_transaction,
+      CASE WHEN COUNT(s.id) > 0 THEN COALESCE(AVG(s.amount), 0) ELSE 0 END as avg_transaction,
       CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${currentInterval}'
+      AND s.status = 'posted'
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
@@ -193,6 +202,7 @@ export async function getStationComparison(tenantId: string, stationIds: string[
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${previousInterval}'
       AND s.recorded_at < CURRENT_DATE - INTERVAL '${currentInterval}'
+      AND s.status = 'posted'
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
     GROUP BY st.id`;
   
@@ -279,6 +289,7 @@ export async function getStationRanking(
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
+      AND s.status = 'posted'
     WHERE st.tenant_id = ${tenantId}
     GROUP BY st.id, st.name
     ORDER BY ${orderCol} DESC`;
@@ -310,7 +321,7 @@ export async function getStationEfficiency(
            ELSE 0 END as efficiency
     FROM stations st
     LEFT JOIN pumps p ON p.station_id = st.id
-    LEFT JOIN sales s ON s.station_id = st.id AND s.tenant_id = ${tenantId}
+    LEFT JOIN sales s ON s.station_id = st.id AND s.tenant_id = ${tenantId} AND s.status = 'posted'
     WHERE st.id = ${stationId} AND st.tenant_id = ${tenantId}
     GROUP BY st.id, st.name`;
   const rows = (await prisma.$queryRaw(query)) as any[];
@@ -335,9 +346,9 @@ export async function getDashboardStationMetrics(
       COUNT(p.id) FILTER (WHERE p.status = 'active') AS active_pumps,
       COUNT(p.id) AS total_pumps,
       MAX(sa.recorded_at) AS last_activity,
-      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE THEN sa.amount ELSE 0 END),0) AS today_sales,
-      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '30 days' THEN sa.amount ELSE 0 END),0) AS monthly_sales,
-      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '60 days' AND sa.recorded_at < CURRENT_DATE - INTERVAL '30 days' THEN sa.amount ELSE 0 END),0) AS prev_month_sales
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE AND sa.status = 'posted' THEN sa.amount ELSE 0 END),0) AS today_sales,
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '30 days' AND sa.status = 'posted' THEN sa.amount ELSE 0 END),0) AS monthly_sales,
+      COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '60 days' AND sa.recorded_at < CURRENT_DATE - INTERVAL '30 days' AND sa.status = 'posted' THEN sa.amount ELSE 0 END),0) AS prev_month_sales
     FROM stations st
     LEFT JOIN pumps p ON p.station_id = st.id
     LEFT JOIN sales sa ON sa.station_id = st.id AND sa.tenant_id = ${tenantId}

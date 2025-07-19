@@ -44,7 +44,11 @@ export function createCreditorHandlers(db: Pool) {
       if (!tenantId) {
         return errorResponse(res, 400, 'Missing tenant context');
       }
-      const creditors = await listCreditors(db, tenantId);
+      
+      // Get stationId from query params if provided
+      const stationId = req.query.stationId as string;
+      
+      const creditors = await listCreditors(db, tenantId, stationId);
       if (creditors.length === 0) {
         return successResponse(res, []);
       }
@@ -58,9 +62,16 @@ export function createCreditorHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const creditor = await prisma.creditor.findFirst({
-          where: { id: req.params.id, tenant_id: tenantId }
+          where: { id: req.params.id, tenant_id: tenantId },
+          include: {
+            station: true // Include station details
+          }
         });
         if (!creditor) return errorResponse(res, 404, 'Creditor not found');
+        
+        // Get station details if available
+        const stationName = creditor.station ? creditor.station.name : null;
+        
         successResponse(res, {
           id: creditor.id,
           name: creditor.party_name,
@@ -69,6 +80,8 @@ export function createCreditorHandlers(db: Pool) {
           address: creditor.address,
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
+          stationId: creditor.station_id,
+          stationName: stationName,
           createdAt: creditor.created_at
         });
       } catch (err: any) {
