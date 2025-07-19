@@ -104,7 +104,7 @@ export function createAttendantHandlers(db: Pool) {
       }
     },
     
-    // Submit cash report with stationId
+    // Submit cash report
     cashReport: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
@@ -132,21 +132,6 @@ export function createAttendantHandlers(db: Pool) {
           
           // Log the station and creditor for tracking
           console.log(`[ATTENDANT-API] Cash report with credit: stationId=${stationId}, creditorId=${creditorId}`);
-        }
-        
-        // For now, just return a placeholder response
-        successResponse(res, { id: 'placeholder-id' }, 'Cash report submitted successfully', 201);
-      } catch (err: any) {
-        return errorResponse(res, 500, err.message || 'Failed to submit cash report');
-      }
-    },
-    
-    // Submit cash report
-    cashReport: async (req: Request, res: Response) => {
-      try {
-        const tenantId = req.user?.tenantId;
-        if (!tenantId) {
-          return errorResponse(res, 400, 'Missing tenant context');
         }
         
         // For now, just return a placeholder response
