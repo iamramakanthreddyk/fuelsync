@@ -184,10 +184,10 @@ export async function getStationComparison(tenantId: string, stationIds: string[
       CASE WHEN COUNT(s.id) > 0 THEN COALESCE(AVG(s.amount), 0) ELSE 0 END as avg_transaction,
       CASE WHEN SUM(s.amount) > 0 THEN (SUM(s.profit) / SUM(s.amount)) * 100 ELSE 0 END as profit_margin
     FROM stations st
-    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
+    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${currentInterval}'
       AND s.status = 'posted'
-    WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
+    WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
   
@@ -199,11 +199,11 @@ export async function getStationComparison(tenantId: string, stationIds: string[
       COALESCE(SUM(s.volume), 0) as prev_volume,
       COUNT(s.id) as prev_transactions
     FROM stations st
-    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
+    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${previousInterval}'
       AND s.recorded_at < CURRENT_DATE - INTERVAL '${currentInterval}'
       AND s.status = 'posted'
-    WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${tenantId}
+    WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id`;
   
   // Execute both queries
@@ -287,10 +287,10 @@ export async function getStationRanking(
       COUNT(s.id) as transaction_count,
       RANK() OVER (ORDER BY COALESCE(SUM(${orderCol}), 0) DESC) as rank
     FROM stations st
-    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${tenantId}
+    LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
       AND s.status = 'posted'
-    WHERE st.tenant_id = ${tenantId}
+    WHERE st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name
     ORDER BY ${orderCol} DESC`;
   const rows = (await prisma.$queryRaw(query)) as any[];
@@ -321,8 +321,8 @@ export async function getStationEfficiency(
            ELSE 0 END as efficiency
     FROM stations st
     LEFT JOIN pumps p ON p.station_id = st.id
-    LEFT JOIN sales s ON s.station_id = st.id AND s.tenant_id = ${tenantId} AND s.status = 'posted'
-    WHERE st.id = ${stationId} AND st.tenant_id = ${tenantId}
+    LEFT JOIN sales s ON s.station_id = st.id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)} AND s.status = 'posted'
+    WHERE st.id = ${Prisma.raw(`'${stationId}'`)} AND st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name`;
   const rows = (await prisma.$queryRaw(query)) as any[];
   if (!rows.length) return null;
@@ -351,8 +351,8 @@ export async function getDashboardStationMetrics(
       COALESCE(SUM(CASE WHEN sa.recorded_at >= CURRENT_DATE - INTERVAL '60 days' AND sa.recorded_at < CURRENT_DATE - INTERVAL '30 days' AND sa.status = 'posted' THEN sa.amount ELSE 0 END),0) AS prev_month_sales
     FROM stations st
     LEFT JOIN pumps p ON p.station_id = st.id
-    LEFT JOIN sales sa ON sa.station_id = st.id AND sa.tenant_id = ${tenantId}
-    WHERE st.tenant_id = ${tenantId}
+    LEFT JOIN sales sa ON sa.station_id = st.id AND sa.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
+    WHERE st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name, st.status
     ORDER BY st.name`;
 

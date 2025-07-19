@@ -19,6 +19,7 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   if (!nozzleId || typeof nozzleId !== 'string') {
     throw new Error('nozzleId required');
   }
+  
   const readingNum = parseFloat(reading);
   if (isNaN(readingNum)) {
     throw new Error('reading must be a number');
@@ -55,28 +56,18 @@ export function parseReadingQuery(query: any): ReadingQueryParsed {
   const { nozzleId, startDate, endDate, from, to, limit, stationId } = query || {};
   const result: ReadingQueryParsed = {};
   
-  // Validate nozzleId is a non-empty string and valid UUID
+  // Check if nozzleId is a string
   if (nozzleId && typeof nozzleId === 'string' && nozzleId.trim() !== '') {
-    // Basic UUID format validation
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (uuidRegex.test(nozzleId)) {
-      result.nozzleId = nozzleId;
-    } else {
-      console.warn(`[READING-VALIDATOR] Invalid nozzleId format: ${nozzleId}`);
-      throw new Error('Invalid UUID format in request parameters');
-    }
+    result.nozzleId = nozzleId;
   }
   
-  // Validate stationId is a non-empty string and valid UUID if provided
+  // Check if stationId is a string
   if (stationId && typeof stationId === 'string' && stationId.trim() !== '') {
-    // Basic UUID format validation
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (uuidRegex.test(stationId)) {
-      result.stationId = stationId;
-    } else {
-      console.warn(`[READING-VALIDATOR] Invalid stationId format: ${stationId}`);
-      throw new Error('Invalid UUID format in request parameters');
-    }
+    result.stationId = stationId;
+  } else if (stationId && typeof stationId === 'object') {
+    // Handle case where stationId is an object
+    console.warn(`[READING-VALIDATOR] stationId is an object, not a string: ${JSON.stringify(stationId)}`);
+    throw new Error('Invalid stationId format: must be a string');
   }
   
   // Handle both startDate/endDate and from/to formats
