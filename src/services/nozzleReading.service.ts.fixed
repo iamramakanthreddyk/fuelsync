@@ -188,10 +188,14 @@ export async function createNozzleReading(
     await client.query('COMMIT');
     return readingRes.rows[0].id;
   } catch (err) {
-    await client.query('ROLLBACK');
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     throw err;
   } finally {
-    client.release();
+    if (client) {
+      client.release();
+    }
   }
 }
 
@@ -556,8 +560,9 @@ export async function voidNozzleReading(
   reason: string,
   userId: string
 ) {
-  const client = await db.connect();
+  let client;
   try {
+    client = await db.connect();
     await client.query('BEGIN');
     
     // First, check if the reading exists
@@ -613,9 +618,13 @@ export async function voidNozzleReading(
     await client.query('COMMIT');
     return { id, status: 'voided' };
   } catch (err) {
-    await client.query('ROLLBACK');
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     throw err;
   } finally {
-    client.release();
+    if (client) {
+      client.release();
+    }
   }
 }
