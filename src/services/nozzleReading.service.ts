@@ -22,22 +22,22 @@ export async function createNozzleReading(
       'SELECT reading, recorded_at FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 AND status != $3 ORDER BY recorded_at DESC LIMIT 1',
       [data.nozzleId, tenantId, 'voided']
     );
-    console.log(`[NOZZLE-READING] Last reading query returned ${lastRes.rowCount} rows`);
+    console.log(`[NOZZLE-READING] Last reading query returned ${lastRes.rowCount ?? 0} rows`);
     
     // Default to 0 if no previous reading
     const lastReading = lastRes.rows[0]?.reading ?? 0;
     
     // Log the last reading for debugging
-    console.log(`[NOZZLE-READING] Last reading: ${lastReading}, New reading: ${data.reading}, Has rows: ${lastRes.rowCount}`);
+    console.log(`[NOZZLE-READING] Last reading: ${lastReading}, New reading: ${data.reading}, Has rows: ${lastRes.rowCount ?? 0}`);
     
     // Only check for duplicates if there is a previous reading
-    if (lastRes.rowCount > 0 && Math.abs(data.reading - Number(lastReading)) < 0.001) {
+    if ((lastRes.rowCount ?? 0) > 0 && Math.abs(data.reading - Number(lastReading)) < 0.001) {
       console.log(`[NOZZLE-READING] Duplicate reading detected: ${data.reading} vs last reading: ${lastReading}`);
       throw new Error('Reading must be different from the last reading. Duplicate readings are not allowed.');
     }
     
     // Check if reading is less than last reading (meter reset) - only if there is a previous reading
-    if (lastRes.rowCount > 0 && data.reading < Number(lastReading)) {
+    if ((lastRes.rowCount ?? 0) > 0 && data.reading < Number(lastReading)) {
       console.log(`[NOZZLE-READING] Meter reset detected: ${data.reading} < ${lastReading}`);
       
       // Get user role to check if they can do meter resets
@@ -53,7 +53,7 @@ export async function createNozzleReading(
     
     // Check for backdated readings (only allow if user is manager or owner) - only if there is a previous reading
     const lastReadingDate = lastRes.rows[0]?.recorded_at;
-    if (lastRes.rowCount > 0 && lastReadingDate && new Date(data.recordedAt) < new Date(lastReadingDate)) {
+    if ((lastRes.rowCount ?? 0) > 0 && lastReadingDate && new Date(data.recordedAt) < new Date(lastReadingDate)) {
       console.log(`[NOZZLE-READING] Backdated reading detected: ${new Date(data.recordedAt).toISOString()} < ${new Date(lastReadingDate).toISOString()}`);
       
       // Get user role
@@ -102,7 +102,7 @@ export async function createNozzleReading(
     console.log(`[NOZZLE-READING] Reading created successfully: ${readingRes.rows[0]?.id}`);
     // Calculate volume sold
     let volumeSold;
-    if (lastRes.rowCount > 0 && data.reading < Number(lastReading)) {
+    if ((lastRes.rowCount ?? 0) > 0 && data.reading < Number(lastReading)) {
       // This is a meter reset - use the new reading as the volume
       volumeSold = parseFloat(data.reading.toFixed(3));
       console.log(`[NOZZLE-READING] Meter reset volume calculation: ${volumeSold}`);
