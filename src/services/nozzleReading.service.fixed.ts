@@ -26,7 +26,6 @@ export async function createNozzleReading(
     client = await Promise.race([connectPromise, timeoutPromise]);
     console.log('[NOZZLE-READING] Successfully acquired database client');
     
-    // Start transaction
     await client.query('BEGIN');
     // Get the last reading for this nozzle
     const lastRes = await client.query<{ reading: number; recorded_at: Date }>(
@@ -48,12 +47,11 @@ export async function createNozzleReading(
     }
     
     // Check if reading is less than last reading (meter reset) - only if there is a previous reading
-    // Add a small tolerance (0.001) to handle floating point precision issues
-    if ((lastRes.rowCount ?? 0) > 0 && data.reading < (Number(lastReading) - 0.001)) {
+    if ((lastRes.rowCount ?? 0) > 0 && data.reading < Number(lastReading)) {
       console.log(`[NOZZLE-READING] Meter reset detected: ${data.reading} < ${lastReading}`);
       
       // Get user role to check if they can do meter resets
-      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
+      const userRole = await client.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
       console.log(`[NOZZLE-READING] User role for meter reset: ${role}`);
       
@@ -69,7 +67,7 @@ export async function createNozzleReading(
       console.log(`[NOZZLE-READING] Backdated reading detected: ${new Date(data.recordedAt).toISOString()} < ${new Date(lastReadingDate).toISOString()}`);
       
       // Get user role
-      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
+      const userRole = await client.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
       console.log(`[NOZZLE-READING] User role for backdated reading: ${role}`);
       
@@ -114,7 +112,7 @@ export async function createNozzleReading(
     console.log(`[NOZZLE-READING] Reading created successfully: ${readingRes.rows[0]?.id}`);
     // Calculate volume sold
     let volumeSold;
-    if ((lastRes.rowCount ?? 0) > 0 && data.reading < (Number(lastReading) - 0.001)) {
+    if ((lastRes.rowCount ?? 0) > 0 && data.reading < Number(lastReading)) {
       // This is a meter reset - use the new reading as the volume
       volumeSold = parseFloat(data.reading.toFixed(3));
       console.log(`[NOZZLE-READING] Meter reset volume calculation: ${volumeSold}`);
@@ -195,10 +193,24 @@ export async function createNozzleReading(
     await client.query('COMMIT');
     return readingRes.rows[0].id;
   } catch (err) {
-    await client.query('ROLLBACK');
+    console.error('[NOZZLE-READING] Error in createNozzleReading:', err);
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackErr) {
+        console.error('[NOZZLE-READING] Error during rollback:', rollbackErr);
+      }
+    }
     throw err;
   } finally {
-    client.release();
+    if (client) {
+      try {
+        client.release();
+        console.log('[NOZZLE-READING] Client released back to pool');
+      } catch (releaseErr) {
+        console.error('[NOZZLE-READING] Error releasing client:', releaseErr);
+      }
+    }
   }
 }
 
@@ -219,14 +231,14 @@ export async function listNozzleReadings(
   if (query.nozzleId && typeof query.nozzleId === 'string' && query.nozzleId.trim() !== '') {
     console.log(`[NOZZLE-READING] Adding nozzleId filter: ${query.nozzleId}`);
     filters.push(`nr.nozzle_id = $${idx++}`);
-    params.push(query.nozzleId.trim());
+    params.push(query.nozzleId);
   }
   
   // Handle stationId parameter
   if (query.stationId && typeof query.stationId === 'string' && query.stationId.trim() !== '') {
     console.log(`[NOZZLE-READING] Adding stationId filter: ${query.stationId}`);
     filters.push(`s.id = $${idx++}`);
-    params.push(query.stationId.trim());
+    params.push(query.stationId);
   }
   
   // Handle date filters
@@ -252,9 +264,9 @@ export async function listNozzleReadings(
       nr.nozzle_id AS "nozzleId",
       COALESCE(n.nozzle_number, 0) AS "nozzleNumber",
       COALESCE(n.fuel_type, 'unknown') AS "fuelType",
-      p.id AS "pumpId",
+      COALESCE(p.id, '') AS "pumpId",
       COALESCE(p.name, 'Unknown Pump') AS "pumpName",
-      s.id AS "stationId",
+      COALESCE(s.id, '') AS "stationId",
       COALESCE(s.name, 'Unknown Station') AS "stationName",
       nr.reading,
       nr.recorded_at AS "recordedAt",
@@ -283,11 +295,7 @@ export async function listNozzleReadings(
       // Process each row to add calculated fields
       const processedRows = await Promise.all(rows.map(async (row: any) => {
         try {
-          // Skip previous reading lookup if nozzleId is missing
-          if (!row.nozzleId) {
-            return row;
-          }
-          
+          // Get previous reading for this nozzle
           const prevRes = await prisma.$queryRaw`
             SELECT reading FROM public.nozzle_readings 
             WHERE nozzle_id = ${row.nozzleId} AND tenant_id = ${params[0]} AND recorded_at < ${row.recordedAt} 
@@ -319,20 +327,17 @@ export async function listNozzleReadings(
     } catch (prismaError) {
       console.error('[NOZZLE-READING] Prisma query error:', prismaError);
       
-      // Fallback to using the existing pool from db.ts
-      const dbPool = require('../utils/db').default;
+      // Fallback to direct database query
+      const { Pool } = require('pg');
+      const pool = new Pool();
       try {
-        const result = await dbPool.query(sql, params);
+        const result = await pool.query(sql, params);
         console.log(`[NOZZLE-READING] Fallback query returned ${result.rows.length} rows`);
         
         // Process each row to add calculated fields
         const processedRows = await Promise.all(result.rows.map(async (row: any) => {
           try {
-            // Skip previous reading lookup if nozzleId is missing
-            if (!row.nozzleId) {
-              return row;
-            }
-            
+            // Get previous reading for this nozzle
             const prevRes = await pool.query(
               `SELECT reading FROM public.nozzle_readings 
                WHERE nozzle_id = $1 AND tenant_id = $2 AND recorded_at < $3 
@@ -364,9 +369,8 @@ export async function listNozzleReadings(
       } catch (pgError) {
         console.error('[NOZZLE-READING] PG query error:', pgError);
         throw pgError;
-      } catch (pgError) {
-        console.error('[NOZZLE-READING] PG query error:', pgError);
-        throw pgError;
+      } finally {
+        await pool.end();
       }
     }
   } catch (error) {
@@ -566,8 +570,18 @@ export async function voidNozzleReading(
   reason: string,
   userId: string
 ) {
-  const client = await db.connect();
+  let client;
   try {
+    // Set a timeout for acquiring a client from the pool
+    const connectPromise = db.connect();
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Connection timeout: Failed to acquire client from pool')), 5000);
+    });
+    
+    // Race between connection and timeout
+    client = await Promise.race([connectPromise, timeoutPromise]);
+    console.log('[NOZZLE-READING] Successfully acquired database client for void operation');
+    
     await client.query('BEGIN');
     
     // First, check if the reading exists
@@ -623,9 +637,23 @@ export async function voidNozzleReading(
     await client.query('COMMIT');
     return { id, status: 'voided' };
   } catch (err) {
-    await client.query('ROLLBACK');
+    console.error('[NOZZLE-READING] Error in voidNozzleReading:', err);
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackErr) {
+        console.error('[NOZZLE-READING] Error during rollback:', rollbackErr);
+      }
+    }
     throw err;
   } finally {
-    client.release();
+    if (client) {
+      try {
+        client.release();
+        console.log('[NOZZLE-READING] Client released back to pool');
+      } catch (releaseErr) {
+        console.error('[NOZZLE-READING] Error releasing client:', releaseErr);
+      }
+    }
   }
 }
