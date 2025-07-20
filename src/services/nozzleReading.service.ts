@@ -17,22 +17,33 @@ export async function createNozzleReading(
   const client = await db.connect();
   try {
     await client.query('BEGIN');
+    // Get the last reading for this nozzle
     const lastRes = await client.query<{ reading: number; recorded_at: Date }>(
-      'SELECT reading, recorded_at FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 ORDER BY recorded_at DESC LIMIT 1',
-      [data.nozzleId, tenantId]
+      'SELECT reading, recorded_at FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 AND status != $3 ORDER BY recorded_at DESC LIMIT 1',
+      [data.nozzleId, tenantId, 'voided']
     );
+    console.log(`[NOZZLE-READING] Last reading query returned ${lastRes.rowCount} rows`);
+    
+    // Default to 0 if no previous reading
     const lastReading = lastRes.rows[0]?.reading ?? 0;
     
-    // Check for duplicate readings
-    if (data.reading === Number(lastReading)) {
+    // Log the last reading for debugging
+    console.log(`[NOZZLE-READING] Last reading: ${lastReading}, New reading: ${data.reading}, Has rows: ${lastRes.rowCount}`);
+    
+    // Only check for duplicates if there is a previous reading
+    if (lastRes.rowCount > 0 && Math.abs(data.reading - Number(lastReading)) < 0.001) {
+      console.log(`[NOZZLE-READING] Duplicate reading detected: ${data.reading} vs last reading: ${lastReading}`);
       throw new Error('Reading must be different from the last reading. Duplicate readings are not allowed.');
     }
     
-    // Check if reading is less than last reading (meter reset)
-    if (data.reading < Number(lastReading)) {
+    // Check if reading is less than last reading (meter reset) - only if there is a previous reading
+    if (lastRes.rowCount > 0 && data.reading < Number(lastReading)) {
+      console.log(`[NOZZLE-READING] Meter reset detected: ${data.reading} < ${lastReading}`);
+      
       // Get user role to check if they can do meter resets
       const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
+      console.log(`[NOZZLE-READING] User role for meter reset: ${role}`);
       
       // Only managers and owners can do meter resets
       if (role !== 'manager' && role !== 'owner') {
@@ -40,12 +51,15 @@ export async function createNozzleReading(
       }
     }
     
-    // Check for backdated readings (only allow if user is manager or owner)
+    // Check for backdated readings (only allow if user is manager or owner) - only if there is a previous reading
     const lastReadingDate = lastRes.rows[0]?.recorded_at;
-    if (lastReadingDate && new Date(data.recordedAt) < new Date(lastReadingDate)) {
+    if (lastRes.rowCount > 0 && lastReadingDate && new Date(data.recordedAt) < new Date(lastReadingDate)) {
+      console.log(`[NOZZLE-READING] Backdated reading detected: ${new Date(data.recordedAt).toISOString()} < ${new Date(lastReadingDate).toISOString()}`);
+      
       // Get user role
       const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
+      console.log(`[NOZZLE-READING] User role for backdated reading: ${role}`);
       
       if (role !== 'manager' && role !== 'owner') {
         throw new Error('Backdated readings can only be entered by managers or owners.');
@@ -66,9 +80,13 @@ export async function createNozzleReading(
       throw new Error('Day already finalized for this station');
     }
 
+    // Generate a new UUID for the reading
     const readingId = randomUUID();
+    console.log(`[NOZZLE-READING] Creating new reading with ID: ${readingId}`);
+    
+    // Insert the reading into the database
     const readingRes = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW()) RETURNING id',
+      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, creditor_id, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW()) RETURNING id',
       [
         readingId,
         tenantId,
@@ -76,16 +94,22 @@ export async function createNozzleReading(
         data.reading,
         data.recordedAt,
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+        data.creditorId || null,
+        'active'
       ]
     );
+    
+    console.log(`[NOZZLE-READING] Reading created successfully: ${readingRes.rows[0]?.id}`);
     // Calculate volume sold
     let volumeSold;
-    if (data.reading < Number(lastReading)) {
+    if (lastRes.rowCount > 0 && data.reading < Number(lastReading)) {
       // This is a meter reset - use the new reading as the volume
       volumeSold = parseFloat(data.reading.toFixed(3));
+      console.log(`[NOZZLE-READING] Meter reset volume calculation: ${volumeSold}`);
     } else {
       // Normal case - subtract last reading
       volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
+      console.log(`[NOZZLE-READING] Normal volume calculation: ${data.reading} - ${lastReading} = ${volumeSold}`);
     }
     
     // Use standardized date handling
