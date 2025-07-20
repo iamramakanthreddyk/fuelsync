@@ -333,7 +333,7 @@ export async function listNozzleReadings(
               return row;
             }
             
-            const prevRes = await pool.query(
+            const prevRes = await dbPool.query(
               `SELECT reading FROM public.nozzle_readings 
                WHERE nozzle_id = $1 AND tenant_id = $2 AND recorded_at < $3 
                ORDER BY recorded_at DESC LIMIT 1`,
@@ -361,9 +361,6 @@ export async function listNozzleReadings(
         }));
         
         return processedRows;
-      } catch (pgError) {
-        console.error('[NOZZLE-READING] PG query error:', pgError);
-        throw pgError;
       } catch (pgError) {
         console.error('[NOZZLE-READING] PG query error:', pgError);
         throw pgError;
