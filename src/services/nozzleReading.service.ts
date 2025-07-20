@@ -181,26 +181,16 @@ export async function listNozzleReadings(
   
   // Handle nozzleId parameter
   if (query.nozzleId && typeof query.nozzleId === 'string' && query.nozzleId.trim() !== '') {
-    try {
-      // Use a safer approach with explicit casting to UUID
-      filters.push(`nr.nozzle_id = $${idx++}`);
-      params.push(query.nozzleId);
-    } catch (err) {
-      console.warn(`[NOZZLE-READING] Invalid nozzleId format: ${query.nozzleId}`);
-      // Don't add the filter if the UUID is invalid
-    }
+    console.log(`[NOZZLE-READING] Adding nozzleId filter: ${query.nozzleId}`);
+    filters.push(`nr.nozzle_id = $${idx++}`);
+    params.push(query.nozzleId);
   }
   
   // Handle stationId parameter
   if (query.stationId && typeof query.stationId === 'string' && query.stationId.trim() !== '') {
-    try {
-      // Use a safer approach with explicit casting to UUID
-      filters.push(`s.id = $${idx++}`);
-      params.push(query.stationId);
-    } catch (err) {
-      console.warn(`[NOZZLE-READING] Invalid stationId format: ${query.stationId}`);
-      // Don't add the filter if the UUID is invalid
-    }
+    console.log(`[NOZZLE-READING] Adding stationId filter: ${query.stationId}`);
+    filters.push(`s.id = $${idx++}`);
+    params.push(query.stationId);
   }
   
   // Handle date filters
@@ -219,6 +209,7 @@ export async function listNozzleReadings(
   // Log the query for debugging
   console.log('[NOZZLE-READING] Query filters:', { filters, params });
   
+  // Simplified query to avoid window functions which might cause issues
   const sql = `
     SELECT
       nr.id,
@@ -232,11 +223,8 @@ export async function listNozzleReadings(
       nr.reading,
       nr.recorded_at AS "recordedAt",
       COALESCE(nr.payment_method, 'cash') AS "paymentMethod",
-      LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
       COALESCE(u.name, 'System') AS "attendantName",
-      (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) AS "volume",
-      COALESCE(sa.fuel_price, 0) AS "pricePerLitre",
-      (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) * COALESCE(sa.fuel_price, 0) AS "amount"
+      COALESCE(sa.fuel_price, 0) AS "pricePerLitre"
     FROM public.nozzle_readings nr
     LEFT JOIN public.nozzles n ON nr.nozzle_id = n.id
     LEFT JOIN public.pumps p ON n.pump_id = p.id
@@ -250,8 +238,93 @@ export async function listNozzleReadings(
   try {
     console.log('[NOZZLE-READING] Executing SQL:', sql);
     console.log('[NOZZLE-READING] With params:', params);
-    const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
-    return rows;
+    
+    // First try with Prisma
+    try {
+      const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as any[];
+      console.log(`[NOZZLE-READING] Query returned ${rows.length} rows`);
+      
+      // Process each row to add calculated fields
+      const processedRows = await Promise.all(rows.map(async (row) => {
+        try {
+          // Get previous reading for this nozzle
+          const prevRes = await prisma.$queryRaw`
+            SELECT reading FROM public.nozzle_readings 
+            WHERE nozzle_id = ${row.nozzleId} AND tenant_id = ${params[0]} AND recorded_at < ${row.recordedAt} 
+            ORDER BY recorded_at DESC LIMIT 1
+          `;
+          
+          const prevReadings = prevRes as any[];
+          if (prevReadings && prevReadings.length > 0) {
+            row.previousReading = prevReadings[0].reading;
+            row.volume = row.reading - row.previousReading;
+          } else {
+            row.previousReading = 0;
+            row.volume = row.reading;
+          }
+          
+          // Calculate amount if price is available
+          if (row.pricePerLitre) {
+            row.amount = row.volume * row.pricePerLitre;
+          }
+          
+          return row;
+        } catch (error) {
+          console.error(`[NOZZLE-READING] Error processing row ${row.id}:`, error);
+          return row;
+        }
+      }));
+      
+      return processedRows;
+    } catch (prismaError) {
+      console.error('[NOZZLE-READING] Prisma query error:', prismaError);
+      
+      // Fallback to direct database query
+      const { Pool } = require('pg');
+      const pool = new Pool();
+      try {
+        const result = await pool.query(sql, params);
+        console.log(`[NOZZLE-READING] Fallback query returned ${result.rows.length} rows`);
+        
+        // Process each row to add calculated fields
+        const processedRows = await Promise.all(result.rows.map(async (row) => {
+          try {
+            // Get previous reading for this nozzle
+            const prevRes = await pool.query(
+              `SELECT reading FROM public.nozzle_readings 
+               WHERE nozzle_id = $1 AND tenant_id = $2 AND recorded_at < $3 
+               ORDER BY recorded_at DESC LIMIT 1`,
+              [row.nozzleId, params[0], row.recordedAt]
+            );
+            
+            if (prevRes.rows.length > 0) {
+              row.previousReading = prevRes.rows[0].reading;
+              row.volume = row.reading - row.previousReading;
+            } else {
+              row.previousReading = 0;
+              row.volume = row.reading;
+            }
+            
+            // Calculate amount if price is available
+            if (row.pricePerLitre) {
+              row.amount = row.volume * row.pricePerLitre;
+            }
+            
+            return row;
+          } catch (error) {
+            console.error(`[NOZZLE-READING] Error processing row ${row.id}:`, error);
+            return row;
+          }
+        }));
+        
+        return processedRows;
+      } catch (pgError) {
+        console.error('[NOZZLE-READING] PG query error:', pgError);
+        throw pgError;
+      } finally {
+        await pool.end();
+      }
+    }
   } catch (error) {
     console.error('[NOZZLE-READING] Error executing query:', error);
     // Return empty array instead of throwing to prevent API errors
@@ -342,6 +415,7 @@ export async function canCreateNozzleReading(
 }
 
 export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
+  // Simplified query to avoid window functions
   const res = await db.query(
     `SELECT
        nr.id,
@@ -357,10 +431,7 @@ export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
        nr.creditor_id,
        n.fuel_type AS "fuelType",
        u.name AS "attendantName",
-       LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) AS "previousReading",
-       (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) AS "volume",
-       sa.fuel_price AS "pricePerLitre",
-       (nr.reading - COALESCE(LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at), 0)) * COALESCE(sa.fuel_price, 0) AS "amount"
+       sa.fuel_price AS "pricePerLitre"
      FROM public.nozzle_readings nr
      JOIN public.nozzles n ON nr.nozzle_id = n.id
      JOIN public.pumps p ON n.pump_id = p.id
@@ -370,7 +441,40 @@ export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
      WHERE nr.id = $1 AND nr.tenant_id = $2`,
     [id, tenantId]
   );
-  return res.rows[0] || null;
+  
+  // If we found a reading, get the previous reading separately
+  if (res.rows[0]) {
+    try {
+      const reading = res.rows[0];
+      const prevRes = await db.query(
+        `SELECT reading FROM public.nozzle_readings 
+         WHERE nozzle_id = $1 AND tenant_id = $2 AND recorded_at < $3 
+         ORDER BY recorded_at DESC LIMIT 1`,
+        [reading.nozzleId, tenantId, reading.recordedAt]
+      );
+      
+      if (prevRes.rows[0]) {
+        reading.previousReading = prevRes.rows[0].reading;
+        reading.volume = reading.reading - reading.previousReading;
+        if (reading.pricePerLitre) {
+          reading.amount = reading.volume * reading.pricePerLitre;
+        }
+      } else {
+        reading.previousReading = 0;
+        reading.volume = reading.reading;
+        if (reading.pricePerLitre) {
+          reading.amount = reading.volume * reading.pricePerLitre;
+        }
+      }
+      
+      return reading;
+    } catch (error) {
+      console.error('[NOZZLE-READING] Error getting previous reading:', error);
+      return res.rows[0];
+    }
+  }
+  
+  return null;
 }
 
 export async function updateNozzleReading(
