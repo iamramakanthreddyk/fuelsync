@@ -89,9 +89,9 @@ export async function createNozzleReading(
     const readingId = randomUUID();
     console.log(`[NOZZLE-READING] Creating new reading with ID: ${readingId}`);
     
-    // Insert the reading into the database
+    // Insert the reading into the database - without creditor_id as it doesn't exist in the table
     const readingRes = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, creditor_id, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW()) RETURNING id',
+      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id',
       [
         readingId,
         tenantId,
@@ -99,7 +99,6 @@ export async function createNozzleReading(
         data.reading,
         data.recordedAt,
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
-        data.creditorId || null,
         'active'
       ]
     );
