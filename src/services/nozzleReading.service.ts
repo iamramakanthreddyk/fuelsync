@@ -245,7 +245,7 @@ export async function listNozzleReadings(
       console.log(`[NOZZLE-READING] Query returned ${rows.length} rows`);
       
       // Process each row to add calculated fields
-      const processedRows = await Promise.all(rows.map(async (row) => {
+      const processedRows = await Promise.all(rows.map(async (row: any) => {
         try {
           // Get previous reading for this nozzle
           const prevRes = await prisma.$queryRaw`
@@ -287,7 +287,7 @@ export async function listNozzleReadings(
         console.log(`[NOZZLE-READING] Fallback query returned ${result.rows.length} rows`);
         
         // Process each row to add calculated fields
-        const processedRows = await Promise.all(result.rows.map(async (row) => {
+        const processedRows = await Promise.all(result.rows.map(async (row: any) => {
           try {
             // Get previous reading for this nozzle
             const prevRes = await pool.query(
