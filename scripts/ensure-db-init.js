@@ -5,10 +5,19 @@ const { execSync } = require('child_process');
 try {
   require('dotenv').config();
 } catch (e) {
-  console.log('dotenv not available, using existing env vars');
+  console.log('dotenv not available, using existing environment variables');
 }
 
 async function ensureDbInit() {
+  // Log DB connection info for debug purposes
+  console.log('[DEBUG] DB Connection Settings:');
+  console.log({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 5432,
+    user: process.env.DB_USER,
+    database: process.env.DB_NAME,
+  });
+
   const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 5432,
@@ -19,7 +28,6 @@ async function ensureDbInit() {
   });
 
   try {
-    // Confirm DB connection
     const client = await pool.connect();
     console.log('[DB] Successfully connected');
     client.release();
@@ -35,8 +43,11 @@ async function ensureDbInit() {
       console.log('[DB] Schema detected. Running pending migrations...');
       execSync('node scripts/migrate.js up', { stdio: 'inherit' });
     }
+
+    console.log('[DB] Initialization complete ✅');
   } catch (err) {
-    console.error('❌ ensure-db-init failed:', err.message);
+    console.error('❌ ensure-db-init failed with error:');
+    console.error(err); // full error object
     process.exit(1);
   } finally {
     await pool.end();
