@@ -271,12 +271,12 @@ export async function getStationRanking(
   period: string
 ) {
   const interval = period === 'monthly' ? '30 days' : period === 'weekly' ? '7 days' : '1 day';
-  const orderCol =
+  const orderField =
     metric === 'profit'
-      ? Prisma.sql`total_profit`
+      ? Prisma.sql`s.profit`
       : metric === 'volume'
-      ? Prisma.sql`total_volume`
-      : Prisma.sql`total_sales`;
+      ? Prisma.sql`s.volume`
+      : Prisma.sql`s.amount`;
   const query = Prisma.sql`
     SELECT
       st.id,
@@ -285,14 +285,14 @@ export async function getStationRanking(
       COALESCE(SUM(s.profit), 0) as total_profit,
       COALESCE(SUM(s.volume), 0) as total_volume,
       COUNT(s.id) as transaction_count,
-      RANK() OVER (ORDER BY COALESCE(SUM(${orderCol}), 0) DESC) as rank
+      RANK() OVER (ORDER BY COALESCE(SUM(${orderField}), 0) DESC) as rank
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
       AND s.status = 'posted'
     WHERE st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name
-    ORDER BY ${orderCol} DESC`;
+    ORDER BY COALESCE(SUM(${orderField}), 0) DESC`;
   const rows = (await prisma.$queryRaw(query)) as any[];
   return rows.map(row => ({
     rank: parseInt(row.rank, 10),

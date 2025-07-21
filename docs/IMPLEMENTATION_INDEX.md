@@ -298,3 +298,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-25 | Render DB setup automation | ✅ Done | `package.json`, `docs/RENDER_DEPLOYMENT_GUIDE.md` | `docs/STEP_fix_20260825_COMMAND.md` |
 | fix | 2026-08-26 | Automatic DB bootstrap | ✅ Done | `package.json`, `scripts/ensure-db-init.js`, `docs/RENDER_DEPLOYMENT_GUIDE.md` | `docs/STEP_fix_20260826_COMMAND.md` |
 | fix | 2026-08-25 | Login tenant header removal | ✅ Done | `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260825_COMMAND.md` |
+| fix | 2026-08-22 | Azure deployment zip fix | ✅ Done | `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20260822_COMMAND.md` |
+| fix | 2026-08-23 | Station ranking alias bug | ✅ Done | `src/services/station.service.ts` | `docs/STEP_fix_20260823_COMMAND.md` |

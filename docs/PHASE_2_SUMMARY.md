@@ -1626,3 +1626,18 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Login no longer expects the `x-tenant-id` header. The tenant is derived from the user's email and the OpenAPI spec was updated accordingly.
+### 🛠️ Fix 2026-08-22 – Azure deployment zip fix
+**Status:** ✅ Done
+**Files:** `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Updated the CI workflow to zip only built application files for Azure deployment.
+
+
+### 🛠️ Fix 2026-08-23 – Station ranking alias bug
+**Status:** ✅ Done
+**Files:** `src/services/station.service.ts`, `docs/STEP_fix_20260823_COMMAND.md`
+
+**Overview:**
+* Station ranking query referenced an alias in the `RANK()` expression, causing a 500 error.
+* Updated the SQL to use base columns for ranking and sorting.
