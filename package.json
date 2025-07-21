@@ -29,7 +29,7 @@
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
     "test:docker": "ts-node scripts/start-db-and-test.ts",
     "test:unit": "jest -c jest.config.ts",
-    "postinstall": "prisma generate && node scripts/check-azure-db.js",
+    "postinstall": "prisma generate",
     "fix-null-amounts": "node scripts/fix-null-amounts.js"
   },
   "dependencies": {
