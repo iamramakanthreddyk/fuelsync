@@ -3306,6 +3306,45 @@ Each entry is tied to a step from the implementation index.
 * Regenerated TypeScript API definitions.
 * `docs/STEP_fix_20260821_COMMAND.md`
 
+## [Fix 2026-08-22] – Compile before start
+
+### 🟥 Fixes
+* Added `prestart` script so production deployments compile sources before running.
+* `docs/STEP_fix_20260822_COMMAND.md`
+
+## [Fix 2026-08-23] – Flatten build output
+
+### 🟥 Fixes
+* Configured TypeScript to compile `src/` directly into `dist/`.
+* Start script now runs `node dist/app.js`.
+* `docs/STEP_fix_20260823_COMMAND.md`
+
+## [Fix 2026-08-24] – DB connection debug logs
+
+### 🟥 Fixes
+* Added database connection test logs in the login controller to aid troubleshooting.
+* `docs/STEP_fix_20260824_COMMAND.md`
+
+## [Fix 2026-08-25] – Render DB setup automation
+
+### 🟥 Fixes
+* `postinstall` now runs pending migrations after generating Prisma client.
+* Added Render deployment guide documenting initial database setup.
+* `docs/STEP_fix_20260825_COMMAND.md`
+
+## [Fix 2026-08-26] – Automatic DB bootstrap
+
+### 🟥 Fixes
+* New script `ensure-db-init.js` installs the schema on fresh databases before applying migrations.
+* `postinstall` now calls this script so deployments work with just environment variables.
+* Updated Render deployment guide with automatic setup details.
+* `docs/STEP_fix_20260826_COMMAND.md`
+## [Fix 2026-08-25] – Login tenant header removal
+
+### 🟥 Fixes
+* Login no longer reads `x-tenant-id`; tenant is determined by the user's email.
+* OpenAPI updated so `/auth/login` has no tenant header requirement.
+* `docs/STEP_fix_20260825_COMMAND.md`
 ## [Fix 2026-08-22] – Azure deployment zip fix
 
 ### 🟥 Fixes

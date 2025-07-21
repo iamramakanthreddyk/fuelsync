@@ -61,7 +61,7 @@ export async function getPeakHours(tenantId: string, stationId: string) {
     FROM "sales"
     WHERE tenant_id = ${tenantId}
       AND station_id = ${stationId}
-    GROUP BY 1, 2, 5
+    GROUP BY 1, 2, 6
     ORDER BY "salesAmount" DESC
     LIMIT 5`;
   

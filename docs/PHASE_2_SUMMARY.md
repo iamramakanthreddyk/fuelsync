@@ -1583,6 +1583,49 @@ sudo apt-get update && sudo apt-get install -y postgresql
 * Added missing specification for voiding nozzle readings.
 * Regenerated API type definitions.
 
+### 🛠️ Fix 2026-08-22 – Compile before start
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/STEP_fix_20260822_COMMAND.md`
+
+**Overview:**
+* Added a `prestart` script so deployments run `npm run build` automatically.
+
+### 🛠️ Fix 2026-08-23 – Flatten build output
+**Status:** ✅ Done
+**Files:** `tsconfig.json`, `package.json`, `docs/STEP_fix_20260823_COMMAND.md`
+
+**Overview:**
+* Compiles TypeScript from `src/` directly into `dist/` and runs `node dist/app.js`.
+
+### 🛠️ Fix 2026-08-24 – DB connection debug logs
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `docs/STEP_fix_20260824_COMMAND.md`
+
+**Overview:**
+* Added testConnection logging inside the login route to verify database connectivity on each login attempt.
+
+### 🛠️ Fix 2026-08-25 – Render DB setup automation
+**Status:** ✅ Done
+**Files:** `package.json`, `docs/RENDER_DEPLOYMENT_GUIDE.md`, `docs/STEP_fix_20260825_COMMAND.md`
+
+**Overview:**
+* `postinstall` now applies pending migrations after generating the Prisma client.
+* Added deployment guide for provisioning a Render database and running `npm run setup-db` once.
+
+### 🛠️ Fix 2026-08-26 – Automatic DB bootstrap
+**Status:** ✅ Done
+**Files:** `package.json`, `scripts/ensure-db-init.js`, `docs/RENDER_DEPLOYMENT_GUIDE.md`, `docs/STEP_fix_20260826_COMMAND.md`
+
+**Overview:**
+* `ensure-db-init.js` checks for an existing schema and executes `setup-unified-db.js` if necessary.
+* `postinstall` uses this script so new environments start with just the database variables set.
+* Updated Render deployment guide to mention this automation works with Azure as well.
+### 🛠️ Fix 2026-08-25 – Login tenant header removal
+**Status:** ✅ Done
+**Files:** `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/openapi.yaml`, `docs/STEP_fix_20260825_COMMAND.md`
+
+**Overview:**
+* Login no longer expects the `x-tenant-id` header. The tenant is derived from the user's email and the OpenAPI spec was updated accordingly.
 ### 🛠️ Fix 2026-08-22 – Azure deployment zip fix
 **Status:** ✅ Done
 **Files:** `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20260822_COMMAND.md`

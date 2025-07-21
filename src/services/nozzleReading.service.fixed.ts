@@ -16,7 +16,14 @@ export async function createNozzleReading(
 ): Promise<string> {
   let client;
   try {
-    client = await db.connect();
+    // Set a timeout for acquiring a client from the pool
+    const connectPromise = db.connect();
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Connection timeout: Failed to acquire client from pool')), 5000);
+    });
+    
+    // Race between connection and timeout
+    client = await Promise.race([connectPromise, timeoutPromise]);
     console.log('[NOZZLE-READING] Successfully acquired database client');
     
     // Start transaction
@@ -89,9 +96,9 @@ export async function createNozzleReading(
     const readingId = randomUUID();
     console.log(`[NOZZLE-READING] Creating new reading with ID: ${readingId}`);
     
-    // Insert the reading into the database - without creditor_id as it doesn't exist in the table
+    // Insert the reading into the database
     const readingRes = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id',
+      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, creditor_id, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW()) RETURNING id',
       [
         readingId,
         tenantId,
@@ -99,6 +106,7 @@ export async function createNozzleReading(
         data.reading,
         data.recordedAt,
         data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+        data.creditorId || null,
         'active'
       ]
     );

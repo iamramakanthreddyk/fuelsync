@@ -292,5 +292,11 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-19 | Nozzle lastReading field | ✅ Done | `src/services/nozzle.service.ts` | `docs/STEP_fix_20260819_COMMAND.md` |
 | fix | 2026-08-20 | Void nozzle reading workflow | ✅ Done | `migrations/schema/20250714_add_reading_audit.sql`, `src/services/nozzleReading.service.ts`, `src/controllers/nozzleReading.controller.ts`, `src/routes/nozzleReading.route.ts`, `docs/READING_CORRECTION_WORKFLOW.md` | `docs/STEP_fix_20260820_COMMAND.md` |
 | fix | 2026-08-21 | Document void reading API | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260821_COMMAND.md` |
+| fix | 2026-08-22 | Prestart build script | ✅ Done | `package.json` | `docs/STEP_fix_20260822_COMMAND.md` |
+| fix | 2026-08-23 | Flatten build output | ✅ Done | `tsconfig.json`, `package.json` | `docs/STEP_fix_20260823_COMMAND.md` |
+| fix | 2026-08-24 | DB connection debug logs | ✅ Done | `src/controllers/auth.controller.ts` | `docs/STEP_fix_20260824_COMMAND.md` |
+| fix | 2026-08-25 | Render DB setup automation | ✅ Done | `package.json`, `docs/RENDER_DEPLOYMENT_GUIDE.md` | `docs/STEP_fix_20260825_COMMAND.md` |
+| fix | 2026-08-26 | Automatic DB bootstrap | ✅ Done | `package.json`, `scripts/ensure-db-init.js`, `docs/RENDER_DEPLOYMENT_GUIDE.md` | `docs/STEP_fix_20260826_COMMAND.md` |
+| fix | 2026-08-25 | Login tenant header removal | ✅ Done | `src/controllers/auth.controller.ts`, `src/services/auth.service.ts`, `docs/openapi.yaml` | `docs/STEP_fix_20260825_COMMAND.md` |
 | fix | 2026-08-22 | Azure deployment zip fix | ✅ Done | `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20260822_COMMAND.md` |
 | fix | 2026-08-23 | Station ranking alias bug | ✅ Done | `src/services/station.service.ts` | `docs/STEP_fix_20260823_COMMAND.md` |

@@ -109,9 +109,24 @@ export function createAnalyticsHandlers() {
         if (!idsParam) return errorResponse(res, 400, 'stationIds required');
         const stationIds = idsParam.split(',');
         const period = (req.query.period as string) || 'monthly';
+        
+        console.log('[ANALYTICS] Station comparison request:', { tenantId, stationIds, period });
+        
+        // Check if there are any sales for this tenant
+        const salesCount = await prisma.sale.count({
+          where: { 
+            tenant_id: tenantId,
+            status: 'posted'
+          }
+        });
+        
+        console.log('[ANALYTICS] Total sales count for tenant:', salesCount);
+        
         const data = await getStationComparison(tenantId, stationIds, period);
+        console.log('[ANALYTICS] Station comparison result:', data);
         successResponse(res, data);
       } catch (err: any) {
+        console.error('[ANALYTICS] Station comparison error:', err);
         return errorResponse(res, 500, err.message);
       }
     },
@@ -155,14 +170,21 @@ export function createAnalyticsHandlers() {
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const { stationId: stationIdRaw, dateFrom, dateTo } = req.query as any;
         const stationId = normalizeStationId(stationIdRaw);
-        if (!stationId || !dateFrom || !dateTo) {
-          return errorResponse(res, 400, 'stationId, dateFrom and dateTo required');
+        if (!stationId) {
+          return errorResponse(res, 400, 'stationId required');
         }
+        
+        // Use default date range if not provided
+        const now = new Date();
+        const defaultDateTo = new Date();
+        const defaultDateFrom = new Date();
+        defaultDateFrom.setDate(defaultDateFrom.getDate() - 30); // Last 30 days
+        
         const data = await getFuelPerformance(
           tenantId,
           stationId,
-          new Date(dateFrom),
-          new Date(dateTo)
+          dateFrom ? new Date(dateFrom) : defaultDateFrom,
+          dateTo ? new Date(dateTo) : defaultDateTo
         );
         successResponse(res, data);
       } catch (err: any) {

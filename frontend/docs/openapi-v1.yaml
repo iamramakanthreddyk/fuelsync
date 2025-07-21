@@ -12,8 +12,10 @@ security:
 paths:
   /auth/login:
     post:
-      tags: [Authentication]
+      tags:
+        - Authentication
       summary: User login
+      security: []
       requestBody:
         required: true
         content:
@@ -27,16 +29,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postauthLogin
+      security: []
   /auth/logout:
     post:
-      tags: [Authentication]
+      tags:
+        - Authentication
       summary: User logout
       responses:
         '200':
           description: Logout successful
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postauthLogout
+      security: []
   /auth/refresh:
     post:
-      tags: [Authentication]
+      tags:
+        - Authentication
       summary: Refresh authentication token
       responses:
         '200':
@@ -45,10 +101,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postauthRefresh
+      security: []
   /alerts:
     get:
-      tags: [Alerts]
+      tags:
+        - Alerts
       summary: Get all alerts
       responses:
         '200':
@@ -59,9 +141,119 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Alert'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getalerts
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+    post:
+      tags:
+        - Alerts
+      summary: Create alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlertRequest'
+      responses:
+        '201':
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postalerts
+  /alerts/summary:
+    get:
+      tags:
+        - Alerts
+      summary: Alert counts by severity
+      responses:
+        '200':
+          description: Alert summary
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getalertsSummary
   /alerts/{id}/read:
     patch:
-      tags: [Alerts]
+      tags:
+        - Alerts
       summary: Mark alert as read
       parameters:
         - name: id
@@ -72,9 +264,35 @@ paths:
       responses:
         '200':
           description: Alert marked as read
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: patchalertsByidRead
   /alerts/{id}:
     delete:
-      tags: [Alerts]
+      tags:
+        - Alerts
       summary: Dismiss alert
       parameters:
         - name: id
@@ -85,10 +303,35 @@ paths:
       responses:
         '200':
           description: Alert dismissed
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: deletealertsByid
   /analytics/station-comparison:
     get:
-      tags: [Analytics]
+      tags:
+        - Analytics
       summary: Get station comparison data
       parameters:
         - name: period
@@ -101,6 +344,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Station comparison data
@@ -110,9 +355,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StationComparison'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsStationcomparison
   /analytics/hourly-sales:
     get:
-      tags: [Analytics]
+      tags:
+        - Analytics
       summary: Get hourly sales data
       parameters:
         - name: stationId
@@ -129,6 +400,8 @@ paths:
           schema:
             type: string
             format: date-time
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Hourly sales data
@@ -138,15 +411,43 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HourlySales'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsHourlysales
   /analytics/peak-hours:
     get:
-      tags: [Analytics]
+      tags:
+        - Analytics
       summary: Get peak hours data
       parameters:
         - name: stationId
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Peak hours data
@@ -156,9 +457,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PeakHour'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsPeakhours
   /analytics/fuel-performance:
     get:
-      tags: [Analytics]
+      tags:
+        - Analytics
       summary: Get fuel performance data
       parameters:
         - name: stationId
@@ -175,6 +502,8 @@ paths:
           schema:
             type: string
             format: date-time
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Fuel performance data
@@ -184,28 +513,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelPerformance'
-  /analytics/station-ranking:
-    get:
-      tags: [Analytics]
-      summary: Get station ranking
-      parameters:
-        - name: period
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Station ranking data
+        '400':
+          description: Error
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StationRanking'
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsFuelperformance
   /analytics/superadmin:
     get:
-      tags: [Analytics]
+      tags:
+        - Analytics
       summary: Get super admin analytics
       responses:
         '200':
@@ -214,10 +550,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuperAdminAnalytics'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsSuperadmin
+  /analytics/tenant/{id}:
+    get:
+      tags:
+        - Analytics
+      summary: Get tenant analytics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tenant analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantAnalytics'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsTenantByid
   /creditors:
     get:
-      tags: [Creditors]
+      tags:
+        - Creditors
       summary: Get all creditors
       responses:
         '200':
@@ -228,8 +632,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Creditor'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getcreditors
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
     post:
-      tags: [Creditors]
+      tags:
+        - Creditors
       summary: Create new creditor
       requestBody:
         required: true
@@ -244,9 +677,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Creditor'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postcreditors
   /creditors/{id}:
     get:
-      tags: [Creditors]
+      tags:
+        - Creditors
       summary: Get creditor by ID
       parameters:
         - name: id
@@ -261,10 +720,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Creditor'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getcreditorsByid
   /credit-payments:
     get:
-      tags: [Credit Payments]
+      tags:
+        - Credit Payments
       summary: Get payments for a creditor
       parameters:
         - name: creditorId
@@ -272,6 +756,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of payments
@@ -281,8 +767,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CreditPayment'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getcreditpayments
     post:
-      tags: [Credit Payments]
+      tags:
+        - Credit Payments
       summary: Create new payment
       requestBody:
         required: true
@@ -297,10 +809,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditPayment'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postcreditpayments
   /dashboard/sales-summary:
     get:
-      tags: [Dashboard]
+      tags:
+        - Dashboard
       summary: Get sales summary
       parameters:
         - name: range
@@ -327,9 +864,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SalesSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardSalessummary
   /dashboard/payment-methods:
     get:
-      tags: [Dashboard]
+      tags:
+        - Dashboard
       summary: Get payment method breakdown
       parameters:
         - name: stationId
@@ -344,6 +907,8 @@ paths:
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Payment method breakdown
@@ -353,9 +918,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PaymentMethodBreakdown'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardPaymentmethods
   /dashboard/fuel-breakdown:
     get:
-      tags: [Dashboard]
+      tags:
+        - Dashboard
       summary: Get fuel type breakdown
       parameters:
         - name: stationId
@@ -370,6 +961,8 @@ paths:
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Fuel type breakdown
@@ -379,9 +972,90 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelTypeBreakdown'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardFuelbreakdown
+  /dashboard/fuel-types:
+    get:
+      tags:
+        - Dashboard
+      summary: Get fuel type breakdown (deprecated)
+      deprecated: true
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: Fuel type breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelTypeBreakdown'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardFueltypes
   /dashboard/top-creditors:
     get:
-      tags: [Dashboard]
+      tags:
+        - Dashboard
       summary: Get top creditors
       parameters:
         - name: limit
@@ -393,6 +1067,8 @@ paths:
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Top creditors list
@@ -402,9 +1078,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TopCreditor'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardTopcreditors
   /dashboard/sales-trend:
     get:
-      tags: [Dashboard]
+      tags:
+        - Dashboard
       summary: Get daily sales trend
       parameters:
         - name: days
@@ -416,6 +1118,8 @@ paths:
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Daily sales trend
@@ -425,16 +1129,122 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DailySalesTrend'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardSalestrend
+  /dashboard/station-metrics:
+    get:
+      tags:
+        - Dashboard
+      summary: Get station metrics
+      responses:
+        '200':
+          description: Station metrics list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationMetric'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardStationmetrics
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+  /dashboard/system-health:
+    get:
+      tags:
+        - Dashboard
+      summary: Get system health
+      responses:
+        '200':
+          description: System health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealth'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getdashboardSystemhealth
   /fuel-deliveries:
     get:
-      tags: [Fuel Deliveries]
+      tags:
+        - Fuel Deliveries
       summary: Get fuel deliveries
       parameters:
         - name: stationId
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of fuel deliveries
@@ -444,8 +1254,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelDelivery'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfueldeliveries
     post:
-      tags: [Fuel Deliveries]
+      tags:
+        - Fuel Deliveries
       summary: Create new fuel delivery
       requestBody:
         required: true
@@ -460,10 +1296,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FuelDelivery'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postfueldeliveries
+  /fuel-deliveries/inventory:
+    get:
+      tags:
+        - Fuel Deliveries
+      summary: Get current inventory from deliveries
+      responses:
+        '200':
+          description: Delivery inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelInventory'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfueldeliveriesInventory
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
   /fuel-inventory:
     get:
-      tags: [Fuel Inventory]
+      tags:
+        - Fuel Inventory
       summary: Get fuel inventory status
       parameters:
         - name: stationId
@@ -474,7 +1377,12 @@ paths:
           in: query
           schema:
             type: string
-            enum: [petrol, diesel]
+            enum:
+              - petrol
+              - diesel
+              - premium
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Fuel inventory data
@@ -484,10 +1392,77 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelInventory'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfuelinventory
+  /fuel-inventory/summary:
+    get:
+      tags:
+        - Fuel Inventory
+      summary: Aggregate inventory totals by fuel type
+      responses:
+        '200':
+          description: Fuel inventory summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelInventorySummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfuelinventorySummary
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
   /fuel-prices:
     get:
-      tags: [Fuel Prices]
+      tags:
+        - Fuel Prices
       summary: Get all fuel prices
       responses:
         '200':
@@ -498,8 +1473,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FuelPrice'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfuelprices
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
     post:
-      tags: [Fuel Prices]
+      tags:
+        - Fuel Prices
       summary: Create new fuel price
       requestBody:
         required: true
@@ -514,9 +1518,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FuelPrice'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postfuelprices
   /fuel-prices/{id}:
     put:
-      tags: [Fuel Prices]
+      tags:
+        - Fuel Prices
       summary: Update fuel price
       parameters:
         - name: id
@@ -537,10 +1567,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FuelPrice'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putfuelpricesByid
+  /fuel-prices/validate/{stationId}:
+    get:
+      tags:
+        - Fuel Prices
+      summary: Validate fuel prices for a station
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Validation result
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfuelpricesValidateBystationId
+  /fuel-prices/missing:
+    get:
+      tags:
+        - Fuel Prices
+      summary: Get stations with missing prices
+      responses:
+        '200':
+          description: Stations missing prices
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getfuelpricesMissing
   /nozzles:
     get:
-      tags: [Nozzles]
+      tags:
+        - Nozzles
       summary: Get nozzles for a pump
       parameters:
         - name: pumpId
@@ -548,6 +1675,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of nozzles
@@ -557,8 +1686,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Nozzle'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzles
     post:
-      tags: [Nozzles]
+      tags:
+        - Nozzles
       summary: Create new nozzle
       requestBody:
         required: true
@@ -573,10 +1728,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Nozzle'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postnozzles
   /nozzles/{nozzleId}:
     get:
-      tags: [Nozzles]
+      tags:
+        - Nozzles
       summary: Get nozzle by ID
       parameters:
         - name: nozzleId
@@ -591,10 +1771,126 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Nozzle'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzlesBynozzleId
+  /nozzles/{nozzleId}/settings:
+    get:
+      tags:
+        - Nozzles
+      summary: Get nozzle settings
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Nozzle settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleSettings'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzlesBynozzleIdSettings
+    put:
+      tags:
+        - Nozzles
+      summary: Update nozzle settings
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NozzleSettings'
+      responses:
+        '200':
+          description: Nozzle settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleSettings'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putnozzlesBynozzleIdSettings
   /pumps:
     get:
-      tags: [Pumps]
+      tags:
+        - Pumps
       summary: Get pumps for a station
       parameters:
         - name: stationId
@@ -602,6 +1898,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of pumps
@@ -611,8 +1909,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Pump'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getpumps
     post:
-      tags: [Pumps]
+      tags:
+        - Pumps
       summary: Create new pump
       requestBody:
         required: true
@@ -627,9 +1951,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pump'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postpumps
   /pumps/{pumpId}:
     get:
-      tags: [Pumps]
+      tags:
+        - Pumps
       summary: Get pump by ID
       parameters:
         - name: pumpId
@@ -644,10 +1994,126 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pump'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getpumpsBypumpId
+  /pumps/{pumpId}/settings:
+    get:
+      tags:
+        - Pumps
+      summary: Get pump settings
+      parameters:
+        - name: pumpId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pump settings
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getpumpsBypumpIdSettings
+    put:
+      tags:
+        - Pumps
+      summary: Update pump settings
+      parameters:
+        - name: pumpId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Pump settings updated
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putpumpsBypumpIdSettings
   /nozzle-readings:
     get:
-      tags: [Readings]
+      tags:
+        - Readings
       summary: Get nozzle readings
       parameters:
         - name: nozzleId
@@ -659,6 +2125,8 @@ paths:
           in: query
           schema:
             type: integer
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of nozzle readings
@@ -668,8 +2136,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NozzleReading'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzlereadings
     post:
-      tags: [Readings]
+      tags:
+        - Readings
       summary: Create new reading
       requestBody:
         required: true
@@ -684,10 +2178,165 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NozzleReading'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postnozzlereadings
+  /nozzle-readings/can-create/{nozzleId}:
+    get:
+      tags:
+        - Readings
+      summary: Check if a new reading can be created
+      parameters:
+        - name: nozzleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Creation allowed
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzlereadingsCancreateBynozzleId
+  /nozzle-readings/{id}:
+    get:
+      tags:
+        - Readings
+      summary: Get nozzle reading by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Nozzle reading
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleReading'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getnozzlereadingsByid
+    put:
+      tags:
+        - Readings
+      summary: Update nozzle reading
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReadingRequest'
+      responses:
+        '200':
+          description: Nozzle reading updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NozzleReading'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putnozzlereadingsByid
   /nozzle-readings/{id}/void:
     post:
-      tags: [Readings]
+      tags:
+        - Readings
       summary: Void nozzle reading
       parameters:
         - name: id
@@ -713,16 +2362,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NozzleReading'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postnozzlereadingsByidVoid
   /reconciliation:
     get:
-      tags: [Reconciliation]
+      tags:
+        - Reconciliation
       summary: Get reconciliation history
       parameters:
         - name: stationId
           in: query
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Reconciliation history
@@ -732,8 +2408,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReconciliationRecord'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliation
     post:
-      tags: [Reconciliation]
+      tags:
+        - Reconciliation
       summary: Create reconciliation record
       requestBody:
         required: true
@@ -748,9 +2450,122 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReconciliationRecord'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postreconciliation
+  /reconciliation/{stationId}/{date}:
+    get:
+      tags:
+        - Reconciliation
+      summary: Get reconciliation summary for station and date
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationRecord'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationBystationIdBydate
+  /reconciliation/{id}/approve:
+    post:
+      tags:
+        - Reconciliation
+      summary: Approve reconciliation record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation approved
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postreconciliationByidApprove
   /reconciliation/daily-summary:
     get:
-      tags: [Reconciliation]
+      tags:
+        - Reconciliation
       summary: Get daily readings summary
       parameters:
         - name: stationId
@@ -763,6 +2578,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: Daily readings summary
@@ -772,10 +2589,224 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DailyReadingSummary'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationDailysummary
+  /reconciliation/differences:
+    get:
+      tags:
+        - Reconciliation
+      summary: List reconciliation differences
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - match
+              - over
+              - short
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: Differences list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReconciliationDifference'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationDifferences
+  /reconciliation/differences/summary:
+    get:
+      tags:
+        - Reconciliation
+      summary: Summary of reconciliation discrepancies
+      responses:
+        '200':
+          description: Discrepancy summary
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationDifferencesSummary
+  /reconciliation/differences/{id}:
+    get:
+      tags:
+        - Reconciliation
+      summary: Get reconciliation difference by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation difference detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationDifference'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationDifferencesByid
+  /reconciliation/{id}:
+    get:
+      tags:
+        - Reconciliation
+      summary: Get reconciliation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reconciliation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationRecord'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreconciliationByid
   /reports/sales:
     get:
-      tags: [Reports]
+      tags:
+        - Reports
       summary: Get sales report
       parameters:
         - name: startDate
@@ -812,9 +2843,35 @@ paths:
                       $ref: '#/components/schemas/SalesReportData'
                   summary:
                     $ref: '#/components/schemas/SalesReportSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreportsSales
   /reports/sales/export:
     get:
-      tags: [Reports]
+      tags:
+        - Reports
       summary: Export sales report as CSV
       parameters:
         - name: startDate
@@ -845,9 +2902,35 @@ paths:
               schema:
                 type: string
                 format: binary
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreportsSalesExport
   /reports/export:
     post:
-      tags: [Reports]
+      tags:
+        - Reports
       summary: Export report
       requestBody:
         required: true
@@ -863,9 +2946,35 @@ paths:
               schema:
                 type: string
                 format: binary
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postreportsExport
   /reports/schedule:
     post:
-      tags: [Reports]
+      tags:
+        - Reports
       summary: Schedule report
       requestBody:
         required: true
@@ -876,10 +2985,116 @@ paths:
       responses:
         '200':
           description: Report scheduled
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postreportsSchedule
+  /reports/financial/export:
+    get:
+      tags:
+        - Reports
+      summary: Export financial report
+      responses:
+        '200':
+          description: Financial CSV
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreportsFinancialExport
+  /reports/daily-sales:
+    get:
+      tags:
+        - Reports
+      summary: Get consolidated daily sales
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Daily sales report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailySalesReport'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getreportsDailysales
   /sales:
     get:
-      tags: [Sales]
+      tags:
+        - Sales
       summary: Get sales with filters
       parameters:
         - name: stationId
@@ -910,16 +3125,98 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Sale'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getsales
+  /sales/analytics:
+    get:
+      tags:
+        - Sales
+      summary: Get sales analytics
+      parameters:
+        - name: stationId
+          in: query
+          schema:
+            type: string
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum:
+              - station
+              - pump
+            default: station
+      responses:
+        '200':
+          description: Sales analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analytics:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getsalesAnalytics
   /stations:
     get:
-      tags: [Stations]
+      tags:
+        - Stations
       summary: Get all stations
       parameters:
         - name: includeMetrics
           in: query
           schema:
             type: boolean
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         '200':
           description: List of stations
@@ -929,9 +3226,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Station'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstations
   /stations/{stationId}:
     get:
-      tags: [Stations]
+      tags:
+        - Stations
       summary: Get station by ID
       parameters:
         - name: stationId
@@ -946,10 +3269,278 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Station'
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsBystationId
+  /stations/compare:
+    get:
+      tags:
+        - Stations
+      summary: Compare stations
+      parameters:
+        - name: stationIds
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: monthly
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: Comparison data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationComparison'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsCompare
+  /stations/ranking:
+    get:
+      tags:
+        - Stations
+      summary: Get station ranking
+      parameters:
+        - name: metric
+          in: query
+          schema:
+            type: string
+            default: sales
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: monthly
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: Station ranking
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationRanking'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsRanking
+  /stations/{stationId}/metrics:
+    get:
+      tags:
+        - Stations
+      summary: Get station metrics
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: today
+      responses:
+        '200':
+          description: Station metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMetrics'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsBystationIdMetrics
+  /stations/{stationId}/performance:
+    get:
+      tags:
+        - Stations
+      summary: Get station performance
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: range
+          in: query
+          schema:
+            type: string
+            default: monthly
+      responses:
+        '200':
+          description: Station performance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationPerformance'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsBystationIdPerformance
+  /stations/{stationId}/efficiency:
+    get:
+      tags:
+        - Stations
+      summary: Get station efficiency
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Station efficiency
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationEfficiency'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getstationsBystationIdEfficiency
   /analytics/dashboard:
     get:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Get platform dashboard metrics
       responses:
         '200':
@@ -958,9 +3549,109 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuperAdminSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getanalyticsDashboard
+  /admin/dashboard:
+    get:
+      tags:
+        - Super Admin
+      summary: Get platform dashboard metrics
+      responses:
+        '200':
+          description: Platform metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuperAdminSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminDashboard
+  /admin/analytics:
+    get:
+      tags:
+        - Super Admin
+      summary: Get platform analytics overview
+      responses:
+        '200':
+          description: Platform analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuperAdminSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminAnalytics
   /admin/plans:
     get:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Get all plans
       responses:
         '200':
@@ -971,8 +3662,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Plan'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminPlans
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
     post:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Create plan
       requestBody:
         required: true
@@ -987,9 +3707,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Plan'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postadminPlans
   /admin/plans/{planId}:
     put:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Update plan
       parameters:
         - name: planId
@@ -1010,8 +3756,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Plan'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putadminPlansByplanId
     delete:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Delete plan
       parameters:
         - name: planId
@@ -1022,9 +3794,152 @@ paths:
       responses:
         '200':
           description: Plan deleted
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: deleteadminPlansByplanId
+  /admin/tenants/summary:
+    get:
+      tags:
+        - Super Admin
+      summary: Get tenant summary metrics
+      responses:
+        '200':
+          description: Tenant summary data
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminTenantsSummary
+  /tenants:
+    get:
+      tags:
+        - Super Admin
+      summary: List tenants
+      responses:
+        '200':
+          description: List of tenants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: gettenants
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+    post:
+      tags:
+        - Super Admin
+      summary: Create tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: posttenants
   /admin/tenants:
     get:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Get all tenants
       responses:
         '200':
@@ -1035,8 +3950,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminTenants
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
     post:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Create tenant with admin
       requestBody:
         required: true
@@ -1051,9 +3995,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postadminTenants
   /admin/tenants/{tenantId}/status:
     patch:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Update tenant status
       parameters:
         - name: tenantId
@@ -1070,7 +4040,10 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: [active, suspended, cancelled]
+                  enum:
+                    - active
+                    - suspended
+                    - cancelled
       responses:
         '200':
           description: Tenant status updated
@@ -1078,9 +4051,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: patchadminTenantsBytenantIdStatus
   /admin/tenants/{tenantId}:
     delete:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Delete tenant
       parameters:
         - name: tenantId
@@ -1091,9 +4090,178 @@ paths:
       responses:
         '200':
           description: Tenant deleted
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: deleteadminTenantsBytenantId
+  /admin/tenants/{tenantId}/settings:
+    get:
+      tags:
+        - Super Admin
+      summary: List tenant settings
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Settings list
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminTenantsBytenantIdSettings
+  /admin/tenants/{tenantId}/settings/{key}:
+    get:
+      tags:
+        - Super Admin
+      summary: Get tenant setting
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Setting details
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminTenantsBytenantIdSettingsBykey
+    put:
+      tags:
+        - Super Admin
+      summary: Update tenant setting
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+      responses:
+        '200':
+          description: Setting updated
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putadminTenantsBytenantIdSettingsBykey
   /admin/users:
     get:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Get admin users
       responses:
         '200':
@@ -1104,8 +4272,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AdminUser'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getadminUsers
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
     post:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Create admin user
       requestBody:
         required: true
@@ -1120,9 +4317,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminUser'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postadminUsers
   /admin/users/{userId}:
     put:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Update admin user
       parameters:
         - name: userId
@@ -1148,8 +4371,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminUser'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putadminUsersByuserId
     delete:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Delete admin user
       parameters:
         - name: userId
@@ -1160,9 +4409,35 @@ paths:
       responses:
         '200':
           description: Admin user deleted
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: deleteadminUsersByuserId
   /admin/users/{userId}/reset-password:
     post:
-      tags: [Super Admin]
+      tags:
+        - Super Admin
       summary: Reset admin user password
       parameters:
         - name: userId
@@ -1182,10 +4457,35 @@ paths:
       responses:
         '200':
           description: Password reset
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postadminUsersByuserIdResetpassword
   /users:
     get:
-      tags: [Users]
+      tags:
+        - Users
       summary: Get users for current tenant
       responses:
         '200':
@@ -1199,8 +4499,34 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getusers
     post:
-      tags: [Users]
+      tags:
+        - Users
       summary: Create new user
       requestBody:
         required: true
@@ -1215,9 +4541,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postusers
   /users/{userId}:
     get:
-      tags: [Users]
+      tags:
+        - Users
       summary: Get user by ID
       parameters:
         - name: userId
@@ -1232,8 +4584,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getusersByuserId
     put:
-      tags: [Users]
+      tags:
+        - Users
       summary: Update user
       parameters:
         - name: userId
@@ -1254,8 +4632,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putusersByuserId
     delete:
-      tags: [Users]
+      tags:
+        - Users
       summary: Delete user
       parameters:
         - name: userId
@@ -1266,9 +4670,35 @@ paths:
       responses:
         '200':
           description: User deleted
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: deleteusersByuserId
   /users/{userId}/change-password:
     post:
-      tags: [Users]
+      tags:
+        - Users
       summary: Change user password
       parameters:
         - name: userId
@@ -1285,9 +4715,35 @@ paths:
       responses:
         '200':
           description: Password changed
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postusersByuserIdChangepassword
   /users/{userId}/reset-password:
     post:
-      tags: [Users]
+      tags:
+        - Users
       summary: Reset user password
       parameters:
         - name: userId
@@ -1304,7 +4760,600 @@ paths:
       responses:
         '200':
           description: Password reset
-
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postusersByuserIdResetpassword
+  /admin/auth/login:
+    post:
+      tags:
+        - Admin Auth
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postadminAuthLogin
+      security: []
+  /tenant/settings:
+    get:
+      tags:
+        - Settings
+      summary: Get tenant settings
+      responses:
+        '200':
+          description: Settings list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: gettenantSettings
+    post:
+      tags:
+        - Settings
+      summary: Update tenant settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Settings updated
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: posttenantSettings
+  /inventory:
+    get:
+      tags:
+        - Inventory
+      summary: Get fuel inventory
+      parameters:
+        - name: stationId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inventory details
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getinventory
+  /inventory/update:
+    post:
+      tags:
+        - Inventory
+      summary: Update inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Inventory updated
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postinventoryUpdate
+  /inventory/alerts:
+    get:
+      tags:
+        - Inventory
+      summary: Get inventory alerts
+      parameters:
+        - name: stationId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: unreadOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Alerts list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getinventoryAlerts
+  /attendant/stations:
+    get:
+      tags:
+        - Attendant
+      summary: List stations for attendant
+      responses:
+        '200':
+          description: Station list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantStations
+  /attendant/pumps:
+    get:
+      tags:
+        - Attendant
+      summary: List pumps for attendant
+      parameters:
+        - name: stationId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pump list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantPumps
+  /attendant/nozzles:
+    get:
+      tags:
+        - Attendant
+      summary: List nozzles for attendant
+      parameters:
+        - name: pumpId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Nozzle list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantNozzles
+  /attendant/creditors:
+    get:
+      tags:
+        - Attendant
+      summary: List creditors for attendant
+      responses:
+        '200':
+          description: Creditor list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantCreditors
+  /attendant/cash-report:
+    post:
+      tags:
+        - Attendant
+      summary: Create cash report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Report created
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: postattendantCashreport
+  /attendant/cash-reports:
+    get:
+      tags:
+        - Attendant
+      summary: List cash reports
+      responses:
+        '200':
+          description: Report list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantCashreports
+  /attendant/alerts:
+    get:
+      tags:
+        - Attendant
+      summary: List attendant alerts
+      parameters:
+        - name: stationId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: unreadOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Alert list
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getattendantAlerts
+  /attendant/alerts/{id}/acknowledge:
+    put:
+      tags:
+        - Attendant
+      summary: Acknowledge alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alert acknowledged
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: putattendantAlertsByidAcknowledge
+  /setup-status:
+    get:
+      tags:
+        - Setup
+      summary: Get setup status
+      responses:
+        '200':
+          description: Setup status
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: getsetupstatus
 components:
   securitySchemes:
     bearerAuth:
@@ -1315,11 +5364,12 @@ components:
       type: apiKey
       in: header
       name: x-tenant-id
-
   schemas:
     LoginRequest:
       type: object
-      required: [email, password]
+      required:
+        - email
+        - password
       properties:
         email:
           type: string
@@ -1342,7 +5392,11 @@ components:
               type: string
             role:
               type: string
-              enum: [superadmin, owner, manager, attendant]
+              enum:
+                - superadmin
+                - owner
+                - manager
+                - attendant
             tenantId:
               type: string
             tenantName:
@@ -1354,10 +5408,18 @@ components:
           type: string
         type:
           type: string
-          enum: [inventory, credit, maintenance, sales, system]
+          enum:
+            - inventory
+            - credit
+            - maintenance
+            - sales
+            - system
         severity:
           type: string
-          enum: [info, warning, critical]
+          enum:
+            - info
+            - warning
+            - critical
         title:
           type: string
         message:
@@ -1440,18 +5502,102 @@ components:
           type: number
         rank:
           type: number
+    StationMetrics:
+      type: object
+      properties:
+        totalSales:
+          type: number
+        totalVolume:
+          type: number
+        transactionCount:
+          type: integer
+    StationPerformance:
+      type: object
+      properties:
+        totalSales:
+          type: number
+        totalVolume:
+          type: number
+        transactionCount:
+          type: integer
+        previousSales:
+          type: number
+        previousVolume:
+          type: number
+        growth:
+          type: number
+    StationEfficiency:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        efficiency:
+          type: number
+    TenantAnalytics:
+      type: object
+      properties:
+        totalStations:
+          type: number
+        totalSales:
+          type: number
+    NozzleSettings:
+      type: object
     SuperAdminAnalytics:
       type: object
       properties:
+        overview:
+          type: object
+          properties:
+            totalTenants:
+              type: number
+            totalRevenue:
+              type: number
+            totalStations:
+              type: number
+            growth:
+              type: number
+        tenantMetrics:
+          type: object
+          properties:
+            activeTenants:
+              type: number
+            trialTenants:
+              type: number
+            suspendedTenants:
+              type: number
+            monthlyGrowth:
+              type: number
+        revenueMetrics:
+          type: object
+          properties:
+            mrr:
+              type: number
+            arr:
+              type: number
+            churnRate:
+              type: number
+            averageRevenuePerTenant:
+              type: number
+        usageMetrics:
+          type: object
+          properties:
+            totalUsers:
+              type: number
+            totalStations:
+              type: number
+            totalTransactions:
+              type: number
+            averageStationsPerTenant:
+              type: number
         totalTenants:
           type: number
         activeTenants:
           type: number
-        totalStations:
+        totalRevenue:
           type: number
         salesVolume:
-          type: number
-        totalRevenue:
           type: number
         monthlyGrowth:
           type: array
@@ -1477,6 +5623,29 @@ components:
                 type: number
               revenue:
                 type: number
+        tenantCount:
+          type: number
+        activeTenantCount:
+          type: number
+        totalUsers:
+          type: number
+        signupsThisMonth:
+          type: number
+        tenantsByPlan:
+          type: array
+          items:
+            type: object
+            properties:
+              planName:
+                type: string
+              count:
+                type: number
+              percentage:
+                type: number
+        recentTenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
     Creditor:
       type: object
       properties:
@@ -1490,7 +5659,10 @@ components:
           type: string
         status:
           type: string
-          enum: [active, inactive]
+          enum:
+            - active
+            - inactive
+            - maintenance
         createdAt:
           type: string
           format: date-time
@@ -1502,7 +5674,8 @@ components:
           type: number
     CreateCreditorRequest:
       type: object
-      required: [partyName]
+      required:
+        - partyName
       properties:
         partyName:
           type: string
@@ -1519,7 +5692,13 @@ components:
           type: number
         paymentMethod:
           type: string
-          enum: [cash, bank_transfer, check]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         referenceNumber:
           type: string
         notes:
@@ -1529,7 +5708,10 @@ components:
           format: date-time
     CreatePaymentRequest:
       type: object
-      required: [creditorId, amount, paymentMethod]
+      required:
+        - creditorId
+        - amount
+        - paymentMethod
       properties:
         creditorId:
           type: string
@@ -1537,7 +5719,13 @@ components:
           type: number
         paymentMethod:
           type: string
-          enum: [cash, bank_transfer, check]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         referenceNumber:
           type: string
         notes:
@@ -1606,7 +5794,10 @@ components:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         volume:
           type: number
         deliveryDate:
@@ -1619,13 +5810,20 @@ components:
           format: date-time
     CreateFuelDeliveryRequest:
       type: object
-      required: [stationId, fuelType, volume, deliveryDate]
+      required:
+        - stationId
+        - fuelType
+        - volume
+        - deliveryDate
       properties:
         stationId:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         volume:
           type: number
         deliveryDate:
@@ -1644,9 +5842,20 @@ components:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         capacity:
           type: number
+        minimumLevel:
+          type: number
+        status:
+          type: string
+          enum:
+            - normal
+            - low
+            - critical
         currentVolume:
           type: number
         lastUpdated:
@@ -1661,9 +5870,16 @@ components:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         price:
           type: number
+        stationName:
+          type: string
+        isActive:
+          type: boolean
         validFrom:
           type: string
           format: date-time
@@ -1677,13 +5893,19 @@ components:
               type: string
     CreateFuelPriceRequest:
       type: object
-      required: [stationId, fuelType, price]
+      required:
+        - stationId
+        - fuelType
+        - price
       properties:
         stationId:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         price:
           type: number
         validFrom:
@@ -1696,20 +5918,31 @@ components:
           type: string
         pumpId:
           type: string
+        pumpName:
+          type: string
         nozzleNumber:
           type: number
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         status:
           type: string
-          enum: [active, inactive, maintenance]
+          enum:
+            - active
+            - inactive
+            - maintenance
         createdAt:
           type: string
           format: date-time
     CreateNozzleRequest:
       type: object
-      required: [pumpId, nozzleNumber, fuelType]
+      required:
+        - pumpId
+        - nozzleNumber
+        - fuelType
       properties:
         pumpId:
           type: string
@@ -1717,7 +5950,10 @@ components:
           type: number
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
     Pump:
       type: object
       properties:
@@ -1731,7 +5967,10 @@ components:
           type: string
         status:
           type: string
-          enum: [active, inactive, maintenance]
+          enum:
+            - active
+            - inactive
+            - maintenance
         createdAt:
           type: string
           format: date-time
@@ -1739,7 +5978,10 @@ components:
           type: number
     CreatePumpRequest:
       type: object
-      required: [stationId, name, serialNumber]
+      required:
+        - stationId
+        - name
+        - serialNumber
       properties:
         stationId:
           type: string
@@ -1761,15 +6003,41 @@ components:
           format: date-time
         paymentMethod:
           type: string
-          enum: [cash, card, upi, credit]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         creditorId:
+          type: string
+        nozzleNumber:
+          type: number
+        previousReading:
+          type: number
+        volume:
+          type: number
+        amount:
+          type: number
+        pricePerLitre:
+          type: number
+        fuelType:
+          type: string
+        stationName:
+          type: string
+        attendantName:
           type: string
         createdAt:
           type: string
           format: date-time
     CreateReadingRequest:
       type: object
-      required: [nozzleId, reading, recordedAt, paymentMethod]
+      required:
+        - nozzleId
+        - reading
+        - recordedAt
+        - paymentMethod
       properties:
         nozzleId:
           type: string
@@ -1780,7 +6048,13 @@ components:
           format: date-time
         paymentMethod:
           type: string
-          enum: [cash, card, upi, credit]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         creditorId:
           type: string
     ReconciliationRecord:
@@ -1812,7 +6086,10 @@ components:
               type: string
     CreateReconciliationRequest:
       type: object
-      required: [stationId, date, managerConfirmation]
+      required:
+        - stationId
+        - date
+        - managerConfirmation
       properties:
         stationId:
           type: string
@@ -1854,7 +6131,10 @@ components:
           type: string
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         volume:
           type: number
         pricePerLitre:
@@ -1863,7 +6143,13 @@ components:
           type: number
         paymentMethod:
           type: string
-          enum: [cash, card, upi, credit]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         attendant:
           type: string
         stationName:
@@ -1912,9 +6198,60 @@ components:
               type: number
             credit:
               type: number
+    NozzleSales:
+      type: object
+      properties:
+        nozzleId:
+          type: string
+        nozzleNumber:
+          type: number
+        fuelType:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        readingsCount:
+          type: integer
+    PumpSales:
+      type: object
+      properties:
+        pumpId:
+          type: string
+        pumpName:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        nozzles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NozzleSales'
+    StationSales:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        totalVolume:
+          type: number
+        totalSales:
+          type: number
+        pumps:
+          type: array
+          items:
+            $ref: '#/components/schemas/PumpSales'
+    DailySalesReport:
+      type: array
+      items:
+        $ref: '#/components/schemas/StationSales'
     ExportReportRequest:
       type: object
-      required: [type, format]
+      required:
+        - type
+        - format
       properties:
         type:
           type: string
@@ -1933,7 +6270,9 @@ components:
               format: date-time
     ScheduleReportRequest:
       type: object
-      required: [type, frequency]
+      required:
+        - type
+        - frequency
       properties:
         type:
           type: string
@@ -1954,19 +6293,30 @@ components:
           type: number
         fuelType:
           type: string
-          enum: [petrol, diesel, premium]
+          enum:
+            - petrol
+            - diesel
+            - premium
         fuelPrice:
           type: number
         amount:
           type: number
         paymentMethod:
           type: string
-          enum: [cash, card, upi, credit]
+          enum:
+            - cash
+            - card
+            - upi
+            - credit
+            - bank_transfer
+            - check
         creditorId:
           type: string
         status:
           type: string
-          enum: [draft, posted]
+          enum:
+            - draft
+            - posted
         recordedAt:
           type: string
           format: date-time
@@ -1996,7 +6346,10 @@ components:
           type: string
         status:
           type: string
-          enum: [active, inactive, maintenance]
+          enum:
+            - active
+            - inactive
+            - maintenance
         manager:
           type: string
         attendantCount:
@@ -2037,7 +6390,10 @@ components:
                 format: date-time
               status:
                 type: string
-                enum: [active, suspended, cancelled]
+                enum:
+                  - active
+                  - suspended
+                  - cancelled
         tenantsByPlan:
           type: array
           items:
@@ -2072,7 +6428,14 @@ components:
             type: string
     CreatePlanRequest:
       type: object
-      required: [name, maxStations, maxPumpsPerStation, maxNozzlesPerPump, priceMonthly, priceYearly, features]
+      required:
+        - name
+        - maxStations
+        - maxPumpsPerStation
+        - maxNozzlesPerPump
+        - priceMonthly
+        - priceYearly
+        - features
       properties:
         name:
           type: string
@@ -2101,7 +6464,8 @@ components:
           type: string
         role:
           type: string
-          enum: [superadmin]
+          enum:
+            - superadmin
         createdAt:
           type: string
           format: date-time
@@ -2110,7 +6474,10 @@ components:
           format: date-time
     CreateAdminUserRequest:
       type: object
-      required: [name, email, password]
+      required:
+        - name
+        - email
+        - password
       properties:
         name:
           type: string
@@ -2131,7 +6498,10 @@ components:
           type: string
         status:
           type: string
-          enum: [active, suspended, cancelled]
+          enum:
+            - active
+            - suspended
+            - cancelled
         createdAt:
           type: string
           format: date-time
@@ -2141,7 +6511,9 @@ components:
           type: number
     CreateTenantRequest:
       type: object
-      required: [name, planId]
+      required:
+        - name
+        - planId
       properties:
         name:
           type: string
@@ -2162,7 +6534,11 @@ components:
           type: string
         role:
           type: string
-          enum: [superadmin, owner, manager, attendant]
+          enum:
+            - superadmin
+            - owner
+            - manager
+            - attendant
         tenantId:
           type: string
         tenantName:
@@ -2176,7 +6552,11 @@ components:
           format: date-time
     CreateUserRequest:
       type: object
-      required: [name, email, password, role]
+      required:
+        - name
+        - email
+        - password
+        - role
       properties:
         name:
           type: string
@@ -2186,7 +6566,9 @@ components:
           type: string
         role:
           type: string
-          enum: [manager, attendant]
+          enum:
+            - manager
+            - attendant
         stationId:
           type: string
     UpdateUserRequest:
@@ -2196,12 +6578,16 @@ components:
           type: string
         role:
           type: string
-          enum: [manager, attendant]
+          enum:
+            - manager
+            - attendant
         stationId:
           type: string
     ChangePasswordRequest:
       type: object
-      required: [currentPassword, newPassword]
+      required:
+        - currentPassword
+        - newPassword
       properties:
         currentPassword:
           type: string
@@ -2209,7 +6595,117 @@ components:
           type: string
     ResetPasswordRequest:
       type: object
-      required: [newPassword]
+      required:
+        - newPassword
       properties:
         newPassword:
           type: string
+    CreateAlertRequest:
+      type: object
+      required:
+        - alertType
+        - message
+      properties:
+        stationId:
+          type: string
+        alertType:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum:
+            - info
+            - warning
+            - critical
+    FuelInventorySummary:
+      type: object
+      properties:
+        fuelType:
+          type: string
+        totalVolume:
+          type: number
+        totalCapacity:
+          type: number
+    StationMetric:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        todaySales:
+          type: number
+        monthlySales:
+          type: number
+        salesGrowth:
+          type: number
+        activePumps:
+          type: integer
+        totalPumps:
+          type: integer
+        lastActivity:
+          type: string
+          format: date-time
+        efficiency:
+          type: number
+    SystemHealth:
+      type: object
+      properties:
+        uptime:
+          type: number
+        cpuUsage:
+          type: number
+        memoryUsage:
+          type: number
+        dbHealthy:
+          type: boolean
+    ReconciliationDifference:
+      type: object
+      properties:
+        id:
+          type: string
+        stationId:
+          type: string
+        stationName:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+            - match
+            - over
+            - short
+        amount:
+          type: number
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+      description: Number of items to return
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of items to skip

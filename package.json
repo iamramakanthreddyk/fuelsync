@@ -5,7 +5,8 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "prestart": "npm run build",
+    "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
     "migrate:up": "node scripts/migrate.js up",
     "migrate:down": "node scripts/migrate.js down",
@@ -28,7 +29,7 @@
     "azure-migrate-settings": "node scripts/apply-tenant-settings-kv-azure.js",
     "test:docker": "ts-node scripts/start-db-and-test.ts",
     "test:unit": "jest -c jest.config.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && node scripts/ensure-db-init.js",
     "fix-null-amounts": "node scripts/fix-null-amounts.js"
   },
   "dependencies": {

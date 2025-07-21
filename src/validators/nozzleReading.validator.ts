@@ -19,6 +19,7 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
   if (!nozzleId || typeof nozzleId !== 'string') {
     throw new Error('nozzleId required');
   }
+  
   const readingNum = parseFloat(reading);
   if (isNaN(readingNum)) {
     throw new Error('reading must be a number');
@@ -45,17 +46,28 @@ export function validateCreateNozzleReading(data: any): NozzleReadingInput {
 
 export interface ReadingQueryParsed {
   nozzleId?: string;
+  stationId?: string;
   startDate?: Date;
   endDate?: Date;
   limit?: number;
 }
 
 export function parseReadingQuery(query: any): ReadingQueryParsed {
-  const { nozzleId, startDate, endDate, from, to, limit } = query || {};
+  const { nozzleId, startDate, endDate, from, to, limit, stationId } = query || {};
   const result: ReadingQueryParsed = {};
   
-  if (nozzleId && typeof nozzleId === 'string') {
+  // Check if nozzleId is a string
+  if (nozzleId && typeof nozzleId === 'string' && nozzleId.trim() !== '') {
     result.nozzleId = nozzleId;
+  }
+  
+  // Check if stationId is a string
+  if (stationId && typeof stationId === 'string' && stationId.trim() !== '') {
+    result.stationId = stationId;
+  } else if (stationId && typeof stationId === 'object') {
+    // Handle case where stationId is an object
+    console.warn(`[READING-VALIDATOR] stationId is an object, not a string: ${JSON.stringify(stationId)}`);
+    throw new Error('Invalid stationId format: must be a string');
   }
   
   // Handle both startDate/endDate and from/to formats
@@ -72,7 +84,7 @@ export function parseReadingQuery(query: any): ReadingQueryParsed {
   }
 
   if (limit) {
-    const n = parseInt(limit, 10);
+    const n = parseInt(limit as string, 10);
     if (!isNaN(n) && n > 0) result.limit = n;
   }
 

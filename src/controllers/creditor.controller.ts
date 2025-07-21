@@ -40,15 +40,32 @@ export function createCreditorHandlers(db: Pool) {
       }
     },
     list: async (req: Request, res: Response) => {
-      const tenantId = req.user?.tenantId;
-      if (!tenantId) {
-        return errorResponse(res, 400, 'Missing tenant context');
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+        
+        // Get stationId from query params if provided and validate it's a string
+        let stationId: string | undefined = undefined;
+        if (req.query.stationId) {
+          if (typeof req.query.stationId === 'string') {
+            stationId = req.query.stationId;
+          } else {
+            console.warn(`Invalid stationId type: ${typeof req.query.stationId}. Expected string.`);
+            return errorResponse(res, 400, 'Invalid stationId format');
+          }
+        }
+        
+        const creditors = await listCreditors(db, tenantId, stationId);
+        if (creditors.length === 0) {
+          return successResponse(res, []);
+        }
+        successResponse(res, { creditors });
+      } catch (err: any) {
+        console.error('[CREDITOR-CONTROLLER] Error listing creditors:', err);
+        return errorResponse(res, 500, err.message || 'Failed to list creditors');
       }
-      const creditors = await listCreditors(db, tenantId);
-      if (creditors.length === 0) {
-        return successResponse(res, []);
-      }
-      successResponse(res, { creditors });
     },
 
     get: async (req: Request, res: Response) => {
@@ -58,9 +75,16 @@ export function createCreditorHandlers(db: Pool) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const creditor = await prisma.creditor.findFirst({
-          where: { id: req.params.id, tenant_id: tenantId }
+          where: { id: req.params.id, tenant_id: tenantId },
+          include: {
+            station: true // Include station details
+          }
         });
         if (!creditor) return errorResponse(res, 404, 'Creditor not found');
+        
+        // Get station details if available
+        const stationName = creditor.station ? creditor.station.name : null;
+        
         successResponse(res, {
           id: creditor.id,
           name: creditor.party_name,
@@ -69,6 +93,8 @@ export function createCreditorHandlers(db: Pool) {
           address: creditor.address,
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
+          stationId: creditor.station_id,
+          stationName: stationName,
           createdAt: creditor.created_at
         });
       } catch (err: any) {

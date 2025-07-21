@@ -4,75 +4,64 @@ import { login, loginSuperAdmin } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { JWT_SECRET, REFRESH_TOKEN_EXPIRES_IN } from '../constants/auth';
+import { testConnection } from '../utils/db';
 
 export function createAuthController(db: Pool) {
   return {
     login: async (req: Request, res: Response) => {
       const { email, password } = req.body as { email: string; password: string };
-      const tenantId = req.headers['x-tenant-id'] as string | undefined;
-      
-      console.log(`[AUTH] Login attempt for email: ${email}, tenantId: ${tenantId || 'none'}`);
-      
+
+      console.log(`[AUTH] Login attempt for email: ${email}`);
+
       try {
-        // Check if user exists before attempting login
-        let userExists = false;
-        let foundTenantId = tenantId;
-        
-        // If no tenant ID is provided, try to find the tenant for this email
-        if (!tenantId) {
-      const adminCheck = await db.query(
-        'SELECT id, email, role FROM public.admin_users WHERE email = $1',
-        [email]
-      );
-          
-          if (adminCheck.rows.length > 0) {
-            userExists = true;
-            foundTenantId = undefined; // Admin users don't have tenant ID
-          } else {
-            // Not an admin user, try to find in tenant schemas
-            
-            const res = await db.query(
-              `SELECT u.tenant_id, t.name FROM public.users u JOIN public.tenants t ON u.tenant_id = t.id WHERE u.email = $1`,
-              [email]
-            );
-            if (res.rows.length === 1) {
-              userExists = true;
-              foundTenantId = res.rows[0].tenant_id;
-            } else if (res.rows.length > 1) {
-              console.log('[AUTH] Multiple tenants found for user, tenant header required');
-            }
-          }
+        const dbCheck = await testConnection();
+        if (dbCheck.success) {
+          console.log('[AUTH] Database connection verified', {
+            time: dbCheck.time,
+            database: dbCheck.database,
+            pool: dbCheck.poolStats,
+          });
         } else {
-          // Tenant ID was provided, check if it exists
-          const tenantCheck = await db.query(
-            'SELECT id, name FROM public.tenants WHERE id = $1',
-            [tenantId]
+          console.error('[AUTH] Database connection test failed', dbCheck);
+        }
+      } catch (connErr) {
+        console.error('[AUTH] Error testing database connection', connErr);
+      }
+
+      try {
+        // Determine if this is an admin user
+        const adminCheck = await db.query(
+          'SELECT id FROM public.admin_users WHERE email = $1',
+          [email]
+        );
+
+        let result;
+
+        if (adminCheck.rows.length > 0) {
+          // Super admin login
+          result = await loginSuperAdmin(db, email, password);
+        } else {
+          // Look up tenant by email
+          const userRes = await db.query(
+            'SELECT tenant_id FROM public.users WHERE email = $1',
+            [email]
           );
 
-          if (tenantCheck.rows.length === 0) {
-            console.log(`[AUTH] Tenant not found: ${tenantId}`);
-            return errorResponse(res, 401, 'Tenant not found');
+          if (userRes.rows.length === 0) {
+            console.log(`[AUTH] User not found: ${email}`);
+            return errorResponse(res, 401, `User not found: ${email}`);
           }
 
-          // Check if user exists in tenant schema
-          const tenantUuid = tenantCheck.rows[0].id;
-          const userCheck = await db.query(
-            'SELECT id FROM public.users WHERE tenant_id = $1 AND email = $2',
-            [tenantUuid, email]
-          );
-
-          userExists = userCheck.rows.length > 0;
+          const tenantUuid = userRes.rows[0].tenant_id;
+          result = await login(db, email, password, tenantUuid);
         }
 
-        if (!userExists) {
-          console.log(`[AUTH] User not found: ${email} for tenant: ${foundTenantId}`);
-          return errorResponse(res, 401, `User not found: ${email}`);
+        if (!result) {
+          console.log(`[AUTH] Login failed for email: ${email} (password mismatch)`);
+          return errorResponse(res, 401, 'Invalid password');
         }
-        
-        // Attempt login with the found tenant ID
-        const result = foundTenantId ? 
-          await login(db, email, password, foundTenantId) : 
-          await login(db, email, password);
+
+        return successResponse(res, result);
         
         if (!result) {
           console.log(`[AUTH] Login failed for email: ${email} (password mismatch)`);
