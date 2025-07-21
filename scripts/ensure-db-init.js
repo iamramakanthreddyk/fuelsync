@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const { execSync } = require('child_process');
 
-// Load env vars if local
+// Load env vars from .env if available
 try {
   require('dotenv').config();
 } catch (e) {
@@ -15,15 +15,17 @@ async function ensureDbInit() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   });
 
   try {
-    // Check if a core table exists
-    const result = await pool.query(
-      "SELECT to_regclass('public.users') as exists"
-    );
+    // Confirm DB connection
+    const client = await pool.connect();
+    console.log('[DB] Successfully connected');
+    client.release();
+
+    // Check if 'users' table exists
+    const result = await pool.query("SELECT to_regclass('public.users') AS exists");
     const hasSchema = result.rows[0].exists !== null;
 
     if (!hasSchema) {
@@ -34,7 +36,7 @@ async function ensureDbInit() {
       execSync('node scripts/migrate.js up', { stdio: 'inherit' });
     }
   } catch (err) {
-    console.error('ensure-db-init failed:', err.message);
+    console.error('❌ ensure-db-init failed:', err.message);
     process.exit(1);
   } finally {
     await pool.end();
@@ -42,4 +44,3 @@ async function ensureDbInit() {
 }
 
 ensureDbInit();
-
