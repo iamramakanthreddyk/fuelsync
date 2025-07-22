@@ -3417,3 +3417,10 @@ Each entry is tied to a step from the implementation index.
 * Added `TROUBLESHOOTING.md` documenting Postgres installation and test DB creation.
 * Linked the troubleshooting guide from `README.md` and `LOCAL_DEV_SETUP.md`.
 * `docs/STEP_fix_20260904_COMMAND.md`
+
+## [Fix 2026-09-05] – Integration test UUID fixes
+
+### 🟩 Fixes
+* Updated RBAC integration tests to use valid UUIDs and extended timeouts.
+* Allowed 400/404 responses for missing records.
+* `docs/STEP_fix_20260905_COMMAND.md`

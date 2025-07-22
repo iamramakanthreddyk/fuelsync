@@ -1,1 +1,146 @@
-[]
+[
+  {
+    "endpoint": "GET /nozzle-readings",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "GET /nozzle-readings",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "GET /nozzle-readings",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "GET /nozzle-readings",
+    "role": "attendant",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "POST /nozzle-readings",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "POST /nozzle-readings",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "POST /nozzle-readings",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "POST /nozzle-readings",
+    "role": "attendant",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "GET /nozzle-readings/can-create/{nozzleId}",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "GET /nozzle-readings/can-create/{nozzleId}",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "GET /nozzle-readings/can-create/{nozzleId}",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "GET /nozzle-readings/can-create/{nozzleId}",
+    "role": "attendant",
+    "expected": "200|201|204",
+    "actual": 200
+  },
+  {
+    "endpoint": "GET /nozzle-readings/{id}",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "GET /nozzle-readings/{id}",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "GET /nozzle-readings/{id}",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "GET /nozzle-readings/{id}",
+    "role": "attendant",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "PUT /nozzle-readings/{id}",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "PUT /nozzle-readings/{id}",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "PUT /nozzle-readings/{id}",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "PUT /nozzle-readings/{id}",
+    "role": "attendant",
+    "expected": "401|403",
+    "actual": 403
+  },
+  {
+    "endpoint": "POST /nozzle-readings/{id}/void",
+    "role": "unauthenticated",
+    "expected": "401|403",
+    "actual": 401
+  },
+  {
+    "endpoint": "POST /nozzle-readings/{id}/void",
+    "role": "owner",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "POST /nozzle-readings/{id}/void",
+    "role": "manager",
+    "expected": "200|201|204",
+    "actual": 400
+  },
+  {
+    "endpoint": "POST /nozzle-readings/{id}/void",
+    "role": "attendant",
+    "expected": "401|403",
+    "actual": 403
+  }
+]

@@ -309,3 +309,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-09-02 | Local Postgres instructions for tests | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20260902_COMMAND.md` |
 | fix | 2026-09-03 | Test report generation | ✅ Done | `tests/openapi.rbac.test.ts`, `tests/integration/pumps.test.ts` | `docs/STEP_fix_20260903_COMMAND.md` |
 | fix | 2026-09-04 | DB setup troubleshooting guide | ✅ Done | `docs/TROUBLESHOOTING.md`, `README.md`, `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20260904_COMMAND.md` |
+| fix | 2026-09-05 | Integration test UUID fixes | ✅ Done | `tests/integration/stations.test.ts`, `tests/integration/pumps.test.ts`, `tests/openapi.rbac.test.ts` | `docs/STEP_fix_20260905_COMMAND.md` |
