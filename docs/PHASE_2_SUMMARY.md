@@ -1703,3 +1703,16 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `tests/integration/stations.test.ts`, `tests/integration/pumps.test.ts`, `tests/openapi.rbac.test.ts`, `docs/STEP_fix_20260905_COMMAND.md`
 
 **Overview:** Integration tests failed due to invalid UUID values and short timeouts. Tests now use placeholder UUIDs, allow 400/404 responses when resources are missing, and set `jest.setTimeout(30000)`.
+
+### 🛠️ Step 2.59 – Reconciliation finalization helpers
+**Status:** ✅ Done
+**Files:** `src/services/reconciliation.service.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `migrations/schema/013_prevent_finalized_writes.sql`, `tests/reconciliation.service.test.ts`, `docs/STEP_2_59_COMMAND.md`
+
+**Overview:** Added utilities to ensure daily reconciliation rows exist and to mark days as finalized. GET endpoints now call `getOrCreateDailyReconciliation` so finalized days never return 404. Nozzle readings and cash reports share the `isFinalized` check. New database triggers block writes after finalization.
+
+### 🛠️ Step 2.60 – Reconciliation station validation
+**Status:** ✅ Done
+**Files:** `src/utils/hasStationAccess.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `tests/reconciliation.service.test.ts`, `docs/STEP_2_60_COMMAND.md`
+
+**Overview:** Station ownership is now verified before creating reconciliation rows. GET endpoints always return a summary once finalized without 404 responses.
+

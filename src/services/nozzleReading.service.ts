@@ -4,7 +4,7 @@ import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { createAlert } from './alert.service';
 import { NozzleReadingInput, ReadingQuery } from '../validators/nozzleReading.validator';
 import { getCreditorById, incrementCreditorBalance } from './creditor.service';
-import { isDayFinalized } from './reconciliation.service';
+import { isFinalized } from './reconciliation.service';
 import { toStandardDate, toStandardDateTime } from '../utils/dateUtils';
 import prisma from '../utils/prisma';
 
@@ -80,7 +80,7 @@ export async function createNozzleReading(
     }
     const { fuel_type, station_id } = nozzleInfo.rows[0];
 
-    const finalized = await isDayFinalized(client, tenantId, station_id, new Date(data.recordedAt));
+    const finalized = await isFinalized(client, tenantId, station_id, new Date(data.recordedAt));
     if (finalized) {
       throw new Error('Day already finalized for this station');
     }

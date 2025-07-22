@@ -310,3 +310,5 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-09-03 | Test report generation | ✅ Done | `tests/openapi.rbac.test.ts`, `tests/integration/pumps.test.ts` | `docs/STEP_fix_20260903_COMMAND.md` |
 | fix | 2026-09-04 | DB setup troubleshooting guide | ✅ Done | `docs/TROUBLESHOOTING.md`, `README.md`, `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20260904_COMMAND.md` |
 | fix | 2026-09-05 | Integration test UUID fixes | ✅ Done | `tests/integration/stations.test.ts`, `tests/integration/pumps.test.ts`, `tests/openapi.rbac.test.ts` | `docs/STEP_fix_20260905_COMMAND.md` |
+| 2     | 2.59 | Reconciliation finalization helpers | ✅ Done | `src/services/reconciliation.service.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `migrations/schema/013_prevent_finalized_writes.sql` | `PHASE_2_SUMMARY.md#step-2.59` |
+| 2     | 2.60 | Reconciliation station validation | ✅ Done | `src/utils/hasStationAccess.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `tests/reconciliation.service.test.ts` | `PHASE_2_SUMMARY.md#step-2.60` |

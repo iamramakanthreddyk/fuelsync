@@ -59,9 +59,6 @@ export function createReconciliationHandlers(db: Pool) {
           return errorResponse(res, 400, 'Invalid date');
         }
         const summary = await getReconciliation(db, user.tenantId, stationId, date);
-        if (!summary) {
-          return errorResponse(res, 404, 'Not found');
-        }
         successResponse(res, { summary });
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
