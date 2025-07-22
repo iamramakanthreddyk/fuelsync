@@ -1661,3 +1661,39 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Status:** ✅ Done
 **Files:** `.env.test`, `tests/openapi.rbac.test.ts`, `docs/STEP_fix_20260829_COMMAND.md`
 **Overview:** Added automated RBAC test suite generated from OpenAPI spec to ensure role permissions across all routes.
+
+### Fix 2026-08-30 - RBAC test assertions
+**Status:** ✅ Done
+**Files:** `tests/openapi.rbac.test.ts`, `docs/STEP_fix_20260830_COMMAND.md`
+
+**Overview:** Expanded the automated RBAC test suite to assert successful status codes for permitted roles (200/201/204) and 401/403 for unauthorized requests.
+
+### Fix 2026-08-31 - Integration test DB setup
+**Status:** ✅ Done
+**Files:** `tests/openapi.rbac.test.ts`, `tests/integration/stations.test.ts`, `docs/STEP_fix_20260831_COMMAND.md`
+
+**Overview:** Added tenant header to automated RBAC tests and provisioned a local PostgreSQL database using `scripts/ensure-db-init.js` so the full test suite can run locally.
+
+### Fix 2026-09-01 - Close DB connections in tests
+**Status:** ✅ Done
+**Files:** `jest.config.ts`, `tests/openapi.rbac.test.ts`, `tests/integration/stations.test.ts`, `docs/STEP_fix_20260901_COMMAND.md`
+
+**Overview:** Added `afterAll` hooks to terminate the PostgreSQL pool and enabled Jest's open-handle detection to prevent hanging worker processes.
+
+### Fix 2026-09-02 - Local Postgres instructions for tests
+**Status:** ✅ Done
+**Files:** `docs/LOCAL_DEV_SETUP.md`, `docs/STEP_fix_20260902_COMMAND.md`
+
+**Overview:** Documented how to install and start PostgreSQL, create the `fuelsync_test` database, and re-run `ensure-db-init.js` when unit tests cannot provision the database automatically.
+
+### Fix 2026-09-03 - Test report generation
+**Status:** ✅ Done
+**Files:** `tests/openapi.rbac.test.ts`, `tests/integration/pumps.test.ts`, `docs/STEP_fix_20260903_COMMAND.md`
+
+**Overview:** RBAC tests now save their results to `test-report/fuelsync-full.json` and a new pumps API integration test expands coverage.
+
+### Fix 2026-09-04 - DB setup troubleshooting guide
+**Status:** ✅ Done
+**Files:** `docs/TROUBLESHOOTING.md`, `README.md`, `docs/LOCAL_DEV_SETUP.md`, `docs/STEP_fix_20260904_COMMAND.md`
+
+**Overview:** Added a dedicated troubleshooting document explaining how to install PostgreSQL and create the `fuelsync_test` database when tests skip due to missing DB. Both README and local setup guide reference this section for clarity.

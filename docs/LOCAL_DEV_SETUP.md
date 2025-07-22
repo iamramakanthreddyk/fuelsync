@@ -69,3 +69,18 @@ npm test
 
 All tests should pass if the local database is configured correctly.
 If you see `Skipping tests: unable to provision test DB`, ensure Docker is installed or that PostgreSQL is running locally before retrying `npm test`.
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for a quick install guide.
+
+If the setup script fails to connect to PostgreSQL:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y postgresql
+sudo service postgresql start
+sudo -u postgres createdb fuelsync_test
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+node scripts/ensure-db-init.js
+npm run test:unit
+```
+
+This sequence installs Postgres, creates the `fuelsync_test` database, seeds it via `ensure-db-init.js`, and re-runs the unit tests.

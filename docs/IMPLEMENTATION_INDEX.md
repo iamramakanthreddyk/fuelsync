@@ -303,3 +303,9 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-27 | Inventory updated_at bug | ✅ Done | `src/services/inventory.service.ts` | `docs/STEP_fix_20260827_COMMAND.md` |
 | fix | 2026-08-28 | Nozzle reading role enforcement | ✅ Done | `src/routes/nozzleReading.route.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260828_COMMAND.md` |
 | fix | 2026-08-29 | Automated RBAC tests | ✅ Done | `.env.test`, `tests/openapi.rbac.test.ts` | `docs/STEP_fix_20260829_COMMAND.md` |
+| fix | 2026-08-30 | RBAC test assertions | ✅ Done | `tests/openapi.rbac.test.ts` | `docs/STEP_fix_20260830_COMMAND.md` |
+| fix | 2026-08-31 | Integration test DB setup | ✅ Done | `tests/openapi.rbac.test.ts`, `tests/integration/stations.test.ts` | `docs/STEP_fix_20260831_COMMAND.md` |
+| fix | 2026-09-01 | Close DB connections in tests | ✅ Done | `jest.config.ts`, `tests/openapi.rbac.test.ts`, `tests/integration/stations.test.ts` | `docs/STEP_fix_20260901_COMMAND.md` |
+| fix | 2026-09-02 | Local Postgres instructions for tests | ✅ Done | `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20260902_COMMAND.md` |
+| fix | 2026-09-03 | Test report generation | ✅ Done | `tests/openapi.rbac.test.ts`, `tests/integration/pumps.test.ts` | `docs/STEP_fix_20260903_COMMAND.md` |
+| fix | 2026-09-04 | DB setup troubleshooting guide | ✅ Done | `docs/TROUBLESHOOTING.md`, `README.md`, `docs/LOCAL_DEV_SETUP.md` | `docs/STEP_fix_20260904_COMMAND.md` |

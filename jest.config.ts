@@ -12,6 +12,8 @@ const config: Config = {
   roots: ['<rootDir>/tests', '<rootDir>/__tests__'],
   globalSetup: '<rootDir>/jest.globalSetup.ts',
   globalTeardown: '<rootDir>/jest.globalTeardown.ts',
+  detectOpenHandles: true,
+  forceExit: true,
 };
 
 export default config;

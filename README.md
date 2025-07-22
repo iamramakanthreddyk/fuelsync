@@ -36,7 +36,8 @@ Tests include DB pool config, versioned routes, and error handling.
 
 If Jest reports `Skipping tests: unable to provision test DB`, ensure PostgreSQL
 is installed or start the Docker database with `./scripts/start-dev-db.sh` and
-run the tests again. As a fallback, install and start Postgres manually:
+run the tests again. As a fallback, install and start Postgres manually or see
+[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md):
 
 ```bash
 sudo apt-get update && sudo apt-get install -y postgresql
@@ -48,6 +49,7 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 - [SERVER_README.md](SERVER_README.md) – how to start the API server and run quick login tests
 - [DB_AUTH_TROUBLESHOOTING.md](DB_AUTH_TROUBLESHOOTING.md) – resolving database login issues
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) – tips if the test database fails to initialize
 - [docs/SCRIPTS_GUIDE.md](docs/SCRIPTS_GUIDE.md) – overview of helper scripts
 - [docs/LOCAL_DEV_SETUP.md](docs/LOCAL_DEV_SETUP.md) – create your own Postgres database without Docker
 - [docs/AZURE_DEPLOYMENT_GUIDE.md](docs/AZURE_DEPLOYMENT_GUIDE.md) – production database setup on Azure
