@@ -3369,3 +3369,10 @@ Each entry is tied to a step from the implementation index.
 * Added `requireRole` middleware to all nozzle reading routes.
 * Documented allowed roles in OpenAPI via `x-roles` extension and regenerated API types.
 * `docs/STEP_fix_20260828_COMMAND.md`
+
+## [Fix 2026-08-29] – Automated RBAC tests
+
+### 🟦 Enhancements
+* Added `.env.test` JWT secret to allow token generation in tests.
+* Added automated RBAC coverage through `tests/openapi.rbac.test.ts` generated from OpenAPI spec.
+* `docs/STEP_fix_20260829_COMMAND.md`
