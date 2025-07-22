@@ -3362,3 +3362,10 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Inventory service now sets `updated_at` when creating or updating records.
 * `docs/STEP_fix_20260827_COMMAND.md`
+
+## [Fix 2026-08-28] – Nozzle reading role enforcement
+
+### 🟥 Fixes
+* Added `requireRole` middleware to all nozzle reading routes.
+* Documented allowed roles in OpenAPI via `x-roles` extension and regenerated API types.
+* `docs/STEP_fix_20260828_COMMAND.md`
