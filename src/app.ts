@@ -23,6 +23,7 @@ import { createDashboardRouter } from './routes/dashboard.route';
 import { createInventoryRouter } from './routes/inventory.route';
 import { createReportsRouter } from './routes/reports.route';
 import { createAnalyticsRouter } from './routes/analytics.route';
+import { createAdminAnalyticsRouter } from './routes/adminAnalytics.route';
 import { createAlertsRouter } from './routes/alerts.route';
 import { createAttendantRouter } from "./routes/attendant.route";
 import { createAttendanceRouter } from "./routes/attendance.route";
@@ -201,6 +202,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/auth`, createAuthRouter(pool));
   app.use(`${API_PREFIX}/admin/auth`, createAdminAuthRouter(pool));
   app.use(`${API_PREFIX}/admin`, createAdminApiRouter(pool));
+  app.use(`${API_PREFIX}/admin/analytics`, createAdminAnalyticsRouter(pool));
   app.use(`${API_PREFIX}/users`, createUserRouter(pool));
   app.use(`${API_PREFIX}/stations`, createStationRouter(pool));
   app.use(`${API_PREFIX}/pumps`, createPumpRouter(pool));

@@ -15,7 +15,6 @@ paths:
       tags:
         - Authentication
       summary: User login
-      security: []
       requestBody:
         required: true
         content:

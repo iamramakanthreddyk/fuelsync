@@ -35,6 +35,7 @@ describe('nozzleReading.controller.voidReading', () => {
         .mockResolvedValueOnce(undefined) // BEGIN
         .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 'r1', nozzle_id: 'n', reading: 1, recorded_at: new Date() }] })
         .mockResolvedValueOnce({ rowCount: 0 }) // sales
+        .mockResolvedValueOnce({ rowCount: 1 }) // user exists
         .mockResolvedValueOnce(undefined) // audit
         .mockResolvedValueOnce(undefined) // update reading
         .mockResolvedValueOnce(undefined), // COMMIT

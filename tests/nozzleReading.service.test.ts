@@ -8,6 +8,7 @@ describe('voidNozzleReading', () => {
         .mockResolvedValueOnce(undefined) // BEGIN
         .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 'r1', nozzle_id: 'n', reading: 1, recorded_at: new Date() }] })
         .mockResolvedValueOnce({ rowCount: 2 }) // sales
+        .mockResolvedValueOnce({ rowCount: 1 }) // user exists
         .mockResolvedValueOnce(undefined) // audit log
         .mockResolvedValueOnce(undefined) // void reading
         .mockResolvedValueOnce(undefined) // void sales

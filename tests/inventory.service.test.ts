@@ -9,14 +9,15 @@ describe('inventory.service.updateInventory', () => {
   test('creates alert when stock below minimum', async () => {
     const db = { query: jest.fn() } as any;
     db.query
-      .mockResolvedValueOnce(undefined)
-      .mockResolvedValueOnce({ rows: [{ current_stock: 4, minimum_level: 5 }] })
-      .mockResolvedValueOnce(undefined);
+      .mockResolvedValueOnce({ rowCount: 0 }) // check exists
+      .mockResolvedValueOnce(undefined) // insert
+      .mockResolvedValueOnce({ rows: [{ current_stock: 4, minimum_level: 5 }] }) // checkQuery
+      .mockResolvedValueOnce(undefined); // createAlert
 
     await inventoryService.updateInventory(db, 't1', 's1', 'diesel', 4);
 
-    expect(db.query).toHaveBeenCalledTimes(3);
-    expect((db.query as jest.Mock).mock.calls[2][0]).toContain('INSERT INTO public.alerts');
+    expect(db.query).toHaveBeenCalledTimes(4);
+    expect((db.query as jest.Mock).mock.calls[3][0]).toContain('INSERT INTO public.alerts');
   });
 });
 
