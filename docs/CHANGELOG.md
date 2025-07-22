@@ -3376,3 +3376,44 @@ Each entry is tied to a step from the implementation index.
 * Added `.env.test` JWT secret to allow token generation in tests.
 * Added automated RBAC coverage through `tests/openapi.rbac.test.ts` generated from OpenAPI spec.
 * `docs/STEP_fix_20260829_COMMAND.md`
+
+## [Fix 2026-08-30] – RBAC test assertions
+
+### 🟦 Enhancements
+* Updated `tests/openapi.rbac.test.ts` to expect 200/201/204 for allowed roles and 401/403 for unauthorized access.
+* `docs/STEP_fix_20260830_COMMAND.md`
+
+## [Fix 2026-08-31] – Integration test DB setup
+
+### 🟦 Enhancements
+* Added tenant header to automated RBAC tests for accurate authorization checks.
+* Installed local PostgreSQL and executed `scripts/ensure-db-init.js` during testing.
+* `docs/STEP_fix_20260831_COMMAND.md`
+
+## [Fix 2026-09-01] – Close DB connections in tests
+
+### 🟦 Enhancements
+* Added `afterAll` hooks in integration and RBAC tests to close the PG pool.
+* Enabled `detectOpenHandles` and `forceExit` in Jest config to catch leaks.
+* `docs/STEP_fix_20260901_COMMAND.md`
+
+## [Fix 2026-09-02] – Local Postgres instructions for tests
+
+### 🟦 Enhancements
+* Documented how to install and start PostgreSQL if test database setup fails.
+* Added step commands to create the `fuelsync_test` database and run `ensure-db-init.js`.
+* `docs/STEP_fix_20260902_COMMAND.md`
+
+## [Fix 2026-09-03] – Test report generation
+
+### 🟦 Enhancements
+* RBAC tests now record results and write `test-report/fuelsync-full.json`.
+* Added `tests/integration/pumps.test.ts` covering pump endpoints.
+* `docs/STEP_fix_20260903_COMMAND.md`
+
+## [Fix 2026-09-04] – DB setup troubleshooting guide
+
+### 🟦 Enhancements
+* Added `TROUBLESHOOTING.md` documenting Postgres installation and test DB creation.
+* Linked the troubleshooting guide from `README.md` and `LOCAL_DEV_SETUP.md`.
+* `docs/STEP_fix_20260904_COMMAND.md`
