@@ -65,15 +65,18 @@ export async function updateInventory(
   if (existsResult.rowCount === 0) {
     // Create a new inventory record if it doesn't exist
     const insertQuery = `
-      INSERT INTO public.fuel_inventory (id, tenant_id, station_id, fuel_type, current_stock, minimum_level, last_updated)
-      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      INSERT INTO public.fuel_inventory (
+        id, tenant_id, station_id, fuel_type,
+        current_stock, minimum_level, last_updated, updated_at
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
     `;
     await db.query(insertQuery, [
-      randomUUID(), 
-      tenantId, 
-      stationId, 
-      fuelType, 
-      newStock, 
+      randomUUID(),
+      tenantId,
+      stationId,
+      fuelType,
+      newStock,
       minimumLevel || 1000
     ]);
   } else {
@@ -85,7 +88,8 @@ export async function updateInventory(
       // Update stock, capacity, and minimum level
       query = `
         UPDATE public.fuel_inventory
-        SET current_stock = $4, minimum_level = $5, last_updated = NOW()
+        SET current_stock = $4, minimum_level = $5,
+            last_updated = NOW(), updated_at = NOW()
         WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
       `;
       params = [tenantId, stationId, fuelType, newStock, minimumLevel];
@@ -93,7 +97,8 @@ export async function updateInventory(
       // Update stock and minimum level
       query = `
         UPDATE public.fuel_inventory
-        SET current_stock = $4, minimum_level = $5, last_updated = NOW()
+        SET current_stock = $4, minimum_level = $5,
+            last_updated = NOW(), updated_at = NOW()
         WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
       `;
       params = [tenantId, stationId, fuelType, newStock, minimumLevel];
@@ -101,7 +106,8 @@ export async function updateInventory(
       // Update only stock
       query = `
         UPDATE public.fuel_inventory
-        SET current_stock = $4, last_updated = NOW()
+        SET current_stock = $4,
+            last_updated = NOW(), updated_at = NOW()
         WHERE tenant_id = $1 AND station_id = $2 AND fuel_type = $3
       `;
       params = [tenantId, stationId, fuelType, newStock];

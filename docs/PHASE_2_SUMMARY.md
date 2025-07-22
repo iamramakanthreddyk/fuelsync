@@ -1641,3 +1641,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Overview:**
 * Station ranking query referenced an alias in the `RANK()` expression, causing a 500 error.
 * Updated the SQL to use base columns for ranking and sorting.
+
+### 🛠️ Fix 2026-08-27 – Inventory updated_at bug
+**Status:** ✅ Done
+**Files:** `src/services/inventory.service.ts`, `docs/STEP_fix_20260827_COMMAND.md`
+
+**Overview:**
+* Inventory update queries now set the `updated_at` timestamp to avoid null constraint errors.
