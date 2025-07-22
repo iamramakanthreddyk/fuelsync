@@ -1655,3 +1655,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Applied role middleware to nozzle reading routes and documented roles in the API specification.
+
+
+### Fix 2026-08-29 - Automated RBAC tests
+**Status:** ✅ Done
+**Files:** `.env.test`, `tests/openapi.rbac.test.ts`, `docs/STEP_fix_20260829_COMMAND.md`
+**Overview:** Added automated RBAC test suite generated from OpenAPI spec to ensure role permissions across all routes.

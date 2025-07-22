@@ -302,3 +302,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-08-23 | Station ranking alias bug | ✅ Done | `src/services/station.service.ts` | `docs/STEP_fix_20260823_COMMAND.md` |
 | fix | 2026-08-27 | Inventory updated_at bug | ✅ Done | `src/services/inventory.service.ts` | `docs/STEP_fix_20260827_COMMAND.md` |
 | fix | 2026-08-28 | Nozzle reading role enforcement | ✅ Done | `src/routes/nozzleReading.route.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts` | `docs/STEP_fix_20260828_COMMAND.md` |
+| fix | 2026-08-29 | Automated RBAC tests | ✅ Done | `.env.test`, `tests/openapi.rbac.test.ts` | `docs/STEP_fix_20260829_COMMAND.md` |
