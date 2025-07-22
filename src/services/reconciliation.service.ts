@@ -1,6 +1,7 @@
 import { Pool, PoolClient } from 'pg';
 import { randomUUID } from 'crypto';
 import { parseRows, parseRow } from '../utils/parseDb';
+import { stationBelongsToTenant } from '../utils/hasStationAccess';
 
 export interface ReconciliationRecordResult {
   totalSales: number;
@@ -13,7 +14,7 @@ export interface ReconciliationRecordResult {
   variance: number;
 }
 
-export async function isDayFinalized(
+export async function isFinalized(
   db: Pool | PoolClient,
   tenantId: string,
   stationId: string,
@@ -25,6 +26,9 @@ export async function isDayFinalized(
   );
   return res.rowCount ? res.rows[0].finalized : false;
 }
+
+// Backwards compatibility alias
+export const isDayFinalized = isFinalized;
 
 export async function isDateFinalized(
   db: Pool | PoolClient,
@@ -38,6 +42,61 @@ export async function isDateFinalized(
   return !!res.rowCount;
 }
 
+export interface DayReconciliationRow {
+  id: string;
+  station_id: string;
+  date: Date;
+  total_sales: number;
+  cash_total: number;
+  card_total: number;
+  upi_total: number;
+  credit_total: number;
+  opening_reading: number;
+  closing_reading: number;
+  variance: number;
+  finalized: boolean;
+}
+
+export async function getOrCreateDailyReconciliation(
+  db: Pool | PoolClient,
+  tenantId: string,
+  stationId: string,
+  date: Date
+): Promise<DayReconciliationRow> {
+  const existing = await db.query<DayReconciliationRow>(
+    'SELECT * FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
+    [stationId, date, tenantId]
+  );
+  if (existing.rowCount) return existing.rows[0];
+
+  const stationCheck = await stationBelongsToTenant(db, stationId, tenantId);
+  if (!stationCheck) {
+    throw new Error('Station not found');
+  }
+
+  const id = randomUUID();
+  const insert = await db.query<DayReconciliationRow>(
+    `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, finalized)
+     VALUES ($1,$2,$3,$4,false)
+     RETURNING *`,
+    [id, tenantId, stationId, date]
+  );
+  return insert.rows[0];
+}
+
+export async function markDayAsFinalized(
+  db: Pool | PoolClient,
+  tenantId: string,
+  stationId: string,
+  date: Date
+): Promise<void> {
+  const rec = await getOrCreateDailyReconciliation(db, tenantId, stationId, date);
+  await db.query(
+    'UPDATE public.day_reconciliations SET finalized = true, updated_at = NOW() WHERE id = $1 AND tenant_id = $2',
+    [rec.id, tenantId]
+  );
+}
+
 export async function runReconciliation(
   db: Pool,
   tenantId: string,
@@ -47,12 +106,20 @@ export async function runReconciliation(
   const client = await db.connect();
   try {
     await client.query('BEGIN');
-    const existing = await client.query<{ id: string; finalized: boolean }>(
-      'SELECT id, finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
-      [stationId, date, tenantId]
-    );
-    if (existing.rowCount && existing.rows[0].finalized) {
-      throw new Error('Reconciliation already finalized');
+    const rec = await getOrCreateDailyReconciliation(client, tenantId, stationId, date);
+    if (rec.finalized) {
+      await client.query('COMMIT');
+      return {
+        totalSales: Number(rec.total_sales),
+        cashTotal: Number(rec.cash_total),
+        cardTotal: Number(rec.card_total),
+        upiTotal: Number(rec.upi_total),
+        creditTotal: Number(rec.credit_total),
+        openingReading: Number(rec.opening_reading),
+        closingReading: Number(rec.closing_reading),
+        variance: Number(rec.variance),
+        reconciliationId: rec.id
+      };
     }
 
     const totals = await client.query<{
@@ -109,27 +176,17 @@ export async function runReconciliation(
     const closingReading = Number(readingRes.rows[0]?.closing_reading || 0);
     const totalVolume = Number(volumeRes.rows[0]?.total_volume || 0);
     const variance = closingReading - openingReading - totalVolume;
-    const reconciliationId = existing.rowCount ? existing.rows[0].id : randomUUID();
-    
-    if (existing.rowCount) {
-      await client.query(
-        `UPDATE public.day_reconciliations
-           SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6,
-               opening_reading=$7, closing_reading=$8, variance=$9,
-               finalized=true, updated_at=NOW()
-         WHERE id=$1 AND tenant_id = $10`,
-        [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
-         openingReading, closingReading, variance, tenantId]
-      );
-    } else {
-      await client.query(
-        `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
-         opening_reading, closing_reading, variance, finalized, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,true,NOW())`,
-        [reconciliationId, tenantId, stationId, date, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
-         openingReading, closingReading, variance]
-      );
-    }
+    const reconciliationId = rec.id;
+
+    await client.query(
+      `UPDATE public.day_reconciliations
+         SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6,
+             opening_reading=$7, closing_reading=$8, variance=$9,
+             finalized=true, updated_at=NOW()
+       WHERE id=$1 AND tenant_id = $10`,
+      [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
+       openingReading, closingReading, variance, tenantId]
+    );
     
     // Check for cash reports on this date and create reconciliation diff if found
     const cashReportRes = await client.query(
@@ -182,18 +239,13 @@ export async function runReconciliation(
 }
 
 export async function getReconciliation(
-  db: Pool,
+  db: Pool | PoolClient,
   tenantId: string,
   stationId: string,
   date: Date
 ) {
-  const res = await db.query(
-    `SELECT station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
-            opening_reading, closing_reading, variance, finalized
-     FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
-    [stationId, date, tenantId]
-  );
-  return parseRow(res.rows[0]);
+  const row = await getOrCreateDailyReconciliation(db, tenantId, stationId, date);
+  return parseRow(row as any);
 }
 
 export async function listReconciliations(

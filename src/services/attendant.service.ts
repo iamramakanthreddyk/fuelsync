@@ -5,6 +5,7 @@ import { getPriceAtTimestamp } from '../utils/priceUtils';
 import { incrementCreditorBalance } from './creditor.service';
 import { createAlert } from './alert.service';
 import prisma from '../utils/prisma';
+import { isFinalized } from './reconciliation.service';
 
 export async function listUserStations(db: Pool, tenantId: string, userId: string) {
   const res = await db.query(
@@ -88,6 +89,10 @@ export async function createCashReport(
     const client = await db.connect();
     try {
     await client.query('BEGIN');
+    const finalized = await isFinalized(client, tenantId, stationId, date);
+    if (finalized) {
+      throw new Error('Day already finalized for this station');
+    }
     let totalCredit = 0;
     for (const entry of creditEntries) {
       const nozzleRes = await client.query<{ id: string }>(

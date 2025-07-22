@@ -3424,3 +3424,21 @@ Each entry is tied to a step from the implementation index.
 * Updated RBAC integration tests to use valid UUIDs and extended timeouts.
 * Allowed 400/404 responses for missing records.
 * `docs/STEP_fix_20260905_COMMAND.md`
+
+## [Step 2.59] – Reconciliation finalization helpers
+
+### 🟦 Enhancements
+* Added `getOrCreateDailyReconciliation`, `isFinalized` and `markDayAsFinalized` utilities.
+* GET reconciliation endpoints now always return data for finalized days.
+* Nozzle readings and cash reports share a single finalization check.
+* Database triggers prevent writes after a day is finalized.
+* `docs/STEP_2_59_COMMAND.md`
+
+## [Step 2.60] – Reconciliation station validation
+
+### 🟦 Enhancements
+* Added `stationBelongsToTenant` utility and ownership checks when creating reconciliation rows.
+* `GET /reconciliation/:stationId/:date` no longer returns 404 for finalized days.
+* Unit tests cover station validation.
+* `docs/STEP_2_60_COMMAND.md`
+
