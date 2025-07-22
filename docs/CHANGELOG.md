@@ -3356,3 +3356,9 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Corrected `getStationRanking` query to use base columns in ranking calculations.
 * `docs/STEP_fix_20260823_COMMAND.md`
+
+## [Fix 2026-08-27] – Inventory updated_at bug
+
+### 🟥 Fixes
+* Inventory service now sets `updated_at` when creating or updating records.
+* `docs/STEP_fix_20260827_COMMAND.md`
