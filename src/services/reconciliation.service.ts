@@ -178,14 +178,19 @@ export async function runReconciliation(
     const variance = closingReading - openingReading - totalVolume;
     const reconciliationId = rec.id;
 
+    // Only finalize if there are actual readings and sales data
+    const hasReadings = openingReading > 0 || closingReading > 0;
+    const hasSales = Number(row.total_sales) > 0;
+    const shouldFinalize = hasReadings && hasSales;
+    
     await client.query(
       `UPDATE public.day_reconciliations
          SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6,
              opening_reading=$7, closing_reading=$8, variance=$9,
-             finalized=true, updated_at=NOW()
+             finalized=$11, updated_at=NOW()
        WHERE id=$1 AND tenant_id = $10`,
       [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
-       openingReading, closingReading, variance, tenantId]
+       openingReading, closingReading, variance, tenantId, shouldFinalize]
     );
     
     // Check for cash reports on this date and create reconciliation diff if found

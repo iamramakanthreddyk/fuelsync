@@ -24,6 +24,21 @@ export function createReconciliationHandlers(db: Pool) {
         if (isNaN(parsedDate.getTime())) {
           return errorResponse(res, 400, 'Invalid date');
         }
+        
+        // Check if there are readings and sales data before running reconciliation
+        const readingsQuery = `
+          SELECT COUNT(*) as count FROM public.nozzle_readings nr
+          JOIN public.nozzles n ON nr.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE p.station_id = $1 AND DATE(nr.recorded_at) = $2 AND nr.tenant_id = $3
+        `;
+        const readingsResult = await db.query(readingsQuery, [stationId, parsedDate, user.tenantId]);
+        const readingsCount = parseInt(readingsResult.rows[0]?.count || '0');
+        
+        if (readingsCount === 0) {
+          return errorResponse(res, 400, 'No readings found for this date. Please ensure readings are entered first.');
+        }
+        
         const summary = await runReconciliation(db, user.tenantId, stationId, parsedDate);
         successResponse(res, { summary }, undefined, 201);
       } catch (err: any) {
@@ -154,6 +169,21 @@ export function createReconciliationHandlers(db: Pool) {
         if (isNaN(reconciliationDate.getTime())) {
           return errorResponse(res, 400, 'Invalid date');
         }
+        
+        // Check if there are readings and sales data before running reconciliation
+        const readingsQuery = `
+          SELECT COUNT(*) as count FROM public.nozzle_readings nr
+          JOIN public.nozzles n ON nr.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE p.station_id = $1 AND DATE(nr.recorded_at) = $2 AND nr.tenant_id = $3
+        `;
+        const readingsResult = await db.query(readingsQuery, [stationId, reconciliationDate, user.tenantId]);
+        const readingsCount = parseInt(readingsResult.rows[0]?.count || '0');
+        
+        if (readingsCount === 0) {
+          return errorResponse(res, 400, 'No readings found for this date. Please ensure readings are entered first.');
+        }
+        
         const result = await runReconciliation(db, user.tenantId, stationId, reconciliationDate);
         successResponse(res, result);
       } catch (err: any) {
@@ -189,6 +219,26 @@ export function createReconciliationHandlers(db: Pool) {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
         const id = req.params.id;
+        
+        // Check if reconciliation has valid data before approving
+        const reconciliationQuery = `
+          SELECT * FROM public.day_reconciliations 
+          WHERE id = $1 AND tenant_id = $2
+        `;
+        const reconciliationResult = await db.query(reconciliationQuery, [id, tenantId]);
+        
+        if (!reconciliationResult.rowCount) {
+          return errorResponse(res, 404, 'Reconciliation not found');
+        }
+        
+        const reconciliation = reconciliationResult.rows[0];
+        const hasReadings = Number(reconciliation.opening_reading) > 0 || Number(reconciliation.closing_reading) > 0;
+        const hasSales = Number(reconciliation.total_sales) > 0;
+        
+        if (!hasReadings || !hasSales) {
+          return errorResponse(res, 400, 'Cannot approve reconciliation with no readings or sales data');
+        }
+        
         await db.query(
           'UPDATE public.day_reconciliations SET finalized = true, updated_at = NOW() WHERE id = $1 AND tenant_id = $2',
           [id, tenantId]
