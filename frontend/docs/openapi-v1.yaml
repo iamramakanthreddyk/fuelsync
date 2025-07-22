@@ -2161,6 +2161,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: getnozzlereadings
+      x-roles:
+        - owner
+        - manager
+        - attendant
     post:
       tags:
         - Readings
@@ -2203,6 +2207,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: postnozzlereadings
+      x-roles:
+        - owner
+        - manager
+        - attendant
   /nozzle-readings/can-create/{nozzleId}:
     get:
       tags:
@@ -2242,6 +2250,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: getnozzlereadingsCancreateBynozzleId
+      x-roles:
+        - owner
+        - manager
+        - attendant
   /nozzle-readings/{id}:
     get:
       tags:
@@ -2285,6 +2297,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: getnozzlereadingsByid
+      x-roles:
+        - owner
+        - manager
+        - attendant
     put:
       tags:
         - Readings
@@ -2333,6 +2349,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: putnozzlereadingsByid
+      x-roles:
+        - owner
+        - manager
   /nozzle-readings/{id}/void:
     post:
       tags:
@@ -2387,6 +2406,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: postnozzlereadingsByidVoid
+      x-roles:
+        - owner
+        - manager
   /reconciliation:
     get:
       tags:

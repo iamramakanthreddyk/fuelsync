@@ -1648,3 +1648,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:**
 * Inventory update queries now set the `updated_at` timestamp to avoid null constraint errors.
+
+### 🛠️ Fix 2026-08-28 – Nozzle reading role enforcement
+**Status:** ✅ Done
+**Files:** `src/routes/nozzleReading.route.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `docs/STEP_fix_20260828_COMMAND.md`
+
+**Overview:**
+* Applied role middleware to nozzle reading routes and documented roles in the API specification.
