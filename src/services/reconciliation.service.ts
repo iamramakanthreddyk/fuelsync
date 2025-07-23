@@ -250,7 +250,19 @@ export async function getReconciliation(
   date: Date
 ) {
   const row = await getOrCreateDailyReconciliation(db, tenantId, stationId, date);
-  return parseRow(row as any);
+  
+  // Only consider it finalized if it has both readings and sales AND was explicitly finalized
+  const hasReadings = Number(row.opening_reading) > 0 || Number(row.closing_reading) > 0;
+  const hasSales = Number(row.total_sales) > 0;
+  const shouldBeFinalized = row.finalized && hasReadings && hasSales;
+  
+  // Create a new object with the corrected finalized status
+  const correctedRow = {
+    ...row,
+    finalized: shouldBeFinalized
+  };
+  
+  return parseRow(correctedRow as any);
 }
 
 export async function listReconciliations(
@@ -261,7 +273,9 @@ export async function listReconciliations(
   const params: any[] = [tenantId];
   let idx = 2;
   let query = `SELECT id, station_id, date, total_sales, cash_total, card_total, upi_total, credit_total,
-               opening_reading, closing_reading, variance, finalized
+               opening_reading, closing_reading, variance, finalized,
+               (opening_reading > 0 OR closing_reading > 0) AS has_readings,
+               (total_sales > 0) AS has_sales
                FROM public.day_reconciliations WHERE tenant_id = $1`;
   if (stationId) {
     query += ` AND station_id = $${idx++}`;
@@ -269,5 +283,16 @@ export async function listReconciliations(
   }
   query += ' ORDER BY date DESC';
   const res = await db.query(query, params);
-  return parseRows(res.rows);
+  
+  // Process the rows to ensure finalized flag is correct
+  const rows = res.rows.map(row => {
+    // Only consider it finalized if it has both readings and sales AND was explicitly finalized
+    const shouldBeFinalized = row.finalized && row.has_readings && row.has_sales;
+    return {
+      ...row,
+      finalized: shouldBeFinalized
+    };
+  });
+  
+  return parseRows(rows);
 }

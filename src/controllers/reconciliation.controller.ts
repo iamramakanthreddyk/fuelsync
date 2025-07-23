@@ -199,7 +199,9 @@ export function createReconciliationHandlers(db: Pool) {
         }
         const { id } = req.params;
         const result = await db.query(
-          `SELECT dr.*, s.name as station_name 
+          `SELECT dr.*, s.name as station_name,
+                  (dr.opening_reading > 0 OR dr.closing_reading > 0) AS has_readings,
+                  (dr.total_sales > 0) AS has_sales 
            FROM public.day_reconciliations dr
            JOIN public.stations s ON dr.station_id = s.id
            WHERE dr.id = $1 AND dr.tenant_id = $2`,
@@ -208,7 +210,17 @@ export function createReconciliationHandlers(db: Pool) {
         if (!result.rowCount) {
           return errorResponse(res, 404, 'Reconciliation not found');
         }
-        successResponse(res, result.rows[0]);
+        
+        // Process the row to ensure finalized flag is correct
+        const row = result.rows[0];
+        const shouldBeFinalized = row.finalized && row.has_readings && row.has_sales;
+        row.finalized = shouldBeFinalized;
+        
+        // Remove the helper fields
+        delete row.has_readings;
+        delete row.has_sales;
+        
+        successResponse(res, row);
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
