@@ -145,25 +145,26 @@ export async function getTodaysSalesSummary(
     ORDER BY total_amount DESC
   `;
 
-  // Get sales by station
+  // Get sales by station - include all stations
   const stationBreakdownQuery = `
     SELECT
       st.id as station_id,
       st.name as station_name,
       COALESCE(SUM(sl.volume), 0) as total_volume,
       COALESCE(SUM(sl.amount), 0) as total_amount,
-      COUNT(sl.id) as entries_count,
-      array_agg(DISTINCT n.fuel_type) as fuel_types,
-      COUNT(DISTINCT n.id) as nozzles_active,
+      COALESCE(COUNT(sl.id), 0) as entries_count,
+      COALESCE(array_agg(DISTINCT n.fuel_type) FILTER (WHERE n.fuel_type IS NOT NULL), ARRAY[]::text[]) as fuel_types,
+      COALESCE(COUNT(DISTINCT CASE WHEN sl.id IS NOT NULL THEN n.id END), 0) as nozzles_active,
       MAX(sl.recorded_at) as last_activity
-    FROM public.sales sl
-    JOIN public.nozzles n ON sl.nozzle_id = n.id
-    JOIN public.pumps p ON n.pump_id = p.id
-    JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(sl.recorded_at) = $1
+    FROM public.stations st
+    LEFT JOIN public.pumps p ON p.station_id = st.id
+    LEFT JOIN public.nozzles n ON n.pump_id = p.id
+    LEFT JOIN public.sales sl ON n.id = sl.nozzle_id
+      AND DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
+    WHERE st.tenant_id = $2
     GROUP BY st.id, st.name
-    ORDER BY total_amount DESC
+    ORDER BY total_amount DESC, st.name
   `;
 
   // Get credit sales
