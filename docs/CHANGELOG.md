@@ -3451,3 +3451,9 @@ Each entry is tied to a step from the implementation index.
 * Generated updated TypeScript API types.
 * Added integration test for RBAC on the new endpoint.
 * `docs/STEP_2_61_COMMAND.md`
+## [Fix 2025-07-25] – Today's sales summary query
+
+### 🟥 Fixes
+* Aggregated daily sales data from the `sales` table instead of `nozzle_readings` to match the unified schema.
+* `docs/STEP_fix_20250725_COMMAND.md`
+

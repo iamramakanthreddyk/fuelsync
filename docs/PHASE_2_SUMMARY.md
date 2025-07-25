@@ -1721,4 +1721,10 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Status:** ✅ Done
 **Files:** `src/controllers/todaysSales.controller.ts`, `src/routes/todaysSales.route.ts`, `src/services/todaysSales.service.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `tests/integration/todaysSales.test.ts`, `docs/STEP_2_61_COMMAND.md`
 
+
 **Overview:** Documented and tested the new `/todays-sales/summary` endpoint which returns a consolidated sales snapshot for the selected date. OpenAPI specs now describe the response schemas and allowed roles. API types were regenerated and integration tests verify RBAC behaviour.
+### 🛠️ Fix 2025-07-25 – Today's sales summary query
+**Status:** ✅ Done
+**Files:** `src/services/todaysSales.service.ts`, `docs/STEP_fix_20250725_COMMAND.md`
+
+**Overview:** Updated the service to read from the `sales` table so the endpoint works with the unified schema.
