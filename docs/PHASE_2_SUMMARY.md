@@ -1728,3 +1728,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/services/todaysSales.service.ts`, `docs/STEP_fix_20250725_COMMAND.md`
 
 **Overview:** Updated the service to read from the `sales` table so the endpoint works with the unified schema.
+
+### 🛠️ Fix 2025-07-26 – Azure master deployment branch
+**Status:** ✅ Done
+**Files:** `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20250726_COMMAND.md`
+
+**Overview:** The CI workflow now deploys from the `master` branch to match Azure's configured branch.

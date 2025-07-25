@@ -3457,3 +3457,9 @@ Each entry is tied to a step from the implementation index.
 * Aggregated daily sales data from the `sales` table instead of `nozzle_readings` to match the unified schema.
 * `docs/STEP_fix_20250725_COMMAND.md`
 
+## [Fix 2025-07-26] – Azure master deployment branch
+
+### 🟥 Fixes
+* GitHub Actions workflow now triggers on the `master` branch to match Azure deployment settings.
+* `docs/STEP_fix_20250726_COMMAND.md`
+

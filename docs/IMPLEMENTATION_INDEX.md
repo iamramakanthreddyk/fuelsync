@@ -314,3 +314,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.60 | Reconciliation station validation | ✅ Done | `src/utils/hasStationAccess.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `tests/reconciliation.service.test.ts` | `PHASE_2_SUMMARY.md#step-2.60` |
 | 2     | 2.61 | Today's sales summary endpoint | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `tests/integration/todaysSales.test.ts` | `PHASE_2_SUMMARY.md#step-2.61` |
 | fix | 2025-07-25 | Today's sales summary query | ✅ Done | `src/services/todaysSales.service.ts` | `docs/STEP_fix_20250725_COMMAND.md` |
+| fix | 2025-07-26 | Azure master deployment branch | ✅ Done | `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20250726_COMMAND.md` |
