@@ -72,6 +72,8 @@ export async function getTodaysSalesSummary(
   const dateStr = targetDate.toISOString().split('T')[0];
   
   console.log('[TODAYS-SALES-SERVICE] Starting query for tenant:', tenantId, 'date:', dateStr);
+  
+  try {
 
   // Get overall summary from sales table
   const summaryQuery = `
@@ -79,15 +81,15 @@ export async function getTodaysSalesSummary(
       COUNT(*) as total_entries,
       COALESCE(SUM(sl.volume), 0) as total_volume,
       COALESCE(SUM(sl.amount), 0) as total_amount,
-      COALESCE(SUM(CASE WHEN sl.payment_method = 'cash' THEN sl.amount ELSE 0 END), 0) as cash_amount,
-      COALESCE(SUM(CASE WHEN sl.payment_method = 'card' THEN sl.amount ELSE 0 END), 0) as card_amount,
-      COALESCE(SUM(CASE WHEN sl.payment_method = 'upi' THEN sl.amount ELSE 0 END), 0) as upi_amount,
-      COALESCE(SUM(CASE WHEN sl.payment_method = 'credit' THEN sl.amount ELSE 0 END), 0) as credit_amount
+      COALESCE(SUM(CASE WHEN COALESCE(sl.payment_method, 'cash') = 'cash' THEN sl.amount ELSE 0 END), 0) as cash_amount,
+      COALESCE(SUM(CASE WHEN COALESCE(sl.payment_method, 'cash') = 'card' THEN sl.amount ELSE 0 END), 0) as card_amount,
+      COALESCE(SUM(CASE WHEN COALESCE(sl.payment_method, 'cash') = 'upi' THEN sl.amount ELSE 0 END), 0) as upi_amount,
+      COALESCE(SUM(CASE WHEN COALESCE(sl.payment_method, 'cash') = 'credit' THEN sl.amount ELSE 0 END), 0) as credit_amount
     FROM public.sales sl
     JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+    WHERE DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
   `;
 
@@ -113,7 +115,7 @@ export async function getTodaysSalesSummary(
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
     LEFT JOIN public.sales sl ON n.id = sl.nozzle_id
-      AND DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
     WHERE st.tenant_id = $2
     GROUP BY n.id, n.nozzle_number, n.fuel_type, p.id, p.name, st.id, st.name
@@ -137,7 +139,7 @@ export async function getTodaysSalesSummary(
     JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+    WHERE DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
     GROUP BY n.fuel_type
     ORDER BY total_amount DESC
@@ -158,7 +160,7 @@ export async function getTodaysSalesSummary(
     JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+    WHERE DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
     GROUP BY st.id, st.name
     ORDER BY total_amount DESC
@@ -179,7 +181,7 @@ export async function getTodaysSalesSummary(
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
     LEFT JOIN public.creditors c ON sl.creditor_id = c.id
-    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+    WHERE DATE(sl.recorded_at) = $1
       AND sl.tenant_id = $2
       AND sl.payment_method = 'credit'
       AND c.id IS NOT NULL
@@ -201,22 +203,46 @@ export async function getTodaysSalesSummary(
     db.query(creditSalesQuery, [dateStr, tenantId]).catch(() => ({ rows: [] }))
   ]);
 
-  const summary = summaryResult.rows[0] || {};
+    const summary = summaryResult.rows[0] || {};
 
-  return {
-    date: dateStr,
-    totalEntries: parseInt(summary.total_entries || '0'),
-    totalVolume: parseFloat(summary.total_volume || '0'),
-    totalAmount: parseFloat(summary.total_amount || '0'),
-    paymentBreakdown: {
-      cash: parseFloat(summary.cash_amount || '0'),
-      card: parseFloat(summary.card_amount || '0'),
-      upi: parseFloat(summary.upi_amount || '0'),
-      credit: parseFloat(summary.credit_amount || '0')
-    },
-    nozzleEntries: parseRows(nozzleEntriesResult.rows),
-    salesByFuel: parseRows(fuelBreakdownResult.rows),
-    salesByStation: parseRows(stationBreakdownResult.rows),
-    creditSales: parseRows(creditSalesResult.rows || [])
-  };
+    const result = {
+      date: dateStr,
+      totalEntries: parseInt(summary.total_entries || '0'),
+      totalVolume: parseFloat(summary.total_volume || '0'),
+      totalAmount: parseFloat(summary.total_amount || '0'),
+      paymentBreakdown: {
+        cash: parseFloat(summary.cash_amount || '0'),
+        card: parseFloat(summary.card_amount || '0'),
+        upi: parseFloat(summary.upi_amount || '0'),
+        credit: parseFloat(summary.credit_amount || '0')
+      },
+      nozzleEntries: parseRows(nozzleEntriesResult.rows),
+      salesByFuel: parseRows(fuelBreakdownResult.rows),
+      salesByStation: parseRows(stationBreakdownResult.rows),
+      creditSales: parseRows(creditSalesResult.rows || [])
+    };
+    
+    console.log('[TODAYS-SALES-SERVICE] Query completed. Sample data:', {
+      nozzleEntries: result.nozzleEntries.length,
+      salesByFuel: result.salesByFuel.length,
+      salesByStation: result.salesByStation.length,
+      sampleNozzle: result.nozzleEntries[0],
+      sampleFuel: result.salesByFuel[0]
+    });
+    return result;
+    
+  } catch (error) {
+    console.error('[TODAYS-SALES-SERVICE] Error executing queries:', error);
+    return {
+      date: dateStr,
+      totalEntries: 0,
+      totalVolume: 0,
+      totalAmount: 0,
+      paymentBreakdown: { cash: 0, card: 0, upi: 0, credit: 0 },
+      nozzleEntries: [],
+      salesByFuel: [],
+      salesByStation: [],
+      creditSales: []
+    };
+  }
 }
