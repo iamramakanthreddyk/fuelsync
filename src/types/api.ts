@@ -971,6 +971,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/todays-sales/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get today's sales summary */
+        get: operations["gettodayssalesSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sales": {
         parameters: {
             query?: never;
@@ -2311,6 +2328,67 @@ export interface components {
             /** Format: date-time */
             lastActivity?: string;
             efficiency?: number;
+        };
+        TodaysSalesNozzleEntry: {
+            nozzleId?: string;
+            nozzleNumber?: number;
+            fuelType?: string;
+            pumpId?: string;
+            pumpName?: string;
+            stationId?: string;
+            stationName?: string;
+            entriesCount?: number;
+            totalVolume?: number;
+            totalAmount?: number;
+            /** Format: date-time */
+            lastEntryTime?: string;
+            averageTicketSize?: number;
+        };
+        TodaysSalesByFuel: {
+            fuelType?: string;
+            totalVolume?: number;
+            totalAmount?: number;
+            entriesCount?: number;
+            averagePrice?: number;
+            stationsCount?: number;
+        };
+        TodaysSalesByStation: {
+            stationId?: string;
+            stationName?: string;
+            totalVolume?: number;
+            totalAmount?: number;
+            entriesCount?: number;
+            fuelTypes?: string[];
+            nozzlesActive?: number;
+            /** Format: date-time */
+            lastActivity?: string;
+        };
+        TodaysCreditSales: {
+            creditorId?: string;
+            creditorName?: string;
+            stationId?: string;
+            stationName?: string;
+            totalAmount?: number;
+            entriesCount?: number;
+            /** Format: date-time */
+            lastCreditTime?: string;
+        };
+        TodaysSalesSummary: {
+            /** Format: date */
+            date?: string;
+            totalEntries?: number;
+            totalVolume?: number;
+            totalAmount?: number;
+            paymentBreakdown?: {
+                cash?: number;
+                card?: number;
+                upi?: number;
+                credit?: number;
+            };
+            nozzleEntries?: components["schemas"]["TodaysSalesNozzleEntry"][];
+            salesByFuel?: components["schemas"]["TodaysSalesByFuel"][];
+            salesByStation?: components["schemas"]["TodaysSalesByStation"][];
+            creditSales?: components["schemas"]["TodaysCreditSales"][];
         };
         SystemHealth: {
             uptime?: number;
@@ -6393,6 +6471,64 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DailySalesReport"];
+                };
+            };
+            /** @description Error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    gettodayssalesSummary: {
+        parameters: {
+            query?: {
+                date?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Today's sales summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TodaysSalesSummary"];
                 };
             };
             /** @description Error */

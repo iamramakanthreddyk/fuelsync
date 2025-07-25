@@ -3112,6 +3112,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       operationId: getreportsDailysales
+  /todays-sales/summary:
+    get:
+      tags:
+        - Sales
+      summary: Get today's sales summary
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Today's sales summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodaysSalesSummary'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: gettodayssalesSummary
+      x-roles:
+        - owner
+        - manager
+        - attendant
   /sales:
     get:
       tags:
@@ -6672,6 +6718,128 @@ components:
           format: date-time
         efficiency:
           type: number
+    TodaysSalesNozzleEntry:
+      type: object
+      properties:
+        nozzleId:
+          type: string
+        nozzleNumber:
+          type: integer
+        fuelType:
+          type: string
+        pumpId:
+          type: string
+        pumpName:
+          type: string
+        stationId:
+          type: string
+        stationName:
+          type: string
+        entriesCount:
+          type: integer
+        totalVolume:
+          type: number
+        totalAmount:
+          type: number
+        lastEntryTime:
+          type: string
+          format: date-time
+        averageTicketSize:
+          type: number
+    TodaysSalesByFuel:
+      type: object
+      properties:
+        fuelType:
+          type: string
+        totalVolume:
+          type: number
+        totalAmount:
+          type: number
+        entriesCount:
+          type: integer
+        averagePrice:
+          type: number
+        stationsCount:
+          type: integer
+    TodaysSalesByStation:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        totalVolume:
+          type: number
+        totalAmount:
+          type: number
+        entriesCount:
+          type: integer
+        fuelTypes:
+          type: array
+          items:
+            type: string
+        nozzlesActive:
+          type: integer
+        lastActivity:
+          type: string
+          format: date-time
+    TodaysCreditSales:
+      type: object
+      properties:
+        creditorId:
+          type: string
+        creditorName:
+          type: string
+        stationId:
+          type: string
+        stationName:
+          type: string
+        totalAmount:
+          type: number
+        entriesCount:
+          type: integer
+        lastCreditTime:
+          type: string
+          format: date-time
+    TodaysSalesSummary:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        totalEntries:
+          type: integer
+        totalVolume:
+          type: number
+        totalAmount:
+          type: number
+        paymentBreakdown:
+          type: object
+          properties:
+            cash:
+              type: number
+            card:
+              type: number
+            upi:
+              type: number
+            credit:
+              type: number
+        nozzleEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodaysSalesNozzleEntry'
+        salesByFuel:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodaysSalesByFuel'
+        salesByStation:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodaysSalesByStation'
+        creditSales:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodaysCreditSales'
     SystemHealth:
       type: object
       properties:

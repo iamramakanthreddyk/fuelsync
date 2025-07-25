@@ -1716,3 +1716,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:** Station ownership is now verified before creating reconciliation rows. GET endpoints always return a summary once finalized without 404 responses.
 
+
+### 🛠️ Step 2.61 – Today's sales summary endpoint
+**Status:** ✅ Done
+**Files:** `src/controllers/todaysSales.controller.ts`, `src/routes/todaysSales.route.ts`, `src/services/todaysSales.service.ts`, `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `tests/integration/todaysSales.test.ts`, `docs/STEP_2_61_COMMAND.md`
+
+**Overview:** Documented and tested the new `/todays-sales/summary` endpoint which returns a consolidated sales snapshot for the selected date. OpenAPI specs now describe the response schemas and allowed roles. API types were regenerated and integration tests verify RBAC behaviour.

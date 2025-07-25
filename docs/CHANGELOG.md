@@ -3442,3 +3442,12 @@ Each entry is tied to a step from the implementation index.
 * Unit tests cover station validation.
 * `docs/STEP_2_60_COMMAND.md`
 
+
+## [Step 2.61] – Today's sales summary endpoint
+
+### 🟩 Features
+* Documented `GET /todays-sales/summary` in both OpenAPI specs with role access.
+* Added schemas for today's sales summary breakdown.
+* Generated updated TypeScript API types.
+* Added integration test for RBAC on the new endpoint.
+* `docs/STEP_2_61_COMMAND.md`
