@@ -73,24 +73,25 @@ export async function getTodaysSalesSummary(
   
   console.log('[TODAYS-SALES-SERVICE] Starting query for tenant:', tenantId, 'date:', dateStr);
 
-  // Get overall summary - simplified approach using nozzle_readings count
+  // Get overall summary from sales table
   const summaryQuery = `
     SELECT
       COUNT(*) as total_entries,
-      0 as total_volume,
-      0 as total_amount,
-      COALESCE(SUM(CASE WHEN nr.payment_method = 'cash' THEN 1 ELSE 0 END), 0) as cash_amount,
-      COALESCE(SUM(CASE WHEN nr.payment_method = 'card' THEN 1 ELSE 0 END), 0) as card_amount,
-      COALESCE(SUM(CASE WHEN nr.payment_method = 'upi' THEN 1 ELSE 0 END), 0) as upi_amount,
-      COALESCE(SUM(CASE WHEN nr.payment_method = 'credit' THEN 1 ELSE 0 END), 0) as credit_amount
-    FROM public.nozzle_readings nr
-    JOIN public.nozzles n ON nr.nozzle_id = n.id
+      COALESCE(SUM(sl.volume), 0) as total_volume,
+      COALESCE(SUM(sl.amount), 0) as total_amount,
+      COALESCE(SUM(CASE WHEN sl.payment_method = 'cash' THEN sl.amount ELSE 0 END), 0) as cash_amount,
+      COALESCE(SUM(CASE WHEN sl.payment_method = 'card' THEN sl.amount ELSE 0 END), 0) as card_amount,
+      COALESCE(SUM(CASE WHEN sl.payment_method = 'upi' THEN sl.amount ELSE 0 END), 0) as upi_amount,
+      COALESCE(SUM(CASE WHEN sl.payment_method = 'credit' THEN sl.amount ELSE 0 END), 0) as credit_amount
+    FROM public.sales sl
+    JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(nr.recorded_at) = $1 AND nr.tenant_id = $2
+    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND sl.tenant_id = $2
   `;
 
-  // Get nozzle-wise entries - simplified
+  // Get nozzle-wise entries
   const nozzleEntriesQuery = `
     SELECT
       n.id as nozzle_id,
@@ -100,82 +101,90 @@ export async function getTodaysSalesSummary(
       p.name as pump_name,
       st.id as station_id,
       st.name as station_name,
-      COUNT(nr.id) as entries_count,
-      0 as total_volume,
-      0 as total_amount,
-      MAX(nr.recorded_at) as last_entry_time,
-      0 as average_ticket_size
+      COUNT(sl.id) as entries_count,
+      COALESCE(SUM(sl.volume), 0) as total_volume,
+      COALESCE(SUM(sl.amount), 0) as total_amount,
+      MAX(sl.recorded_at) as last_entry_time,
+      CASE
+        WHEN COUNT(sl.id) > 0 THEN COALESCE(SUM(sl.amount), 0) / COUNT(sl.id)
+        ELSE 0
+      END as average_ticket_size
     FROM public.nozzles n
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    LEFT JOIN public.nozzle_readings nr ON n.id = nr.nozzle_id
-      AND DATE(nr.recorded_at) = $1
-      AND nr.tenant_id = $2
+    LEFT JOIN public.sales sl ON n.id = sl.nozzle_id
+      AND DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND sl.tenant_id = $2
     WHERE st.tenant_id = $2
     GROUP BY n.id, n.nozzle_number, n.fuel_type, p.id, p.name, st.id, st.name
-    HAVING COUNT(nr.id) > 0
-    ORDER BY entries_count DESC, st.name, p.name, n.nozzle_number
+    HAVING COUNT(sl.id) > 0
+    ORDER BY total_amount DESC, st.name, p.name, n.nozzle_number
   `;
 
-  // Get sales by fuel type - simplified
+  // Get sales by fuel type
   const fuelBreakdownQuery = `
     SELECT
       n.fuel_type,
-      0 as total_volume,
-      0 as total_amount,
-      COUNT(nr.id) as entries_count,
-      0 as average_price,
+      COALESCE(SUM(sl.volume), 0) as total_volume,
+      COALESCE(SUM(sl.amount), 0) as total_amount,
+      COUNT(sl.id) as entries_count,
+      CASE
+        WHEN SUM(sl.volume) > 0 THEN SUM(sl.amount) / SUM(sl.volume)
+        ELSE 0
+      END as average_price,
       COUNT(DISTINCT st.id) as stations_count
-    FROM public.nozzle_readings nr
-    JOIN public.nozzles n ON nr.nozzle_id = n.id
+    FROM public.sales sl
+    JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(nr.recorded_at) = $1
-      AND nr.tenant_id = $2
+    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND sl.tenant_id = $2
     GROUP BY n.fuel_type
-    ORDER BY entries_count DESC
+    ORDER BY total_amount DESC
   `;
 
-  // Get sales by station - simplified
+  // Get sales by station
   const stationBreakdownQuery = `
     SELECT
       st.id as station_id,
       st.name as station_name,
-      0 as total_volume,
-      0 as total_amount,
-      COUNT(nr.id) as entries_count,
+      COALESCE(SUM(sl.volume), 0) as total_volume,
+      COALESCE(SUM(sl.amount), 0) as total_amount,
+      COUNT(sl.id) as entries_count,
       array_agg(DISTINCT n.fuel_type) as fuel_types,
       COUNT(DISTINCT n.id) as nozzles_active,
-      MAX(nr.recorded_at) as last_activity
-    FROM public.nozzle_readings nr
-    JOIN public.nozzles n ON nr.nozzle_id = n.id
+      MAX(sl.recorded_at) as last_activity
+    FROM public.sales sl
+    JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(nr.recorded_at) = $1
-      AND nr.tenant_id = $2
+    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND sl.tenant_id = $2
     GROUP BY st.id, st.name
-    ORDER BY entries_count DESC
+    ORDER BY total_amount DESC
   `;
 
-  // Get credit sales - simplified (skip if creditor_id column doesn't exist)
+  // Get credit sales
   const creditSalesQuery = `
     SELECT
-      'unknown' as creditor_id,
-      'Credit Sales' as creditor_name,
+      c.id as creditor_id,
+      c.party_name as creditor_name,
       st.id as station_id,
       st.name as station_name,
-      0 as total_amount,
-      COUNT(nr.id) as entries_count,
-      MAX(nr.recorded_at) as last_credit_time
-    FROM public.nozzle_readings nr
-    JOIN public.nozzles n ON nr.nozzle_id = n.id
+      COALESCE(SUM(sl.amount), 0) as total_amount,
+      COUNT(sl.id) as entries_count,
+      MAX(sl.recorded_at) as last_credit_time
+    FROM public.sales sl
+    JOIN public.nozzles n ON sl.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    WHERE DATE(nr.recorded_at) = $1
-      AND nr.tenant_id = $2
-      AND nr.payment_method = 'credit'
-    GROUP BY st.id, st.name
-    ORDER BY entries_count DESC
+    LEFT JOIN public.creditors c ON sl.creditor_id = c.id
+    WHERE DATE(sl.recorded_at AT TIME ZONE 'UTC') = $1
+      AND sl.tenant_id = $2
+      AND sl.payment_method = 'credit'
+      AND c.id IS NOT NULL
+    GROUP BY c.id, c.party_name, st.id, st.name
+    ORDER BY total_amount DESC
   `;
 
   const [
