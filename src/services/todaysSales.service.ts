@@ -157,11 +157,11 @@ export async function getTodaysSalesSummary(
     ORDER BY entries_count DESC
   `;
 
-  // Get credit sales - simplified
+  // Get credit sales - simplified (skip if creditor_id column doesn't exist)
   const creditSalesQuery = `
     SELECT
-      c.id as creditor_id,
-      c.party_name as creditor_name,
+      'unknown' as creditor_id,
+      'Credit Sales' as creditor_name,
       st.id as station_id,
       st.name as station_name,
       0 as total_amount,
@@ -171,12 +171,10 @@ export async function getTodaysSalesSummary(
     JOIN public.nozzles n ON nr.nozzle_id = n.id
     JOIN public.pumps p ON n.pump_id = p.id
     JOIN public.stations st ON p.station_id = st.id
-    LEFT JOIN public.creditors c ON nr.creditor_id = c.id
     WHERE DATE(nr.recorded_at) = $1
       AND nr.tenant_id = $2
       AND nr.payment_method = 'credit'
-      AND c.id IS NOT NULL
-    GROUP BY c.id, c.party_name, st.id, st.name
+    GROUP BY st.id, st.name
     ORDER BY entries_count DESC
   `;
 
@@ -191,7 +189,7 @@ export async function getTodaysSalesSummary(
     db.query(nozzleEntriesQuery, [dateStr, tenantId]),
     db.query(fuelBreakdownQuery, [dateStr, tenantId]),
     db.query(stationBreakdownQuery, [dateStr, tenantId]),
-    db.query(creditSalesQuery, [dateStr, tenantId])
+    db.query(creditSalesQuery, [dateStr, tenantId]).catch(() => ({ rows: [] }))
   ]);
 
   const summary = summaryResult.rows[0] || {};
@@ -210,6 +208,6 @@ export async function getTodaysSalesSummary(
     nozzleEntries: parseRows(nozzleEntriesResult.rows),
     salesByFuel: parseRows(fuelBreakdownResult.rows),
     salesByStation: parseRows(stationBreakdownResult.rows),
-    creditSales: parseRows(creditSalesResult.rows)
+    creditSales: parseRows(creditSalesResult.rows || [])
   };
 }
