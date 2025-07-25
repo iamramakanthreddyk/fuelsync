@@ -105,9 +105,17 @@ export function createAnalyticsHandlers() {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        const idsParam = req.query.stationIds as string;
+        const idsParam = req.query.stationIds;
         if (!idsParam) return errorResponse(res, 400, 'stationIds required');
-        const stationIds = idsParam.split(',');
+        
+        // Handle both array and string formats
+        let stationIds: string[];
+        if (Array.isArray(idsParam)) {
+          stationIds = idsParam as string[];
+        } else {
+          stationIds = (idsParam as string).split(',');
+        }
+        
         const period = (req.query.period as string) || 'monthly';
         
         console.log('[ANALYTICS] Station comparison request:', { tenantId, stationIds, period });
