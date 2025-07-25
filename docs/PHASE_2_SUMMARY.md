@@ -1734,3 +1734,8 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `.github/workflows/main_fuelsync.yml`, `docs/STEP_fix_20250726_COMMAND.md`
 
 **Overview:** The CI workflow now deploys from the `master` branch to match Azure's configured branch.
+### 🛠️ Fix 2025-07-27 – Restore sales aggregation
+**Status:** ✅ Done
+**Files:** `src/services/todaysSales.service.ts`, `docs/STEP_fix_20250727_COMMAND.md`
+
+**Overview:** Restored all queries in `/todays-sales/summary` to compute totals from the `sales` table. This fixes zero values returned after a regression.

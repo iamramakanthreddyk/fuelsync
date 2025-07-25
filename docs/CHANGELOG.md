@@ -3463,3 +3463,8 @@ Each entry is tied to a step from the implementation index.
 * GitHub Actions workflow now triggers on the `master` branch to match Azure deployment settings.
 * `docs/STEP_fix_20250726_COMMAND.md`
 
+## [Fix 2025-07-27] – Restore sales aggregation
+
+### 🟥 Fixes
+* Reinstated `/todays-sales/summary` queries to read from the `sales` table so totals reflect actual volume and amount.
+* `docs/STEP_fix_20250727_COMMAND.md`
