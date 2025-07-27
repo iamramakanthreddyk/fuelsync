@@ -60,7 +60,7 @@ export async function getDailySummary(
     varianceReason: reconciliation.variance_reason,
     isClosed: reconciliation.finalized,
     closedBy: closedByName,
-    closedAt: reconciliation.closed_at?.toISOString()
+    closedAt: reconciliation.closed_at ? new Date(reconciliation.closed_at).toISOString() : undefined
   };
 }
 
@@ -197,7 +197,7 @@ export async function getOpenDays(
     varianceReason: row.variance_reason,
     isClosed: row.finalized,
     closedBy: row.closed_by_name,
-    closedAt: row.closed_at?.toISOString()
+    closedAt: row.closed_at ? new Date(row.closed_at).toISOString() : undefined
   }));
 }
 

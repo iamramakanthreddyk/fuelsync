@@ -96,8 +96,8 @@ export function createCreditorHandlers(db: Pool) {
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
           credit_limit: Number(creditor.credit_limit),
-          balance: Number(creditor.balance || 0),
-          currentBalance: Number(creditor.balance || 0),
+          balance: 0, // Balance not available in this query
+          currentBalance: 0, // Balance not available in this query
           stationId: creditor.station_id,
           station_id: creditor.station_id,
           stationName: stationName,

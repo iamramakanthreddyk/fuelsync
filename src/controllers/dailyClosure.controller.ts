@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import {
   getDailySummary,
-  closeDailyBusiness,
   getOpenDays,
   isDayClosed,
   validateClosureAttempt,

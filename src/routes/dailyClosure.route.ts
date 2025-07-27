@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { Pool } from 'pg';
 import { createDailyClosureHandlers } from '../controllers/dailyClosure.controller';
-import { requireAuth } from '../middleware/auth';
-import { requireRole } from '../middleware/rbac';
+import { authenticateJWT } from '../middlewares/authenticateJWT';
+import { requireRole } from '../middlewares/requireRole';
 
 export function createDailyClosureRoutes(db: Pool): Router {
   const router = Router();
   const handlers = createDailyClosureHandlers(db);
 
   // All routes require authentication
-  router.use(requireAuth);
+  router.use(authenticateJWT);
 
   // GET /daily-closure/summary/:stationId/:date - Get daily summary
   router.get('/summary/:stationId/:date', handlers.getSummary);

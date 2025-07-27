@@ -55,6 +55,11 @@ export interface DayReconciliationRow {
   closing_reading: number;
   variance: number;
   finalized: boolean;
+  reported_cash_amount?: number;
+  variance_amount?: number;
+  variance_reason?: string;
+  closed_by?: string;
+  closed_at?: Date;
 }
 
 export async function getOrCreateDailyReconciliation(
