@@ -3425,6 +3425,19 @@ Each entry is tied to a step from the implementation index.
 * Allowed 400/404 responses for missing records.
 * `docs/STEP_fix_20260905_COMMAND.md`
 
+## [Fix 2026-09-06] – Sales report decimal formatting
+
+### 🟩 Fixes
+* `/reports/sales` now parses DECIMAL fields to numbers so responses don't include long zero-padded strings.
+* `docs/STEP_fix_20260906_COMMAND.md`
+
+## [Fix 2026-09-07] – Global decimal parsing
+
+### 🟩 Fixes
+* `parseDb` now converts Prisma `Decimal` objects to numbers, ensuring consistent numeric formatting across endpoints.
+* `/reports/sales` handler simplified to rely on `parseRows`.
+* `docs/STEP_fix_20260907_COMMAND.md`
+
 ## [Step 2.59] – Reconciliation finalization helpers
 
 ### 🟦 Enhancements
