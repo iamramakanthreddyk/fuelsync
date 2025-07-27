@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { createDailyClosureHandlers } from '../controllers/dailyClosure.controller';
 import { authenticateJWT } from '../middlewares/authenticateJWT';
 import { requireRole } from '../middlewares/requireRole';
+import { UserRole } from '../constants/auth';
 
 export function createDailyClosureRoutes(db: Pool): Router {
   const router = Router();
@@ -18,7 +19,7 @@ export function createDailyClosureRoutes(db: Pool): Router {
   router.post('/validate', handlers.validateClosure);
 
   // POST /daily-closure/close - Close business day (managers/owners only)
-  router.post('/close', requireRole(['manager', 'owner']), handlers.closeBusiness);
+  router.post('/close', requireRole([UserRole.Manager, UserRole.Owner]), handlers.closeBusiness);
 
   // GET /daily-closure/open - Get open days
   router.get('/open', handlers.getOpenDays);

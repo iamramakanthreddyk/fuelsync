@@ -88,7 +88,8 @@ export function createDailyClosureHandlers(db: Pool) {
           return errorResponse(res, 400, validation.errors.join('; '));
         }
 
-        const id = await closeDailyBusiness(db, user.tenantId, data, user.userId);
+        const { enhanceReconciliationWithCash } = await import('../services/dailyClosure.service');
+        const id = await enhanceReconciliationWithCash(db, user.tenantId, data.stationId, data.closureDate, data.reportedCashAmount, data.varianceReason || '', user.userId);
         successResponse(res, { 
           id, 
           warnings: validation.warnings 
