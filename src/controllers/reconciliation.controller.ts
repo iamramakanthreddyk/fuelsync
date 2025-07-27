@@ -133,6 +133,13 @@ export function createReconciliationHandlers(db: Pool) {
               AND nr.tenant_id = $3
               AND DATE(nr.recorded_at) = $2
             ORDER BY nr.nozzle_id, nr.recorded_at
+          ),
+          cash_declared AS (
+            SELECT COALESCE(SUM(amount), 0) as total_cash
+            FROM public.cash_reports cr
+            WHERE cr.station_id = $1
+              AND cr.tenant_id = $3
+              AND DATE(cr.reported_at) = $2
           )
           SELECT
             nozzle_id,
@@ -144,7 +151,7 @@ export function createReconciliationHandlers(db: Pool) {
             COALESCE(price_per_litre, 0) as price_per_litre,
             GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) as sale_value,
             payment_method,
-            CASE WHEN payment_method = 'cash' THEN GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) ELSE 0 END as cash_declared
+            (SELECT total_cash FROM cash_declared) as cash_declared
           FROM ordered_readings
         `;
 
