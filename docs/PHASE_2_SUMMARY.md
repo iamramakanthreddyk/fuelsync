@@ -1704,6 +1704,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:** Integration tests failed due to invalid UUID values and short timeouts. Tests now use placeholder UUIDs, allow 400/404 responses when resources are missing, and set `jest.setTimeout(30000)`.
 
+### Fix 2026-09-06 - API type regeneration instructions
+**Status:** ✅ Done
+**Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`
+
+**Overview:** Documented the generation command for API TypeScript definitions so developers can update the file from `docs/openapi.yaml`.
+
 ### 🛠️ Step 2.59 – Reconciliation finalization helpers
 **Status:** ✅ Done
 **Files:** `src/services/reconciliation.service.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `migrations/schema/013_prevent_finalized_writes.sql`, `tests/reconciliation.service.test.ts`, `docs/STEP_2_59_COMMAND.md`

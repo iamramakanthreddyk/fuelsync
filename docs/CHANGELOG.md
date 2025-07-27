@@ -3425,6 +3425,12 @@ Each entry is tied to a step from the implementation index.
 * Allowed 400/404 responses for missing records.
 * `docs/STEP_fix_20260905_COMMAND.md`
 
+## [Fix 2026-09-06] – API type regeneration instructions
+
+### 🟦 Enhancements
+* Documented how to regenerate `src/types/api.ts` from the OpenAPI spec.
+* `docs/STEP_fix_20260906_COMMAND.md`
+
 ## [Step 2.59] – Reconciliation finalization helpers
 
 ### 🟦 Enhancements
