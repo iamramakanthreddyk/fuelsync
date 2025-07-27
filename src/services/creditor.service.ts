@@ -25,7 +25,7 @@ export async function createCreditor(db: Pool, tenantId: string, input: Creditor
 }
 
 export async function listCreditors(db: Pool, tenantId: string, stationId?: string) {
-  let query = 'SELECT c.id, c.party_name, c.contact_number, c.address, c.credit_limit, c.status, c.created_at, c.station_id, s.name as station_name FROM public.creditors c LEFT JOIN public.stations s ON c.station_id = s.id WHERE c.tenant_id = $1';
+  let query = 'SELECT c.id, c.party_name, c.contact_number, c.address, c.credit_limit, c.balance, c.status, c.created_at, c.station_id, s.name as station_name FROM public.creditors c LEFT JOIN public.stations s ON c.station_id = s.id WHERE c.tenant_id = $1';
   const params = [tenantId];
   
   // Filter by station if provided and ensure it's a string

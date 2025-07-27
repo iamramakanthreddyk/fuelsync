@@ -30,6 +30,7 @@ import { createAttendanceRouter } from "./routes/attendance.route";
 import { createSetupStatusRouter } from './routes/setupStatus.route';
 import { createDailySalesRouter } from './routes/dailySales.route';
 import { createTodaysSalesRoutes } from './routes/todaysSales.route';
+import { createDailyClosureRoutes } from './routes/dailyClosure.route';
 import docsRouter from './routes/docs.route';
 import { errorHandler } from './middlewares/errorHandler';
 import { successResponse } from './utils/successResponse';
@@ -227,6 +228,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/reports`, createReportsRouter(pool));
   app.use(`${API_PREFIX}/reports`, createDailySalesRouter(pool));
   app.use(`${API_PREFIX}/todays-sales`, createTodaysSalesRoutes(pool));
+  app.use(`${API_PREFIX}/daily-closure`, createDailyClosureRoutes(pool));
   app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter());
   app.use(`${API_PREFIX}`, createSetupStatusRouter(pool));
   app.use(`${API_PREFIX}/attendant`, createAttendantRouter(pool));

@@ -259,6 +259,38 @@ export function createReconciliationHandlers(db: Pool) {
       } catch (err: any) {
         return errorResponse(res, 500, err.message);
       }
+    },
+
+    // Enhanced reconciliation with cash closure
+    closeWithCash: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId || !user.userId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        const { stationId, date, reportedCashAmount, varianceReason } = req.body;
+        if (!stationId || !date || reportedCashAmount === undefined) {
+          return errorResponse(res, 400, 'Missing required fields');
+        }
+
+        // Import the enhanced function
+        const { enhanceReconciliationWithCash } = await import('../services/dailyClosure.service');
+        
+        const reconciliationId = await enhanceReconciliationWithCash(
+          db,
+          user.tenantId,
+          stationId,
+          date,
+          Number(reportedCashAmount),
+          varianceReason || '',
+          user.userId
+        );
+
+        successResponse(res, { id: reconciliationId }, 'Business day closed successfully');
+      } catch (err: any) {
+        return errorResponse(res, 400, err.message);
+      }
     }
   };
 }

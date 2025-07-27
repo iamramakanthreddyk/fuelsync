@@ -89,13 +89,21 @@ export function createCreditorHandlers(db: Pool) {
           id: creditor.id,
           name: creditor.party_name,
           partyName: creditor.party_name,
+          party_name: creditor.party_name,
           contactNumber: creditor.contact_number,
+          contact_number: creditor.contact_number,
           address: creditor.address,
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
+          credit_limit: Number(creditor.credit_limit),
+          balance: Number(creditor.balance || 0),
+          currentBalance: Number(creditor.balance || 0),
           stationId: creditor.station_id,
+          station_id: creditor.station_id,
           stationName: stationName,
-          createdAt: creditor.created_at
+          station_name: stationName,
+          createdAt: creditor.created_at,
+          created_at: creditor.created_at
         });
       } catch (err: any) {
         if (err instanceof ServiceError) {

@@ -18,6 +18,7 @@ export function createReconciliationRouter(db: Pool) {
   router.get('/daily-summary', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.getDailySummary);
   router.get('/:stationId/:date', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.post('/:id/approve', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.approve);
+  router.post('/close-with-cash', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager]), handlers.closeWithCash);
 
   return router;
 }

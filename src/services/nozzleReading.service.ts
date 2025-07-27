@@ -85,6 +85,12 @@ export async function createNozzleReading(
       throw new Error('Day already finalized for this station');
     }
 
+    // Check if business day is finalized (same as closed)
+    const dayIsFinalized = await isFinalized(client, tenantId, station_id, new Date(data.recordedAt));
+    if (dayIsFinalized) {
+      throw new Error('Cannot add readings for finalized business day');
+    }
+
     // Generate a new UUID for the reading
     const readingId = randomUUID();
     console.log(`[NOZZLE-READING] Creating new reading with ID: ${readingId}`);
