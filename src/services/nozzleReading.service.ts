@@ -157,7 +157,7 @@ export async function createNozzleReading(
       if (!creditor) {
         throw new Error('Invalid creditor');
       }
-      const newBalance = Number(creditor.balance) + saleAmount;
+      const newBalance = saleAmount; // Balance tracking removed
       if (newBalance > Number(creditor.credit_limit)) {
         throw new Error('Credit limit exceeded');
       }
