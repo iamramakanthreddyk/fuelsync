@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
+import { parseRows } from '../utils/parseDb';
 
 export function createReportsHandlers(db: Pool) {
   async function runExportSales(req: Request, res: Response) {
@@ -64,12 +65,13 @@ export function createReportsHandlers(db: Pool) {
           res.setHeader('Content-Disposition', 'attachment; filename=sales-report.csv');
           res.send(csv);
         } else {
+          const data = parseRows(result.rows);
           successResponse(res, {
-            data: result.rows,
+            data,
             summary: {
-              totalRecords: result.rows.length,
-              totalSales: result.rows.reduce((sum, row) => sum + parseFloat(row.amount), 0),
-              totalProfit: result.rows.reduce((sum, row) => sum + parseFloat(row.profit), 0)
+              totalRecords: data.length,
+              totalSales: data.reduce((sum, row) => sum + row.amount, 0),
+              totalProfit: data.reduce((sum, row) => sum + row.profit, 0)
             }
           });
         }

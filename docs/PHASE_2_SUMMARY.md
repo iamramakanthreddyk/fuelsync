@@ -1704,6 +1704,17 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:** Integration tests failed due to invalid UUID values and short timeouts. Tests now use placeholder UUIDs, allow 400/404 responses when resources are missing, and set `jest.setTimeout(30000)`.
 
+### Fix 2026-09-06 - Sales report decimal formatting
+**Status:** ✅ Done
+**Files:** `src/controllers/reports.controller.ts`, `docs/STEP_fix_20260906_COMMAND.md`
+
+**Overview:** Numeric columns in `/reports/sales` were returned as long strings because Postgres DECIMAL values are serialized with extra precision. The handler now converts these fields to numbers before sending the response.
+
+### Fix 2026-09-07 - Global decimal parsing
+**Status:** ✅ Done
+**Files:** `src/utils/parseDb.ts`, `src/controllers/reports.controller.ts`, `docs/STEP_fix_20260907_COMMAND.md`
+
+**Overview:** Extended `parseDb` to handle Prisma `Decimal` objects so all services using `parseRows` return plain numbers. `/reports/sales` now relies on this helper for consistent formatting.
 ### Fix 2026-09-06 - API type regeneration instructions
 **Status:** ✅ Done
 **Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`

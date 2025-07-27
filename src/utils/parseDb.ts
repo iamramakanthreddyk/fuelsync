@@ -1,5 +1,10 @@
 export function parseValue(val: any): any {
   if (val === null || val === undefined) return val;
+  // Convert Prisma Decimal instances
+  if (typeof val === 'object' && val !== null && val.constructor?.name === 'Decimal') {
+    const n = Number(val.toString());
+    return isNaN(n) ? val : n;
+  }
   if (typeof val === 'string') {
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(val) && !isNaN(Date.parse(val))) {
       const d = new Date(val);
