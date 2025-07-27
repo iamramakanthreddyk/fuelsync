@@ -1715,6 +1715,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/utils/parseDb.ts`, `src/controllers/reports.controller.ts`, `docs/STEP_fix_20260907_COMMAND.md`
 
 **Overview:** Extended `parseDb` to handle Prisma `Decimal` objects so all services using `parseRows` return plain numbers. `/reports/sales` now relies on this helper for consistent formatting.
+### Fix 2026-09-06 - API type regeneration instructions
+**Status:** ✅ Done
+**Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`
+
+**Overview:** Documented the generation command for API TypeScript definitions so developers can update the file from `docs/openapi.yaml`.
 
 ### 🛠️ Step 2.59 – Reconciliation finalization helpers
 **Status:** ✅ Done
