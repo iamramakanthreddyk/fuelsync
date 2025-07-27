@@ -80,13 +80,27 @@ export function createReconciliationHandlers(db: Pool) {
       }
     },
     getDailySummary: async (req: Request, res: Response) => {
+      console.log('[DAILY-SUMMARY] Full request debug:', {
+        query: req.query,
+        user: req.user,
+        headers: {
+          authorization: req.headers.authorization ? 'Present' : 'Missing',
+          'x-tenant-id': req.headers['x-tenant-id']
+        }
+      });
+      
       try {
         const tenantId = req.user?.tenantId;
         const { stationId, date } = req.query as { stationId?: string; date?: string };
+        
+        console.log('[DAILY-SUMMARY] Extracted values:', { tenantId, stationId, date });
+        
         if (!tenantId) {
+          console.log('[DAILY-SUMMARY] Missing tenant context');
           return errorResponse(res, 400, 'Missing tenant context');
         }
         if (!stationId || !date) {
+          console.log('[DAILY-SUMMARY] Missing required params');
           return errorResponse(res, 400, 'stationId and date are required');
         }
 
@@ -117,6 +131,7 @@ export function createReconciliationHandlers(db: Pool) {
             ) fp_lateral ON true
             WHERE p.station_id = $1
               AND nr.tenant_id = $3
+              AND DATE(nr.recorded_at) = $2
             ORDER BY nr.nozzle_id, nr.recorded_at
           )
           SELECT
@@ -131,10 +146,12 @@ export function createReconciliationHandlers(db: Pool) {
             payment_method,
             CASE WHEN payment_method = 'cash' THEN GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) ELSE 0 END as cash_declared
           FROM ordered_readings
-          WHERE DATE(recorded_at) = $2
         `;
 
+        console.log('[DAILY-SUMMARY] Query params:', [stationId, date, tenantId]);
         const result = await db.query(query, [stationId, date, tenantId]);
+        
+        console.log('[DAILY-SUMMARY] Result:', result.rows.length, 'rows');
 
         const summary = result.rows.map(row => ({
           nozzleId: row.nozzle_id,
@@ -149,8 +166,10 @@ export function createReconciliationHandlers(db: Pool) {
           fuelType: row.fuel_type,
         }));
 
+        console.log('[DAILY-SUMMARY] Sending:', summary.length, 'items');
         successResponse(res, summary);
       } catch (err: any) {
+        console.error('[DAILY-SUMMARY] Error:', err);
         return errorResponse(res, 500, err.message);
       }
     },
