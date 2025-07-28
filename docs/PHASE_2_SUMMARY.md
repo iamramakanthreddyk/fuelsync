@@ -1715,6 +1715,12 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/utils/parseDb.ts`, `src/controllers/reports.controller.ts`, `docs/STEP_fix_20260907_COMMAND.md`
 
 **Overview:** Extended `parseDb` to handle Prisma `Decimal` objects so all services using `parseRows` return plain numbers. `/reports/sales` now relies on this helper for consistent formatting.
+
+### Fix 2026-09-08 - Security hardening
+**Status:** ✅ Done
+**Files:** `src/constants/auth.ts`, `src/utils/db.ts`, `src/middlewares/debugRequest.ts`, `src/app.ts`, `docs/STEP_fix_20260908.md`
+
+**Overview:** JWT expiration is now configurable and defaults to one hour. Database logs and request debugging no longer expose sensitive information. Development test routes are disabled in production.
 ### Fix 2026-09-06 - API type regeneration instructions
 **Status:** ✅ Done
 **Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`

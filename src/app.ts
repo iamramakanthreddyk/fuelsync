@@ -91,19 +91,20 @@ export function createApp() {
   // Tenant context is now handled by JWT-based setTenantContext middleware in individual routes
   // No global tenant context middleware needed
 
-  // Simple test endpoint
-  app.get('/test', (req, res) => {
-    successResponse(res, { method: req.method }, 'API is working');
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    // Simple test endpoints only for development
+    app.get('/test', (req, res) => {
+      successResponse(res, { method: req.method }, 'API is working');
+    });
 
-  app.post('/test', (req, res) => {
-    successResponse(res, { body: req.body }, 'POST working');
-  });
+    app.post('/test', (req, res) => {
+      successResponse(res, { body: req.body }, 'POST working');
+    });
 
-  // Simple auth test
-  app.post('/test-login', (req, res) => {
-    successResponse(res, { body: req.body }, 'Login endpoint working');
-  });
+    app.post('/test-login', (req, res) => {
+      successResponse(res, { body: req.body }, 'Login endpoint working');
+    });
+  }
   
   // Enhanced health check endpoint with detailed diagnostics
   app.get('/health', async (_req, res) => {
@@ -123,7 +124,7 @@ export function createApp() {
       };
       
       // Get environment variables (filtered for security)
-      const envVars = {
+      const envVars = process.env.NODE_ENV !== 'production' ? {
         NODE_ENV: process.env.NODE_ENV,
         DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT_SET',
         DB_USER: process.env.DB_USER ? 'SET' : 'NOT_SET',
@@ -132,7 +133,7 @@ export function createApp() {
         POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET',
         DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
         PORT: process.env.PORT || '3003'
-      };
+      } : undefined;
       
       // Check if we're running in Azure
       const isAzure = process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID || false;
