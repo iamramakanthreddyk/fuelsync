@@ -141,7 +141,7 @@ export function createReconciliationHandlers(db: Pool) {
             FROM public.cash_reports cr
             WHERE cr.station_id::text = $1
               AND cr.tenant_id::text = $3
-              AND DATE(cr.reported_at) = $2::date
+              AND cr.date = $2::date
           )
           SELECT
             nozzle_id,
