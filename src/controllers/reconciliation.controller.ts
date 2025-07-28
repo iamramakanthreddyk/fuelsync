@@ -158,7 +158,9 @@ export function createReconciliationHandlers(db: Pool) {
         `;
 
         console.log('[DAILY-SUMMARY] Query params:', [stationId, date, tenantId]);
-        const result = await db.query(query, [stationId, date, tenantId]);
+        // Ensure parameters are strings to avoid UUID type issues
+        const params = [String(stationId), String(date), String(tenantId)];
+        const result = await db.query(query, params);
         
         console.log('[DAILY-SUMMARY] Result:', result.rows.length, 'rows');
 
