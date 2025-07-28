@@ -135,7 +135,7 @@ export function createReconciliationHandlers(db: Pool) {
             ORDER BY nr.nozzle_id, nr.recorded_at
           ),
           cash_declared AS (
-            SELECT COALESCE(SUM(amount), 0) as total_cash
+            SELECT COALESCE(SUM(cash_amount), 0) as total_cash
             FROM public.cash_reports cr
             WHERE cr.station_id = $1
               AND cr.tenant_id = $3

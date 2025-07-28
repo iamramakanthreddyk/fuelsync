@@ -3444,6 +3444,14 @@ Each entry is tied to a step from the implementation index.
 * Added tests for `markDayAsFinalized` and `runReconciliation` edge cases.
 * Ensured local Postgres setup via `scripts/ensure-db-init.js` before running tests.
 * `docs/STEP_fix_20260908_COMMAND.md`
+## [Fix 2026-09-08] – Security hardening
+
+### 🟥 Fixes
+* JWT expiration now comes from `JWT_EXPIRES_IN` and defaults to one hour.
+* Authorization headers are masked in debug logs.
+* Database utilities no longer print raw connection details.
+* Test endpoints are disabled in production.
+* `docs/STEP_fix_20260908.md`
 
 ## [Fix 2026-09-06] – API type regeneration instructions
 

@@ -1721,6 +1721,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `tests/reconciliation.service.test.ts`, `docs/STEP_fix_20260908_COMMAND.md`
 
 **Overview:** Added tests for `markDayAsFinalized` and `runReconciliation` to verify early finalization and no-data behaviour. Tests run against a local Postgres instance created with `scripts/ensure-db-init.js`.
+### Fix 2026-09-08 - Security hardening
+**Status:** ✅ Done
+**Files:** `src/constants/auth.ts`, `src/utils/db.ts`, `src/middlewares/debugRequest.ts`, `src/app.ts`, `docs/STEP_fix_20260908.md`
+
+**Overview:** JWT expiration is now configurable and defaults to one hour. Database logs and request debugging no longer expose sensitive information. Development test routes are disabled in production.
 ### Fix 2026-09-06 - API type regeneration instructions
 **Status:** ✅ Done
 **Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`
