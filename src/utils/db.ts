@@ -19,9 +19,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 console.log('[DB] Environment:', process.env.NODE_ENV);
-console.log('[DB] Available env vars:', Object.keys(process.env).filter(key => 
-  key.startsWith('DB_') || key.includes('POSTGRES') || key.includes('DATABASE')
-));
 
 // Determine connection method: connection string vs Azure parameters
 const useConnectionString = process.env.POSTGRES_URL || process.env.NILEDB_URL || process.env.DATABASE_URL;
@@ -31,7 +28,7 @@ let pool: Pool;
 
 if (useConnectionString) {
   const connectionString = process.env.POSTGRES_URL || process.env.NILEDB_URL || process.env.DATABASE_URL;
-  console.log('[DB] Using connection string:', connectionString?.substring(0, 20) + '...');
+  console.log('[DB] Using connection string');
   pool = new Pool({
     connectionString,
     ssl: { rejectUnauthorized: false },
@@ -41,10 +38,10 @@ if (useConnectionString) {
   });
 } else if (useAzureParams) {
   console.log('[DB] Using Azure PostgreSQL params');
-  console.log('[DB] Host:', process.env.DB_HOST);
-  console.log('[DB] User:', process.env.DB_USER);
-  console.log('[DB] Database:', process.env.DB_NAME);
-  console.log('[DB] Port:', process.env.DB_PORT || '5432');
+  console.log('[DB] Host:', process.env.DB_HOST ? 'SET' : 'NOT_SET');
+  console.log('[DB] User:', process.env.DB_USER ? 'SET' : 'NOT_SET');
+  console.log('[DB] Database:', process.env.DB_NAME ? 'SET' : 'NOT_SET');
+  console.log('[DB] Port:', process.env.DB_PORT ? 'SET' : 'DEFAULT');
   
   // Check if the host is an Azure PostgreSQL server
   const isAzurePostgres = process.env.DB_HOST?.includes('postgres.database.azure.com');
@@ -123,8 +120,8 @@ export async function testConnection() {
     console.error('[DB] Connection test failed:', {
       message: err.message,
       code: err.code,
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
+      host: process.env.DB_HOST ? 'SET' : 'NOT_SET',
+      user: process.env.DB_USER ? 'SET' : 'NOT_SET',
       stack: err.stack
     });
     

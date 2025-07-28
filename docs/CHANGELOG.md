@@ -3438,6 +3438,15 @@ Each entry is tied to a step from the implementation index.
 * `/reports/sales` handler simplified to rely on `parseRows`.
 * `docs/STEP_fix_20260907_COMMAND.md`
 
+## [Fix 2026-09-08] – Security hardening
+
+### 🟥 Fixes
+* JWT expiration now comes from `JWT_EXPIRES_IN` and defaults to one hour.
+* Authorization headers are masked in debug logs.
+* Database utilities no longer print raw connection details.
+* Test endpoints are disabled in production.
+* `docs/STEP_fix_20260908.md`
+
 ## [Fix 2026-09-06] – API type regeneration instructions
 
 ### 🟦 Enhancements
