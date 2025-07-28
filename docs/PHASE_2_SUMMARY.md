@@ -1716,6 +1716,11 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 **Overview:** Extended `parseDb` to handle Prisma `Decimal` objects so all services using `parseRows` return plain numbers. `/reports/sales` now relies on this helper for consistent formatting.
 
+### Fix 2026-09-08 - Reconciliation unit test coverage
+**Status:** ✅ Done
+**Files:** `tests/reconciliation.service.test.ts`, `docs/STEP_fix_20260908_COMMAND.md`
+
+**Overview:** Added tests for `markDayAsFinalized` and `runReconciliation` to verify early finalization and no-data behaviour. Tests run against a local Postgres instance created with `scripts/ensure-db-init.js`.
 ### Fix 2026-09-08 - Security hardening
 **Status:** ✅ Done
 **Files:** `src/constants/auth.ts`, `src/utils/db.ts`, `src/middlewares/debugRequest.ts`, `src/app.ts`, `docs/STEP_fix_20260908.md`
