@@ -321,3 +321,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-07-25 | Today's sales summary query | ✅ Done | `src/services/todaysSales.service.ts` | `docs/STEP_fix_20250725_COMMAND.md` |
 | fix | 2025-07-26 | Azure master deployment branch | ✅ Done | `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20250726_COMMAND.md` |
 | fix | 2025-07-27 | Restore sales aggregation | ✅ Done | `src/services/todaysSales.service.ts` | `docs/STEP_fix_20250727_COMMAND.md` |
+| fix | 2025-07-28 | UUID type migration for reconciliation diff | ✅ Done | `src/services/reconciliation.service.ts`, `src/utils/hasStationAccess.ts`, `migrations/schema/014_update_reconciliation_diff_uuid.sql` | `docs/STEP_fix_20250728_COMMAND.md` |

@@ -21,7 +21,7 @@ export async function isFinalized(
   date: Date
 ): Promise<boolean> {
   const res = await db.query(
-    'SELECT finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
+    'SELECT finalized FROM public.day_reconciliations WHERE station_id = $1::uuid AND date = $2::date AND tenant_id = $3::uuid',
     [stationId, date, tenantId]
   );
   return res.rowCount ? res.rows[0].finalized : false;
@@ -36,7 +36,7 @@ export async function isDateFinalized(
   date: Date
 ): Promise<boolean> {
   const res = await db.query(
-    'SELECT 1 FROM public.day_reconciliations WHERE date = $1 AND finalized = true AND tenant_id = $2 LIMIT 1',
+    'SELECT 1 FROM public.day_reconciliations WHERE date = $1::date AND finalized = true AND tenant_id = $2::uuid LIMIT 1',
     [date, tenantId]
   );
   return !!res.rowCount;
@@ -69,7 +69,7 @@ export async function getOrCreateDailyReconciliation(
   date: Date
 ): Promise<DayReconciliationRow> {
   const existing = await db.query<DayReconciliationRow>(
-    'SELECT * FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
+    'SELECT * FROM public.day_reconciliations WHERE station_id = $1::uuid AND date = $2::date AND tenant_id = $3::uuid',
     [stationId, date, tenantId]
   );
   if (existing.rowCount) return existing.rows[0];
@@ -143,7 +143,7 @@ export async function runReconciliation(
        FROM public.sales s
        JOIN public.nozzles n ON s.nozzle_id = n.id
        JOIN public.pumps p ON n.pump_id = p.id
-       WHERE p.station_id = $1 AND DATE(s.recorded_at) = $2 AND s.tenant_id = $3`,
+       WHERE p.station_id = $1::uuid AND DATE(s.recorded_at) = $2::date AND s.tenant_id = $3::uuid`,
       [stationId, date, tenantId]
     );
     const row = totals.rows[0];
@@ -153,7 +153,7 @@ export async function runReconciliation(
        FROM public.sales s
        JOIN public.nozzles n ON s.nozzle_id = n.id
        JOIN public.pumps p ON n.pump_id = p.id
-       WHERE p.station_id = $1 AND DATE(s.recorded_at) = $2 AND s.tenant_id = $3`,
+       WHERE p.station_id = $1::uuid AND DATE(s.recorded_at) = $2::date AND s.tenant_id = $3::uuid`,
       [stationId, date, tenantId]
     );
 
@@ -169,9 +169,9 @@ export async function runReconciliation(
            FROM public.nozzle_readings nr
            JOIN public.nozzles n ON nr.nozzle_id = n.id
            JOIN public.pumps p ON n.pump_id = p.id
-          WHERE p.station_id = $1
-            AND DATE(nr.recorded_at) = $2
-            AND nr.tenant_id = $3
+          WHERE p.station_id = $1::uuid
+            AND DATE(nr.recorded_at) = $2::date
+            AND nr.tenant_id = $3::uuid
           GROUP BY nr.nozzle_id
        ) r`,
       [stationId, date, tenantId]
@@ -193,15 +193,15 @@ export async function runReconciliation(
          SET total_sales=$2, cash_total=$3, card_total=$4, upi_total=$5, credit_total=$6,
              opening_reading=$7, closing_reading=$8, variance=$9,
              finalized=$11, updated_at=NOW()
-       WHERE id=$1 AND tenant_id = $10`,
+       WHERE id=$1::uuid AND tenant_id = $10::uuid`,
       [reconciliationId, row.total_sales, row.cash_total, row.card_total, row.upi_total, row.credit_total,
        openingReading, closingReading, variance, tenantId, shouldFinalize]
     );
     
     // Check for cash reports on this date and create reconciliation diff if found
     const cashReportRes = await client.query(
-      `SELECT id, cash_amount FROM public.cash_reports 
-       WHERE station_id = $1 AND date = $2 AND tenant_id = $3`,
+      `SELECT id, cash_amount FROM public.cash_reports
+       WHERE station_id = $1::uuid AND date = $2::date AND tenant_id = $3::uuid`,
       [stationId, date, tenantId]
     );
     
@@ -214,16 +214,16 @@ export async function runReconciliation(
       
       // Check if reconciliation diff already exists
       const diffRes = await client.query(
-        `SELECT id FROM public.reconciliation_diff 
-         WHERE cash_report_id = $1 AND reconciliation_id = $2`,
+        `SELECT id FROM public.reconciliation_diff
+         WHERE cash_report_id = $1::uuid AND reconciliation_id = $2::uuid`,
         [cashReport.id, reconciliationId]
       );
       
       if (!diffRes.rowCount) {
         await client.query(
-          `INSERT INTO public.reconciliation_diff 
+          `INSERT INTO public.reconciliation_diff
            (id, tenant_id, station_id, date, reported_cash, actual_cash, difference, status, cash_report_id, reconciliation_id)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+           VALUES ($1::uuid, $2::uuid, $3::uuid, $4::date, $5, $6, $7, $8, $9::uuid, $10::uuid)`,
           [randomUUID(), tenantId, stationId, date, reportedCash, actualCash, difference, status, cashReport.id, reconciliationId]
         );
       }
@@ -283,7 +283,7 @@ export async function listReconciliations(
                (total_sales > 0) AS has_sales
                FROM public.day_reconciliations WHERE tenant_id = $1`;
   if (stationId) {
-    query += ` AND station_id = $${idx++}`;
+    query += ` AND station_id = $${idx++}::uuid`;
     params.push(stationId);
   }
   query += ' ORDER BY date DESC';
