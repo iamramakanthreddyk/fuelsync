@@ -1767,3 +1767,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/services/todaysSales.service.ts`, `docs/STEP_fix_20250727_COMMAND.md`
 
 **Overview:** Restored all queries in `/todays-sales/summary` to compute totals from the `sales` table. This fixes zero values returned after a regression.
+
+### 🛠️ Fix 2025-07-28 – UUID mismatches in reconciliation
+**Status:** ✅ Done
+**Files:** `src/services/reconciliation.service.ts`, `src/utils/hasStationAccess.ts`, `migrations/schema/014_update_reconciliation_diff_uuid.sql`, `docs/STEP_fix_20250728_COMMAND.md`
+
+**Overview:** Converted `reconciliation_diff` IDs to `UUID` and added explicit casting for all station and tenant parameters. This prevents `text = uuid` errors when fetching daily summaries.

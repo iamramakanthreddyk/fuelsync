@@ -3502,3 +3502,10 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Reinstated `/todays-sales/summary` queries to read from the `sales` table so totals reflect actual volume and amount.
 * `docs/STEP_fix_20250727_COMMAND.md`
+
+## [Fix 2025-07-28] – UUID mismatches in reconciliation
+
+### 🟥 Fixes
+* Converted `reconciliation_diff` ID columns to `UUID` via migration `014`.
+* Cast all UUID and date parameters in reconciliation services and station access checks.
+* `docs/STEP_fix_20250728_COMMAND.md`
