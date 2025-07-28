@@ -123,24 +123,24 @@ export function createReconciliationHandlers(db: Pool) {
             LEFT JOIN LATERAL (
               SELECT price
               FROM public.fuel_prices fp
-              WHERE fp.station_id = p.station_id
+              WHERE fp.station_id::text = p.station_id::text
                 AND fp.fuel_type = n.fuel_type
-                AND fp.tenant_id = $3
+                AND fp.tenant_id::text = $3
                 AND fp.valid_from <= nr.recorded_at
                 AND (fp.effective_to IS NULL OR fp.effective_to > nr.recorded_at)
               ORDER BY fp.valid_from DESC
               LIMIT 1
             ) fp_lateral ON true
-            WHERE p.station_id = $1
-              AND nr.tenant_id = $3
+            WHERE p.station_id::text = $1
+              AND nr.tenant_id::text = $3
               AND DATE(nr.recorded_at) = $2::date
             ORDER BY nr.nozzle_id, nr.recorded_at
           ),
           cash_declared AS (
             SELECT COALESCE(SUM(cash_amount), 0) as total_cash
             FROM public.cash_reports cr
-            WHERE cr.station_id = $1
-              AND cr.tenant_id = $3
+            WHERE cr.station_id::text = $1
+              AND cr.tenant_id::text = $3
               AND DATE(cr.reported_at) = $2::date
           )
           SELECT
