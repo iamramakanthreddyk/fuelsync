@@ -3438,6 +3438,13 @@ Each entry is tied to a step from the implementation index.
 * `/reports/sales` handler simplified to rely on `parseRows`.
 * `docs/STEP_fix_20260907_COMMAND.md`
 
+## [Fix 2026-09-08] – Reconciliation unit test coverage
+
+### 🟩 Fixes
+* Added tests for `markDayAsFinalized` and `runReconciliation` edge cases.
+* Ensured local Postgres setup via `scripts/ensure-db-init.js` before running tests.
+* `docs/STEP_fix_20260908_COMMAND.md`
+
 ## [Fix 2026-09-06] – API type regeneration instructions
 
 ### 🟦 Enhancements
