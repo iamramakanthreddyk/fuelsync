@@ -145,12 +145,17 @@ export function createAttendantHandlers(db: Pool) {
     cashReports: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        if (!tenantId) {
+        const userId = req.user?.userId;
+        const userRole = req.user?.role;
+        
+        if (!tenantId || !userId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         
-        // For now, just return a placeholder response
-        successResponse(res, { reports: [] });
+        const { listCashReports } = await import('../services/cashReport.service');
+        const reports = await listCashReports(db, tenantId, userId, userRole);
+        
+        successResponse(res, { reports });
       } catch (err: any) {
         return errorResponse(res, 500, err.message || 'Failed to fetch cash reports');
       }

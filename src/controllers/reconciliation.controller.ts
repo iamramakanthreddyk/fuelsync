@@ -107,59 +107,46 @@ export function createReconciliationHandlers(db: Pool) {
         }
 
         const query = `
-          WITH ordered_readings AS (
-            SELECT
-              nr.nozzle_id,
-              n.nozzle_number,
-              n.fuel_type,
-              nr.reading as current_reading,
-              LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) as previous_reading,
-              nr.payment_method,
-              nr.recorded_at,
-              fp_lateral.price as price_per_litre
-            FROM public.nozzle_readings nr
-            JOIN public.nozzles n ON nr.nozzle_id = n.id
-            JOIN public.pumps p ON n.pump_id = p.id
-            LEFT JOIN LATERAL (
-              SELECT price
-              FROM public.fuel_prices fp
-              WHERE fp.station_id::text = p.station_id::text
-                AND fp.fuel_type = n.fuel_type
-                AND fp.tenant_id::text = $3
-                AND fp.valid_from <= nr.recorded_at
-                AND (fp.effective_to IS NULL OR fp.effective_to > nr.recorded_at)
-              ORDER BY fp.valid_from DESC
-              LIMIT 1
-            ) fp_lateral ON true
-            WHERE p.station_id::text = $1
-              AND nr.tenant_id::text = $3
-              AND DATE(nr.recorded_at) = $2::date
-            ORDER BY nr.nozzle_id, nr.recorded_at
-          ),
-          cash_declared AS (
-            SELECT COALESCE(SUM(cash_amount), 0) as total_cash
-            FROM public.cash_reports cr
-            WHERE cr.station_id::text = $1
-              AND cr.tenant_id::text = $3
-              AND cr.date = $2::date
-          )
           SELECT
-            nozzle_id,
-            nozzle_number,
-            fuel_type,
-            COALESCE(previous_reading, 0) as previous_reading,
-            current_reading,
-            GREATEST(current_reading - COALESCE(previous_reading, 0), 0) as delta_volume,
-            COALESCE(price_per_litre, 0) as price_per_litre,
-            GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * COALESCE(price_per_litre, 0) as sale_value,
-            payment_method,
-            (SELECT total_cash FROM cash_declared) as cash_declared
-          FROM ordered_readings
+            nr.nozzle_id,
+            n.nozzle_number,
+            n.fuel_type,
+            nr.reading as current_reading,
+            0 as previous_reading,
+            nr.reading as delta_volume,
+            COALESCE(fp.price, 0) as price_per_litre,
+            nr.reading * COALESCE(fp.price, 0) as sale_value,
+            nr.payment_method,
+            0 as cash_declared
+          FROM public.nozzle_readings nr
+          JOIN public.nozzles n ON nr.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          LEFT JOIN public.fuel_prices fp ON fp.station_id::text = p.station_id::text
+            AND fp.fuel_type = n.fuel_type
+            AND fp.tenant_id::text = $3
+          WHERE p.station_id::text = $1
+            AND nr.tenant_id::text = $3
+            AND DATE(nr.recorded_at) = $2::date
+          ORDER BY nr.nozzle_id, nr.recorded_at
         `;
 
         console.log('[DAILY-SUMMARY] Query params:', [stationId, date, tenantId]);
-        // Ensure parameters are strings to avoid UUID type issues
+        
+        // First, let's check if there are any readings for this station and date
+        const debugQuery = `
+          SELECT COUNT(*) as reading_count
+          FROM public.nozzle_readings nr
+          JOIN public.nozzles n ON nr.nozzle_id = n.id
+          JOIN public.pumps p ON n.pump_id = p.id
+          WHERE p.station_id::text = $1
+            AND nr.tenant_id::text = $3
+            AND DATE(nr.recorded_at) = $2::date
+        `;
+        
         const params = [String(stationId), String(date), String(tenantId)];
+        const debugResult = await db.query(debugQuery, params);
+        console.log('[DAILY-SUMMARY] Debug - readings found:', debugResult.rows[0]?.reading_count);
+        
         const result = await db.query(query, params);
         
         console.log('[DAILY-SUMMARY] Result:', result.rows.length, 'rows');
