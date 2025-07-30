@@ -1751,6 +1751,16 @@ sudo apt-get update && sudo apt-get install -y postgresql
 
 
 **Overview:** Documented and tested the new `/todays-sales/summary` endpoint which returns a consolidated sales snapshot for the selected date. OpenAPI specs now describe the response schemas and allowed roles. API types were regenerated and integration tests verify RBAC behaviour.
+### 🛠️ Step 2.62 – API user journey diagrams
+**Status:** ✅ Done
+**Files:** `docs/journeys/USER_API_FLOW.md`, `docs/STEP_2_62_COMMAND.md`
+
+**Overview:** Added mermaid diagrams demonstrating how owners/managers set up stations, pumps, nozzles and fuel prices, followed by attendants recording nozzle readings. These diagrams clarify the end-to-end API flow.
+### 🛠️ Step 2.63 – Expanded user journey diagrams
+**Status:** ✅ Done
+**Files:** `docs/journeys/USER_API_FLOW.md`, `docs/STEP_2_63_COMMAND.md`
+
+**Overview:** Extended the diagrams to show sale calculation logic, validation edge cases, analytics and reconciliation flow, plus an ER diagram linking key tables.
 ### 🛠️ Fix 2025-07-25 – Today's sales summary query
 **Status:** ✅ Done
 **Files:** `src/services/todaysSales.service.ts`, `docs/STEP_fix_20250725_COMMAND.md`

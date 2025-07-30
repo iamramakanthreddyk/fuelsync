@@ -3485,6 +3485,16 @@ Each entry is tied to a step from the implementation index.
 * Generated updated TypeScript API types.
 * Added integration test for RBAC on the new endpoint.
 * `docs/STEP_2_61_COMMAND.md`
+## [Step 2.62] – API user journey diagrams
+
+### 🟦 Documentation
+* Added `docs/journeys/USER_API_FLOW.md` illustrating station setup and reading workflows using Mermaid diagrams.
+* `docs/STEP_2_62_COMMAND.md`
+## [Step 2.63] – Expanded user journey diagrams
+
+### 🟦 Documentation
+* Enhanced `docs/journeys/USER_API_FLOW.md` with sales calculation, validation edge cases, analytics flow and an ER diagram linking key tables.
+* `docs/STEP_2_63_COMMAND.md`
 ## [Fix 2025-07-25] – Today's sales summary query
 
 ### 🟥 Fixes
