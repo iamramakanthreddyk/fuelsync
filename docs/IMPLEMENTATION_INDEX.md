@@ -318,6 +318,8 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | 2     | 2.59 | Reconciliation finalization helpers | ✅ Done | `src/services/reconciliation.service.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `migrations/schema/013_prevent_finalized_writes.sql` | `PHASE_2_SUMMARY.md#step-2.59` |
 | 2     | 2.60 | Reconciliation station validation | ✅ Done | `src/utils/hasStationAccess.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `tests/reconciliation.service.test.ts` | `PHASE_2_SUMMARY.md#step-2.60` |
 | 2     | 2.61 | Today's sales summary endpoint | ✅ Done | `docs/openapi.yaml`, `frontend/docs/openapi-v1.yaml`, `src/types/api.ts`, `tests/integration/todaysSales.test.ts` | `PHASE_2_SUMMARY.md#step-2.61` |
+| 2     | 2.62 | API user journey diagrams | ✅ Done | `docs/journeys/USER_API_FLOW.md` | `PHASE_2_SUMMARY.md#step-2.62` |
+| 2     | 2.63 | Expanded user journey diagrams | ✅ Done | `docs/journeys/USER_API_FLOW.md` | `PHASE_2_SUMMARY.md#step-2.63` |
 | fix | 2025-07-25 | Today's sales summary query | ✅ Done | `src/services/todaysSales.service.ts` | `docs/STEP_fix_20250725_COMMAND.md` |
 | fix | 2025-07-26 | Azure master deployment branch | ✅ Done | `.github/workflows/main_fuelsync.yml` | `docs/STEP_fix_20250726_COMMAND.md` |
 | fix | 2025-07-27 | Restore sales aggregation | ✅ Done | `src/services/todaysSales.service.ts` | `docs/STEP_fix_20250727_COMMAND.md` |
