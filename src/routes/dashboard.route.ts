@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { authenticateJWT } from '../middlewares/authenticateJWT';
 import { requireRole } from '../middlewares/requireRole';
 import { UserRole } from '../constants/auth';
+// Using standard dashboard controller (optimized version requires Redis)
 import { createDashboardHandlers } from '../controllers/dashboard.controller';
 
 export function createDashboardRouter(db: Pool) {

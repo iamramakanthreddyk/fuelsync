@@ -50,18 +50,27 @@ export async function listNozzles(
   pumpId?: string
 ) {
   // Get nozzles with their latest reading and station information
+  // Ensure proper isolation - each nozzle gets its own reading, not shared data
   const sql = `
-    SELECT 
-      n.*,
+    SELECT
+      n.id,
+      n.tenant_id,
+      n.pump_id,
+      n.nozzle_number,
+      n.fuel_type,
+      n.status,
+      n.created_at,
+      n.updated_at,
       p.name as pump_name,
       p.station_id,
       s.name as station_name,
       (
-        SELECT reading 
-        FROM public.nozzle_readings nr 
-        WHERE nr.nozzle_id = n.id 
+        SELECT reading
+        FROM public.nozzle_readings nr
+        WHERE nr.nozzle_id = n.id
         AND nr.tenant_id = n.tenant_id
-        ORDER BY nr.recorded_at DESC 
+        AND nr.status != 'voided'
+        ORDER BY nr.recorded_at DESC
         LIMIT 1
       ) as last_reading
     FROM public.nozzles n
@@ -69,12 +78,25 @@ export async function listNozzles(
     LEFT JOIN public.stations s ON p.station_id = s.id
     WHERE n.tenant_id = $1
     ${pumpId ? 'AND n.pump_id = $2' : ''}
-    ORDER BY n.nozzle_number ASC
+    ORDER BY p.name ASC, n.nozzle_number ASC
   `;
   
   const params = pumpId ? [tenantId, pumpId] : [tenantId];
+  console.log('[NOZZLE-SERVICE] Fetching nozzles with params:', params);
+  console.log('[NOZZLE-SERVICE] SQL query:', sql);
+
   const nozzles = await prisma.$queryRawUnsafe(sql, ...params);
-  return parseRows(nozzles as any);
+  const parsedNozzles = parseRows(nozzles as any);
+
+  console.log('[NOZZLE-SERVICE] Raw nozzles from DB:', nozzles);
+  console.log('[NOZZLE-SERVICE] Parsed nozzles:', parsedNozzles);
+
+  // Log each nozzle's last reading for debugging
+  parsedNozzles.forEach((nozzle: any) => {
+    console.log(`[NOZZLE-SERVICE] Nozzle ${nozzle.id} (#${nozzle.nozzleNumber}) last_reading:`, nozzle.lastReading || nozzle.last_reading);
+  });
+
+  return parsedNozzles;
 }
 
 export async function deleteNozzle(

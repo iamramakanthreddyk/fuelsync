@@ -1,3 +1,4 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import {
@@ -59,7 +60,7 @@ export function createDailyClosureHandlers(db: Pool) {
     closeBusiness: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        if (!user?.tenantId || !user.userId) {
+        if (!user?.tenantId || !user.id) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
 
@@ -89,7 +90,7 @@ export function createDailyClosureHandlers(db: Pool) {
         }
 
         const { enhanceReconciliationWithCash } = await import('../services/dailyClosure.service');
-        const id = await enhanceReconciliationWithCash(db, user.tenantId, data.stationId, data.closureDate, data.reportedCashAmount, data.varianceReason || '', user.userId);
+        const id = await enhanceReconciliationWithCash(db, user.tenantId, data.stationId, data.closureDate, data.reportedCashAmount, data.varianceReason || '', user.id);
         successResponse(res, { 
           id, 
           warnings: validation.warnings 

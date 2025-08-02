@@ -8,7 +8,8 @@
 -- Ensure no production data exists before running.
 -- =========================================
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- Note: pgcrypto extension not available in Azure PostgreSQL for regular users
+-- gen_random_uuid() is available by default in PostgreSQL 13+
 BEGIN;
 
 -- Apply consolidated alterations

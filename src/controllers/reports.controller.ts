@@ -3,19 +3,111 @@ import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { normalizeStationId } from '../utils/normalizeStationId';
+import { getPlanRules } from '../config/planConfig';
+import {
+  getReportTier,
+  isReportTypeAllowed,
+  isFormatAllowed,
+  getMaxRecords,
+  checkDailyReportLimit,
+  logReportGeneration
+} from '../config/reportTiers';
 import { parseRows } from '../utils/parseDb';
+
+// Enhanced plan-based report access control with tiers
+async function checkReportAccess(
+  db: Pool,
+  tenantId: string,
+  reportType: string,
+  format: string = 'csv'
+): Promise<{ allowed: boolean; message?: string; tier?: any }> {
+  try {
+    const tenantResult = await db.query('SELECT plan_id FROM public.tenants WHERE id = $1', [tenantId]);
+    if (tenantResult.rows.length === 0) {
+      return { allowed: false, message: 'Tenant not found' };
+    }
+
+    const planId = tenantResult.rows[0].plan_id;
+    const tier = getReportTier(planId);
+
+    // Check if reports are enabled for this plan
+    if (tier.maxRecordsPerReport === 0) {
+      return {
+        allowed: false,
+        message: 'Reports not available in your current plan. Please upgrade to Pro or Enterprise.',
+        tier
+      };
+    }
+
+    // Check report type access
+    if (!isReportTypeAllowed(planId, reportType)) {
+      return {
+        allowed: false,
+        message: `Report type '${reportType}' not available in ${tier.name} plan. Please upgrade for advanced reports.`,
+        tier
+      };
+    }
+
+    // Check format access
+    if (!isFormatAllowed(planId, format)) {
+      return {
+        allowed: false,
+        message: `Format '${format}' not available in ${tier.name} plan. Available formats: ${tier.allowedFormats.join(', ')}`,
+        tier
+      };
+    }
+
+    // Check daily limits
+    const dailyLimit = await checkDailyReportLimit(db, tenantId, planId);
+    if (!dailyLimit.allowed) {
+      return {
+        allowed: false,
+        message: `Daily report limit reached (${tier.maxReportsPerDay}). Please try again tomorrow or upgrade your plan.`,
+        tier
+      };
+    }
+
+    return { allowed: true, tier };
+  } catch (error) {
+    console.error('[REPORTS] Error checking plan access:', error);
+    return { allowed: false, message: 'Error checking plan access' };
+  }
+}
 
 export function createReportsHandlers(db: Pool) {
   async function runExportSales(req: Request, res: Response) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
-        
+
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const dateFrom = req.query.dateFrom as string | undefined;
         const dateTo = req.query.dateTo as string | undefined;
         const format = req.query.format as string || 'json';
-        
+
+        // Check plan-based access with enhanced tiers
+        const accessCheck = await checkReportAccess(db, tenantId, 'sales-basic', format);
+        if (!accessCheck.allowed) {
+          return errorResponse(res, 403, accessCheck.message || 'Access denied');
+        }
+
+        const tier = accessCheck.tier;
+        console.log(`[REPORTS] Sales report access granted for ${tier.name} plan`);
+
+        // Apply plan-based limits
+        const requestedLimit = parseInt(req.query.limit as string) || 1000;
+        const planId = (await db.query('SELECT plan_id FROM public.tenants WHERE id = $1', [tenantId])).rows[0]?.plan_id;
+        const limit = getMaxRecords(planId, requestedLimit);
+        const offset = parseInt(req.query.offset as string) || 0;
+        const preview = req.query.preview === 'true';
+
+        if (preview) {
+          // For preview, limit to 10 records
+          req.query.limit = '10';
+        }
+
+        console.log(`[REPORTS] Plan-based limit applied: ${limit} records (requested: ${requestedLimit})`);
+
         const conditions = [];
         const params = [];
         let paramIndex = 1;
@@ -55,14 +147,27 @@ export function createReportsHandlers(db: Pool) {
           LEFT JOIN public.creditors c ON s.creditor_id = c.id
           ${whereClause}
           ORDER BY s.recorded_at DESC
+          LIMIT $${paramIndex++} OFFSET $${paramIndex++}
         `;
-        
+
+        params.push(limit, offset);
+        console.log(`[REPORTS] Sales query - Limit: ${limit}, Offset: ${offset}, Preview: ${preview}`);
+        const startTime = Date.now();
         const result = await db.query(query, params);
-        
+        const generationTime = Date.now() - startTime;
+
+        // Log report generation for tracking (async, don't wait)
+        if (!preview) {
+          logReportGeneration(db, tenantId, 'sales-basic', result.rows.length, format)
+            .catch(err => console.error('[REPORTS] Error logging generation:', err));
+        }
+
         if (format === 'csv') {
           const csv = convertToCSV(result.rows);
           res.setHeader('Content-Type', 'text/csv');
           res.setHeader('Content-Disposition', 'attachment; filename=sales-report.csv');
+          res.setHeader('X-Report-Records', result.rows.length.toString());
+          res.setHeader('X-Report-Generation-Time', generationTime.toString());
           res.send(csv);
         } else {
           const data = parseRows(result.rows);
@@ -71,7 +176,10 @@ export function createReportsHandlers(db: Pool) {
             summary: {
               totalRecords: data.length,
               totalSales: data.reduce((sum, row) => sum + row.amount, 0),
-              totalProfit: data.reduce((sum, row) => sum + row.profit, 0)
+              totalProfit: data.reduce((sum, row) => sum + row.profit, 0),
+              generationTimeMs: generationTime,
+              planTier: tier.name,
+              remainingDailyReports: (await checkDailyReportLimit(db, tenantId, planId)).remaining
             }
           });
         }
@@ -84,6 +192,12 @@ export function createReportsHandlers(db: Pool) {
       try {
         const tenantId = req.user?.tenantId;
         if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+
+        // Check plan-based access
+        const hasAccess = await checkReportAccess(db, tenantId, 'financial');
+        if (!hasAccess) {
+          return errorResponse(res, 403, 'Financial reports not available in your current plan. Please upgrade to access reports.');
+        }
 
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         const period = req.query.period as string || 'monthly';

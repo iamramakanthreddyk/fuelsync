@@ -1,3 +1,4 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { errorResponse } from '../utils/errorResponse';
@@ -14,8 +15,8 @@ export function createDashboardHandlers(db: Pool) {
         const user = req.user;
         const tenantId = user?.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
-        if (stationId) {
-          const allowed = await hasStationAccess(db, user!, stationId);
+        if (stationId && user) {
+          const allowed = await hasStationAccess(db, user, stationId);
           if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }
@@ -65,10 +66,13 @@ export function createDashboardHandlers(db: Pool) {
     getPaymentMethodBreakdown: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        const tenantId = user?.tenantId;
+        if (!user) {
+          return errorResponse(res, 401, 'Unauthorized');
+        }
+        const tenantId = user.tenantId;
         const stationId = normalizeStationId(req.query.stationId as string | undefined);
         if (stationId) {
-          const allowed = await hasStationAccess(db, user!, stationId);
+          const allowed = await hasStationAccess(db, user, stationId);
           if (!allowed) {
             return errorResponse(res, 403, 'Station access denied');
           }

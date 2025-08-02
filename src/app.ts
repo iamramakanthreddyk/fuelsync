@@ -1,3 +1,5 @@
+/// <reference path="./types/express.d.ts" />
+// Import custom Express types - handled by TypeScript compilation
 import express from 'express';
 import cors from 'cors';
 import pool from './utils/db';
@@ -28,6 +30,7 @@ import { createAlertsRouter } from './routes/alerts.route';
 import { createAttendantRouter } from "./routes/attendant.route";
 import { createAttendanceRouter } from "./routes/attendance.route";
 import { createSetupStatusRouter } from './routes/setupStatus.route';
+import { createOnboardingRoutes } from './routes/onboarding.routes';
 import { createDailySalesRouter } from './routes/dailySales.route';
 import { createTodaysSalesRoutes } from './routes/todaysSales.route';
 import { createDailyClosureRoutes } from './routes/dailyClosure.route';
@@ -36,12 +39,12 @@ import { errorHandler } from './middlewares/errorHandler';
 import { successResponse } from './utils/successResponse';
 import { errorResponse } from './utils/errorResponse';
 import { authenticateJWT } from './middlewares/authenticateJWT';
-
 import { debugRequest } from './middlewares/debugRequest';
+import { convertResponseToCamelCase, caseConversionStatsMiddleware } from './middlewares/caseConversionMiddleware';
 
 export function createApp() {
   const app = express();
-  
+
   // Handle ALL requests to auth endpoints directly
   // app.all('/v1/auth/login', async (req, res) => {
   //   // Handle OPTIONS
@@ -52,17 +55,17 @@ export function createApp() {
   //     res.header('Access-Control-Allow-Credentials', 'true');
   //     return res.sendStatus(200);
   //   }
-    
+
   //   // Handle POST login
   //   if (req.method === 'POST') {
   //     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   //     res.header('Access-Control-Allow-Credentials', 'true');
   //     return res.json({ message: 'Direct login handler working', body: req.body });
   //   }
-    
+
   //   res.status(405).json({ error: 'Method not allowed' });
   // });
-  
+
   // Handle OPTIONS requests FIRST before any other middleware
   app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
@@ -71,7 +74,7 @@ export function createApp() {
     res.header('Access-Control-Allow-Credentials', 'true');
     res.sendStatus(200);
   });
-  
+
   // CORS middleware with more detailed configuration
   app.use((req, res, next) => {
     // Allow all origins for testing
@@ -79,14 +82,23 @@ export function createApp() {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-tenant-id');
     res.header('Access-Control-Allow-Credentials', 'true');
-    
+
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
     }
-    
+
     next();
   });
+
   app.use(express.json());
+
+  // Apply case conversion middleware globally
+  app.use(convertResponseToCamelCase());
+
+  // Add case conversion statistics in development
+  if (process.env.NODE_ENV === 'development') {
+    app.use(caseConversionStatsMiddleware());
+  }
 
   // Tenant context is now handled by JWT-based setTenantContext middleware in individual routes
   // No global tenant context middleware needed
@@ -106,13 +118,15 @@ export function createApp() {
     });
   }
   
-  // Enhanced health check endpoint with detailed diagnostics
+  // 🚀 FUELSYNC OPTIMIZATION: Enhanced health check endpoint with cache and performance metrics
   app.get('/health', async (_req, res) => {
     try {
       const { testConnection } = await import('./utils/db');
       console.log('[HEALTH] Running database connection test...');
       const dbResult = await testConnection();
-      
+
+
+
       // Get system information
       const systemInfo = {
         nodeVersion: process.version,
@@ -122,7 +136,7 @@ export function createApp() {
         uptime: process.uptime(),
         cpus: require('os').cpus().length
       };
-      
+
       // Get environment variables (filtered for security)
       const envVars = process.env.NODE_ENV !== 'production' ? {
         NODE_ENV: process.env.NODE_ENV,
@@ -134,10 +148,10 @@ export function createApp() {
         DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
         PORT: process.env.PORT || '3003'
       } : undefined;
-      
+
       // Check if we're running in Azure
       const isAzure = process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID || false;
-      
+
       successResponse(res, {
         status: dbResult.success ? 'ok' : 'database_error',
         database: dbResult.success ? 'connected' : 'failed',
@@ -148,7 +162,7 @@ export function createApp() {
         envVars,
         timestamp: new Date().toISOString()
       });
-      
+
       console.log('[HEALTH] Health check completed with status:', dbResult.success ? 'ok' : 'database_error');
     } catch (err: any) {
       console.error('[HEALTH] Health check failed with error:', err);
@@ -230,11 +244,12 @@ export function createApp() {
   app.use(`${API_PREFIX}/reports`, createDailySalesRouter(pool));
   app.use(`${API_PREFIX}/todays-sales`, createTodaysSalesRoutes(pool));
   app.use(`${API_PREFIX}/daily-closure`, createDailyClosureRoutes(pool));
-  app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter());
+  app.use(`${API_PREFIX}/analytics`, createAnalyticsRouter(pool));
   app.use(`${API_PREFIX}`, createSetupStatusRouter(pool));
   app.use(`${API_PREFIX}/attendant`, createAttendantRouter(pool));
   app.use(`${API_PREFIX}/attendance`, createAttendanceRouter(pool));
   app.use(`${API_PREFIX}/shifts`, createAttendanceRouter(pool));
+  app.use(`${API_PREFIX}/onboarding`, createOnboardingRoutes(pool));
 
   app.use('*', (_req, res) => {
     return errorResponse(res, 404, 'Route not found');
@@ -250,7 +265,7 @@ export default app;
 
 // For local development
 if (require.main === module) {
-  const port = process.env.PORT || 3003;
+  const port = process.env.PORT || 3004;
   app.listen(port, () => {
     console.log(`FuelSync API listening on ${port}`);
   });

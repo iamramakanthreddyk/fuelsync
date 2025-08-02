@@ -13,7 +13,7 @@ export async function createNozzleReading(
   tenantId: string,
   data: NozzleReadingInput,
   userId: string
-): Promise<string> {
+): Promise<any> {
   let client;
   try {
     client = await db.connect();
@@ -21,12 +21,30 @@ export async function createNozzleReading(
     
     // Start transaction
     await client.query('BEGIN');
+    console.log(`[NOZZLE-READING] Transaction started`);
+
+    // Get nozzle information for response
+    console.log(`[NOZZLE-READING] Step 1: Getting nozzle information...`);
+    console.log(`[NOZZLE-READING] Parameters: nozzleId=${data.nozzleId}, tenantId=${tenantId}`);
+    const nozzleRes = await client.query<{ nozzle_number: number; fuel_type: string }>(
+      'SELECT nozzle_number, fuel_type FROM public.nozzles WHERE id = $1 AND tenant_id = $2',
+      [data.nozzleId, tenantId]
+    );
+    console.log(`[NOZZLE-READING] Step 1 completed: Found ${nozzleRes.rowCount} nozzles`);
+
+    if (nozzleRes.rowCount === 0) {
+      throw new Error('Nozzle not found');
+    }
+
+    const nozzleData = nozzleRes.rows[0];
+
     // Get the last reading for this nozzle
+    console.log(`[NOZZLE-READING] Step 2: Getting last reading...`);
     const lastRes = await client.query<{ reading: number; recorded_at: Date }>(
       'SELECT reading, recorded_at FROM public.nozzle_readings WHERE nozzle_id = $1 AND tenant_id = $2 AND status != $3 ORDER BY recorded_at DESC LIMIT 1',
       [data.nozzleId, tenantId, 'voided']
     );
-    console.log(`[NOZZLE-READING] Last reading query returned ${lastRes.rowCount ?? 0} rows`);
+    console.log(`[NOZZLE-READING] Step 2 completed: Last reading query returned ${lastRes.rowCount ?? 0} rows`);
     
     // Default to 0 if no previous reading
     const lastReading = lastRes.rows[0]?.reading ?? 0;
@@ -46,9 +64,11 @@ export async function createNozzleReading(
       console.log(`[NOZZLE-READING] Meter reset detected: ${data.reading} < ${lastReading}`);
       
       // Get user role to check if they can do meter resets
-      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
+      console.log(`[NOZZLE-READING] Step 3a: Getting user role for meter reset check...`);
+      console.log(`[NOZZLE-READING] User ID: ${userId}`);
+      const userRole = await client.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
-      console.log(`[NOZZLE-READING] User role for meter reset: ${role}`);
+      console.log(`[NOZZLE-READING] Step 3a completed: User role for meter reset: ${role}`);
       
       // Only managers and owners can do meter resets
       if (role !== 'manager' && role !== 'owner') {
@@ -62,7 +82,7 @@ export async function createNozzleReading(
       console.log(`[NOZZLE-READING] Backdated reading detected: ${new Date(data.recordedAt).toISOString()} < ${new Date(lastReadingDate).toISOString()}`);
       
       // Get user role
-      const userRole = await db.query('SELECT role FROM public.users WHERE id = $1', [userId]);
+      const userRole = await client.query('SELECT role FROM public.users WHERE id = $1', [userId]);
       const role = userRole.rows[0]?.role;
       console.log(`[NOZZLE-READING] User role for backdated reading: ${role}`);
       
@@ -71,56 +91,140 @@ export async function createNozzleReading(
       }
     }
 
-    const nozzleInfo = await client.query<{ fuel_type: string; station_id: string }>(
+    console.log(`[NOZZLE-READING] Step 4: Getting nozzle details...`);
+    const nozzleDetailsQuery = await client.query<{ fuel_type: string; station_id: string }>(
       'SELECT n.fuel_type, p.station_id FROM public.nozzles n JOIN public.pumps p ON n.pump_id = p.id WHERE n.id = $1 AND n.tenant_id = $2',
       [data.nozzleId, tenantId]
     );
-    if (!nozzleInfo.rowCount) {
-      throw new Error('Invalid nozzle');
-    }
-    const { fuel_type, station_id } = nozzleInfo.rows[0];
+    console.log(`[NOZZLE-READING] Step 4 completed: Found ${nozzleDetailsQuery.rowCount} nozzle details`);
 
+    const nozzleBasicInfo = nozzleRes.rows[0];
+
+    if (nozzleDetailsQuery.rowCount === 0) {
+      throw new Error('Nozzle details not found');
+    }
+
+    const { fuel_type, station_id } = nozzleDetailsQuery.rows[0];
+
+    console.log(`[NOZZLE-READING] Step 5: Checking if day is finalized...`);
+    console.log(`[NOZZLE-READING] Parameters: tenantId=${tenantId}, stationId=${station_id}, date=${new Date(data.recordedAt)}`);
     const finalized = await isFinalized(client, tenantId, station_id, new Date(data.recordedAt));
+    console.log(`[NOZZLE-READING] Step 5 completed: Day finalized = ${finalized}`);
     if (finalized) {
       throw new Error('Day already finalized for this station');
-    }
-
-    // Check if business day is finalized (same as closed)
-    const dayIsFinalized = await isFinalized(client, tenantId, station_id, new Date(data.recordedAt));
-    if (dayIsFinalized) {
-      throw new Error('Cannot add readings for finalized business day');
     }
 
     // Generate a new UUID for the reading
     const readingId = randomUUID();
     console.log(`[NOZZLE-READING] Creating new reading with ID: ${readingId}`);
-    
+
     // Insert the reading into the database - without creditor_id as it doesn't exist in the table
-    const readingRes = await client.query<{ id: string }>(
-      'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id',
-      [
-        readingId,
-        tenantId,
-        data.nozzleId,
-        data.reading,
-        data.recordedAt,
-        data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
-        'active'
-      ]
-    );
-    
-    console.log(`[NOZZLE-READING] Reading created successfully: ${readingRes.rows[0]?.id}`);
-    // Calculate volume sold
-    let volumeSold;
-    if ((lastRes.rowCount ?? 0) > 0 && data.reading < (Number(lastReading) - 0.001)) {
-      // This is a meter reset - use the new reading as the volume
-      volumeSold = parseFloat(data.reading.toFixed(3));
-      console.log(`[NOZZLE-READING] Meter reset volume calculation: ${volumeSold}`);
-    } else {
-      // Normal case - subtract last reading
-      volumeSold = parseFloat((data.reading - (lastReading || 0)).toFixed(3));
-      console.log(`[NOZZLE-READING] Normal volume calculation: ${data.reading} - ${lastReading} = ${volumeSold}`);
+    console.log(`[NOZZLE-READING] Step 6: About to insert nozzle reading...`);
+    console.log(`[NOZZLE-READING] INSERT Parameters:`, {
+      readingId,
+      tenantId,
+      nozzleId: data.nozzleId,
+      reading: data.reading,
+      recordedAt: data.recordedAt,
+      paymentMethod: data.paymentMethod || (data.creditorId ? 'credit' : 'cash')
+    });
+
+    // Try a simple test query first to isolate the issue
+    console.log(`[NOZZLE-READING] Testing simple UUID query...`);
+    try {
+      await client.query('SELECT $1::uuid as test_uuid', [readingId]);
+      console.log(`[NOZZLE-READING] UUID casting test passed`);
+    } catch (err: any) {
+      console.log(`[NOZZLE-READING] UUID casting test failed:`, err.message);
+      throw new Error(`UUID casting issue: ${err.message}`);
     }
+
+    console.log(`[NOZZLE-READING] About to execute INSERT query...`);
+    let readingRes: any;
+    try {
+      readingRes = await client.query<{
+        id: string;
+        nozzle_id: string;
+        reading: number;
+        recorded_at: Date;
+        payment_method: string;
+        status: string;
+      }>(
+        'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1::uuid,$2::uuid,$3::uuid,$4,$5,$6,$7,NOW()) RETURNING id, nozzle_id, reading, recorded_at, payment_method, status',
+        [
+          readingId,
+          tenantId,
+          data.nozzleId,
+          data.reading,
+          data.recordedAt,
+          data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+          'active'
+        ]
+      );
+      console.log(`[NOZZLE-READING] INSERT query executed successfully`);
+    } catch (insertErr: any) {
+      console.log(`[NOZZLE-READING] INSERT query failed:`, insertErr.message);
+      console.log(`[NOZZLE-READING] INSERT error details:`, insertErr);
+      throw insertErr;
+    }
+
+    console.log(`[NOZZLE-READING] Step 6 completed: Reading created successfully: ${readingRes.rows[0]?.id}`);
+
+    // Calculate volume sold with improved meter reset detection
+    let volumeSold;
+    const currentReading = Number(data.reading);
+    const previousReading = Number(lastReading || 0);
+    const rawVolume = currentReading - previousReading;
+    const hasNoPreviousReading = (lastRes.rowCount ?? 0) === 0;
+
+    console.log(`[NOZZLE-READING] Volume calculation details:`);
+    console.log(`  Current reading: ${currentReading}L`);
+    console.log(`  Previous reading: ${previousReading}L (${hasNoPreviousReading ? 'no previous reading' : 'has previous reading'})`);
+    console.log(`  Raw volume: ${rawVolume}L`);
+
+    if (hasNoPreviousReading || previousReading === 0) {
+      // First reading for this nozzle OR previous reading was 0
+      // Use the current reading as the volume sold
+      volumeSold = currentReading;
+      console.log(`[NOZZLE-READING] 🆕 First reading or previous was 0 - using current reading as volume: ${volumeSold}L`);
+      console.log(`[NOZZLE-READING] 📝 AUDIT: First/zero reading for nozzle ${data.nozzleId}: ${currentReading}L`);
+
+    } else if (rawVolume < 0) {
+      // Negative volume detected - this could be:
+      // 1. Meter reset (common case)
+      // 2. Data entry error
+      // 3. Readings entered out of order
+
+      console.log(`[NOZZLE-READING] ⚠️  NEGATIVE VOLUME DETECTED: ${rawVolume}L`);
+      console.log(`[NOZZLE-READING] This indicates a meter reset or data entry issue`);
+
+      // For meter reset, assume the current reading is the volume sold
+      // This is a common scenario when nozzle meters are reset to 0
+      volumeSold = currentReading;
+      console.log(`[NOZZLE-READING] 🔄 Treating as meter reset - using current reading as volume: ${volumeSold}L`);
+
+      // Log this for audit purposes
+      console.log(`[NOZZLE-READING] 📝 AUDIT: Meter reset detected for nozzle ${data.nozzleId}`);
+      console.log(`[NOZZLE-READING] 📝 AUDIT: Previous: ${previousReading}L → Current: ${currentReading}L → Volume: ${volumeSold}L`);
+
+    } else if (rawVolume === 0) {
+      // No volume sold - this might be a duplicate reading or error
+      console.log(`[NOZZLE-READING] ⚠️  ZERO VOLUME: No fuel dispensed`);
+      volumeSold = 0;
+
+    } else {
+      // Normal case - positive volume
+      volumeSold = parseFloat(rawVolume.toFixed(3));
+      console.log(`[NOZZLE-READING] ✅ Normal volume calculation: ${volumeSold}L`);
+    }
+
+    // Validate volume is reasonable (not extremely large)
+    if (volumeSold > 10000) {
+      console.log(`[NOZZLE-READING] ⚠️  WARNING: Very large volume detected: ${volumeSold}L`);
+      console.log(`[NOZZLE-READING] This might indicate a data entry error`);
+    }
+
+    console.log(`[NOZZLE-READING] 📊 Final volume sold: ${volumeSold}L`);
     
     // Use standardized date handling
     const dateOnly = toStandardDate(data.recordedAt);
@@ -172,26 +276,73 @@ export async function createNozzleReading(
       }
       await incrementCreditorBalance(client, tenantId, data.creditorId, saleAmount);
     }
-    await client.query(
-      'INSERT INTO public.sales (id, tenant_id, nozzle_id, reading_id, station_id, volume, fuel_type, fuel_price, amount, payment_method, creditor_id, created_by, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,NOW())',
-      [
-        randomUUID(),
-        tenantId,
-        data.nozzleId,
-        readingId,
-        station_id,
-        volumeSold,
-        fuel_type,
-        price || 0,
-        saleAmount,
-        data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
-        data.creditorId || null,
-        userId,
-        data.recordedAt,
-      ]
-    );
+
+    console.log(`[NOZZLE-READING] Step 7: About to insert sales record...`);
+    const salesId = randomUUID();
+    const salesParams = [
+      salesId,
+      tenantId,
+      data.nozzleId,
+      readingId,
+      station_id,
+      volumeSold,
+      fuel_type,
+      price || 0,
+      0, // cost_price - default to 0
+      saleAmount,
+      0, // profit - default to 0
+      data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+      data.creditorId || null,
+      userId,
+      'pending',
+      data.recordedAt,
+    ];
+
+    console.log(`[NOZZLE-READING] Sales INSERT Parameters:`, {
+      salesId,
+      tenantId,
+      nozzleId: data.nozzleId,
+      readingId,
+      stationId: station_id,
+      volumeSold,
+      fuelType: fuel_type,
+      price: price || 0,
+      saleAmount,
+      paymentMethod: data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
+      creditorId: data.creditorId || null,
+      userId,
+      recordedAt: data.recordedAt
+    });
+
+    try {
+      const salesResult = await client.query(
+        'INSERT INTO public.sales (id, tenant_id, nozzle_id, reading_id, station_id, volume, fuel_type, fuel_price, cost_price, amount, profit, payment_method, creditor_id, created_by, status, recorded_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,NOW()) RETURNING id',
+        salesParams
+      );
+      console.log(`[NOZZLE-READING] Step 7 completed: Sales record inserted successfully with ID: ${salesResult.rows[0].id}`);
+    } catch (salesError: any) {
+      console.error(`[NOZZLE-READING] CRITICAL ERROR: Sales record insertion failed:`, salesError);
+      console.error(`[NOZZLE-READING] Sales parameters that failed:`, salesParams);
+      throw new Error(`Failed to create sales record: ${salesError.message || 'Unknown error'}`);
+    }
+
+    console.log(`[NOZZLE-READING] Step 8: Committing transaction...`);
     await client.query('COMMIT');
-    return readingRes.rows[0].id;
+    console.log(`[NOZZLE-READING] Step 8 completed: Transaction committed successfully`);
+
+    // Return complete reading data for frontend
+    const createdReading = readingRes.rows[0];
+    return {
+      id: createdReading.id,
+      nozzleId: createdReading.nozzle_id,
+      reading: createdReading.reading,
+      recordedAt: createdReading.recorded_at,
+      paymentMethod: createdReading.payment_method,
+      status: createdReading.status,
+      // Add nozzle number for better frontend display
+      nozzleNumber: nozzleData.nozzle_number,
+      fuelType: nozzleData.fuel_type
+    };
   } catch (err) {
     if (client) {
       await client.query('ROLLBACK');
@@ -262,7 +413,9 @@ export async function listNozzleReadings(
       nr.recorded_at AS "recordedAt",
       COALESCE(nr.payment_method, 'cash') AS "paymentMethod",
       COALESCE(u.name, 'System') AS "attendantName",
-      COALESCE(sa.fuel_price, 0) AS "pricePerLitre"
+      COALESCE(sa.fuel_price, 0) AS "pricePerLitre",
+      COALESCE(sa.amount, 0) AS "amount",
+      COALESCE(sa.volume, 0) AS "volume"
     FROM public.nozzle_readings nr
     LEFT JOIN public.nozzles n ON nr.nozzle_id = n.id
     LEFT JOIN public.pumps p ON n.pump_id = p.id
@@ -474,7 +627,9 @@ export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
        nr.creditor_id,
        n.fuel_type AS "fuelType",
        u.name AS "attendantName",
-       sa.fuel_price AS "pricePerLitre"
+       sa.fuel_price AS "pricePerLitre",
+       sa.amount AS "amount",
+       sa.volume AS "volume"
      FROM public.nozzle_readings nr
      JOIN public.nozzles n ON nr.nozzle_id = n.id
      JOIN public.pumps p ON n.pump_id = p.id

@@ -1,9 +1,14 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import {
   runReconciliation,
   getReconciliation,
   listReconciliations,
+  // NEW: Improved reconciliation functions
+  generateReconciliationSummary,
+  closeDayReconciliation,
+  getReconciliationAnalytics,
 } from '../services/reconciliation.service';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -309,6 +314,205 @@ export function createReconciliationHandlers(db: Pool) {
         successResponse(res, { id: reconciliationId }, 'Business day closed successfully');
       } catch (err: any) {
         return errorResponse(res, 400, err.message);
+      }
+    },
+
+    // ============================================================================
+    // IMPROVED RECONCILIATION HANDLERS - New "System vs Reality" approach
+    // ============================================================================
+
+    /**
+     * GET /api/v1/reconciliation/summary
+     * Get reconciliation summary for a specific date and station
+     */
+    getSummary: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        const { stationId, date } = req.query;
+        if (!stationId || !date) {
+          return errorResponse(res, 400, 'Station ID and date are required');
+        }
+
+        const summary = await generateReconciliationSummary(
+          db,
+          user.tenantId,
+          stationId as string,
+          date as string
+        );
+
+        return successResponse(res, summary);
+      } catch (error: any) {
+        console.error('[RECONCILIATION] Error getting summary:', error);
+        return errorResponse(res, 500, error.message || 'Failed to get reconciliation summary');
+      }
+    },
+
+    /**
+     * POST /api/v1/reconciliation/close-day
+     * Close the day after reviewing differences (supports backdated closures)
+     */
+    closeDay: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId || !user.userId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        const { stationId, date, notes } = req.body;
+        if (!stationId || !date) {
+          return errorResponse(res, 400, 'Station ID and date are required');
+        }
+
+        // Close the day with improved logic
+        const summary = await closeDayReconciliation(
+          db,
+          user.tenantId,
+          stationId,
+          date,
+          user.userId,
+          notes
+        );
+
+        return successResponse(res, {
+          message: 'Day closed successfully',
+          summary
+        });
+      } catch (error: any) {
+        console.error('[RECONCILIATION] Error closing day:', error);
+        return errorResponse(res, 500, error.message || 'Failed to close day');
+      }
+    },
+
+    /**
+     * GET /api/v1/reconciliation/analytics
+     * Get reconciliation analytics for reports integration
+     */
+    getAnalytics: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        const { startDate, endDate, stationId } = req.query;
+
+        const analytics = await getReconciliationAnalytics(
+          db,
+          user.tenantId,
+          startDate as string,
+          endDate as string,
+          stationId as string
+        );
+
+        return successResponse(res, analytics);
+      } catch (error: any) {
+        console.error('[RECONCILIATION] Error getting analytics:', error);
+        return errorResponse(res, 500, error.message || 'Failed to get reconciliation analytics');
+      }
+    },
+
+    /**
+     * GET /api/v1/reconciliation/dashboard
+     * Get reconciliation dashboard data for all stations
+     */
+    getDashboard: async (req: Request, res: Response) => {
+      try {
+        const user = req.user;
+        if (!user?.tenantId) {
+          return errorResponse(res, 400, 'Missing tenant context');
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+
+        // Get all stations for this tenant
+        const stationsResult = await db.query(
+          'SELECT id, name FROM stations WHERE tenant_id = $1 ORDER BY name',
+          [user.tenantId]
+        );
+
+        const dashboard: {
+          today: string;
+          stations: Array<{
+            id: string;
+            name: string;
+            hasData: boolean;
+            isReconciled: boolean;
+            totalDifference: number;
+            systemTotal: number;
+            userTotal: number;
+            canCloseBackdated?: boolean;
+            error?: string;
+          }>;
+          summary: {
+            totalStations: number;
+            reconciledToday: number;
+            pendingReconciliation: number;
+            totalDifferences: number;
+          };
+        } = {
+          today: today,
+          stations: [],
+          summary: {
+            totalStations: stationsResult.rows.length,
+            reconciledToday: 0,
+            pendingReconciliation: 0,
+            totalDifferences: 0
+          }
+        };
+
+        // Get reconciliation status for each station
+        for (const station of stationsResult.rows) {
+          try {
+            const summary = await generateReconciliationSummary(
+              db,
+              user.tenantId,
+              station.id,
+              today
+            );
+
+            dashboard.stations.push({
+              id: station.id,
+              name: station.name,
+              hasData: summary.systemCalculated.totalRevenue > 0 || summary.userEntered.totalCollected > 0,
+              isReconciled: summary.isReconciled,
+              totalDifference: summary.differences.totalDifference,
+              systemTotal: summary.systemCalculated.totalRevenue - summary.systemCalculated.creditSales,
+              userTotal: summary.userEntered.totalCollected,
+              canCloseBackdated: summary.canCloseBackdated
+            });
+
+            if (summary.isReconciled) {
+              dashboard.summary.reconciledToday++;
+            } else if (summary.systemCalculated.totalRevenue > 0 || summary.userEntered.totalCollected > 0) {
+              dashboard.summary.pendingReconciliation++;
+            }
+
+            dashboard.summary.totalDifferences += Math.abs(summary.differences.totalDifference);
+          } catch (error) {
+            console.error(`Error getting summary for station ${station.id}:`, error);
+            // Add station with error status
+            dashboard.stations.push({
+              id: station.id,
+              name: station.name,
+              hasData: false,
+              isReconciled: false,
+              totalDifference: 0,
+              systemTotal: 0,
+              userTotal: 0,
+              canCloseBackdated: false,
+              error: 'Failed to load data'
+            });
+          }
+        }
+
+        return successResponse(res, dashboard);
+      } catch (error: any) {
+        console.error('[RECONCILIATION] Error getting dashboard:', error);
+        return errorResponse(res, 500, error.message || 'Failed to get reconciliation dashboard');
       }
     }
   };

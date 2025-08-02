@@ -7,7 +7,8 @@
 -- PUBLIC SCHEMA (Platform Tables)
 -- =====================================================
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- Note: pgcrypto extension not available in Azure PostgreSQL for regular users
+-- gen_random_uuid() is available by default in PostgreSQL 13+
 
 -- Migration tracking
 CREATE TABLE IF NOT EXISTS public.schema_migrations (

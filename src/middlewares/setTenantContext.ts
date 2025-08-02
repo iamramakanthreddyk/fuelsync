@@ -1,11 +1,8 @@
+// Types handled by TypeScript compilation
 import { Request, Response, NextFunction } from 'express';
 import { UserRole, TENANT_HEADER } from '../constants/auth';
-
-export interface AuthPayload {
-  userId: string;
-  tenantId: string | null;
-  role: UserRole;
-}
+import { AuthPayload, ExtendedUser } from '../types/auth';
+import { getAuthenticatedUser } from '../utils/requestHelpers';
 
 /**
  * Middleware to set tenant schema context from JWT payload
@@ -17,7 +14,7 @@ export function setTenantContext(req: Request, res: Response, next: NextFunction
     return next();
   }
 
-  const user = req.user as AuthPayload | undefined;
+  const user = getAuthenticatedUser(req) as AuthPayload | undefined;
   const headerTenant = req.headers[TENANT_HEADER] as string | undefined;
 
   if (user) {
@@ -25,7 +22,16 @@ export function setTenantContext(req: Request, res: Response, next: NextFunction
       user.tenantId = headerTenant;
     }
     if (user.tenantId) {
-      req.user = user;
+      // Convert AuthPayload to ExtendedUser type
+      const extendedUser: ExtendedUser = {
+        ...user,
+        id: user.userId,
+        email: '', // Will be populated by other middleware if needed
+        tenantId: user.tenantId,
+        name: undefined,
+        planName: undefined
+      };
+      (req as any).user = extendedUser;
       return next();
     }
   }

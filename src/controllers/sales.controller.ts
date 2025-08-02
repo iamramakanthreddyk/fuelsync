@@ -1,3 +1,4 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { parseSalesQuery } from '../validators/sales.validator';

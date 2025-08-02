@@ -1,4 +1,7 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
+import { ExtendedUser } from '../types/auth';
+import { getAuthenticatedUser } from '../utils/requestHelpers';
 import { Pool } from 'pg';
 import { login, loginSuperAdmin } from '../services/auth.service';
 import { errorResponse } from '../utils/errorResponse';
@@ -100,7 +103,7 @@ export function createAuthController(db: Pool) {
     },
     refreshToken: async (req: Request, res: Response) => {
       try {
-        const user = req.user;
+        const user = getAuthenticatedUser(req);
         if (!user) {
           return errorResponse(res, 401, 'Invalid token');
         }

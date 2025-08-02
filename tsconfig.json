@@ -8,16 +8,20 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "types": ["node"]
+    "types": ["node"],
+
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/types/**/*",
+    "src/types/global.d.ts"
   ],
   "exclude": [
     "node_modules",

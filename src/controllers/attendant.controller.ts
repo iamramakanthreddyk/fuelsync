@@ -1,5 +1,7 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
+import { randomUUID } from 'crypto';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
 import { listCreditors } from '../services/creditor.service';
@@ -108,35 +110,79 @@ export function createAttendantHandlers(db: Pool) {
     cashReport: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         if (!tenantId || !userId) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
-        
-        // Validate stationId is present
-        const { stationId, creditorId } = req.body;
+
+        const {
+          stationId,
+          cashAmount = 0,
+          cardAmount = 0,
+          upiAmount = 0,
+          creditAmount = 0,
+          shift = 'day',
+          notes,
+          date = new Date().toISOString().split('T')[0]
+        } = req.body;
+
         if (!stationId) {
           return errorResponse(res, 400, 'Station ID is required');
         }
-        
-        // If creditorId is provided, ensure it exists
-        if (creditorId) {
-          const creditor = await db.query(
-            'SELECT id FROM public.creditors WHERE id = $1 AND tenant_id = $2',
-            [creditorId, tenantId]
-          );
-          
-          if (creditor.rowCount === 0) {
-            return errorResponse(res, 400, 'Invalid creditor ID');
-          }
-          
-          // Log the station and creditor for tracking
-          console.log(`[ATTENDANT-API] Cash report with credit: stationId=${stationId}, creditorId=${creditorId}`);
+
+        // Validate amounts
+        const cash = parseFloat(cashAmount) || 0;
+        const card = parseFloat(cardAmount) || 0;
+        const upi = parseFloat(upiAmount) || 0;
+        const credit = parseFloat(creditAmount) || 0;
+        const total = cash + card + upi + credit;
+
+        if (total <= 0) {
+          return errorResponse(res, 400, 'At least one amount must be greater than zero');
         }
-        
-        // For now, just return a placeholder response
-        successResponse(res, { id: 'placeholder-id' }, 'Cash report submitted successfully', 201);
+
+        // Verify station exists and user has access
+        const stationCheck = await db.query(
+          'SELECT id FROM public.stations WHERE id = $1 AND tenant_id = $2',
+          [stationId, tenantId]
+        );
+
+        if (stationCheck.rowCount === 0) {
+          return errorResponse(res, 400, 'Invalid station ID');
+        }
+
+        // Insert cash report
+        const reportId = randomUUID();
+        const result = await db.query(`
+          INSERT INTO public.cash_reports (
+            id, tenant_id, station_id, user_id, date, shift,
+            cash_amount, card_amount, upi_amount, credit_amount, total_amount,
+            notes, status, created_at, updated_at
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'submitted', NOW(), NOW()
+          )
+          ON CONFLICT (tenant_id, station_id, user_id, date, shift)
+          DO UPDATE SET
+            cash_amount = EXCLUDED.cash_amount,
+            card_amount = EXCLUDED.card_amount,
+            upi_amount = EXCLUDED.upi_amount,
+            credit_amount = EXCLUDED.credit_amount,
+            total_amount = EXCLUDED.total_amount,
+            notes = EXCLUDED.notes,
+            updated_at = NOW()
+          RETURNING id, total_amount
+        `, [reportId, tenantId, stationId, userId, date, shift, cash, card, upi, credit, total, notes]);
+
+        const report = result.rows[0];
+        console.log(`[CASH-REPORT] Created/Updated: ${report.id} for station ${stationId}, total: ${report.total_amount}`);
+
+        successResponse(res, {
+          id: report.id,
+          totalAmount: report.total_amount,
+          message: 'Cash report submitted successfully'
+        }, 'Cash report submitted successfully', 201);
       } catch (err: any) {
+        console.error('[CASH-REPORT] Error:', err);
         return errorResponse(res, 500, err.message || 'Failed to submit cash report');
       }
     },
@@ -145,7 +191,7 @@ export function createAttendantHandlers(db: Pool) {
     cashReports: async (req: Request, res: Response) => {
       try {
         const tenantId = req.user?.tenantId;
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         const userRole = req.user?.role;
         
         if (!tenantId || !userId) {

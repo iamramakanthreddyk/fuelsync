@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { authenticateJWT } from '../middlewares/authenticateJWT';
 import { setTenantContext } from '../middlewares/setTenantContext';
 import { requireRole } from '../middlewares/requireRole';
+import { addPlanContext, enforceOwnDataOnly } from '../middlewares/roleBasedAccess';
 import { UserRole } from '../constants/auth';
 import { createNozzleReadingHandlers } from '../controllers/nozzleReading.controller';
 
@@ -21,7 +22,9 @@ export function createNozzleReadingRouter(db: Pool) {
     '/',
     authenticateJWT,
     setTenantContext,
+    addPlanContext(db),
     requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]),
+    enforceOwnDataOnly(db), // Attendants can only see their own readings
     handlers.list
   );
   router.get(

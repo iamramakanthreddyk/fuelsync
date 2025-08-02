@@ -2,21 +2,8 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
-// Only load .env files in development
-if (process.env.NODE_ENV !== 'production') {
-  const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env.development';
-  dotenv.config({ path: envFile });
-} else {
-  // In production, try to load .env file anyway as a fallback
-  try {
-    if (fs.existsSync('.env')) {
-      console.log('[DB] Loading .env file in production as fallback');
-      dotenv.config();
-    }
-  } catch (err) {
-    console.warn('[DB] Error checking for .env file:', err);
-  }
-}
+// Load environment variables (same as working Azure script)
+dotenv.config();
 
 console.log('[DB] Environment:', process.env.NODE_ENV);
 
@@ -38,26 +25,26 @@ if (useConnectionString) {
   });
 } else if (useAzureParams) {
   console.log('[DB] Using Azure PostgreSQL params');
-  console.log('[DB] Host:', process.env.DB_HOST ? 'SET' : 'NOT_SET');
-  console.log('[DB] User:', process.env.DB_USER ? 'SET' : 'NOT_SET');
-  console.log('[DB] Database:', process.env.DB_NAME ? 'SET' : 'NOT_SET');
-  console.log('[DB] Port:', process.env.DB_PORT ? 'SET' : 'DEFAULT');
-  
+  console.log('[DB] Host:', process.env.DB_HOST || 'NOT_SET');
+  console.log('[DB] User:', process.env.DB_USER || 'NOT_SET');
+  console.log('[DB] Database:', process.env.DB_NAME || 'NOT_SET');
+  console.log('[DB] Port:', process.env.DB_PORT || 'DEFAULT');
+
   // Check if the host is an Azure PostgreSQL server
   const isAzurePostgres = process.env.DB_HOST?.includes('postgres.database.azure.com');
   console.log('[DB] Is Azure PostgreSQL:', isAzurePostgres);
-  
+
+  // Use exact same configuration as working script
   pool = new Pool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT || '5432'),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-    connectionTimeoutMillis: 10000, // Increased timeout for Azure
-    idleTimeoutMillis: 10000,
-    max: process.env.NODE_ENV === 'production' ? 2 : 10, // Increased max connections for production
-    application_name: 'fuelsync-api' // Add application name for better monitoring
+    ssl: { rejectUnauthorized: false }, // Exact same as working script
+    connectionTimeoutMillis: 10000,
+    idleTimeoutMillis: 30000,
+    max: 20
   });
 } else {
   console.error('[DB] No database configuration found!');

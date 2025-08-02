@@ -4,13 +4,14 @@ import bcrypt from 'bcrypt';
 import prisma from '../utils/prisma';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
+import { getAuthenticatedUser } from '../utils/requestHelpers';
 
 export function createUserHandlers(db: Pool) {
   return {
     // List users for the current tenant
     list: async (req: Request, res: Response) => {
       try {
-        const user = req.user;
+        const user = getAuthenticatedUser(req);
         
         // SuperAdmin can access all users or users from specific tenant
         if (user?.role === 'superadmin') {
@@ -106,7 +107,7 @@ export function createUserHandlers(db: Pool) {
     // Get user by ID
     get: async (req: Request, res: Response) => {
       try {
-        const auth = req.user;
+        const auth = getAuthenticatedUser(req);
         const userId = req.params.userId;
         
         // SuperAdmin can access any user
@@ -196,7 +197,7 @@ export function createUserHandlers(db: Pool) {
     // Create a new user
     create: async (req: Request, res: Response) => {
       try {
-        const auth = req.user;
+        const auth = getAuthenticatedUser(req);
         const { email, password, name, role, tenantId: bodyTenantId } = req.body;
         
         // Validate input
@@ -274,7 +275,7 @@ export function createUserHandlers(db: Pool) {
     // Update user
     update: async (req: Request, res: Response) => {
       try {
-        const auth = req.user;
+        const auth = getAuthenticatedUser(req);
         const userId = req.params.userId;
         const { name, role } = req.body;
         
@@ -378,7 +379,8 @@ export function createUserHandlers(db: Pool) {
     // Change password
     changePassword: async (req: Request, res: Response) => {
       try {
-        const tenantId = req.user?.tenantId;
+        const user = getAuthenticatedUser(req);
+        const tenantId = user?.tenantId;
         if (!tenantId) {
           return errorResponse(res, 400, 'Tenant context is required');
         }
@@ -427,7 +429,7 @@ export function createUserHandlers(db: Pool) {
     // Reset password (for admin/owner)
     resetPassword: async (req: Request, res: Response) => {
       try {
-        const auth = req.user;
+        const auth = getAuthenticatedUser(req);
         const userId = req.params.userId;
         const { newPassword } = req.body;
         
@@ -494,7 +496,7 @@ export function createUserHandlers(db: Pool) {
     // Delete user
     delete: async (req: Request, res: Response) => {
       try {
-        const auth = req.user;
+        const auth = getAuthenticatedUser(req);
         const userId = req.params.userId;
         
         // SuperAdmin can delete any user

@@ -1,3 +1,4 @@
+// Types handled by TypeScript compilation
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
 import { ServiceError } from '../errors/ServiceError';
@@ -146,11 +147,11 @@ export function createCreditorHandlers(db: Pool) {
     createPayment: async (req: Request, res: Response) => {
       try {
         const user = req.user;
-        if (!user?.tenantId || !user.userId) {
+        if (!user?.tenantId || !user.id) {
           return errorResponse(res, 400, 'Missing tenant context');
         }
         const data = validateCreatePayment(req.body);
-        const id = await createCreditPayment(db, user.tenantId, data, user.userId);
+        const id = await createCreditPayment(db, user.tenantId, data, user.id);
         successResponse(res, { id }, undefined, 201);
       } catch (err: any) {
         if (err instanceof ServiceError) {

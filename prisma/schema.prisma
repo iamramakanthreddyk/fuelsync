@@ -48,6 +48,7 @@ model Tenant {
   user_activity_logs  UserActivityLog[]
   validation_issues   ValidationIssue[]
   TenantSettingsKv    TenantSettingsKv[]
+  cash_reports        CashReport[]
 
   @@map("tenants")
 }
@@ -94,6 +95,7 @@ model User {
   sales              Sale[]
   audit_logs         AuditLog[]
   user_activity_logs UserActivityLog[]
+  cash_reports       CashReport[]
 
   @@unique([tenant_id, email])
   @@index([tenant_id])
@@ -119,6 +121,7 @@ model Station {
   fuel_deliveries     FuelDelivery[]
   day_reconciliations DayReconciliation[]
   report_schedules    ReportSchedule[]
+  cash_reports        CashReport[]
 
   @@unique([tenant_id, name])
   @@index([tenant_id])
@@ -373,6 +376,33 @@ model DayReconciliation {
   @@unique([tenant_id, station_id, date])
   @@index([tenant_id])
   @@map("day_reconciliations")
+}
+
+model CashReport {
+  id           String   @id @default(uuid())
+  tenant_id    String
+  station_id   String
+  user_id      String
+  date         DateTime @db.Date
+  shift        String   @default("day") // morning, afternoon, night, day
+  cash_amount  Decimal  @default(0)
+  card_amount  Decimal  @default(0)
+  upi_amount   Decimal  @default(0)
+  credit_amount Decimal @default(0)
+  total_amount Decimal  @default(0)
+  notes        String?
+  status       String   @default("submitted") // submitted, approved, rejected
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  tenant       Tenant   @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  station      Station  @relation(fields: [station_id], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([tenant_id, station_id, user_id, date, shift])
+  @@index([tenant_id])
+  @@index([station_id])
+  @@index([date])
+  @@map("cash_reports")
 }
 
 model ReportSchedule {

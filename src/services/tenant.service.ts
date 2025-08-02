@@ -20,6 +20,11 @@ export interface TenantCreationResult {
     password: string; // Plain text for initial communication
     name: string;
   };
+  users?: {
+    owner: { email: string; password: string };
+    manager: { email: string; password: string };
+    attendant: { email: string; password: string };
+  };
 }
 
 export interface TenantOutput {
@@ -72,18 +77,18 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
 
     const ownerId = ownerResult.rows[0].id;
 
+    // Create manager user with SAME password as owner for better UX
     const managerEmail = `manager@${tenantSlug}.fuelsync.com`;
-    const managerPassword = generatePassword(`${input.name} Manager`);
-    const managerHash = await import('bcrypt').then(bcrypt => bcrypt.hash(managerPassword, 10));
+    const managerHash = passwordHash; // Use same password as owner
 
     await client.query(
       'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW())',
       [randomUUID(), tenant.id, managerEmail, managerHash, `${input.name} Manager`, 'manager']
     );
 
+    // Create attendant user with SAME password as owner for better UX
     const attendantEmail = `attendant@${tenantSlug}.fuelsync.com`;
-    const attendantPassword = generatePassword(`${input.name} Attendant`);
-    const attendantHash = await import('bcrypt').then(bcrypt => bcrypt.hash(attendantPassword, 10));
+    const attendantHash = passwordHash; // Use same password as owner
 
     await client.query(
       'INSERT INTO public.users (id, tenant_id, email, password_hash, name, role, updated_at) VALUES ($1,$2,$3,$4,$5,$6,NOW())',
@@ -107,6 +112,12 @@ export async function createTenant(db: Pool, input: TenantInput): Promise<Tenant
         email: ownerEmail,
         password: rawPassword,
         name: ownerName
+      },
+      // All users now have the same password for better UX
+      users: {
+        owner: { email: ownerEmail, password: rawPassword },
+        manager: { email: managerEmail, password: rawPassword },
+        attendant: { email: attendantEmail, password: rawPassword }
       }
     };
   } catch (error) {

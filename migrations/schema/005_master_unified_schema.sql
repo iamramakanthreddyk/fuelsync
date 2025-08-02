@@ -3,7 +3,8 @@
 -- Version: 1.0.0
 -- Dependencies: None
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- Note: pgcrypto extension not available in Azure PostgreSQL for regular users
+-- gen_random_uuid() is available by default in PostgreSQL 13+
 BEGIN;
 
 -- Ensure core tables exist with proper structure
