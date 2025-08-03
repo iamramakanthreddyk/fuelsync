@@ -165,9 +165,9 @@ model Nozzle {
 }
 
 model FuelPrice {
-  id           String    @id @default(uuid())
-  tenant_id    String
-  station_id   String
+  id           String    @id @default(uuid()) @db.Uuid
+  tenant_id    String    @db.Uuid
+  station_id   String    @db.Uuid
   fuel_type    String
   price        Decimal
   cost_price   Decimal?  @default(0)

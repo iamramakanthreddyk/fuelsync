@@ -3453,6 +3453,12 @@ Each entry is tied to a step from the implementation index.
 * Test endpoints are disabled in production.
 * `docs/STEP_fix_20260908.md`
 
+## [Fix 2026-09-09] – Prisma UUID mapping
+
+### 🟥 Fixes
+* Annotated `FuelPrice` model UUID columns in `prisma/schema.prisma` to prevent `operator does not exist: text = uuid` errors when creating nozzle readings.
+* `docs/STEP_fix_20260909_COMMAND.md`
+
 ## [Fix 2026-09-06] – API type regeneration instructions
 
 ### 🟦 Enhancements
