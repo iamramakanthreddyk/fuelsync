@@ -121,6 +121,7 @@ export function createAttendantHandlers(db: Pool) {
           cardAmount = 0,
           upiAmount = 0,
           creditAmount = 0,
+          creditorId,
           shift = 'day',
           notes,
           date = new Date().toISOString().split('T')[0]
@@ -141,6 +142,23 @@ export function createAttendantHandlers(db: Pool) {
           return errorResponse(res, 400, 'At least one amount must be greater than zero');
         }
 
+        // Validate creditor if credit amount is provided
+        if (credit > 0) {
+          if (!creditorId) {
+            return errorResponse(res, 400, 'Creditor must be selected when credit amount is provided');
+          }
+
+          // Verify creditor exists and belongs to the tenant/station
+          const creditorCheck = await db.query(
+            'SELECT id FROM public.creditors WHERE id = $1 AND tenant_id = $2 AND station_id = $3 AND status = $4',
+            [creditorId, tenantId, stationId, 'active']
+          );
+
+          if (creditorCheck.rowCount === 0) {
+            return errorResponse(res, 400, 'Invalid or inactive creditor selected');
+          }
+        }
+
         // Verify station exists and user has access
         const stationCheck = await db.query(
           'SELECT id FROM public.stations WHERE id = $1 AND tenant_id = $2',
@@ -151,34 +169,27 @@ export function createAttendantHandlers(db: Pool) {
           return errorResponse(res, 400, 'Invalid station ID');
         }
 
-        // Insert cash report
+        // Insert cash report (allow multiple submissions per day by using unique shift names)
         const reportId = randomUUID();
+        const totalCollected = cash + card + upi; // Only cash, card, upi for total_collected constraint
+        const uniqueShift = `${shift}_${Date.now()}`; // Make shift unique with timestamp
         const result = await db.query(`
           INSERT INTO public.cash_reports (
             id, tenant_id, station_id, user_id, date, shift,
-            cash_amount, card_amount, upi_amount, credit_amount, total_amount,
+            cash_collected, card_collected, upi_collected, total_collected,
             notes, status, created_at, updated_at
           ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'submitted', NOW(), NOW()
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'submitted', NOW(), NOW()
           )
-          ON CONFLICT (tenant_id, station_id, user_id, date, shift)
-          DO UPDATE SET
-            cash_amount = EXCLUDED.cash_amount,
-            card_amount = EXCLUDED.card_amount,
-            upi_amount = EXCLUDED.upi_amount,
-            credit_amount = EXCLUDED.credit_amount,
-            total_amount = EXCLUDED.total_amount,
-            notes = EXCLUDED.notes,
-            updated_at = NOW()
-          RETURNING id, total_amount
-        `, [reportId, tenantId, stationId, userId, date, shift, cash, card, upi, credit, total, notes]);
+          RETURNING id, total_collected
+        `, [reportId, tenantId, stationId, userId, date, uniqueShift, cash, card, upi, totalCollected, notes]);
 
         const report = result.rows[0];
-        console.log(`[CASH-REPORT] Created/Updated: ${report.id} for station ${stationId}, total: ${report.total_amount}`);
+        console.log(`[CASH-REPORT] Created: ${report.id} for station ${stationId}, total: ${report.total_collected}`);
 
         successResponse(res, {
           id: report.id,
-          totalAmount: report.total_amount,
+          totalAmount: report.total_collected,
           message: 'Cash report submitted successfully'
         }, 'Cash report submitted successfully', 201);
       } catch (err: any) {

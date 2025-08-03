@@ -116,7 +116,7 @@ export async function getStationMetrics(
   const where: Prisma.SaleWhereInput = { 
     station_id: stationId, 
     tenant_id: tenantId,
-    status: 'posted' // Only count posted sales
+    status: { not: 'voided' } // Exclude voided sales
   };
   if (period === 'today') {
     where.recorded_at = { gte: new Date(new Date().setHours(0, 0, 0, 0)) };
@@ -145,7 +145,7 @@ export async function getStationPerformance(
   let prevWhere: Prisma.SaleWhereInput = { 
     station_id: stationId, 
     tenant_id: tenantId,
-    status: 'posted' // Only count posted sales
+    status: { not: 'voided' } // Exclude voided sales
   };
   if (range === 'monthly') {
     const start = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
@@ -186,7 +186,7 @@ export async function getStationComparison(tenantId: string, stationIds: string[
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${currentInterval}'
-      AND s.status = 'posted'
+      AND (s.status IS NULL OR s.status != 'voided')
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name
     ORDER BY total_sales DESC`;
@@ -202,7 +202,7 @@ export async function getStationComparison(tenantId: string, stationIds: string[
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${previousInterval}'
       AND s.recorded_at < CURRENT_DATE - INTERVAL '${currentInterval}'
-      AND s.status = 'posted'
+      AND (s.status IS NULL OR s.status != 'voided')
     WHERE st.id IN (${Prisma.join(stationIds)}) AND st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id`;
   
@@ -277,6 +277,9 @@ export async function getStationRanking(
       : metric === 'volume'
       ? Prisma.sql`s.volume`
       : Prisma.sql`s.amount`;
+  
+  console.log(`[STATION-RANKING] Query params: tenantId=${tenantId}, metric=${metric}, period=${period}, interval=${interval}`);
+  
   const query = Prisma.sql`
     SELECT
       st.id,
@@ -289,11 +292,14 @@ export async function getStationRanking(
     FROM stations st
     LEFT JOIN sales s ON st.id = s.station_id AND s.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
       AND s.recorded_at >= CURRENT_DATE - INTERVAL '${interval}'
-      AND s.status = 'posted'
+      AND (s.status IS NULL OR s.status != 'voided')
     WHERE st.tenant_id = ${Prisma.raw(`'${tenantId}'`)}
     GROUP BY st.id, st.name
     ORDER BY COALESCE(SUM(${orderField}), 0) DESC`;
+  
   const rows = (await prisma.$queryRaw(query)) as any[];
+  console.log(`[STATION-RANKING] Query returned ${rows.length} rows:`, rows);
+  
   return rows.map(row => ({
     rank: parseInt(row.rank, 10),
     id: row.id,

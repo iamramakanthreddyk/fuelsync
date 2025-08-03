@@ -281,6 +281,39 @@ export async function updateTenantStatus(db: Pool, id: string, status: string): 
 }
 
 /**
+ * Update tenant plan
+ */
+export async function updateTenantPlan(db: Pool, tenantId: string, planId: string): Promise<void> {
+  console.log('[UPDATE-TENANT-PLAN] Starting with:', { tenantId, planId });
+  
+  // Verify plan exists
+  const planResult = await db.query(
+    'SELECT id, name FROM public.plans WHERE id = $1',
+    [planId]
+  );
+  
+  console.log('[UPDATE-TENANT-PLAN] Plan query result:', planResult.rows);
+  
+  if (planResult.rows.length === 0) {
+    throw new Error('Plan not found');
+  }
+  
+  // Update tenant plan
+  const updateResult = await db.query(
+    'UPDATE public.tenants SET plan_id = $1 WHERE id = $2',
+    [planId, tenantId]
+  );
+  
+  console.log('[UPDATE-TENANT-PLAN] Update result:', updateResult.rowCount);
+  
+  if (updateResult.rowCount === 0) {
+    throw new Error('Tenant not found or update failed');
+  }
+  
+  console.log(`[UPDATE-TENANT-PLAN] Success: Tenant ${tenantId} plan updated to ${planResult.rows[0].name} (${planId})`);
+}
+
+/**
  * Soft delete tenant (set status to 'deleted' instead of destroying data)
  */
 export async function deleteTenant(db: Pool, id: string): Promise<void> {

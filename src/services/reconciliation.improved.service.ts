@@ -95,7 +95,7 @@ export async function getSystemCalculatedSales(
     WHERE s.tenant_id = $1 
       AND s.station_id = $2 
       AND DATE(s.recorded_at) = $3
-      AND s.status = 'posted'
+      AND s.status IN ('posted', 'reconciled')
     GROUP BY s.fuel_type, s.payment_method
     ORDER BY s.fuel_type, s.payment_method
   `;
@@ -163,7 +163,7 @@ export async function getSystemCalculatedSales(
 }
 
 /**
- * Get user entered cash for a date
+ * Get user entered cash for a date (including credit payments received)
  */
 export async function getUserEnteredCash(
   db: Pool | PoolClient,
@@ -173,9 +173,9 @@ export async function getUserEnteredCash(
 ): Promise<UserEnteredCash> {
   const query = `
     SELECT 
-      COALESCE(SUM(cash_amount), 0) as cash_collected,
-      COALESCE(SUM(card_amount), 0) as card_collected,
-      COALESCE(SUM(upi_amount), 0) as upi_collected
+      COALESCE(SUM(COALESCE(cash_collected, cash_amount)), 0) as cash_collected,
+      COALESCE(SUM(COALESCE(card_collected, card_amount)), 0) as card_collected,
+      COALESCE(SUM(COALESCE(upi_collected, upi_amount)), 0) as upi_collected
     FROM cash_reports
     WHERE tenant_id = $1 
       AND station_id = $2 
@@ -185,9 +185,30 @@ export async function getUserEnteredCash(
   const result = await db.query(query, [tenantId, stationId, date]);
   const row = result.rows[0] || {};
   
-  const cashCollected = Number(row.cash_collected || 0);
-  const cardCollected = Number(row.card_collected || 0);
-  const upiCollected = Number(row.upi_collected || 0);
+  let cashCollected = Number(row.cash_collected || 0);
+  let cardCollected = Number(row.card_collected || 0);
+  let upiCollected = Number(row.upi_collected || 0);
+  
+  // Add credit payments received on this date
+  const creditPaymentsQuery = `
+    SELECT 
+      COALESCE(SUM(CASE WHEN payment_method = 'cash' THEN amount ELSE 0 END), 0) as credit_cash,
+      COALESCE(SUM(CASE WHEN payment_method = 'card' THEN amount ELSE 0 END), 0) as credit_card,
+      COALESCE(SUM(CASE WHEN payment_method = 'upi' THEN amount ELSE 0 END), 0) as credit_upi
+    FROM credit_payments cp
+    JOIN creditors c ON cp.creditor_id = c.id
+    WHERE cp.tenant_id = $1 
+      AND (c.station_id = $2 OR c.station_id IS NULL)
+      AND DATE(cp.received_at) = $3
+  `;
+  
+  const creditResult = await db.query(creditPaymentsQuery, [tenantId, stationId, date]);
+  const creditRow = creditResult.rows[0] || {};
+  
+  cashCollected += Number(creditRow.credit_cash || 0);
+  cardCollected += Number(creditRow.credit_card || 0);
+  upiCollected += Number(creditRow.credit_upi || 0);
+  
   const totalCollected = cashCollected + cardCollected + upiCollected;
   
   return {
@@ -220,15 +241,16 @@ export async function generateReconciliationSummary(
   // Get user entered cash
   const userEntered = await getUserEnteredCash(db, tenantId, stationId, date);
   
-  // Calculate enhanced differences
+  // Calculate enhanced differences (include credit in total revenue for reconciliation)
   const cashDifference = userEntered.cashCollected - systemCalculated.cashSales;
   const cardDifference = userEntered.cardCollected - systemCalculated.cardSales;
   const upiDifference = userEntered.upiCollected - systemCalculated.upiSales;
-  const totalDifference = userEntered.totalCollected - (systemCalculated.totalRevenue - systemCalculated.creditSales);
+  const totalDifference = userEntered.totalCollected - systemCalculated.totalRevenue;
 
-  // Calculate percentage difference
-  const percentageDifference = systemCalculated.totalRevenue > 0
-    ? (totalDifference / systemCalculated.totalRevenue) * 100
+  // Calculate percentage difference (excluding credit sales from denominator for cash reconciliation)
+  const cashRevenue = systemCalculated.totalRevenue - systemCalculated.creditSales;
+  const percentageDifference = cashRevenue > 0
+    ? (totalDifference / cashRevenue) * 100
     : 0;
 
   // Check if within tolerance

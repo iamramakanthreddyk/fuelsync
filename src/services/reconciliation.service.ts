@@ -386,8 +386,8 @@ export async function getSystemCalculatedSales(
     FROM sales s
     WHERE s.tenant_id = $1
       AND s.station_id = $2
-      AND DATE(s.recorded_at) = $3
-      AND s.status = 'posted'
+      AND DATE(s.recorded_at) = $3::date
+      AND s.status != 'voided'
     GROUP BY s.fuel_type, s.payment_method
     ORDER BY s.fuel_type, s.payment_method
   `;
@@ -465,13 +465,13 @@ export async function getUserEnteredCash(
 ): Promise<UserEnteredCash> {
   const query = `
     SELECT
-      COALESCE(SUM(cash_total), 0) as cash_collected,
-      COALESCE(SUM(card_total), 0) as card_collected,
-      COALESCE(SUM(upi_total), 0) as upi_collected
-    FROM day_reconciliations
+      COALESCE(SUM(cash_collected), 0) as cash_collected,
+      COALESCE(SUM(card_collected), 0) as card_collected,
+      COALESCE(SUM(upi_collected), 0) as upi_collected
+    FROM cash_reports
     WHERE tenant_id = $1
       AND station_id = $2
-      AND date = $3
+      AND date = $3::date
   `;
 
   const result = await db.query(query, [tenantId, stationId, date]);
@@ -502,7 +502,7 @@ export async function generateReconciliationSummary(
 ): Promise<ReconciliationSummary> {
   // Get station name
   const stationResult = await db.query(
-    'SELECT name FROM stations WHERE id = $1::uuid AND tenant_id = $2::uuid',
+    'SELECT name FROM stations WHERE id = $1 AND tenant_id = $2',
     [stationId, tenantId]
   );
   const stationName = stationResult.rows[0]?.name || 'Unknown Station';
@@ -521,7 +521,7 @@ export async function generateReconciliationSummary(
 
   // Check if reconciled
   const reconciliationResult = await db.query(
-    'SELECT finalized, updated_at FROM day_reconciliations WHERE tenant_id = $1::uuid AND station_id = $2::uuid AND date = $3',
+    'SELECT finalized, updated_at FROM day_reconciliations WHERE tenant_id = $1 AND station_id = $2 AND date = $3::date',
     [tenantId, stationId, date]
   );
 

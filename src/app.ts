@@ -70,7 +70,7 @@ export function createApp() {
   // Handle OPTIONS requests FIRST before any other middleware
   app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-tenant-id');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.sendStatus(200);
@@ -80,7 +80,7 @@ export function createApp() {
   app.use((req, res, next) => {
     // Allow all origins for testing
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-tenant-id');
     res.header('Access-Control-Allow-Credentials', 'true');
 

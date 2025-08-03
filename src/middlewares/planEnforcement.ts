@@ -8,6 +8,7 @@ async function fetchPlanId(db: TxClient, tenantId: string): Promise<string> {
     where: { id: tenantId },
     select: { plan_id: true },
   });
+  
   return tenant?.plan_id as string;
 }
 
@@ -18,8 +19,9 @@ export async function beforeCreateStation(db: TxClient, tenantId: string) {
   const planId = await fetchPlanId(db, tenantId);
   const rules = getPlanRules(planId);
   const count = await db.station.count({ where: { tenant_id: tenantId } });
+  
   if (count >= rules.maxStations) {
-    throw new Error('Plan limit exceeded: stations');
+    throw new Error(`Plan limit exceeded: stations (${count}/${rules.maxStations})`);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { listTenants, createTenant, getTenant, updateTenantStatus, deleteTenant, getTenantMetrics } from '../services/tenant.service';
+import { listTenants, createTenant, getTenant, updateTenantStatus, updateTenantPlan, deleteTenant, getTenantMetrics } from '../services/tenant.service';
 import { validateTenantInput } from '../validators/tenant.validator';
 import { errorResponse } from '../utils/errorResponse';
 import { successResponse } from '../utils/successResponse';
@@ -66,6 +66,20 @@ export function createAdminTenantHandlers(db: Pool) {
   const base = createTenantHandlers(db);
   return {
     ...base,
+    get: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const tenant = await getTenant(db, id);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        successResponse(res, tenant);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
     summary: async (_req: Request, res: Response) => {
       const tenants = await listTenants(db);
       const results = [] as any[];
@@ -100,6 +114,34 @@ export function createAdminTenantHandlers(db: Pool) {
         
         successResponse(res, tenant);
       } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+    updatePlan: async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const { planId } = req.body;
+        
+        console.log('[UPDATE-PLAN] Request params:', { id, planId });
+        
+        if (!planId) {
+          return errorResponse(res, 400, 'Plan ID is required');
+        }
+        
+        console.log('[UPDATE-PLAN] Calling updateTenantPlan with:', { tenantId: id, planId });
+        await updateTenantPlan(db, id, planId);
+        
+        console.log('[UPDATE-PLAN] Getting updated tenant');
+        const tenant = await getTenant(db, id);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        console.log('[UPDATE-PLAN] Success, returning tenant:', tenant.name);
+        successResponse(res, tenant, 'Tenant plan updated successfully');
+      } catch (err: any) {
+        console.error('[UPDATE-PLAN] Error:', err);
         return errorResponse(res, 500, err.message);
       }
     },

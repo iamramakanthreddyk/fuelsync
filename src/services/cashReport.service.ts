@@ -6,18 +6,31 @@ import { Pool } from 'pg';
 
 export interface CashReport {
   id: string;
-  attendantId: string;
-  attendantName: string;
-  shiftStart: string;
-  shiftEnd: string;
-  totalCash: number;
-  totalCard: number;
-  totalCredit: number;
-  totalSales: number;
-  variance: number;
-  status: 'pending' | 'approved' | 'rejected';
+  tenantId: string;
+  stationId: string;
+  stationName?: string;
+  userId: string;
+  userName?: string;
+  date: string;
+  shift: 'morning' | 'afternoon' | 'night';
+  cashAmount: number;
+  cardAmount: number;
+  upiAmount: number;
+  creditAmount: number;
+  totalAmount: number;
+  notes?: string;
+  status: 'submitted' | 'approved' | 'rejected';
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CashReportSummary {
+  totalCash: number;
+  totalCard: number;
+  totalUpi: number;
+  totalCredit: number;
+  totalAmount: number;
+  reportCount: number;
 }
 
 /**
@@ -33,20 +46,25 @@ export async function listCashReports(
     let query = `
       SELECT 
         cr.id,
-        cr.attendant_id as "attendantId",
-        u.name as "attendantName",
-        cr.shift_start as "shiftStart",
-        cr.shift_end as "shiftEnd",
-        cr.total_cash as "totalCash",
-        cr.total_card as "totalCard",
-        cr.total_credit as "totalCredit",
-        cr.total_sales as "totalSales",
-        cr.variance,
+        cr.tenant_id as "tenantId",
+        cr.station_id as "stationId",
+        s.name as "stationName",
+        cr.user_id as "userId",
+        u.name as "userName",
+        cr.date,
+        cr.shift,
+        cr.cash_collected as "cashAmount",
+        cr.card_amount as "cardAmount",
+        cr.upi_amount as "upiAmount",
+        cr.credit_amount as "creditAmount",
+        cr.total_amount as "totalAmount",
+        cr.notes,
         cr.status,
         cr.created_at as "createdAt",
         cr.updated_at as "updatedAt"
       FROM cash_reports cr
-      LEFT JOIN users u ON cr.attendant_id = u.id
+      LEFT JOIN users u ON cr.user_id = u.id
+      LEFT JOIN stations s ON cr.station_id = s.id
       WHERE cr.tenant_id = $1
     `;
 
@@ -54,7 +72,7 @@ export async function listCashReports(
 
     // If user is an attendant, only show their own reports
     if (userRole === 'attendant' && userId) {
-      query += ' AND cr.attendant_id = $2';
+      query += ' AND cr.user_id = $2';
       params.push(userId);
     }
 
@@ -121,74 +139,127 @@ export async function getCashReport(
 export async function createCashReport(
   db: Pool,
   tenantId: string,
-  attendantId: string,
+  stationId: string,
+  userId: string,
   reportData: {
-    shiftStart: string;
-    shiftEnd: string;
-    totalCash: number;
-    totalCard: number;
-    totalCredit: number;
-    totalSales: number;
-    variance: number;
+    date: string;
+    shift: 'morning' | 'afternoon' | 'night';
+    cashAmount: number;
+    cardAmount: number;
+    upiAmount: number;
+    creditAmount: number;
+    creditorId?: string;
+    notes?: string;
   }
 ): Promise<CashReport> {
   try {
-    const query = `
-      INSERT INTO cash_reports (
-        tenant_id,
-        attendant_id,
-        shift_start,
-        shift_end,
-        total_cash,
-        total_card,
-        total_credit,
-        total_sales,
-        variance,
-        status,
-        created_at,
-        updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'pending', NOW(), NOW())
+    const totalAmount = reportData.cashAmount + reportData.cardAmount + reportData.upiAmount + reportData.creditAmount;
+    
+    const client = await db.connect();
+    try {
+      await client.query('BEGIN');
+      
+      const query = `
+        INSERT INTO cash_reports (
+          tenant_id,
+          station_id,
+          user_id,
+          date,
+          shift,
+          cash_amount,
+          card_amount,
+          upi_amount,
+          credit_amount,
+          creditor_id,
+          total_amount,
+          notes,
+          status,
+          created_at,
+          updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'submitted', NOW(), NOW())
+        ON CONFLICT (tenant_id, station_id, user_id, date, shift)
+        DO UPDATE SET
+          cash_amount = EXCLUDED.cash_amount,
+          card_amount = EXCLUDED.card_amount,
+          upi_amount = EXCLUDED.upi_amount,
+          credit_amount = EXCLUDED.credit_amount,
+          creditor_id = EXCLUDED.creditor_id,
+          total_amount = EXCLUDED.total_amount,
+          notes = EXCLUDED.notes,
+          updated_at = NOW()
       RETURNING 
         id,
-        attendant_id as "attendantId",
-        shift_start as "shiftStart",
-        shift_end as "shiftEnd",
-        total_cash as "totalCash",
-        total_card as "totalCard",
-        total_credit as "totalCredit",
-        total_sales as "totalSales",
-        variance,
+        tenant_id as "tenantId",
+        station_id as "stationId",
+        user_id as "userId",
+        date,
+        shift,
+        cash_amount as "cashAmount",
+        card_amount as "cardAmount",
+        upi_amount as "upiAmount",
+        credit_amount as "creditAmount",
+        total_amount as "totalAmount",
+        notes,
         status,
         created_at as "createdAt",
         updated_at as "updatedAt"
     `;
 
-    const params = [
-      tenantId,
-      attendantId,
-      reportData.shiftStart,
-      reportData.shiftEnd,
-      reportData.totalCash,
-      reportData.totalCard,
-      reportData.totalCredit,
-      reportData.totalSales,
-      reportData.variance,
-    ];
+      const params = [
+        tenantId,
+        stationId,
+        userId,
+        reportData.date,
+        reportData.shift,
+        reportData.cashAmount,
+        reportData.cardAmount,
+        reportData.upiAmount,
+        reportData.creditAmount,
+        reportData.creditorId || null,
+        totalAmount,
+        reportData.notes
+      ];
 
-    const result = await db.query(query, params);
+      const result = await client.query(query, params);
+      
+      // If credit was given to a creditor, create a sales record
+      if (reportData.creditAmount > 0 && reportData.creditorId) {
+        await client.query(`
+          INSERT INTO sales (
+            id, tenant_id, station_id, nozzle_id, volume, fuel_type, fuel_price, 
+            amount, payment_method, creditor_id, recorded_at, status
+          ) VALUES (
+            gen_random_uuid(), $1, $2, 
+            (SELECT n.id FROM nozzles n JOIN pumps p ON n.pump_id = p.id WHERE p.station_id = $2 LIMIT 1),
+            0, 'petrol', 0, $3, 'credit', $4, NOW(), 'posted'
+          )
+        `, [tenantId, stationId, reportData.creditAmount, reportData.creditorId]);
+      }
+      
+      await client.query('COMMIT');
     const report = result.rows[0];
 
-    // Get attendant name
-    const attendantQuery = 'SELECT name FROM users WHERE id = $1';
-    const attendantResult = await db.query(attendantQuery, [attendantId]);
-    report.attendantName = attendantResult.rows[0]?.name || 'Unknown';
+    // Get user and station names
+    const userQuery = 'SELECT name FROM users WHERE id = $1';
+    const stationQuery = 'SELECT name FROM stations WHERE id = $1';
+    
+    const [userResult, stationResult] = await Promise.all([
+      db.query(userQuery, [userId]),
+      db.query(stationQuery, [stationId])
+    ]);
+    
+    report.userName = userResult.rows[0]?.name || 'Unknown';
+    report.stationName = stationResult.rows[0]?.name || 'Unknown';
 
-    return report;
-  } catch (error) {
-    console.error('Error creating cash report:', error);
-    throw new Error('Failed to create cash report');
+      return report;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Error creating cash report:', error);
+      throw new Error('Failed to create cash report');
+    } finally {
+      client.release();
+    }
   }
-}
 
 /**
  * Update cash report status
@@ -233,6 +304,45 @@ export async function updateCashReportStatus(
   } catch (error) {
     console.error('Error updating cash report status:', error);
     throw new Error('Failed to update cash report status');
+  }
+}
+
+/**
+ * Get cash report summary for a specific date and station
+ */
+export async function getCashReportSummary(
+  db: Pool,
+  tenantId: string,
+  stationId: string,
+  date: string
+): Promise<CashReportSummary> {
+  try {
+    const query = `
+      SELECT 
+        COALESCE(SUM(cash_amount), 0) as total_cash,
+        COALESCE(SUM(card_amount), 0) as total_card,
+        COALESCE(SUM(upi_amount), 0) as total_upi,
+        COALESCE(SUM(credit_amount), 0) as total_credit,
+        COALESCE(SUM(total_amount), 0) as total_amount,
+        COUNT(*) as report_count
+      FROM cash_reports
+      WHERE tenant_id = $1 AND station_id = $2 AND date = $3
+    `;
+
+    const result = await db.query(query, [tenantId, stationId, date]);
+    const row = result.rows[0];
+
+    return {
+      totalCash: Number(row.total_cash || 0),
+      totalCard: Number(row.total_card || 0),
+      totalUpi: Number(row.total_upi || 0),
+      totalCredit: Number(row.total_credit || 0),
+      totalAmount: Number(row.total_amount || 0),
+      reportCount: Number(row.report_count || 0)
+    };
+  } catch (error) {
+    console.error('Error getting cash report summary:', error);
+    throw new Error('Failed to get cash report summary');
   }
 }
 

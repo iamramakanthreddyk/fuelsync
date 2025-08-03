@@ -8,6 +8,7 @@ import { Pool } from 'pg';
 import { successResponse, errorResponse } from '../utils/response';
 import { getReportTier, getReportTierSummary } from '../config/reportTiers';
 import { getPlanRules } from '../config/planConfig';
+import { getTenant, updateTenantPlan } from '../services/tenant.service';
 
 // Helper functions for time calculations
 function getTimeAgo(date: Date | string | null): string {
@@ -35,6 +36,48 @@ function isToday(date: Date | string | null): boolean {
 
 export function createSuperAdminHandlers(db: Pool) {
   return {
+    // Get tenant details
+    getTenantDetails: async (req: Request, res: Response) => {
+      try {
+        const { tenantId } = req.params;
+        const tenant = await getTenant(db, tenantId);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        successResponse(res, tenant);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
+    // Update tenant plan
+    updateTenantPlan: async (req: Request, res: Response) => {
+      try {
+        const { tenantId } = req.params;
+        const { planId } = req.body;
+        
+        console.log('[SUPERADMIN-UPDATE-PLAN] Request:', { tenantId, planId });
+        
+        if (!planId) {
+          return errorResponse(res, 400, 'Plan ID is required');
+        }
+        
+        await updateTenantPlan(db, tenantId, planId);
+        const tenant = await getTenant(db, tenantId);
+        
+        if (!tenant) {
+          return errorResponse(res, 404, 'Tenant not found');
+        }
+        
+        successResponse(res, tenant, 'Tenant plan updated successfully');
+      } catch (err: any) {
+        console.error('[SUPERADMIN-UPDATE-PLAN] Error:', err);
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
     // Get all tenants with their plans and usage
     getAllTenants: async (req: Request, res: Response) => {
       try {

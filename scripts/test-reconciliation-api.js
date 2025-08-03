@@ -1,115 +1,68 @@
 const { Pool } = require('pg');
-
-// Load environment variables
-try {
-  require('dotenv').config();
-} catch (e) {
-  console.log('dotenv not available, using environment variables');
-}
+require('dotenv').config();
 
 async function testReconciliationAPI() {
   const pool = new Pool({
-    host: process.env.DB_HOST || 'fuelsync-server.postgres.database.azure.com',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'fuelsync_db',
-    user: process.env.DB_USER || 'fueladmin',
-    password: process.env.DB_PASSWORD,
-    ssl: { rejectUnauthorized: false }
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 
   try {
-    console.log('🔍 Testing reconciliation API data...');
-    
-    // Check for stations
-    const stations = await pool.query('SELECT id, name FROM public.stations LIMIT 5');
-    console.log(`📍 Found ${stations.rows.length} stations:`, stations.rows);
-    
-    if (stations.rows.length === 0) {
-      console.log('❌ No stations found');
-      return;
-    }
-    
-    const stationId = stations.rows[0].id;
-    console.log(`🏢 Using station: ${stationId}`);
-    
-    // Check for nozzle readings
-    const readings = await pool.query(`
-      SELECT nr.*, n.nozzle_number, n.fuel_type, p.station_id
-      FROM public.nozzle_readings nr
-      JOIN public.nozzles n ON nr.nozzle_id = n.id
-      JOIN public.pumps p ON n.pump_id = p.id
-      WHERE p.station_id = $1
-      ORDER BY nr.recorded_at DESC
-      LIMIT 10
-    `, [stationId]);
-    
-    console.log(`📊 Found ${readings.rows.length} readings for station`);
-    if (readings.rows.length > 0) {
-      console.log('Sample reading:', readings.rows[0]);
-    }
-    
-    // Test the daily summary query
-    const testDate = '2024-01-15';
-    const summaryQuery = `
-      WITH ordered_readings AS (
-        SELECT
-          nr.nozzle_id,
-          n.nozzle_number,
-          n.fuel_type,
-          nr.reading as current_reading,
-          LAG(nr.reading) OVER (PARTITION BY nr.nozzle_id ORDER BY nr.recorded_at) as previous_reading,
-          nr.payment_method,
-          nr.recorded_at,
-          COALESCE(fp.price, 100) as price_per_litre
-        FROM public.nozzle_readings nr
-        JOIN public.nozzles n ON nr.nozzle_id = n.id
-        JOIN public.pumps p ON n.pump_id = p.id
-        LEFT JOIN public.fuel_prices fp ON fp.station_id = p.station_id 
-          AND fp.fuel_type = n.fuel_type
-        WHERE p.station_id = $1
-        ORDER BY nr.nozzle_id, nr.recorded_at
-      )
+    console.log('🧪 Testing reconciliation API...\n');
+
+    const tenantId = '681ac774-7a8f-428c-a008-2ac9aca76fc0';
+    const stationId = 'b4f2399d-8bdb-42d0-9c18-591351f2fc66';
+    const date = '2025-08-03';
+
+    console.log(`📋 Test parameters:`);
+    console.log(`  Tenant: ${tenantId}`);
+    console.log(`  Station: ${stationId}`);
+    console.log(`  Date: ${date}\n`);
+
+    // Test system calculated sales
+    console.log('💰 Testing system calculated sales...');
+    const salesQuery = `
       SELECT
-        nozzle_id,
-        nozzle_number,
-        fuel_type,
-        COALESCE(previous_reading, 0) as previous_reading,
-        current_reading,
-        GREATEST(current_reading - COALESCE(previous_reading, 0), 0) as delta_volume,
-        price_per_litre,
-        GREATEST(current_reading - COALESCE(previous_reading, 0), 0) * price_per_litre as sale_value,
-        payment_method
-      FROM ordered_readings
-      WHERE DATE(recorded_at) = $2
+        s.fuel_type,
+        s.payment_method,
+        SUM(s.volume) as total_volume,
+        SUM(s.amount) as total_amount
+      FROM sales s
+      WHERE s.tenant_id = $1
+        AND s.station_id = $2
+        AND DATE(s.recorded_at) = $3::date
+        AND s.status != 'voided'
+      GROUP BY s.fuel_type, s.payment_method
+      ORDER BY s.fuel_type, s.payment_method
     `;
-    
-    const summary = await pool.query(summaryQuery, [stationId, testDate]);
-    console.log(`📈 Daily summary for ${testDate}: ${summary.rows.length} entries`);
-    
-    if (summary.rows.length > 0) {
-      const total = summary.rows.reduce((sum, row) => sum + parseFloat(row.sale_value || 0), 0);
-      console.log(`💰 Total sales: ₹${total.toFixed(2)}`);
-      console.log('Sample entry:', summary.rows[0]);
-    } else {
-      console.log('❌ No sales data for test date');
-      
-      // Try with any date that has data
-      const anyData = await pool.query(`
-        SELECT DATE(nr.recorded_at) as date, COUNT(*) as count
-        FROM public.nozzle_readings nr
-        JOIN public.nozzles n ON nr.nozzle_id = n.id
-        JOIN public.pumps p ON n.pump_id = p.id
-        WHERE p.station_id = $1
-        GROUP BY DATE(nr.recorded_at)
-        ORDER BY date DESC
-        LIMIT 5
-      `, [stationId]);
-      
-      console.log('📅 Available dates with data:', anyData.rows);
-    }
-    
+
+    const salesResult = await pool.query(salesQuery, [tenantId, stationId, date]);
+    console.log(`Found ${salesResult.rows.length} sales records:`);
+    salesResult.rows.forEach(row => {
+      console.log(`  ${row.fuel_type} ${row.payment_method}: ${row.total_volume}L = ₹${row.total_amount}`);
+    });
+
+    // Test user entered cash
+    console.log('\n💵 Testing user entered cash...');
+    const cashQuery = `
+      SELECT
+        COALESCE(SUM(cash_collected), 0) as cash_collected,
+        COALESCE(SUM(card_collected), 0) as card_collected,
+        COALESCE(SUM(upi_collected), 0) as upi_collected
+      FROM cash_reports
+      WHERE tenant_id = $1
+        AND station_id = $2
+        AND date = $3::date
+    `;
+
+    const cashResult = await pool.query(cashQuery, [tenantId, stationId, date]);
+    const cashRow = cashResult.rows[0];
+    console.log(`Cash collected: ₹${cashRow.cash_collected}`);
+    console.log(`Card collected: ₹${cashRow.card_collected}`);
+    console.log(`UPI collected: ₹${cashRow.upi_collected}`);
+
   } catch (error) {
-    console.error('❌ Test failed:', error.message);
+    console.error('❌ Error:', error.message);
   } finally {
     await pool.end();
   }

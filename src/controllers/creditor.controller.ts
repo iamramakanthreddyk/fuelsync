@@ -62,7 +62,15 @@ export function createCreditorHandlers(db: Pool) {
         if (creditors.length === 0) {
           return successResponse(res, []);
         }
-        successResponse(res, { creditors });
+        // Normalize creditor data with balance and utilization
+        const normalizedCreditors = creditors.map(creditor => ({
+          ...creditor,
+          balance: Number(creditor.current_balance || 0),
+          currentBalance: Number(creditor.current_balance || 0),
+          creditUtilization: Number(creditor.credit_utilization || 0)
+        }));
+        
+        successResponse(res, { creditors: normalizedCreditors });
       } catch (err: any) {
         console.error('[CREDITOR-CONTROLLER] Error listing creditors:', err);
         return errorResponse(res, 500, err.message || 'Failed to list creditors');
@@ -97,8 +105,9 @@ export function createCreditorHandlers(db: Pool) {
           status: creditor.status,
           creditLimit: Number(creditor.credit_limit),
           credit_limit: Number(creditor.credit_limit),
-          balance: 0, // Balance not available in this query
-          currentBalance: 0, // Balance not available in this query
+          balance: await require('../services/creditor.service').getCreditorBalance(db, tenantId, creditor.id),
+          currentBalance: await require('../services/creditor.service').getCreditorBalance(db, tenantId, creditor.id),
+          creditUtilization: Number(creditor.credit_limit) > 0 ? (await require('../services/creditor.service').getCreditorBalance(db, tenantId, creditor.id) / Number(creditor.credit_limit)) * 100 : 0,
           stationId: creditor.station_id,
           station_id: creditor.station_id,
           stationName: stationName,
