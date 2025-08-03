@@ -1730,7 +1730,7 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Status:** ✅ Done
 **Files:** `prisma/schema.prisma`, `docs/STEP_fix_20260909_COMMAND.md`
 
-**Overview:** Annotated `FuelPrice` model UUID columns to fix `text = uuid` errors when creating nozzle readings via Prisma.
+**Overview:** Annotated all Prisma model ID and foreign key columns with `@db.Uuid` to eliminate `text = uuid` comparison errors.
 ### Fix 2026-09-06 - API type regeneration instructions
 **Status:** ✅ Done
 **Files:** `src/types/api.ts`, `docs/STEP_fix_20260906_COMMAND.md`

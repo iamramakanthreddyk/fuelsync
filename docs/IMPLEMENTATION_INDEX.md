@@ -314,7 +314,7 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2026-09-07 | Global decimal parsing | ✅ Done | `src/utils/parseDb.ts`, `src/controllers/reports.controller.ts` | `docs/STEP_fix_20260907_COMMAND.md` |
 | fix | 2026-09-08 | Reconciliation unit test coverage | ✅ Done | `tests/reconciliation.service.test.ts` | `docs/STEP_fix_20260908_COMMAND.md` |
 | fix | 2026-09-08 | Security hardening | ✅ Done | `src/constants/auth.ts`, `src/utils/db.ts`, `src/middlewares/debugRequest.ts`, `src/app.ts` | `docs/STEP_fix_20260908_COMMAND.md` |
-| fix | 2026-09-09 | Prisma UUID mapping for FuelPrice | ✅ Done | `prisma/schema.prisma` | `docs/STEP_fix_20260909_COMMAND.md` |
+| fix | 2026-09-09 | Prisma UUID mapping for all models | ✅ Done | `prisma/schema.prisma` | `docs/STEP_fix_20260909_COMMAND.md` |
 | fix | 2026-09-06 | API type regeneration instructions | ✅ Done | `src/types/api.ts` | `docs/STEP_fix_20260906_COMMAND.md` |
 | 2     | 2.59 | Reconciliation finalization helpers | ✅ Done | `src/services/reconciliation.service.ts`, `src/services/nozzleReading.service.ts`, `src/services/attendant.service.ts`, `migrations/schema/013_prevent_finalized_writes.sql` | `PHASE_2_SUMMARY.md#step-2.59` |
 | 2     | 2.60 | Reconciliation station validation | ✅ Done | `src/utils/hasStationAccess.ts`, `src/services/reconciliation.service.ts`, `src/controllers/reconciliation.controller.ts`, `tests/reconciliation.service.test.ts` | `PHASE_2_SUMMARY.md#step-2.60` |

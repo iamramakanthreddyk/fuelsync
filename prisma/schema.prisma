@@ -11,7 +11,7 @@ generator client {
 
 // Core platform tables
 model Plan {
-  id                    String   @id @default(uuid())
+  id                    String   @id @default(uuid()) @db.Uuid
   name                  String
   max_stations          Int      @default(5)
   max_pumps_per_station Int      @default(10)
@@ -27,9 +27,9 @@ model Plan {
 }
 
 model Tenant {
-  id                  String              @id @default(uuid())
+  id                  String              @id @default(uuid()) @db.Uuid
   name                String
-  plan_id             String?
+  plan_id             String? @db.Uuid
   status              String              @default("active")
   created_at          DateTime            @default(now())
   updated_at          DateTime            @updatedAt
@@ -54,7 +54,7 @@ model Tenant {
 }
 
 model AdminUser {
-  id                  String             @id @default(uuid())
+  id                  String             @id @default(uuid()) @db.Uuid
   email               String             @unique
   password_hash       String
   name                String?
@@ -67,11 +67,11 @@ model AdminUser {
 }
 
 model AdminActivityLog {
-  id            String     @id @default(uuid())
-  admin_user_id String?
+  id            String     @id @default(uuid()) @db.Uuid
+  admin_user_id String? @db.Uuid
   action        String
   target_type   String?
-  target_id     String?
+  target_id     String? @db.Uuid
   details       Json?
   created_at    DateTime   @default(now())
   updated_at    DateTime   @updatedAt
@@ -82,8 +82,8 @@ model AdminActivityLog {
 
 // Tenant-specific tables
 model User {
-  id                 String            @id @default(uuid())
-  tenant_id          String
+  id                 String            @id @default(uuid()) @db.Uuid
+  tenant_id          String @db.Uuid
   email              String
   password_hash      String
   name               String
@@ -103,8 +103,8 @@ model User {
 }
 
 model Station {
-  id                  String              @id @default(uuid())
-  tenant_id           String
+  id                  String              @id @default(uuid()) @db.Uuid
+  tenant_id           String @db.Uuid
   name                String
   address             String?
   status              String              @default("active")
@@ -129,9 +129,9 @@ model Station {
 }
 
 model Pump {
-  id            String   @id @default(uuid())
-  tenant_id     String
-  station_id    String
+  id            String   @id @default(uuid()) @db.Uuid
+  tenant_id     String @db.Uuid
+  station_id    String @db.Uuid
   name          String
   serial_number String?
   status        String   @default("active")
@@ -147,9 +147,9 @@ model Pump {
 }
 
 model Nozzle {
-  id            String          @id @default(uuid())
-  tenant_id     String
-  pump_id       String
+  id            String          @id @default(uuid()) @db.Uuid
+  tenant_id     String @db.Uuid
+  pump_id       String @db.Uuid
   nozzle_number Int
   fuel_type     String
   status        String          @default("active")
@@ -183,9 +183,9 @@ model FuelPrice {
 }
 
 model Creditor {
-  id              String          @id @default(uuid())
-  tenant_id       String
-  station_id      String?
+  id              String          @id @default(uuid()) @db.Uuid
+  tenant_id       String @db.Uuid
+  station_id      String? @db.Uuid
   party_name      String
   contact_number  String?
   address         String?
@@ -202,11 +202,11 @@ model Creditor {
 }
 
 model Sale {
-  id             String         @id @default(uuid())
-  tenant_id      String
-  nozzle_id      String
-  reading_id     String?
-  station_id     String
+  id             String         @id @default(uuid()) @db.Uuid
+  tenant_id      String @db.Uuid
+  nozzle_id      String @db.Uuid
+  reading_id     String? @db.Uuid
+  station_id     String @db.Uuid
   volume         Decimal
   fuel_type      String
   fuel_price     Decimal
@@ -214,8 +214,8 @@ model Sale {
   amount         Decimal
   profit         Decimal        @default(0)
   payment_method String
-  creditor_id    String?
-  created_by     String?
+  creditor_id    String? @db.Uuid
+  created_by     String? @db.Uuid
   status         String         @default("posted")
   recorded_at    DateTime
   created_at     DateTime       @default(now())
@@ -233,8 +233,8 @@ model Sale {
 }
 
 model UserStation {
-  user_id    String
-  station_id String
+  user_id    String @db.Uuid
+  station_id String @db.Uuid
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -246,7 +246,7 @@ model UserStation {
 }
 
 model TenantSettings {
-  tenant_id         String   @id
+  tenant_id         String @id @db.Uuid
   receipt_template  String?
   fuel_rounding     String?
   branding_logo_url String?
@@ -257,7 +257,7 @@ model TenantSettings {
 }
 
 model TenantSettingsKv {
-  tenant_id  String
+  tenant_id  String @db.Uuid
   key        String
   value      String
   updated_at DateTime @default(now())
@@ -269,9 +269,9 @@ model TenantSettingsKv {
 }
 
 model FuelInventory {
-  id            String   @id @default(uuid())
-  tenant_id     String
-  station_id    String
+  id            String   @id @default(uuid()) @db.Uuid
+  tenant_id     String @db.Uuid
+  station_id    String @db.Uuid
   fuel_type     String
   current_stock Decimal  @default(0)
   minimum_level Decimal  @default(1000)
@@ -286,9 +286,9 @@ model FuelInventory {
 }
 
 model Alert {
-  id         String   @id @default(uuid())
-  tenant_id  String
-  station_id String?
+  id         String   @id @default(uuid()) @db.Uuid
+  tenant_id  String @db.Uuid
+  station_id String? @db.Uuid
   alert_type String
   message    String
   severity   String   @default("info")
@@ -303,9 +303,9 @@ model Alert {
 }
 
 model FuelDelivery {
-  id            String   @id @default(uuid())
-  tenant_id     String
-  station_id    String
+  id            String   @id @default(uuid()) @db.Uuid
+  tenant_id     String @db.Uuid
+  station_id    String @db.Uuid
   fuel_type     String
   volume        Decimal
   delivered_by  String?
@@ -320,9 +320,9 @@ model FuelDelivery {
 }
 
 model NozzleReading {
-  id             String   @id @default(uuid())
-  tenant_id      String
-  nozzle_id      String
+  id             String   @id @default(uuid()) @db.Uuid
+  tenant_id      String @db.Uuid
+  nozzle_id      String @db.Uuid
   reading        Decimal
   recorded_at    DateTime
   payment_method String?
@@ -336,9 +336,9 @@ model NozzleReading {
 }
 
 model CreditPayment {
-  id               String   @id @default(uuid())
-  tenant_id        String
-  creditor_id      String
+  id               String   @id @default(uuid()) @db.Uuid
+  tenant_id        String @db.Uuid
+  creditor_id      String @db.Uuid
   amount           Decimal
   payment_method   String?
   reference_number String?
@@ -355,9 +355,9 @@ model CreditPayment {
 }
 
 model DayReconciliation {
-  id           String   @id @default(uuid())
-  tenant_id    String
-  station_id   String
+  id           String   @id @default(uuid()) @db.Uuid
+  tenant_id    String @db.Uuid
+  station_id   String @db.Uuid
   date         DateTime @db.Date
   total_sales  Decimal? @default(0)
   cash_total   Decimal? @default(0)
@@ -379,10 +379,10 @@ model DayReconciliation {
 }
 
 model CashReport {
-  id           String   @id @default(uuid())
-  tenant_id    String
-  station_id   String
-  user_id      String
+  id           String   @id @default(uuid()) @db.Uuid
+  tenant_id    String @db.Uuid
+  station_id   String @db.Uuid
+  user_id      String @db.Uuid
   date         DateTime @db.Date
   shift        String   @default("day") // morning, afternoon, night, day
   cash_amount  Decimal  @default(0)
@@ -406,9 +406,9 @@ model CashReport {
 }
 
 model ReportSchedule {
-  id         String    @id @default(uuid())
-  tenant_id  String
-  station_id String?
+  id         String    @id @default(uuid()) @db.Uuid
+  tenant_id  String @db.Uuid
+  station_id String? @db.Uuid
   type       String
   frequency  String
   next_run   DateTime?
@@ -422,12 +422,12 @@ model ReportSchedule {
 }
 
 model AuditLog {
-  id          String   @id @default(uuid())
-  tenant_id   String
-  user_id     String
+  id          String   @id @default(uuid()) @db.Uuid
+  tenant_id   String @db.Uuid
+  user_id     String @db.Uuid
   action      String
   entity_type String
-  entity_id   String
+  entity_id   String @db.Uuid
   details     Json?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
@@ -439,9 +439,9 @@ model AuditLog {
 }
 
 model UserActivityLog {
-  id          String   @id @default(uuid())
-  tenant_id   String?
-  user_id     String?
+  id          String   @id @default(uuid()) @db.Uuid
+  tenant_id   String? @db.Uuid
+  user_id     String? @db.Uuid
   ip_address  String?
   user_agent  String?
   event       String?
@@ -455,10 +455,10 @@ model UserActivityLog {
 }
 
 model ValidationIssue {
-  id          String   @id @default(uuid())
-  tenant_id   String?
+  id          String   @id @default(uuid()) @db.Uuid
+  tenant_id   String? @db.Uuid
   entity_type String
-  entity_id   String
+  entity_id   String @db.Uuid
   message     String
   created_at  DateTime @default(now())
   tenant      Tenant?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
