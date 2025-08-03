@@ -175,7 +175,7 @@ export function createDashboardHandlers(db: Pool) {
         }
 
         const breakdown = result.rows.map(row => ({
-          fuelType: row.fuel_type,
+          fuelType: row.fuel_type || 'unknown',
           volume: parseFloat(row.volume),
           amount: parseFloat(row.amount)
         }));

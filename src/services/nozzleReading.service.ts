@@ -8,6 +8,14 @@ import { isFinalized } from './reconciliation.service';
 import { toStandardDate, toStandardDateTime } from '../utils/dateUtils';
 import prisma from '../utils/prisma';
 
+/**
+ * Normalize reading values to handle floating-point precision issues
+ * Rounds to 3 decimal places and removes trailing zeros
+ */
+function normalizeReading(reading: number): number {
+  return Math.round(reading * 1000) / 1000;
+}
+
 export async function createNozzleReading(
   db: Pool,
   tenantId: string,
@@ -451,11 +459,13 @@ export async function listNozzleReadings(
           
           const prevReadings = prevRes as any[];
           if (prevReadings && prevReadings.length > 0) {
-            row.previousReading = prevReadings[0].reading;
-            row.volume = row.reading - row.previousReading;
+            row.previousReading = normalizeReading(prevReadings[0].reading);
+            row.reading = normalizeReading(row.reading);
+            row.volume = normalizeReading(row.reading - row.previousReading);
           } else {
             row.previousReading = 0;
-            row.volume = row.reading;
+            row.reading = normalizeReading(row.reading);
+            row.volume = normalizeReading(row.reading);
           }
           
           // Calculate amount if price is available
@@ -496,11 +506,13 @@ export async function listNozzleReadings(
             );
             
             if (prevRes.rows.length > 0) {
-              row.previousReading = prevRes.rows[0].reading;
-              row.volume = row.reading - row.previousReading;
+              row.previousReading = normalizeReading(prevRes.rows[0].reading);
+              row.reading = normalizeReading(row.reading);
+              row.volume = normalizeReading(row.reading - row.previousReading);
             } else {
               row.previousReading = 0;
-              row.volume = row.reading;
+              row.reading = normalizeReading(row.reading);
+              row.volume = normalizeReading(row.reading);
             }
             
             // Calculate amount if price is available
@@ -652,16 +664,18 @@ export async function getNozzleReading(db: Pool, tenantId: string, id: string) {
       );
       
       if (prevRes.rows[0]) {
-        reading.previousReading = prevRes.rows[0].reading;
-        reading.volume = reading.reading - reading.previousReading;
+        reading.previousReading = normalizeReading(prevRes.rows[0].reading);
+        reading.reading = normalizeReading(reading.reading);
+        reading.volume = normalizeReading(reading.reading - reading.previousReading);
         if (reading.pricePerLitre) {
-          reading.amount = reading.volume * reading.pricePerLitre;
+          reading.amount = normalizeReading(reading.volume * reading.pricePerLitre);
         }
       } else {
         reading.previousReading = 0;
-        reading.volume = reading.reading;
+        reading.reading = normalizeReading(reading.reading);
+        reading.volume = normalizeReading(reading.reading);
         if (reading.pricePerLitre) {
-          reading.amount = reading.volume * reading.pricePerLitre;
+          reading.amount = normalizeReading(reading.volume * reading.pricePerLitre);
         }
       }
       
@@ -686,7 +700,7 @@ export async function updateNozzleReading(
   let idx = 3;
   if (data.reading !== undefined) {
     fields.push(`reading = $${idx++}`);
-    values.push(data.reading);
+    values.push(normalizeReading(data.reading));
   }
   if (data.recordedAt !== undefined) {
     fields.push(`recorded_at = $${idx++}`);

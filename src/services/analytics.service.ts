@@ -93,21 +93,25 @@ export async function getFuelPerformance(
   dateFrom: Date,
   dateTo: Date
 ) {
-  // Get current period data
+  // Get current period data with station information
   const currentQuery = Prisma.sql`
     SELECT 
-      fuel_type AS "fuelType",
-      SUM(volume) AS "totalSalesVolume",
-      SUM(amount) AS "totalSalesAmount",
-      COUNT(*) AS "salesCount",
-      CASE WHEN SUM(volume) > 0 THEN SUM(amount) / SUM(volume) ELSE 0 END AS "averagePrice"
-    FROM "sales"
-    WHERE tenant_id = ${tenantId}
-      AND station_id = ${stationId}
-      AND recorded_at >= ${dateFrom}
-      AND recorded_at <= ${dateTo}
-    GROUP BY fuel_type
-    ORDER BY "totalSalesAmount" DESC`;
+      s.fuel_type,
+      s.station_id,
+      st.name as station_name,
+      SUM(s.volume) AS total_volume,
+      SUM(s.amount) AS total_amount,
+      COUNT(*) AS sales_count,
+      CASE WHEN SUM(s.volume) > 0 THEN SUM(s.amount) / SUM(s.volume) ELSE 0 END AS average_price
+    FROM "sales" s
+    LEFT JOIN "stations" st ON s.station_id = st.id
+    WHERE s.tenant_id = ${tenantId}
+      AND s.station_id = ${stationId}
+      AND s.recorded_at >= ${dateFrom}
+      AND s.recorded_at <= ${dateTo}
+      AND s.fuel_type IS NOT NULL
+    GROUP BY s.fuel_type, s.station_id, st.name
+    ORDER BY total_amount DESC`;
   
   // Calculate the previous period (same duration, just shifted back)
   const duration = dateTo.getTime() - dateFrom.getTime();
@@ -117,65 +121,70 @@ export async function getFuelPerformance(
   // Get previous period data
   const previousQuery = Prisma.sql`
     SELECT 
-      fuel_type AS "fuelType",
-      SUM(volume) AS "prevSalesVolume",
-      SUM(amount) AS "prevSalesAmount"
+      fuel_type,
+      SUM(volume) AS prev_volume,
+      SUM(amount) AS prev_amount
     FROM "sales"
     WHERE tenant_id = ${tenantId}
       AND station_id = ${stationId}
       AND recorded_at >= ${prevDateFrom}
       AND recorded_at <= ${prevDateTo}
+      AND fuel_type IS NOT NULL
     GROUP BY fuel_type`;
   
   // Execute both queries
   const [currentResults, previousResults] = await Promise.all([
     prisma.$queryRaw<{
-      fuelType: string;
-      totalSalesVolume: number;
-      totalSalesAmount: number;
-      salesCount: number;
-      averagePrice: number;
+      fuel_type: string;
+      station_id: string;
+      station_name: string;
+      total_volume: number;
+      total_amount: number;
+      sales_count: number;
+      average_price: number;
     }[]>(currentQuery),
     prisma.$queryRaw<{
-      fuelType: string;
-      prevSalesVolume: number;
-      prevSalesAmount: number;
+      fuel_type: string;
+      prev_volume: number;
+      prev_amount: number;
     }[]>(previousQuery)
   ]);
   
   // Create a map of previous data by fuel type
   const prevDataMap = new Map();
   for (const row of previousResults) {
-    prevDataMap.set(row.fuelType, {
-      prevSalesVolume: parseFloat(row.prevSalesVolume.toString()),
-      prevSalesAmount: parseFloat(row.prevSalesAmount.toString())
+    prevDataMap.set(row.fuel_type, {
+      prevVolume: parseFloat(row.prev_volume?.toString() || '0'),
+      prevAmount: parseFloat(row.prev_amount?.toString() || '0')
     });
   }
   
   // Combine current and previous data with growth calculations
   return currentResults.map(row => {
-    const prevData = prevDataMap.get(row.fuelType) || { prevSalesVolume: 0, prevSalesAmount: 0 };
-    const currentAmount = parseFloat(row.totalSalesAmount.toString());
-    const prevAmount = prevData.prevSalesAmount;
+    const prevData = prevDataMap.get(row.fuel_type) || { prevVolume: 0, prevAmount: 0 };
+    const currentAmount = parseFloat(row.total_amount?.toString() || '0');
+    const prevAmount = prevData.prevAmount;
     
     // Calculate growth percentage
     const growth = prevAmount > 0 ? ((currentAmount - prevAmount) / prevAmount) * 100 : 0;
     
-    // Estimate margin (this is a placeholder - real margin would need cost data)
-    const estimatedMargin = 15; // 15% margin as a placeholder
-    
     return {
-      fuelType: row.fuelType,
-      volume: parseFloat(row.totalSalesVolume.toString()),
-      revenue: parseFloat(row.totalSalesAmount.toString()),
-      sales: parseFloat(row.totalSalesAmount.toString()),
-      salesCount: parseInt(row.salesCount.toString()),
-      averagePrice: parseFloat(row.averagePrice.toString()),
+      fuelType: row.fuel_type || 'Unknown',
+      stationId: row.station_id,
+      stationName: row.station_name || 'Unknown Station',
+      volume: parseFloat(row.total_volume?.toString() || '0'),
+      revenue: currentAmount,
+      sales: currentAmount,
+      salesCount: parseInt(row.sales_count?.toString() || '0'),
+      averagePrice: parseFloat(row.average_price?.toString() || '0'),
       growth: parseFloat(growth.toFixed(2)),
-      margin: estimatedMargin,
+      margin: 15, // Placeholder margin
       // Keep original fields for backward compatibility
-      totalSalesVolume: parseFloat(row.totalSalesVolume.toString()),
-      totalSalesAmount: parseFloat(row.totalSalesAmount.toString())
+      totalSalesVolume: parseFloat(row.total_volume?.toString() || '0'),
+      totalSalesAmount: currentAmount,
+      // Add date range for context
+      dateFrom: dateFrom.toISOString(),
+      dateTo: dateTo.toISOString()
     };
   });
 }
@@ -198,17 +207,22 @@ export async function getTenantDashboardMetrics(tenantId: string) {
   });
   const fuelBreakdown = await prisma.sale.groupBy({
     by: ['fuel_type'],
-    where: { tenant_id: tenantId },
+    where: { 
+      tenant_id: tenantId,
+      fuel_type: { not: undefined }
+    },
     _sum: { volume: true },
   });
   return {
     totalSales: Number(aggregates._sum.amount || 0),
     totalVolume: Number(aggregates._sum.volume || 0),
     transactionCount: aggregates._count._all,
-    fuelBreakdown: fuelBreakdown.map((r: typeof fuelBreakdown[number]) => ({
-      fuelType: r.fuel_type,
-      volume: Number(r._sum.volume || 0),
-    })),
+    fuelBreakdown: fuelBreakdown
+      .filter(r => r.fuel_type)
+      .map((r: typeof fuelBreakdown[number]) => ({
+        fuelType: r.fuel_type || 'unknown',
+        volume: Number(r._sum?.volume || 0),
+      })),
   };
 }
 

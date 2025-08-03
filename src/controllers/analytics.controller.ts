@@ -183,10 +183,16 @@ export function createAnalyticsHandlers() {
         }
         
         // Use default date range if not provided
-        const now = new Date();
         const defaultDateTo = new Date();
         const defaultDateFrom = new Date();
         defaultDateFrom.setDate(defaultDateFrom.getDate() - 30); // Last 30 days
+        
+        console.log('[ANALYTICS] Fuel performance request:', {
+          tenantId,
+          stationId,
+          dateFrom: dateFrom || defaultDateFrom.toISOString(),
+          dateTo: dateTo || defaultDateTo.toISOString()
+        });
         
         const data = await getFuelPerformance(
           tenantId,
@@ -194,8 +200,11 @@ export function createAnalyticsHandlers() {
           dateFrom ? new Date(dateFrom) : defaultDateFrom,
           dateTo ? new Date(dateTo) : defaultDateTo
         );
+        
+        console.log('[ANALYTICS] Fuel performance result:', data);
         successResponse(res, data);
       } catch (err: any) {
+        console.error('[ANALYTICS] Fuel performance error:', err);
         return errorResponse(res, 500, err.message);
       }
     }
