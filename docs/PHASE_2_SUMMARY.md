@@ -1788,3 +1788,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/services/reconciliation.service.ts`, `src/utils/hasStationAccess.ts`, `migrations/schema/014_update_reconciliation_diff_uuid.sql`, `docs/STEP_fix_20250728_COMMAND.md`
 
 **Overview:** Converted `reconciliation_diff` IDs to `UUID` and added explicit casting for all station and tenant parameters. This prevents `text = uuid` errors when fetching daily summaries.
+
+### 🛠️ Fix 2026-09-10 – Consolidated backend API documentation
+**Status:** ✅ Done
+**Files:** `scripts/generate-api-docs.js`, `docs/backend_brain.md`, `docs/openapi.yaml`, `docs/STEP_fix_20260910_COMMAND.md`
+
+**Overview:** Added a script to extract current Express routes and regenerate `backend_brain.md` and `openapi.yaml`, ensuring backend documentation matches implemented endpoints and removing outdated entries.

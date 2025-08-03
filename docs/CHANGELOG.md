@@ -3459,6 +3459,12 @@ Each entry is tied to a step from the implementation index.
 * Annotated all Prisma model ID and foreign key fields with `@db.Uuid` to prevent `operator does not exist: text = uuid` errors across queries.
 * `docs/STEP_fix_20260909_COMMAND.md`
 
+## [Fix 2026-09-10] – Consolidated backend API documentation
+
+### 🟥 Fixes
+* Generated `scripts/generate-api-docs.js` to derive routes from code and refreshed `backend_brain.md` and `openapi.yaml`, removing obsolete endpoints.
+* `docs/STEP_fix_20260910_COMMAND.md`
+
 ## [Fix 2026-09-06] – API type regeneration instructions
 
 ### 🟦 Enhancements
