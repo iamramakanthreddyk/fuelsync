@@ -169,29 +169,55 @@ export function createAttendantHandlers(db: Pool) {
           return errorResponse(res, 400, 'Invalid station ID');
         }
 
-        // Insert cash report (allow multiple submissions per day by using unique shift names)
-        const reportId = randomUUID();
-        const totalCollected = cash + card + upi; // Only cash, card, upi for total_collected constraint
-        const uniqueShift = `${shift}_${Date.now()}`; // Make shift unique with timestamp
-        const result = await db.query(`
-          INSERT INTO public.cash_reports (
-            id, tenant_id, station_id, user_id, date, shift,
-            cash_collected, card_collected, upi_collected, total_collected,
-            notes, status, created_at, updated_at
-          ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'submitted', NOW(), NOW()
-          )
-          RETURNING id, total_collected
-        `, [reportId, tenantId, stationId, userId, date, uniqueShift, cash, card, upi, totalCollected, notes]);
+        const client = await db.connect();
+        try {
+          await client.query('BEGIN');
+          
+          // Insert cash report
+          const reportId = randomUUID();
+          const totalCollected = cash + card + upi;
+          const uniqueShift = `${shift}_${Date.now()}`;
+          const result = await client.query(`
+            INSERT INTO public.cash_reports (
+              id, tenant_id, station_id, user_id, date, shift,
+              cash_collected, card_collected, upi_collected, total_collected,
+              notes, status, created_at, updated_at
+            ) VALUES (
+              $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'submitted', NOW(), NOW()
+            )
+            RETURNING id, total_collected
+          `, [reportId, tenantId, stationId, userId, date, uniqueShift, cash, card, upi, totalCollected, notes]);
 
-        const report = result.rows[0];
-        console.log(`[CASH-REPORT] Created: ${report.id} for station ${stationId}, total: ${report.total_collected}`);
+          const report = result.rows[0];
+          
+          // If credit was given, create a sales record
+          if (credit > 0 && creditorId) {
+            await client.query(`
+              INSERT INTO public.sales (
+                id, tenant_id, station_id, nozzle_id, volume, fuel_type, fuel_price,
+                amount, payment_method, creditor_id, recorded_at, status, created_at, updated_at
+              ) VALUES (
+                $1, $2, $3,
+                (SELECT n.id FROM nozzles n JOIN pumps p ON n.pump_id = p.id WHERE p.station_id = $3 AND p.tenant_id = $2 LIMIT 1),
+                0, 'petrol', 0, $4, 'credit', $5, $6::date, 'posted', NOW(), NOW()
+              )
+            `, [randomUUID(), tenantId, stationId, credit, creditorId, date]);
+          }
+          
+          await client.query('COMMIT');
+          console.log(`[CASH-REPORT] Created: ${report.id} for station ${stationId}, total: ${report.total_collected}`);
 
-        successResponse(res, {
-          id: report.id,
-          totalAmount: report.total_collected,
-          message: 'Cash report submitted successfully'
-        }, 'Cash report submitted successfully', 201);
+          successResponse(res, {
+            id: report.id,
+            totalAmount: report.total_collected,
+            message: 'Cash report submitted successfully'
+          }, 'Cash report submitted successfully', 201);
+        } catch (error) {
+          await client.query('ROLLBACK');
+          throw error;
+        } finally {
+          client.release();
+        }
       } catch (err: any) {
         console.error('[CASH-REPORT] Error:', err);
         return errorResponse(res, 500, err.message || 'Failed to submit cash report');

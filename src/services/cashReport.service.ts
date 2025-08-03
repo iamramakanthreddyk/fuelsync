@@ -224,16 +224,17 @@ export async function createCashReport(
       
       // If credit was given to a creditor, create a sales record
       if (reportData.creditAmount > 0 && reportData.creditorId) {
+        const { randomUUID } = require('crypto');
         await client.query(`
           INSERT INTO sales (
             id, tenant_id, station_id, nozzle_id, volume, fuel_type, fuel_price, 
-            amount, payment_method, creditor_id, recorded_at, status
+            amount, payment_method, creditor_id, recorded_at, status, created_at, updated_at
           ) VALUES (
-            gen_random_uuid(), $1, $2, 
-            (SELECT n.id FROM nozzles n JOIN pumps p ON n.pump_id = p.id WHERE p.station_id = $2 LIMIT 1),
-            0, 'petrol', 0, $3, 'credit', $4, NOW(), 'posted'
+            $1, $2, $3, 
+            (SELECT n.id FROM nozzles n JOIN pumps p ON n.pump_id = p.id WHERE p.station_id = $3 AND p.tenant_id = $2 LIMIT 1),
+            0, 'petrol', 0, $4, 'credit', $5, $6::date, 'posted', NOW(), NOW()
           )
-        `, [tenantId, stationId, reportData.creditAmount, reportData.creditorId]);
+        `, [randomUUID(), tenantId, stationId, reportData.creditAmount, reportData.creditorId, reportData.date]);
       }
       
       await client.query('COMMIT');

@@ -140,32 +140,12 @@ export async function createCreditPayment(
   input: CreditPaymentInput,
   userId: string
 ): Promise<string> {
-  const client = await db.connect();
-  try {
-    await client.query('BEGIN');
-    const today = new Date();
-    const finalized = await isDateFinalized(client, tenantId, new Date(today.toISOString().slice(0, 10)));
-    if (finalized) {
-      throw new Error('Day already finalized');
-    }
-    const creditor = await getCreditorById(client, tenantId, input.creditorId);
-    if (!creditor) {
-      throw new Error('Invalid creditor');
-    }
-    const res = await client.query<{ id: string }>(
-      `INSERT INTO public.credit_payments (id, tenant_id, creditor_id, amount, payment_method, reference_number, received_by, received_at, updated_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,NOW(),NOW()) RETURNING id`,
-      [randomUUID(), tenantId, input.creditorId, input.amount, input.paymentMethod, input.referenceNumber || null, userId]
-    );
-    await decrementCreditorBalance(client, tenantId, input.creditorId, input.amount);
-    await client.query('COMMIT');
-    return res.rows[0].id;
-  } catch (err) {
-    await client.query('ROLLBACK');
-    throw err;
-  } finally {
-    client.release();
-  }
+  const res = await db.query<{ id: string }>(
+    `INSERT INTO public.credit_payments (id, tenant_id, creditor_id, amount, payment_method, reference_number, received_at, created_at, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,NOW(),NOW(),NOW()) RETURNING id`,
+    [randomUUID(), tenantId, input.creditorId, input.amount, input.paymentMethod, input.referenceNumber || null]
+  );
+  return res.rows[0].id;
 }
 
 export async function listCreditPayments(db: Pool, tenantId: string, query: PaymentQuery) {

@@ -25,6 +25,7 @@ export interface UserEnteredCash {
   cashCollected: number;
   cardCollected: number;
   upiCollected: number;
+  creditGiven: number;
   totalCollected: number;
 }
 
@@ -44,7 +45,8 @@ export interface ReconciliationSummary {
     cashDifference: number;      // userEntered.cashCollected - systemCalculated.cashSales
     cardDifference: number;      // userEntered.cardCollected - systemCalculated.cardSales
     upiDifference: number;       // userEntered.upiCollected - systemCalculated.upiSales
-    totalDifference: number;     // userEntered.totalCollected - systemCalculated.totalRevenue (excluding credit)
+    creditDifference: number;    // userEntered.creditGiven - systemCalculated.creditSales
+    totalDifference: number;     // userEntered.totalCollected - systemCalculated.totalRevenue
     percentageDifference: number; // (totalDifference / systemCalculated.totalRevenue) * 100
     isWithinTolerance: boolean;   // Whether difference is within acceptable range (±2%)
   };
@@ -163,7 +165,7 @@ export async function getSystemCalculatedSales(
 }
 
 /**
- * Get user entered cash for a date (including credit payments received)
+ * Get user entered cash for a date (including credit payments received and credit given)
  */
 export async function getUserEnteredCash(
   db: Pool | PoolClient,
@@ -209,12 +211,28 @@ export async function getUserEnteredCash(
   cardCollected += Number(creditRow.credit_card || 0);
   upiCollected += Number(creditRow.credit_upi || 0);
   
-  const totalCollected = cashCollected + cardCollected + upiCollected;
+  // Add credit given on this date (from sales records created via cash reports)
+  const creditGivenQuery = `
+    SELECT COALESCE(SUM(amount), 0) as credit_given
+    FROM sales
+    WHERE tenant_id = $1 
+      AND station_id = $2 
+      AND DATE(recorded_at) = $3
+      AND payment_method = 'credit'
+      AND status IN ('posted', 'reconciled')
+  `;
+  
+  const creditGivenResult = await db.query(creditGivenQuery, [tenantId, stationId, date]);
+  const creditGiven = Number(creditGivenResult.rows[0]?.credit_given || 0);
+  
+  // Credit given should be added to total collected for reconciliation purposes
+  const totalCollected = cashCollected + cardCollected + upiCollected + creditGiven;
   
   return {
     cashCollected,
     cardCollected,
     upiCollected,
+    creditGiven,
     totalCollected
   };
 }
@@ -241,16 +259,18 @@ export async function generateReconciliationSummary(
   // Get user entered cash
   const userEntered = await getUserEnteredCash(db, tenantId, stationId, date);
   
-  // Calculate enhanced differences (include credit in total revenue for reconciliation)
+  // Calculate enhanced differences
   const cashDifference = userEntered.cashCollected - systemCalculated.cashSales;
   const cardDifference = userEntered.cardCollected - systemCalculated.cardSales;
   const upiDifference = userEntered.upiCollected - systemCalculated.upiSales;
+  const creditDifference = userEntered.creditGiven - systemCalculated.creditSales;
+  
+  // For total difference, compare user entered total (including credit given) with system total revenue
   const totalDifference = userEntered.totalCollected - systemCalculated.totalRevenue;
 
-  // Calculate percentage difference (excluding credit sales from denominator for cash reconciliation)
-  const cashRevenue = systemCalculated.totalRevenue - systemCalculated.creditSales;
-  const percentageDifference = cashRevenue > 0
-    ? (totalDifference / cashRevenue) * 100
+  // Calculate percentage difference based on total revenue
+  const percentageDifference = systemCalculated.totalRevenue > 0
+    ? (totalDifference / systemCalculated.totalRevenue) * 100
     : 0;
 
   // Check if within tolerance
@@ -278,6 +298,7 @@ export async function generateReconciliationSummary(
       cashDifference,
       cardDifference,
       upiDifference,
+      creditDifference,
       totalDifference,
       percentageDifference,
       isWithinTolerance
@@ -430,6 +451,13 @@ export function generateRecommendedActions(summary: ReconciliationSummary): stri
 
   if (differences.upiDifference !== 0) {
     actions.push('UPI payment difference detected - check UPI app settlements and QR code transactions');
+  }
+
+  if (differences.creditDifference !== 0) {
+    const action = differences.creditDifference > 0
+      ? 'More credit given than recorded in system - verify credit transactions'
+      : 'Less credit given than recorded in system - check for missing credit entries';
+    actions.push(action);
   }
 
   // General recommendations
