@@ -260,6 +260,46 @@ export function createReportsHandlers(db: Pool) {
   }
 
   return {
+    // Basic reports list endpoint
+    getReportsList: async (req: Request, res: Response) => {
+      try {
+        const tenantId = req.user?.tenantId;
+        if (!tenantId) return errorResponse(res, 400, 'Missing tenant context');
+
+        // Return available report types based on plan
+        const accessCheck = await checkReportAccess(db, tenantId, 'sales-basic', 'json');
+        const availableReports = [];
+
+        if (accessCheck.allowed) {
+          availableReports.push({
+            id: 'sales',
+            name: 'Sales Report',
+            type: 'sales',
+            description: 'Daily sales summary with volume and revenue data',
+            formats: ['csv', 'json'],
+            status: 'available'
+          });
+        }
+
+        // Check financial reports access (Enterprise only)
+        const financialAccess = await checkReportAccess(db, tenantId, 'financial', 'json');
+        if (financialAccess.allowed) {
+          availableReports.push({
+            id: 'financial',
+            name: 'Financial Report',
+            type: 'financial',
+            description: 'Comprehensive financial analysis and profit margins',
+            formats: ['csv', 'json'],
+            status: 'available'
+          });
+        }
+
+        successResponse(res, availableReports);
+      } catch (err: any) {
+        return errorResponse(res, 500, err.message);
+      }
+    },
+
     exportSales: runExportSales,
     exportSalesPost: async (req: Request, res: Response) => {
       req.query = { ...req.body } as any;

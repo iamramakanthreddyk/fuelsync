@@ -17,6 +17,9 @@ export function createReportsRouter(db: Pool) {
   const reportCache = (req: any, res: any, next: any) => next(); // No-op middleware
   const previewCache = (req: any, res: any, next: any) => next(); // No-op middleware
 
+  // Basic reports list endpoint
+  router.get('/', authenticateJWT, enforceReportsAccess(db), requireRole([UserRole.Owner, UserRole.Manager]), handlers.getReportsList);
+
   // Cached routes for better performance (Pro+ only)
   router.get('/sales/export', authenticateJWT, enforceReportsAccess(db), requireRole([UserRole.Owner, UserRole.Manager]), reportCache, handlers.exportSales);
   router.get('/sales', authenticateJWT, enforceReportsAccess(db), requireRole([UserRole.Owner, UserRole.Manager]), reportCache, handlers.getSales);

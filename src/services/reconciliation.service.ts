@@ -83,7 +83,7 @@ export async function isFinalized(
   date: Date
 ): Promise<boolean> {
   const res = await db.query(
-    'SELECT finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2::date AND tenant_id = $3',
+    'SELECT finalized FROM public.day_reconciliations WHERE station_id = $1 AND date = $2 AND tenant_id = $3',
     [stationId, date, tenantId]
   );
   return res.rowCount ? res.rows[0].finalized : false;
@@ -144,7 +144,7 @@ export async function getOrCreateDailyReconciliation(
   const id = randomUUID();
   const insert = await db.query<DayReconciliationRow>(
     `INSERT INTO public.day_reconciliations (id, tenant_id, station_id, date, finalized)
-     VALUES ($1,$2,$3,$4,false)
+     VALUES ($1::uuid,$2::uuid,$3::uuid,$4,false)
      RETURNING *`,
     [id, tenantId, stationId, date]
   );
@@ -159,7 +159,7 @@ export async function markDayAsFinalized(
 ): Promise<void> {
   const rec = await getOrCreateDailyReconciliation(db, tenantId, stationId, date);
   await db.query(
-    'UPDATE public.day_reconciliations SET finalized = true, updated_at = NOW() WHERE id = $1 AND tenant_id = $2',
+    'UPDATE public.day_reconciliations SET finalized = true, updated_at = NOW() WHERE id = $1::uuid AND tenant_id = $2::uuid',
     [rec.id, tenantId]
   );
 }
@@ -343,7 +343,7 @@ export async function listReconciliations(
                opening_reading, closing_reading, variance, finalized,
                (opening_reading > 0 OR closing_reading > 0) AS has_readings,
                (total_sales > 0) AS has_sales
-               FROM public.day_reconciliations WHERE tenant_id = $1`;
+               FROM public.day_reconciliations WHERE tenant_id = $1::uuid`;
   if (stationId) {
     query += ` AND station_id = $${idx++}::uuid`;
     params.push(stationId);
@@ -502,7 +502,7 @@ export async function generateReconciliationSummary(
 ): Promise<ReconciliationSummary> {
   // Get station name
   const stationResult = await db.query(
-    'SELECT name FROM stations WHERE id = $1 AND tenant_id = $2',
+    'SELECT name FROM stations WHERE id = $1::uuid AND tenant_id = $2::uuid',
     [stationId, tenantId]
   );
   const stationName = stationResult.rows[0]?.name || 'Unknown Station';
@@ -521,7 +521,7 @@ export async function generateReconciliationSummary(
 
   // Check if reconciled
   const reconciliationResult = await db.query(
-    'SELECT finalized, updated_at FROM day_reconciliations WHERE tenant_id = $1 AND station_id = $2 AND date = $3',
+    'SELECT finalized, updated_at FROM day_reconciliations WHERE tenant_id = $1::uuid AND station_id = $2::uuid AND date = $3',
     [tenantId, stationId, date]
   );
 

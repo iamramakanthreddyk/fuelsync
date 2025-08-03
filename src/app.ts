@@ -30,6 +30,7 @@ import { createAlertsRouter } from './routes/alerts.route';
 import { createAttendantRouter } from "./routes/attendant.route";
 import { createAttendanceRouter } from "./routes/attendance.route";
 import { createSetupStatusRouter } from './routes/setupStatus.route';
+import { createSuperAdminRouter } from './routes/superadmin.route';
 import { createOnboardingRoutes } from './routes/onboarding.routes';
 import { createDailySalesRouter } from './routes/dailySales.route';
 import { createTodaysSalesRoutes } from './routes/todaysSales.route';
@@ -250,6 +251,7 @@ export function createApp() {
   app.use(`${API_PREFIX}/attendance`, createAttendanceRouter(pool));
   app.use(`${API_PREFIX}/shifts`, createAttendanceRouter(pool));
   app.use(`${API_PREFIX}/onboarding`, createOnboardingRoutes(pool));
+  app.use(`${API_PREFIX}/superadmin`, createSuperAdminRouter(pool));
 
   app.use('*', (_req, res) => {
     return errorResponse(res, 404, 'Route not found');
@@ -265,7 +267,7 @@ export default app;
 
 // For local development
 if (require.main === module) {
-  const port = process.env.PORT || 3004;
+  const port = process.env.PORT || 3003;
   app.listen(port, () => {
     console.log(`FuelSync API listening on ${port}`);
   });

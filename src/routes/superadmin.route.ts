@@ -23,8 +23,12 @@ export function createSuperAdminRouter(db: Pool) {
 
   // Plan Management
   router.get('/plans', ...requireSuperAdmin, handlers.getPlans);
+  router.post('/plans', ...requireSuperAdmin, handlers.createPlan);
+  router.put('/plans/:planId', ...requireSuperAdmin, handlers.updatePlan);
+  router.get('/plans/comparison', ...requireSuperAdmin, handlers.getPlanComparison);
 
   // User Management
+  router.get('/users', ...requireSuperAdmin, handlers.getAllUsers);
   router.post('/users/reset-password', ...requireSuperAdmin, handlers.resetUserPassword);
 
   // Analytics & Monitoring

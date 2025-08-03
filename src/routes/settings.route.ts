@@ -11,6 +11,7 @@ export function createSettingsRouter(db: Pool) {
 
   router.get('/', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager]), handlers.get);
   router.post('/', authenticateJWT, requireRole([UserRole.Owner]), handlers.update);
+  router.get('/plan', authenticateJWT, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.getPlanInfo);
 
   return router;
 }

@@ -5,7 +5,7 @@
 
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:3004/api/v1';
+const BASE_URL = 'http://localhost:3003/api/v1';
 
 async function testServerHealth() {
   console.log('🔍 Testing server health...');
@@ -17,7 +17,7 @@ async function testServerHealth() {
       validateStatus: () => true // Accept any status code
     });
     
-    console.log(`✅ Server is responding on port 3004 (Status: ${response.status})`);
+    console.log(`✅ Server is responding on port 3003 (Status: ${response.status})`);
     return true;
   } catch (error) {
     console.log(`❌ Server not responding: ${error.message}`);
@@ -90,6 +90,30 @@ async function testBasicEndpoints() {
       name: 'GET /reconciliation/summary (no auth)',
       method: 'GET',
       url: `${BASE_URL}/reconciliation/summary`,
+      expectedStatus: 401
+    },
+    {
+      name: 'GET /setup-status (no auth)',
+      method: 'GET',
+      url: `${BASE_URL}/setup-status`,
+      expectedStatus: 401
+    },
+    {
+      name: 'GET /superadmin/tenants (no auth)',
+      method: 'GET',
+      url: `${BASE_URL}/superadmin/tenants`,
+      expectedStatus: 401
+    },
+    {
+      name: 'GET /superadmin/plans (no auth)',
+      method: 'GET',
+      url: `${BASE_URL}/superadmin/plans`,
+      expectedStatus: 401
+    },
+    {
+      name: 'GET /superadmin/analytics/usage (no auth)',
+      method: 'GET',
+      url: `${BASE_URL}/superadmin/analytics/usage`,
       expectedStatus: 401
     }
   ];

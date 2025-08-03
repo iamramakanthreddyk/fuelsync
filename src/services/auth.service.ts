@@ -84,6 +84,12 @@ export async function login(db: Pool, email: string, password: string, tenantId?
       return null;
     }
 
+    // Update last_login_at for admin user
+    await db.query(
+      'UPDATE public.admin_users SET last_login_at = NOW() WHERE id = $1',
+      [admin.id]
+    );
+
     const payload: AuthPayload = { userId: admin.id, role: admin.role as UserRole, tenantId: null };
     const token = generateToken(payload);
 
@@ -117,6 +123,12 @@ export async function login(db: Pool, email: string, password: string, tenantId?
     console.log(`[AUTH-SERVICE] Password mismatch for user: ${email}`);
     return null;
   }
+
+  // Update last_login_at for regular user
+  await db.query(
+    'UPDATE public.users SET last_login_at = NOW() WHERE id = $1',
+    [user.id]
+  );
 
   const tRes = await db.query('SELECT name FROM public.tenants WHERE id = $1', [user.tenant_id]);
   const tenantName = tRes.rows[0]?.name;

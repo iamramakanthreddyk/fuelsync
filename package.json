@@ -66,10 +66,10 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.2.5",
     "@types/supertest": "^6.0.3",
-    "jest": "^30.0.4",
+    "jest": "^30.0.5",
     "openapi-typescript": "^7.8.0",
     "prisma": "^6.10.1",
-    "supertest": "^7.1.1",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.4.0"
   }
 }
