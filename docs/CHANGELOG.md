@@ -3531,3 +3531,9 @@ Each entry is tied to a step from the implementation index.
 * Converted `reconciliation_diff` ID columns to `UUID` via migration `014`.
 * Cast all UUID and date parameters in reconciliation services and station access checks.
 * `docs/STEP_fix_20250728_COMMAND.md`
+
+## [Fix 2025-08-03] – Normalize OpenAPI paths
+
+### 🟥 Fixes
+* Converted Express-style route params to OpenAPI syntax and removed duplicate `/api/v1` prefixes.
+* `docs/STEP_fix_20250803_COMMAND.md`

@@ -6,13 +6,13 @@ servers:
   - url: /
     description: API base URL
 paths:
-  /api/v1/admin/analytics/:
+  /admin/analytics:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/admin/auth/login:
+  /admin/auth/login:
     post:
       summary: ''
       responses:
@@ -23,13 +23,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/dashboard:
+  /admin/dashboard:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/admin/plans:
+  /admin/plans:
     get:
       summary: ''
       responses:
@@ -45,7 +45,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/plans/:id:
+  /admin/plans/{id}:
     delete:
       summary: ''
       responses:
@@ -84,7 +84,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/tenants:
+  /admin/tenants:
     get:
       summary: ''
       responses:
@@ -100,7 +100,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/tenants/:id:
+  /admin/tenants/{id}:
     delete:
       summary: ''
       responses:
@@ -123,7 +123,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/admin/tenants/:id/status:
+  /admin/tenants/{id}/status:
     patch:
       summary: ''
       responses:
@@ -140,7 +140,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/tenants/:tenantId/settings:
+  /admin/tenants/{tenantId}/settings:
     get:
       summary: ''
       responses:
@@ -152,7 +152,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/admin/tenants/:tenantId/settings/:key:
+  /admin/tenants/{tenantId}/settings/{key}:
     get:
       summary: ''
       responses:
@@ -190,7 +190,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/users:
+  /admin/users:
     get:
       summary: ''
       responses:
@@ -206,7 +206,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/users/:id:
+  /admin/users/{id}:
     delete:
       summary: ''
       responses:
@@ -245,7 +245,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/admin/users/:id/reset-password:
+  /admin/users/{id}/reset-password:
     post:
       summary: ''
       responses:
@@ -262,7 +262,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/alerts/:
+  /alerts:
     get:
       summary: ''
       responses:
@@ -278,7 +278,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/alerts/:id:
+  /alerts/{id}:
     delete:
       summary: ''
       responses:
@@ -290,7 +290,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/alerts/:id/read:
+  /alerts/{id}/read:
     patch:
       summary: ''
       responses:
@@ -307,55 +307,55 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/alerts/summary:
+  /alerts/summary:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/dashboard:
+  /analytics/dashboard:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/fuel-performance:
+  /analytics/fuel-performance:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/hourly-sales:
+  /analytics/hourly-sales:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/peak-hours:
+  /analytics/peak-hours:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/station-comparison:
+  /analytics/station-comparison:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/station-ranking:
+  /analytics/station-ranking:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/superadmin:
+  /analytics/superadmin:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/analytics/tenant/:id:
+  /analytics/tenant/{id}:
     get:
       summary: ''
       responses:
@@ -367,7 +367,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/auth/login:
+  /auth/login:
     post:
       summary: ''
       responses:
@@ -378,7 +378,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/auth/logout:
+  /auth/logout:
     post:
       summary: ''
       responses:
@@ -389,7 +389,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/auth/refresh:
+  /auth/refresh:
     post:
       summary: ''
       responses:
@@ -400,29 +400,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/auth/test:
+  /auth/test:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/credit-payments/:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/v1/creditors/:
+  /credit-payments:
     get:
       summary: ''
       responses:
@@ -438,7 +422,23 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/creditors/:id:
+  /creditors:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /creditors/{id}:
     delete:
       summary: ''
       responses:
@@ -477,7 +477,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/daily-closure/check/:stationId/:date:
+  /daily-closure/check/{stationId}/{date}:
     get:
       summary: ''
       responses:
@@ -494,7 +494,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/daily-closure/close:
+  /daily-closure/close:
     post:
       summary: ''
       responses:
@@ -505,13 +505,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/daily-closure/open:
+  /daily-closure/open:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/daily-closure/summary/:stationId/:date:
+  /daily-closure/summary/{stationId}/{date}:
     get:
       summary: ''
       responses:
@@ -528,7 +528,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/daily-closure/validate:
+  /daily-closure/validate:
     post:
       summary: ''
       responses:
@@ -539,95 +539,61 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/dashboard/daily-trend:
+  /dashboard/daily-trend:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/fuel-breakdown:
+  /dashboard/fuel-breakdown:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/fuel-types:
+  /dashboard/fuel-types:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/payment-methods:
+  /dashboard/payment-methods:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/sales-summary:
+  /dashboard/sales-summary:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/sales-trend:
+  /dashboard/sales-trend:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/station-metrics:
+  /dashboard/station-metrics:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/system-health:
+  /dashboard/system-health:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/dashboard/top-creditors:
+  /dashboard/top-creditors:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/fuel-deliveries/:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/v1/fuel-deliveries/inventory:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/fuel-inventory/:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/fuel-inventory/summary:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/fuel-prices/:
+  /fuel-deliveries:
     get:
       summary: ''
       responses:
@@ -643,7 +609,41 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/fuel-prices/:id:
+  /fuel-deliveries/inventory:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /fuel-inventory:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /fuel-inventory/summary:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /fuel-prices:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /fuel-prices/{id}:
     delete:
       summary: ''
       responses:
@@ -671,13 +671,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/fuel-prices/missing:
+  /fuel-prices/missing:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/fuel-prices/validate/:stationId:
+  /fuel-prices/validate/{stationId}:
     get:
       summary: ''
       responses:
@@ -689,19 +689,19 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/inventory/:
+  /inventory:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/inventory/alerts:
+  /inventory/alerts:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/inventory/update:
+  /inventory/update:
     post:
       summary: ''
       responses:
@@ -712,7 +712,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzle-readings/:
+  /nozzle-readings:
     get:
       summary: ''
       responses:
@@ -728,7 +728,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzle-readings/:id:
+  /nozzle-readings/{id}:
     get:
       summary: ''
       responses:
@@ -756,7 +756,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzle-readings/:id/void:
+  /nozzle-readings/{id}/void:
     post:
       summary: ''
       responses:
@@ -773,7 +773,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzle-readings/can-create/:nozzleId:
+  /nozzle-readings/can-create/{nozzleId}:
     get:
       summary: ''
       responses:
@@ -785,7 +785,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/nozzles/:
+  /nozzles:
     get:
       summary: ''
       responses:
@@ -801,7 +801,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzles/:id:
+  /nozzles/{id}:
     delete:
       summary: ''
       responses:
@@ -840,7 +840,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/nozzles/:id/can-create-reading:
+  /nozzles/{id}/can-create-reading:
     get:
       summary: ''
       responses:
@@ -852,7 +852,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/nozzles/:id/settings:
+  /nozzles/{id}/settings:
     get:
       summary: ''
       responses:
@@ -880,13 +880,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/help:
+  /onboarding/help:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/onboarding/preferences:
+  /onboarding/preferences:
     get:
       summary: ''
       responses:
@@ -902,13 +902,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/reminders:
+  /onboarding/reminders:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/onboarding/reminders/:reminderId/complete:
+  /onboarding/reminders/{reminderId}/complete:
     post:
       summary: ''
       responses:
@@ -925,7 +925,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/reset:
+  /onboarding/reset:
     post:
       summary: ''
       responses:
@@ -936,13 +936,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/setup-guide:
+  /onboarding/setup-guide:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/onboarding/setup-guide/:step/complete:
+  /onboarding/setup-guide/{step}/complete:
     post:
       summary: ''
       responses:
@@ -959,7 +959,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/skip:
+  /onboarding/skip:
     post:
       summary: ''
       responses:
@@ -970,13 +970,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/onboarding/status:
+  /onboarding/status:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/onboarding/track:
+  /onboarding/track:
     post:
       summary: ''
       responses:
@@ -987,7 +987,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/pumps/:
+  /pumps:
     get:
       summary: ''
       responses:
@@ -1003,7 +1003,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/pumps/:id:
+  /pumps/{id}:
     delete:
       summary: ''
       responses:
@@ -1042,7 +1042,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/pumps/:id/settings:
+  /pumps/{id}/settings:
     get:
       summary: ''
       responses:
@@ -1070,7 +1070,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/:
+  /reconciliation:
     get:
       summary: ''
       responses:
@@ -1086,7 +1086,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/:id:
+  /reconciliation/{id}:
     get:
       summary: ''
       responses:
@@ -1098,7 +1098,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/reconciliation/:id/approve:
+  /reconciliation/{id}/approve:
     post:
       summary: ''
       responses:
@@ -1115,7 +1115,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/:stationId/:date:
+  /reconciliation/{stationId}/{date}:
     get:
       summary: ''
       responses:
@@ -1132,13 +1132,13 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/reconciliation/analytics:
+  /reconciliation/analytics:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reconciliation/close-day:
+  /reconciliation/close-day:
     post:
       summary: ''
       responses:
@@ -1149,7 +1149,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/close-with-cash:
+  /reconciliation/close-with-cash:
     post:
       summary: ''
       responses:
@@ -1160,7 +1160,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/create:
+  /reconciliation/create:
     post:
       summary: ''
       responses:
@@ -1171,25 +1171,25 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reconciliation/daily-summary:
+  /reconciliation/daily-summary:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reconciliation/dashboard:
+  /reconciliation/dashboard:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reconciliation/differences:
+  /reconciliation/differences:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reconciliation/differences/:id:
+  /reconciliation/differences/{id}:
     get:
       summary: ''
       responses:
@@ -1201,31 +1201,31 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/reconciliation/differences/summary:
+  /reconciliation/differences/summary:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reconciliation/summary:
+  /reconciliation/summary:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reports/:
+  /reports:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reports/daily-sales:
+  /reports/daily-sales:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reports/export:
+  /reports/export:
     post:
       summary: ''
       responses:
@@ -1236,64 +1236,19 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/reports/financial/export:
+  /reports/financial/export:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reports/preview:
+  /reports/preview:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/reports/sales:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/v1/reports/sales/export:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/reports/schedule:
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/v1/sales/:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/sales/analytics:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/settings/:
+  /reports/sales:
     get:
       summary: ''
       responses:
@@ -1309,13 +1264,36 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/settings/plan:
+  /reports/sales/export:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/stations/:
+  /reports/schedule:
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /sales:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /sales/analytics:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /settings:
     get:
       summary: ''
       responses:
@@ -1331,7 +1309,29 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/stations/:stationId:
+  /settings/plan:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /stations:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /stations/{stationId}:
     delete:
       summary: ''
       responses:
@@ -1370,7 +1370,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/stations/:stationId/efficiency:
+  /stations/{stationId}/efficiency:
     get:
       summary: ''
       responses:
@@ -1382,7 +1382,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/stations/:stationId/metrics:
+  /stations/{stationId}/metrics:
     get:
       summary: ''
       responses:
@@ -1394,7 +1394,7 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/stations/:stationId/performance:
+  /stations/{stationId}/performance:
     get:
       summary: ''
       responses:
@@ -1406,19 +1406,19 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/stations/compare:
+  /stations/compare:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/stations/ranking:
+  /stations/ranking:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/superadmin/analytics/tenant/:tenantId:
+  /superadmin/analytics/tenant/{tenantId}:
     get:
       summary: ''
       responses:
@@ -1430,13 +1430,13 @@ paths:
           required: true
           schema:
             type: string
-  /api/v1/superadmin/analytics/usage:
+  /superadmin/analytics/usage:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/superadmin/plans:
+  /superadmin/plans:
     get:
       summary: ''
       responses:
@@ -1452,7 +1452,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/superadmin/plans/:planId:
+  /superadmin/plans/{planId}:
     put:
       summary: ''
       responses:
@@ -1469,19 +1469,19 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/superadmin/plans/comparison:
+  /superadmin/plans/comparison:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/superadmin/tenants:
+  /superadmin/tenants:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/superadmin/tenants/:tenantId/assign-plan:
+  /superadmin/tenants/{tenantId}/assign-plan:
     post:
       summary: ''
       responses:
@@ -1498,7 +1498,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/superadmin/tenants/:tenantId/status:
+  /superadmin/tenants/{tenantId}/status:
     patch:
       summary: ''
       responses:
@@ -1515,13 +1515,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/superadmin/users:
+  /superadmin/users:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/superadmin/users/reset-password:
+  /superadmin/users/reset-password:
     post:
       summary: ''
       responses:
@@ -1532,29 +1532,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/tenant/settings/:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/v1/tenant/settings/plan:
-    get:
-      summary: ''
-      responses:
-        '200':
-          description: Success
-  /api/v1/tenants/:
+  /tenant/settings:
     get:
       summary: ''
       responses:
@@ -1570,13 +1548,13 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/todays-sales/summary:
+  /tenant/settings/plan:
     get:
       summary: ''
       responses:
         '200':
           description: Success
-  /api/v1/users/:
+  /tenants:
     get:
       summary: ''
       responses:
@@ -1592,7 +1570,29 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/users/:userId:
+  /todays-sales/summary:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+  /users:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: Success
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /users/{userId}:
     delete:
       summary: ''
       responses:
@@ -1631,7 +1631,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/users/:userId/change-password:
+  /users/{userId}/change-password:
     post:
       summary: ''
       responses:
@@ -1648,7 +1648,7 @@ paths:
           application/json:
             schema:
               type: object
-  /api/v1/users/:userId/reset-password:
+  /users/{userId}/reset-password:
     post:
       summary: ''
       responses:

@@ -1794,3 +1794,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `scripts/generate-api-docs.js`, `docs/backend_brain.md`, `docs/openapi.yaml`, `docs/STEP_fix_20260910_COMMAND.md`
 
 **Overview:** Added a script to extract current Express routes and regenerate `backend_brain.md` and `openapi.yaml`, ensuring backend documentation matches implemented endpoints and removing outdated entries.
+
+### 🛠️ Fix 2025-08-03 – Normalize OpenAPI paths
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20250803_COMMAND.md`
+
+**Overview:** Converted Express-style route parameters to `{param}` format and removed duplicate `/api/v1` prefixes in the OpenAPI specification to match implemented endpoints.
