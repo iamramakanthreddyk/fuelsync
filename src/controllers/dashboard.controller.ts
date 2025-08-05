@@ -26,7 +26,7 @@ export function createDashboardHandlers(db: Pool) {
         let dateFilter = '';
         switch (range) {
           case 'daily':
-            dateFilter = "AND s.recorded_at >= CURRENT_DATE";
+            dateFilter = "AND DATE(s.recorded_at) = CURRENT_DATE";
             break;
           case 'weekly':
             dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '7 days'";
@@ -36,6 +36,10 @@ export function createDashboardHandlers(db: Pool) {
             break;
           case 'yearly':
             dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '1 year'";
+            break;
+          case 'all':
+          default:
+            dateFilter = "AND DATE(s.recorded_at) = CURRENT_DATE";
             break;
         }
 
@@ -143,7 +147,7 @@ export function createDashboardHandlers(db: Pool) {
         let dateFilter = '';
         switch (period) {
           case 'daily':
-            dateFilter = "AND s.recorded_at >= CURRENT_DATE";
+            dateFilter = "AND DATE(s.recorded_at) = CURRENT_DATE";
             break;
           case 'weekly':
             dateFilter = "AND s.recorded_at >= CURRENT_DATE - INTERVAL '7 days'";

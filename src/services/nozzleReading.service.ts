@@ -158,13 +158,13 @@ export async function createNozzleReading(
         payment_method: string;
         status: string;
       }>(
-        'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1::uuid,$2::uuid,$3::uuid,$4,$5,$6,$7,NOW()) RETURNING id, nozzle_id, reading, recorded_at, payment_method, status',
+        'INSERT INTO public.nozzle_readings (id, tenant_id, nozzle_id, reading, recorded_at, payment_method, status, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id, nozzle_id, reading, recorded_at, payment_method, status',
         [
           readingId,
           tenantId,
           data.nozzleId,
           data.reading,
-          data.recordedAt,
+          data.recordedAt ? new Date(data.recordedAt).toISOString() : new Date().toISOString(),
           data.paymentMethod || (data.creditorId ? 'credit' : 'cash'),
           'active'
         ]
@@ -390,13 +390,13 @@ export async function listNozzleReadings(
     params.push(query.stationId.trim());
   }
   
-  // Handle date filters
+  // Handle date filters with proper date formatting
   if (query.from) {
-    filters.push(`nr.recorded_at >= $${idx++}`);
+    filters.push(`DATE(nr.recorded_at) >= DATE($${idx++})`);
     params.push(query.from);
   }
   if (query.to) {
-    filters.push(`nr.recorded_at <= $${idx++}`);
+    filters.push(`DATE(nr.recorded_at) <= DATE($${idx++})`);
     params.push(query.to);
   }
   
@@ -451,6 +451,17 @@ export async function listNozzleReadings(
             return row;
           }
           
+          // Fix price formatting - convert Decimal to number
+          if (row.pricePerLitre && typeof row.pricePerLitre === 'object') {
+            row.pricePerLitre = parseFloat(row.pricePerLitre.toString());
+          }
+          
+          // Fix date formatting
+          if (row.recordedAt && typeof row.recordedAt === 'object' && !row.recordedAt.toISOString) {
+            // If recordedAt is malformed, use current date as fallback
+            row.recordedAt = new Date().toISOString();
+          }
+          
           const prevRes = await prisma.$queryRaw`
             SELECT reading FROM public.nozzle_readings 
             WHERE nozzle_id = ${row.nozzleId} AND tenant_id = ${params[0]} AND recorded_at < ${row.recordedAt} 
@@ -469,8 +480,8 @@ export async function listNozzleReadings(
           }
           
           // Calculate amount if price is available
-          if (row.pricePerLitre) {
-            row.amount = row.volume * row.pricePerLitre;
+          if (row.pricePerLitre && row.volume) {
+            row.amount = normalizeReading(row.volume * row.pricePerLitre);
           }
           
           return row;
@@ -498,6 +509,16 @@ export async function listNozzleReadings(
               return row;
             }
             
+            // Fix price formatting - convert Decimal to number
+            if (row.pricePerLitre && typeof row.pricePerLitre === 'object') {
+              row.pricePerLitre = parseFloat(row.pricePerLitre.toString());
+            }
+            
+            // Fix date formatting
+            if (row.recordedAt && typeof row.recordedAt === 'object' && !row.recordedAt.toISOString) {
+              row.recordedAt = new Date().toISOString();
+            }
+            
             const prevRes = await dbPool.query(
               `SELECT reading FROM public.nozzle_readings 
                WHERE nozzle_id = $1 AND tenant_id = $2 AND recorded_at < $3 
@@ -516,8 +537,8 @@ export async function listNozzleReadings(
             }
             
             // Calculate amount if price is available
-            if (row.pricePerLitre) {
-              row.amount = row.volume * row.pricePerLitre;
+            if (row.pricePerLitre && row.volume) {
+              row.amount = normalizeReading(row.volume * row.pricePerLitre);
             }
             
             return row;
