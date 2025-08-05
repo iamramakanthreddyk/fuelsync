@@ -260,7 +260,11 @@ export async function createCashReport(
     } finally {
       client.release();
     }
+  } catch (error) {
+    console.error('Error in createCashReport:', error);
+    throw new Error('Failed to create cash report');
   }
+}
 
 /**
  * Update cash report status
