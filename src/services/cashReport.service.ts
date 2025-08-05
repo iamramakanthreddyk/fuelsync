@@ -152,12 +152,15 @@ export async function createCashReport(
     notes?: string;
   }
 ): Promise<CashReport> {
+  const totalAmount =
+    reportData.cashAmount +
+    reportData.cardAmount +
+    reportData.upiAmount +
+    reportData.creditAmount;
+
+  const client = await db.connect();
   try {
-    const totalAmount = reportData.cashAmount + reportData.cardAmount + reportData.upiAmount + reportData.creditAmount;
-    
-    const client = await db.connect();
-    try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
       
       const query = `
         INSERT INTO cash_reports (

@@ -3547,3 +3547,12 @@ Each entry is tied to a step from the implementation index.
 ### Files
 * `src/services/reconciliation.service.ts`
 * `tests/reconciliation.service.test.ts`
+
+## [Fix 2025-08-05] – Cash report transaction handling
+
+### 🟥 Fixes
+* Replaced nested try blocks in cash report service with a single transaction to restore successful TypeScript builds.
+* `docs/STEP_fix_20250805_2_COMMAND.md`
+
+### Files
+* `src/services/cashReport.service.ts`

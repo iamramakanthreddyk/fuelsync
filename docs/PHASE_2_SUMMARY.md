@@ -1806,3 +1806,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/services/reconciliation.service.ts`, `tests/reconciliation.service.test.ts`, `docs/STEP_fix_20250805_COMMAND.md`
 
 **Overview:** Added null checks in reconciliation sales calculations and refreshed unit tests to use dynamic dates, covering edge cases for backdated closures and analytics.
+
+### 🛠️ Fix 2025-08-05 – Cash report transaction handling
+**Status:** ✅ Done
+**Files:** `src/services/cashReport.service.ts`, `docs/STEP_fix_20250805_2_COMMAND.md`
+
+**Overview:** Consolidated cash report creation into a single try/catch/finally block, resolving a syntax error that prevented the TypeScript build from completing.
