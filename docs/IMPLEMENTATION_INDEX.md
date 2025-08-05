@@ -329,3 +329,4 @@ This file tracks every build step taken by AI agents or developers. It maintains
 | fix | 2025-08-03 | Normalize OpenAPI path syntax | ✅ Done | `docs/openapi.yaml` | `docs/CHANGELOG.md` |
 | fix | 2025-08-05 | Reconciliation service coverage | ✅ Done | `src/services/reconciliation.service.ts`, `tests/reconciliation.service.test.ts` | `docs/STEP_fix_20250805_COMMAND.md` |
 | fix | 2025-08-05 | Cash report transaction handling | ✅ Done | `src/services/cashReport.service.ts` | `docs/STEP_fix_20250805_2_COMMAND.md` |
+| fix | 2025-08-06 | Nozzle reading service test coverage | ✅ Done | `tests/readings.service.test.ts` | `docs/STEP_fix_20250806_COMMAND.md` |

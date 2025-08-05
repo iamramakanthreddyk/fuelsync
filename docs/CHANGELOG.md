@@ -3556,3 +3556,12 @@ Each entry is tied to a step from the implementation index.
 
 ### Files
 * `src/services/cashReport.service.ts`
+
+## [Fix 2025-08-06] – Nozzle reading service test coverage
+
+### 🟥 Fixes
+* Expanded `listNozzleReadings` unit tests to validate tenant ID checks and limit handling.
+* `docs/STEP_fix_20250806_COMMAND.md`
+
+### Files
+* `tests/readings.service.test.ts`

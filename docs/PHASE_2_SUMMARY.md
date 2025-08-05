@@ -1812,3 +1812,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `src/services/cashReport.service.ts`, `docs/STEP_fix_20250805_2_COMMAND.md`
 
 **Overview:** Consolidated cash report creation into a single try/catch/finally block, resolving a syntax error that prevented the TypeScript build from completing.
+
+### 🛠️ Fix 2025-08-06 – Nozzle reading service test coverage
+**Status:** ✅ Done
+**Files:** `tests/readings.service.test.ts`, `docs/STEP_fix_20250806_COMMAND.md`
+
+**Overview:** Added edge case tests for nozzle reading listing to validate tenant ID errors and result limits.
