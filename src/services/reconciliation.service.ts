@@ -411,17 +411,17 @@ export async function getSystemCalculatedSales(
 
   // Process results
   for (const row of result.rows) {
-    const volume = Number(row.total_volume);
-    const amount = Number(row.total_amount);
-    const fuelType = row.fuel_type.toLowerCase();
-    const paymentMethod = row.payment_method.toLowerCase();
+    const volume = Number(row.total_volume || 0);
+    const amount = Number(row.total_amount || 0);
+    const fuelType = row.fuel_type ? row.fuel_type.toLowerCase() : '';
+    const paymentMethod = row.payment_method ? row.payment_method.toLowerCase() : '';
 
     // Add to totals
     totalVolume += volume;
     totalRevenue += amount;
 
     // Add to fuel breakdown
-    if (fuelBreakdown[fuelType as keyof typeof fuelBreakdown]) {
+    if (fuelType && fuelBreakdown[fuelType as keyof typeof fuelBreakdown]) {
       fuelBreakdown[fuelType as keyof typeof fuelBreakdown].volume += volume;
       fuelBreakdown[fuelType as keyof typeof fuelBreakdown].revenue += amount;
     }

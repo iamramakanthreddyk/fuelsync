@@ -3531,3 +3531,37 @@ Each entry is tied to a step from the implementation index.
 * Converted `reconciliation_diff` ID columns to `UUID` via migration `014`.
 * Cast all UUID and date parameters in reconciliation services and station access checks.
 * `docs/STEP_fix_20250728_COMMAND.md`
+
+## [Fix 2025-08-03] – Normalize OpenAPI paths
+
+### 🟥 Fixes
+* Converted Express-style route params to OpenAPI syntax and removed duplicate `/api/v1` prefixes.
+* `docs/STEP_fix_20250803_COMMAND.md`
+
+## [Fix 2025-08-05] – Reconciliation service coverage
+
+### 🟥 Fixes
+* Hardened `getSystemCalculatedSales` against null data to prevent runtime crashes.
+* Reworked reconciliation unit tests for dynamic dates and edge cases.
+
+### Files
+* `src/services/reconciliation.service.ts`
+* `tests/reconciliation.service.test.ts`
+
+## [Fix 2025-08-05] – Cash report transaction handling
+
+### 🟥 Fixes
+* Replaced nested try blocks in cash report service with a single transaction to restore successful TypeScript builds.
+* `docs/STEP_fix_20250805_2_COMMAND.md`
+
+### Files
+* `src/services/cashReport.service.ts`
+
+## [Fix 2025-08-06] – Nozzle reading service test coverage
+
+### 🟥 Fixes
+* Expanded `listNozzleReadings` unit tests to validate tenant ID checks and limit handling.
+* `docs/STEP_fix_20250806_COMMAND.md`
+
+### Files
+* `tests/readings.service.test.ts`

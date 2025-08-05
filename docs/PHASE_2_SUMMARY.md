@@ -1794,3 +1794,27 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `scripts/generate-api-docs.js`, `docs/backend_brain.md`, `docs/openapi.yaml`, `docs/STEP_fix_20260910_COMMAND.md`
 
 **Overview:** Added a script to extract current Express routes and regenerate `backend_brain.md` and `openapi.yaml`, ensuring backend documentation matches implemented endpoints and removing outdated entries.
+
+### 🛠️ Fix 2025-08-03 – Normalize OpenAPI paths
+**Status:** ✅ Done
+**Files:** `docs/openapi.yaml`, `docs/STEP_fix_20250803_COMMAND.md`
+
+**Overview:** Converted Express-style route parameters to `{param}` format and removed duplicate `/api/v1` prefixes in the OpenAPI specification to match implemented endpoints.
+
+### 🛠️ Fix 2025-08-05 – Reconciliation service coverage
+**Status:** ✅ Done
+**Files:** `src/services/reconciliation.service.ts`, `tests/reconciliation.service.test.ts`, `docs/STEP_fix_20250805_COMMAND.md`
+
+**Overview:** Added null checks in reconciliation sales calculations and refreshed unit tests to use dynamic dates, covering edge cases for backdated closures and analytics.
+
+### 🛠️ Fix 2025-08-05 – Cash report transaction handling
+**Status:** ✅ Done
+**Files:** `src/services/cashReport.service.ts`, `docs/STEP_fix_20250805_2_COMMAND.md`
+
+**Overview:** Consolidated cash report creation into a single try/catch/finally block, resolving a syntax error that prevented the TypeScript build from completing.
+
+### 🛠️ Fix 2025-08-06 – Nozzle reading service test coverage
+**Status:** ✅ Done
+**Files:** `tests/readings.service.test.ts`, `docs/STEP_fix_20250806_COMMAND.md`
+
+**Overview:** Added edge case tests for nozzle reading listing to validate tenant ID errors and result limits.
