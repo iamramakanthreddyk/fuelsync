@@ -1800,3 +1800,9 @@ sudo apt-get update && sudo apt-get install -y postgresql
 **Files:** `docs/openapi.yaml`, `docs/STEP_fix_20250803_COMMAND.md`
 
 **Overview:** Converted Express-style route parameters to `{param}` format and removed duplicate `/api/v1` prefixes in the OpenAPI specification to match implemented endpoints.
+
+### 🛠️ Fix 2025-08-05 – Reconciliation service coverage
+**Status:** ✅ Done
+**Files:** `src/services/reconciliation.service.ts`, `tests/reconciliation.service.test.ts`, `docs/STEP_fix_20250805_COMMAND.md`
+
+**Overview:** Added null checks in reconciliation sales calculations and refreshed unit tests to use dynamic dates, covering edge cases for backdated closures and analytics.

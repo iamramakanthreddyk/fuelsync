@@ -3537,3 +3537,13 @@ Each entry is tied to a step from the implementation index.
 ### 🟥 Fixes
 * Converted Express-style route params to OpenAPI syntax and removed duplicate `/api/v1` prefixes.
 * `docs/STEP_fix_20250803_COMMAND.md`
+
+## [Fix 2025-08-05] – Reconciliation service coverage
+
+### 🟥 Fixes
+* Hardened `getSystemCalculatedSales` against null data to prevent runtime crashes.
+* Reworked reconciliation unit tests for dynamic dates and edge cases.
+
+### Files
+* `src/services/reconciliation.service.ts`
+* `tests/reconciliation.service.test.ts`
