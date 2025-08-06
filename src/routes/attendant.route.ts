@@ -20,10 +20,14 @@ export function createAttendantRouter(db: Pool) {
     res.status(200).json({ message: 'Test endpoint working' });
   });
   router.get('/health-check', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.healthCheck);
+  router.get('/todays-summary', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.todaysSummary);
+  router.get('/todays-sales', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.todaysSales);
   router.get('/stations', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.stations);
   router.get('/pumps', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.pumps);
   router.get('/nozzles', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.nozzles);
   router.get('/creditors', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.creditors);
+  router.get('/readings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.readings);
+  router.post('/readings', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), handlers.createReading);
   // Cash report endpoint with better error handling
   router.post('/cash-report', authenticateJWT, setTenantContext, requireRole([UserRole.Owner, UserRole.Manager, UserRole.Attendant]), (req, res) => {
     try {

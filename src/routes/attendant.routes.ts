@@ -12,6 +12,7 @@ export function createAttendantRouter(db: Pool) {
 
   // Add all attendant routes
   router.get('/health-check', handlers.healthCheck);
+  router.get('/todays-summary', handlers.todaysSummary);
   router.get('/stations', handlers.stations);
   router.get('/pumps', handlers.pumps);
   router.get('/nozzles', handlers.nozzles);
